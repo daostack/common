@@ -44,7 +44,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         case EventTypeState.messageCreated:
           return this.getMessageCreatedData();
 
-        case EventTypeState.requestToJoinAccepted:
+        case EventTypeState.commonMemberAdded:
           return this.getReqToJoinAcceptedData();
 
         case EventTypeState.requestToJoinCreated:

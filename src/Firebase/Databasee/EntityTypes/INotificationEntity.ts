@@ -79,7 +79,7 @@ export const EventTitleState = {
   messageCreated: 'New Comment',
   commonCreated: 'Common Created',
   commonWhitelisted: 'New Featured Common',
-  commonMemberAdded: 'Common Member Added',
+  commonMemberAdded: 'Membership Approved',
   welcomeNotification: 'Welcome to Common!',
   discussionCreated: 'New post',
 };
@@ -93,8 +93,8 @@ export const EventTypesOnNotificationList = [
   EventTypeState.fundingRequestExecuted,
   EventTypeState.fundingRequestRejected,
   EventTypeState.messageCreated,
-  EventTypeState.requestToJoinAccepted,
   EventTypeState.requestToJoinCreated,
   EventTypeState.requestToJoinRejected,
   EventTypeState.discussionCreated,
+  EventTypeState.commonMemberAdded,
 ];
