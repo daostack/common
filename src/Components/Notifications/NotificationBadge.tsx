@@ -136,6 +136,13 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
           textColor: colors.mainBlue,
         });
         break;
+      case EventTypeState.discussionCreated:
+        setBadgeValues({
+          title: EventTitleState.discussionCreated,
+          bgColor: colors.lightBlue,
+          textColor: colors.mainBlue,
+        });
+        break;
     }
   }, [type]);
 
