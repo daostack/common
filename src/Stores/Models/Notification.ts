@@ -9,6 +9,7 @@ import RootStore from '../RootStore';
 import {BaseModel} from './BaseModel';
 import logger from '~/Services/Logger';
 import {IFundingRequestDescription} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {Proposal} from './Proposal';
 
 export class Notification extends BaseModel<INotificationEntity> {
   @observable
@@ -93,14 +94,15 @@ export class Notification extends BaseModel<INotificationEntity> {
     const proposalNotificationData = this.getProposalNotificationData();
 
     if (proposalNotificationData) {
-      const {proposal, user, common} = proposalNotificationData;
+      const {user, common} = proposalNotificationData;
+      const proposal = new Proposal(proposalNotificationData.proposal);
 
       notificationData = {
         missingData: false,
         descriptionBold: `"${
           (proposal.description as IFundingRequestDescription).title
         }"`,
-        description: ` (${proposal.fundingFormatted}$ requested)`,
+        description: ` ($${proposal.fundingFormatted} requested)`,
         common,
         ownerAvatar: user.photoURL,
         proposal,
