@@ -56,6 +56,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {Proposal} from '../../Stores/Models/Proposal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -130,7 +131,7 @@ const ProposalScreen = ({
     };
   }, [proposalId]);
 
-  const proposalInfo = proposalStore.getProposalById(proposalId);
+  const proposalInfo = new Proposal(proposalStore.getProposalById(proposalId));
 
   const proposalCommon = proposalInfo
     ? commonStore.getCommonById(proposalInfo.commonId)
@@ -871,9 +872,9 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalInfo.funding > 0
-                        ? `$${proposalInfo.funding / 100}`
-                        : ''}
+                      {proposalInfo.fundingRequest.amount > 0
+                        ? `$${proposalInfo.fundingRequest.amount / 100}`
+                        : '$0'}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
