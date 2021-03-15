@@ -40,8 +40,6 @@ export default class NotificationStore extends BaseStore<
     updatedSnapshot: IFirebaseSnapshot<IBaseEntity> | IFirebaseDoc<IBaseEntity>,
   ) => {
     this.updateStoreData(updatedSnapshot);
-
-    // console.log('entra');
     this.rootStore.uiStore.checkNotificationsUnRead();
   };
 
