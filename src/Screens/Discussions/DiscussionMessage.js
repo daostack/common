@@ -63,7 +63,7 @@ const DiscussionMessage = ({
   useEffect(() => {
     const userPermission = authStore.getPermission(
       commonId,
-      ownerInfo,
+      ownerInfo.id,
     );
     setPermission(userPermission);
   }, []);
