@@ -1,9 +1,14 @@
 import BaseStore from './BaseStore';
 import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification} from '../Models/Notification';
+import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -29,7 +34,16 @@ export default class NotificationStore extends BaseStore<
       );
   //Actions
   subscribeToUserNotifications = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToUserNotifications(userId, this.updateStoreData);
+    subscribeToUserNotifications(userId, this.updateNotificationStore);
+
+  updateNotificationStore = (
+    updatedSnapshot: IFirebaseSnapshot<IBaseEntity> | IFirebaseDoc<IBaseEntity>,
+  ) => {
+    this.updateStoreData(updatedSnapshot);
+
+    // console.log('entra');
+    this.rootStore.uiStore.checkNotificationsUnRead();
+  };
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
