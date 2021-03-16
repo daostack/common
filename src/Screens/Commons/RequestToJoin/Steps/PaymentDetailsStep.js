@@ -52,8 +52,6 @@ const PaymentDetailsStep = ({
           ...billingDetailsFormStore.getFormFieldsJson(),
         };
 
-        escapeUrl(formData.links);
-
         const data = {
           description: formData.intro,
           funding: formData.amount * 100,
@@ -61,7 +59,7 @@ const PaymentDetailsStep = ({
         };
 
         if (formData.links) {
-          data.links = formData.links;
+          data.links = escapeUrl(formData.links);
         }
 
         navigation.navigate({
@@ -73,6 +71,7 @@ const PaymentDetailsStep = ({
 
         const createdCard = await createCard({
           ...formData,
+          links: escapeUrl(formData.links),
           ...userInfo,
         });
 

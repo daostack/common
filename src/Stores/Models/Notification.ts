@@ -98,7 +98,7 @@ export class Notification extends BaseModel<INotificationEntity> {
           (proposal.description as IFundingRequestDescription).title
         }"`,
         description: ` (${proposal.fundingFormatted}$ requested)`,
-        commonName: common.name,
+        common,
         ownerAvatar: user.photoURL,
         proposal,
       };
@@ -126,7 +126,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         description:
           " Don't give up, there are plenty of other Commons you can join.",
         ownerAvatar: user.photoURL,
-        commonName: common.name,
+        common,
         proposal,
       };
     }
@@ -138,13 +138,14 @@ export class Notification extends BaseModel<INotificationEntity> {
     const proposalNotificationData = this.getProposalNotificationData();
 
     if (proposalNotificationData) {
-      const {proposal, user, common} = proposalNotificationData;
+      const {proposal, common} = proposalNotificationData;
 
       notificationData = {
         missingData: false,
-        description: ' You are asking to be a common member',
-        ownerAvatar: user.photoURL,
-        commonName: common.name,
+        description:
+          ' Your Common has new pending members, view their requests and vote',
+        ownerAvatar: common.image,
+        common,
         proposal,
       };
     }
@@ -163,7 +164,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         missingData: false,
         description: ' Congrats! You are now a member!',
         ownerAvatar: user.photoURL,
-        commonName: common.name,
+        common,
         proposal,
       };
     }
@@ -202,8 +203,7 @@ export class Notification extends BaseModel<INotificationEntity> {
             ...notificationData,
             header: ' on',
             headerBold: ` "${discussion.title}"`,
-            commonName: common.name,
-            commonId: discussion.commonId,
+            common,
           };
         }
       }
