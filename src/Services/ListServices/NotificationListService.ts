@@ -13,14 +13,15 @@ export const subscribeToUserNotifications = (
   userId: string,
   listChangeCallback: commonNotificationListLoadCallbackFn,
 ) => {
-  let unsubscribe = null;
-  if (userId) {
-    NotificationsCollection.orderBy('createdAt', 'desc')
-      .where('userFilter', 'array-contains', userId)
-      .where('eventType', 'in', EventTypesOnNotificationList)
-      .onSnapshot((snapshot: any) => {
-        listChangeCallback(snapshot);
-      });
+  if (!userId) {
+    throw Error(
+      'subscribeToUserNotifications method has required userId parameter',
+    );
   }
-  return unsubscribe;
+  return NotificationsCollection.orderBy('createdAt', 'desc')
+    .where('userFilter', 'array-contains', userId)
+    .where('eventType', 'in', EventTypesOnNotificationList)
+    .onSnapshot((snapshot: any) => {
+      listChangeCallback(snapshot);
+    });
 };

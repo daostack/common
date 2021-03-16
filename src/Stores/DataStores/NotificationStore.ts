@@ -9,6 +9,7 @@ import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification} from '../Models/Notification';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
+import {action, observable} from 'mobx';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -33,14 +34,24 @@ export default class NotificationStore extends BaseStore<
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
       );
   //Actions
-  subscribeToUserNotifications = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToUserNotifications(userId, this.updateNotificationStore);
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
+    this.rootStore.authStore.signedInUser
+      ? subscribeToUserNotifications(
+          this.rootStore.authStore.signedInUser,
+          this.updateNotificationStore,
+        )
+      : null;
 
   updateNotificationStore = (
     updatedSnapshot: IFirebaseSnapshot<IBaseEntity> | IFirebaseDoc<IBaseEntity>,
   ) => {
     this.updateStoreData(updatedSnapshot);
     this.rootStore.uiStore.checkNotificationsUnRead();
+  };
+
+  @action
+  deleteUserNotifications = () => {
+    this.data = observable.map({});
   };
 
   // Overriden methods

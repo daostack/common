@@ -65,6 +65,9 @@ class AuthStore {
 
           this._processUser(user);
         } else {
+          // We need to delete the notification store on logout
+          // as we are keeping there only logged in user notifications.
+          this.rootStore.notificationStore.deleteUserNotifications();
           AsyncStorage.removeItem('notificationsRead');
           AsyncStorage.removeItem('notificationsClicked');
           this.setSignedInUser(null);
