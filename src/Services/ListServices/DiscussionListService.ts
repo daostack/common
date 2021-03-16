@@ -2,7 +2,7 @@ import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/Discussion
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
-import {IFirebaseSnapshot} from '~/Firebase/types';
+import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
@@ -52,12 +52,11 @@ export const updateDiscussionLastMessage = async (
 
 export const fetchDiscussionId = async (
   discussionId: string,
-): Promise<IDiscussionEntity> => {
+): Promise<IFirebaseDoc<IDiscussionEntity>> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
-  const discussion = await DiscussionsCollection.doc(discussionId).get();
-  return {...discussion.data(), id: discussion.id} as IDiscussionEntity;
+  return await DiscussionsCollection.doc(discussionId).get();
 };

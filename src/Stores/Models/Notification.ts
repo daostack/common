@@ -8,7 +8,12 @@ import {
 import RootStore from '../RootStore';
 import {BaseModel} from './BaseModel';
 import logger from '~/Services/Logger';
-import {IFundingRequestDescription} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {
+  IFundingRequestDescription,
+  IFundingRequestProposal,
+  IJoinRequestProposal,
+} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {PROPOSAL_TYPE} from '~/Config';
 
 export class Notification extends BaseModel<INotificationEntity> {
   @observable
@@ -64,11 +69,8 @@ export class Notification extends BaseModel<INotificationEntity> {
   private getCommonWhitelistedData(): NotificationItemData {
     let notificationData = {missingData: true} as NotificationItemData;
     let common = null;
-    try {
-      common = this.rootStore.commonStore.getCommonById(this.eventObjectId);
-    } catch (err) {
-      logger.warn('NOT EXISTING Common with id: ', this.eventObjectId);
-    }
+
+    common = this.rootStore.commonStore.getCommonById(this.eventObjectId);
 
     if (common) {
       const user = this.rootStore.userStore.getUserById(
@@ -95,12 +97,24 @@ export class Notification extends BaseModel<INotificationEntity> {
     if (proposalNotificationData) {
       const {proposal, user, common} = proposalNotificationData;
 
+      // Temporarry logic for fixing undefined value for amount inside Notification Item of type `New Proposal`.
+      // We have that logic in Proposal.ts in a computed field called 'fundingFormatted' , but for some reasons
+      // all the computed fields in Proposal model are undefined once we read it from mobx-persist.
+      let proposalFunding = 0;
+      if (proposal.type === PROPOSAL_TYPE.Join) {
+        proposalFunding = (proposal as IJoinRequestProposal).join.funding;
+      } else {
+        proposalFunding = (proposal as IFundingRequestProposal).fundingRequest
+          .amount;
+      }
+      const fundingFormatted = proposalFunding / 100;
+
       notificationData = {
         missingData: false,
         descriptionBold: `"${
           (proposal.description as IFundingRequestDescription).title
         }"`,
-        description: ` (${proposal.fundingFormatted}$ requested)`,
+        description: ` (${fundingFormatted}$ requested)`,
         common,
         ownerAvatar: user.photoURL,
         proposal,

@@ -1,6 +1,6 @@
 import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
-import {IFirebaseSnapshot} from '~/Firebase/types';
+import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
@@ -46,14 +46,13 @@ export const subscribeToDiscussionsMessages = (
   return unsubscribeArr;
 };
 
-export const fetchMessageById = async (
+export const fetchDiscussionMessageById = async (
   messageId: string,
-): Promise<IDiscussionMessageEntity> => {
+): Promise<IFirebaseDoc<IDiscussionMessageEntity>> => {
   if (!messageId) {
     throw new Error(
       'Message Id (messageId) is required parameter, but it was not provided',
     );
   }
-  const message = await DiscussionMessagesCollection.doc(messageId).get();
-  return {...message.data(), id: message.id} as IDiscussionMessageEntity;
+  return await DiscussionMessagesCollection.doc(messageId).get();
 };
