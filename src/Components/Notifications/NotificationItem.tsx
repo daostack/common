@@ -132,7 +132,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <View style={styles.messageContainer}>
-            <Text numberOfLines={2} style={{flexDirection: 'row'}}>
+            <Text numberOfLines={2} style={{flexDirection: 'row', writingDirection: 'ltr'}}>
               <Text style={[styles.messageStyle, {...font.primary.bold}]}>
                 {item.notificationItemData.descriptionBold}
               </Text>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginTop: 5,
-    maxWidth: '85%',
+    maxWidth: '90%',
   },
   nameStyle: {
     ...font.primary.bold,
