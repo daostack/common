@@ -15,7 +15,6 @@ export default class UIStore {
   @observable
   conversionRate: number = 0;
 
-  // @persist
   @observable
   lastNotificationIsUnread: boolean = false;
 
@@ -24,7 +23,7 @@ export default class UIStore {
     NotificationService.isNotificationRead(notifications[0].id).then(
       (lastNotificationRead) => {
         runInAction(() => {
-          this.lastNotificationIsUnread = lastNotificationRead;
+          this.lastNotificationIsUnread = !lastNotificationRead;
         });
       },
     );

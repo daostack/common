@@ -1,3 +1,4 @@
+import {AsyncStorage} from '@react-native-community/async-storage';
 import {observable, action} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
@@ -64,6 +65,8 @@ class AuthStore {
 
           this._processUser(user);
         } else {
+          AsyncStorage.removeItem('notificationsRead');
+          AsyncStorage.removeItem('notificationsClicked');
           this.setSignedInUser(null);
           this.setIsLoading(false);
         }
@@ -127,7 +130,7 @@ class AuthStore {
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
-  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
   async _processUser(user: any) {
