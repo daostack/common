@@ -4,6 +4,7 @@ import {
   INotificationEntity,
   NotificationItemData,
   IProposalNotificationData,
+  IDiscussionEntity,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import RootStore from '../RootStore';
 import {BaseModel} from './BaseModel';
@@ -48,7 +49,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         case EventTypeState.messageCreated:
           return this.getMessageCreatedData();
 
-        case EventTypeState.requestToJoinAccepted:
+        case EventTypeState.commonMemberAdded:
           return this.getReqToJoinAcceptedData();
 
         case EventTypeState.requestToJoinCreated:
@@ -56,6 +57,9 @@ export class Notification extends BaseModel<INotificationEntity> {
 
         case EventTypeState.requestToJoinRejected:
           return this.getReqToJoinRejectedData();
+
+        case EventTypeState.discussionCreated:
+          return this.getDiscussionData();
       }
     } catch (err) {
       logger.warn(
@@ -249,6 +253,39 @@ export class Notification extends BaseModel<INotificationEntity> {
     } else {
       return null;
     }
+  }
+
+  private getDiscussionData(): IDiscussionEntity | null {
+    let notificationData = {missingData: true} as NotificationItemData;
+    const discussion = this.rootStore.discussionStore.getDiscussionById(
+      this.eventObjectId,
+    );
+    if (discussion) {
+      const user = this.rootStore.userStore.getUserById(discussion.ownerId);
+      if (discussion && user) {
+        notificationData = {
+          missingData: false,
+          descriptionBold: ` by ${user.firstName} ${user.lastName}`,
+          ownerAvatar: user.photoURL,
+          discussion: discussion,
+        };
+      }
+
+      if (discussion && discussion.commonId) {
+        const common = this.rootStore.commonStore.getCommonById(
+          discussion.commonId,
+        );
+
+        if (common && common.name) {
+          notificationData = {
+            ...notificationData,
+            headerBold: ` "${discussion.title}"`,
+            common,
+          };
+        }
+      }
+    }
+    return (notificationData as NotificationItemData) || null;
   }
 
   constructor(newNotificationInfo: INotificationEntity, rootStore: RootStore) {
