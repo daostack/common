@@ -107,7 +107,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         proposalFunding = (proposal as IFundingRequestProposal).fundingRequest
           .amount;
       }
-      const fundingFormatted = proposalFunding / 10;
+      const fundingFormatted = proposalFunding / 100;
 
       notificationData = {
         missingData: false,
