@@ -64,6 +64,9 @@ class AuthStore {
 
           this._processUser(user);
         } else {
+          // We need to delete the notification store on logout
+          // as we are keeping there only logged in user notifications.
+          this.rootStore.notificationStore.deleteUserNotifications();
           this.setSignedInUser(null);
           this.setIsLoading(false);
         }
@@ -127,7 +130,7 @@ class AuthStore {
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
 
-  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
   async _processUser(user: any) {

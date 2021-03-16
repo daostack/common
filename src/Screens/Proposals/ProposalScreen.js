@@ -63,7 +63,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {proposalId, tabIndex = 0, hasPermission},
+    params: {proposalId, tabIndex = 0, hasPermission, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -124,9 +124,18 @@ const ProposalScreen = ({
       proposalId,
     );
 
+    let unsubscribeFromProposalById = null;
+    if (fromNotificationItem) {
+      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+        proposalId,
+      );
+    }
+
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
         unsubscribeFromProposalDiscussionMessages();
+
+      unsubscribeFromProposalById && unsubscribeFromProposalById();
     };
   }, [proposalId]);
 

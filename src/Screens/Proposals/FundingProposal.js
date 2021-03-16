@@ -25,6 +25,7 @@ import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl} from '~/Util';
 
 const FundingProposal = ({
   navigation,
@@ -48,7 +49,7 @@ const FundingProposal = ({
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
           amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
-          links: formData[FundingRequestForm.FIELD_LINKS],
+          links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
           commonId,
