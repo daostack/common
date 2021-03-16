@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, hasPermission, fromNotification},
+    params: {commonId, discussionId, hasPermission, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -86,7 +86,7 @@ const Discussions = ({
 
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
-    if (fromNotification) {
+    if (fromNotificationItem) {
       unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
         discussionId,
       );
@@ -233,7 +233,7 @@ const Discussions = ({
         // }
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
-        <View style={styles.q}>
+        <View style={styles.headerContainer}>
           {isExpanded ? (
             <View
               style={{

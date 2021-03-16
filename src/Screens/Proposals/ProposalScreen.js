@@ -63,7 +63,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {proposalId, tabIndex = 0, hasPermission},
+    params: {proposalId, tabIndex = 0, hasPermission, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -120,13 +120,27 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
+    console.log(
+      'PROPOSAL SCREEN USE EFFECT fromNotificationItem -> ',
+      fromNotificationItem,
+    );
     const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
       proposalId,
     );
 
+    let unsubscribeFromProposalById = null;
+    if (fromNotificationItem) {
+      console.log('PRORPOSAL SCREEN from NOTIFICATION ITEM');
+      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+        proposalId,
+      );
+    }
+
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
         unsubscribeFromProposalDiscussionMessages();
+
+      unsubscribeFromProposalById && unsubscribeFromProposalById();
     };
   }, [proposalId]);
 

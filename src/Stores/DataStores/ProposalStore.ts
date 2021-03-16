@@ -133,6 +133,11 @@ export default class ProposalStore extends BaseStore<
       );
 
   //Actions
+  subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
+    subscribeToProposalList(this.updateStoreData, {
+      id: proposalId,
+    });
+
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this.updateStoreData, {
       userId: userId,

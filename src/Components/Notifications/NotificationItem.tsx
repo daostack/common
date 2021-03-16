@@ -57,17 +57,19 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
         proposalId: item.notificationItemData.proposal.id,
+        fromNotificationItem: true,
       });
     } else if (item.notificationItemData.discussion) {
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
         discussionId: item.notificationItemData.discussion.id,
-        fromNotification: true,
+        fromNotificationItem: true,
       });
     } else if (item.notificationItemData.common) {
       navigate = CommonActions.navigate({
         name: NAVIGATION_SCREENS.COMMON_PROFILE,
         params: {
           currCommon: item.notificationItemData.common,
+          fromNotificationItem: true,
         },
       });
       navigation.dispatch(navigate);

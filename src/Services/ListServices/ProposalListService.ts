@@ -30,6 +30,7 @@ export const PROPOSAL_STAGES_ALL = [
 ];
 
 interface ProposalFilter {
+  id?: string;
   commonId?: string;
   userId?: string;
   showAll?: boolean;
@@ -48,6 +49,9 @@ export const subscribeToProposalList = (
 ): FirestoreUnsubscribeFn => {
   let proposalListQuery = ProposalsCollection;
 
+  if (filter.id) {
+    proposalListQuery = proposalListQuery.where('id', '==', filter.id);
+  }
   if (filter.commonId) {
     proposalListQuery = proposalListQuery.where(
       'commonId',
