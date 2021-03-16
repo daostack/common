@@ -874,15 +874,13 @@ const ProposalScreen = ({
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalInfo.isFundingRequest
-                        ? proposalInfo.fundingRequest.amount > 0
+                        ? amount > 0
                           ? 'Requested amount'
                           : 'No funding requested'
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalInfo.funding > 0
-                        ? `$${proposalInfo.funding / 100}`
-                        : ''}
+                      {amount > 0 ? `$${amount}` : '$0'}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
