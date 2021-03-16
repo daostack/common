@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, hasPermission, fromNotification},
+    params: {commonId, discussionId, hasPermission, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -61,7 +61,7 @@ const Discussions = ({
     commonId = dataState.commonId;
   }
 
-  let user = dataState?.ownerId
+  const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
@@ -86,7 +86,7 @@ const Discussions = ({
 
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
-    if (fromNotification) {
+    if (fromNotificationItem) {
       unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
         discussionId,
       );
