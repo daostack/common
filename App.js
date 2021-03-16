@@ -121,18 +121,20 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
-    const unsubscribeUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+    let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeUserNotifications && unsubscribeUserNotifications();
+      unsubscribeLoggedUserNotifications &&
+        unsubscribeLoggedUserNotifications();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -320,7 +322,6 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     crashlytics().log('App mounted.');
   }, []);
-
 
   if (loading) {
     return <View style={{flex: 1}} />;
