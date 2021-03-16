@@ -1,10 +1,9 @@
-import {action, observable, runInAction} from 'mobx';
+import {observable, runInAction} from 'mobx';
 import BottomSheetStore from './BottomSheetStore';
 import AppLoaderStore from './AppLoaderStore';
 import RootStore from './RootStore';
 import {getCurrentConversionRate} from '~/Util/locale';
 import NotificationService from '~/Services/NotificationService';
-import {persist} from 'mobx-persist';
 import {Notification} from './Models/Notification';
 
 export default class UIStore {
