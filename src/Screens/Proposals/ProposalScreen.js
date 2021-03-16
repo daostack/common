@@ -120,17 +120,12 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    console.log(
-      'PROPOSAL SCREEN USE EFFECT fromNotificationItem -> ',
-      fromNotificationItem,
-    );
     const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
       proposalId,
     );
 
     let unsubscribeFromProposalById = null;
     if (fromNotificationItem) {
-      console.log('PRORPOSAL SCREEN from NOTIFICATION ITEM');
       unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
         proposalId,
       );

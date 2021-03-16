@@ -23,11 +23,9 @@ export default class DiscussionStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      console.log('CATCH FOR DISCUSSION ID -> ', id);
       // Temporary logic for fetching Discussion in case it's not in the store.
       fetchDiscussionId(id).then(
         (discussion: IFirebaseDoc<IDiscussionEntity>) => {
-          console.log('FETCH DISCUSSION WITH ID -> ', discussion);
           runInAction(() => {
             this.setData(
               id,

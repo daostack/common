@@ -387,10 +387,6 @@ const Discussions = ({
     moderationFormStore.clearFormStoreState();
   };
 
-  console.log('dataState -> ', dataState);
-  console.log('user -> ', user);
-  console.log('currCommon -> ', currCommon);
-
   if (!dataState) {
     return (
       <View style={{...styles.safeView, ...layout.content}}>
