@@ -1,14 +1,9 @@
 import BaseStore from './BaseStore';
 import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification, NotificationItemState} from '../Models/Notification';
-import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
 

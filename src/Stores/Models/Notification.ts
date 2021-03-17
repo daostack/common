@@ -262,7 +262,7 @@ export class Notification extends BaseModel<INotificationEntity> {
     }
   }
 
-  private getDiscussionData(): IDiscussionEntity | null {
+  private getDiscussionData(): NotificationItemData {
     let notificationData = {missingData: true} as NotificationItemData;
     const discussion = this.rootStore.discussionStore.getDiscussionById(
       this.eventObjectId,
@@ -292,7 +292,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         }
       }
     }
-    return (notificationData as NotificationItemData) || null;
+    return notificationData as NotificationItemData;
   }
 
   constructor(newNotificationInfo: INotificationEntity, rootStore: RootStore) {
