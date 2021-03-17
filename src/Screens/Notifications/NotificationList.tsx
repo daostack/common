@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
-import {InferProps, object} from 'prop-types';
+import {func, InferProps, shape} from 'prop-types';
 import NotificationItem from '~/Components/Notifications/NotificationItem';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
@@ -11,7 +11,9 @@ import {notificationStorePropTypes} from '~/Types/propTypes';
 import {Notification} from '~/Stores/Models/Notification';
 
 const props = {
-  navigation: object.isRequired,
+  navigation: shape({
+    addListener: func.isRequired,
+  }).isRequired,
   notificationStore: notificationStorePropTypes.isRequired,
 };
 const NotificationList: React.FC<InferProps<typeof props>> = ({
@@ -23,6 +25,16 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   const renderNotificationItem = ({item}: {item: Notification}) => (
     <NotificationItem item={item} navigation={navigation} />
   );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTimeout(() => {
+        notificationStore.removeSeenStateForNewNotifications();
+      }, 5000);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <>

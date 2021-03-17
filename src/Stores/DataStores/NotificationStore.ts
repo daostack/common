@@ -3,8 +3,9 @@ import {subscribeToUserNotifications} from '~/Services/ListServices/Notification
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {Notification} from '../Models/Notification';
-import {action, observable} from 'mobx';
+import {Notification, NotificationItemState} from '../Models/Notification';
+import {action, computed, observable} from 'mobx';
+import Logger from '~/Services/Logger';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -28,6 +29,50 @@ export default class NotificationStore extends BaseStore<
         (notification: Notification, prevNotification: Notification) =>
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
       );
+
+  @computed
+  get hasNewNotifications() {
+    return (
+      (this.getLoggedUserNotifications()?.filter(
+        (notification: Notification) =>
+          notification.notificationItemState?.seen === false,
+      )?.length || 0) > 0
+    );
+  }
+
+  @action
+  setNotificationItemState = (
+    notificationId: string,
+    newState: Partial<NotificationItemState>,
+  ) => {
+    const currentNotification = this.getNotificationById(notificationId);
+    if (currentNotification) {
+      currentNotification.notificationItemState = {
+        seen: newState.seen || currentNotification.notificationItemState.seen,
+        opened:
+          newState.opened || currentNotification.notificationItemState.opened,
+      };
+    }
+    Logger.warn(
+      'Not found notification while trying to update notifciationItemState',
+      notificationId,
+    );
+  };
+
+  @action
+  removeSeenStateForNewNotifications = () => {
+    const newNotificationsList = this.getLoggedUserNotifications()?.filter(
+      (notification: Notification) =>
+        notification.notificationItemState?.seen === false,
+    );
+    newNotificationsList?.forEach((notificationItem: Notification) => {
+      notificationItem.notificationItemState = {
+        seen: true,
+        opened: notificationItem.notificationItemState.opened,
+      };
+    });
+  };
+
   //Actions
   subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
     this.rootStore.authStore.signedInUser
