@@ -151,9 +151,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     false,
   );
 
-  // right now, has permission is about user being the owner, this may change in the future
+  // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
-    authStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    authStore.getPermission(commonId, authStore?.userInfo?.uid)
   );
 
   const headerHeightLayouted = (height) => height;
@@ -186,7 +186,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
     setHasPermission(
-      authStore?.userInfo?.uid === currCommon?.metadata.founderId,
+      authStore.getPermission(commonId, authStore?.userInfo?.uid),
     );
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
