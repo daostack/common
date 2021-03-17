@@ -34,6 +34,10 @@ const props = {
       header: string,
       headerBold: string,
     }).isRequired,
+    notificationItemState: shape({
+      seen: bool.isRequired,
+      opened: bool.isRequired,
+    }).isRequired,
   }).isRequired,
   navigation: shape({
     navigate: func.isRequired,
@@ -47,15 +51,15 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
-  const [isRead, setRead] = useState(false);
-  const [isClicked, setClicked] = useState(false);
+  // const [isRead, setRead] = useState(false);
+  // const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
 
-    notificationStore.addNotificationRead(item.id);
-    notificationStore.addNotificationClicked(item.id);
-    setClicked(true);
-    setRead(true);
+    // notificationStore.addNotificationRead(item.id);
+    // notificationStore.addNotificationClicked(item.id);
+    // setClicked(true);
+    // setRead(true);
 
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
@@ -90,11 +94,11 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     }
   };
 
-  useEffect(() => {
-    setClicked(notificationStore.notificationsClicked.includes(item.id));
-    setRead(notificationStore.notificationsRead.includes(item.id));
-    notificationStore.addNotificationRead(item.id);
-  }, []);
+  // useEffect(() => {
+  //   setClicked(notificationStore.notificationsClicked.includes(item.id));
+  //   setRead(notificationStore.notificationsRead.includes(item.id));
+  //   notificationStore.addNotificationRead(item.id);
+  // }, []);
 
   return (
     <TouchableOpacity
@@ -105,7 +109,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         style={[
           styles.messageCardContainer,
           {
-            backgroundColor: isClicked
+            backgroundColor: item.notificationItemState.opened
               ? colors.white
               : colors.paleNotificationblue,
           },
@@ -118,7 +122,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
               uri: item.notificationItemData.ownerAvatar,
             }}
           />
-          {!isRead && <View style={styles.notReadDot} />}
+          {!item.notificationItemState.seen && (
+            <View style={styles.notReadDot} />
+          )}
         </View>
         <View>
           <View style={styles.headerContainer}>

@@ -20,6 +20,8 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 }) => {
   const notificationList: Array<Notification> = notificationStore.getLoggedUserNotifications();
 
+  console.log('notificationList -> ', notificationList);
+
   const renderNotificationItem = ({item}: {item: Notification}) => (
     <NotificationItem item={item} navigation={navigation} />
   );

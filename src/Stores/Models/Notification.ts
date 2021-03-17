@@ -16,6 +16,11 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
 
+interface NotificationItemState {
+  seen: boolean;
+  opened: boolean;
+}
+
 export class Notification extends BaseModel<INotificationEntity> {
   @observable
   rootStore: RootStore;
@@ -31,6 +36,9 @@ export class Notification extends BaseModel<INotificationEntity> {
 
   @observable
   userFilter: Array<string>;
+
+  @observable
+  notificationItemState: NotificationItemState;
 
   @computed
   get notificationItemData(): NotificationItemData {
@@ -295,5 +303,17 @@ export class Notification extends BaseModel<INotificationEntity> {
     this.eventObjectId = newNotificationInfo.eventObjectId;
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
+
+    if (this.rootStore.notificationStore.exists(newNotificationInfo.id)) {
+      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
+        newNotificationInfo.id,
+      );
+      this.notificationItemState = notificationFromStore.notificationItemState;
+    } else {
+      this.notificationItemState = {
+        seen: false,
+        opened: false,
+      };
+    }
   }
 }

@@ -64,6 +64,10 @@ export default abstract class BaseStore<
     }
   }
 
+  exists(id: string) {
+    return has(this.data, id);
+  }
+
   updateStoreData = (
     updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
   ) => {

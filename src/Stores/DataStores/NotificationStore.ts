@@ -9,7 +9,7 @@ import RootStore from '../RootStore';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification} from '../Models/Notification';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
-import {action, observable} from 'mobx';
+import {action, has, observable} from 'mobx';
 import {persist} from 'mobx-persist';
 
 export default class NotificationStore extends BaseStore<
@@ -20,13 +20,13 @@ export default class NotificationStore extends BaseStore<
     super(rootStore);
   }
 
-  @persist('list', String)
+  @persist('list')
   @observable
-  notificationsRead: string[] = observable.array([]);
+  notificationsRead: Array<string> = observable.array([]);
 
-  @persist('list', String)
+  @persist('list')
   @observable
-  notificationsClicked: string[] = observable.array([]);
+  notificationsClicked: Array<string> = observable.array([]);
 
   // Data consuming methods
   getNotificationById = (id: string): Notification | undefined =>
@@ -43,23 +43,23 @@ export default class NotificationStore extends BaseStore<
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
       );
 
-  @action
-  addNotificationRead = (notificationId: string) => {
-    console.log('PRUEBAAA notificationsRead', this.notificationsRead);
-    if (!this.notificationsRead.includes(notificationId)) {
-      console.log('PRUEBAAA Adding read', notificationId);
-      this.notificationsRead.push(notificationId);
-    }
-  };
+  // @action
+  // addNotificationRead = (notificationId: string) => {
+  //   console.log('PRUEBAAA notificationsRead', this.notificationsRead);
+  //   if (!has(this.notificationsClicked, notificationId)) {
+  //     console.log('PRUEBAAA Adding read', notificationId);
+  //     this.notificationsRead.push(notificationId);
+  //   }
+  // };
 
-  @action
-  addNotificationClicked = (notificationId: string) => {
-    console.log('PRUEBAAA addNotificationClicked', this.notificationsClicked);
-    if (!this.notificationsClicked.includes(notificationId)) {
-      console.log('PRUEBAAA Adding Click', notificationId);
-      this.notificationsClicked.push(notificationId);
-    }
-  };
+  // @action
+  // addNotificationClicked = (notificationId: string) => {
+  //   console.log('PRUEBAAA addNotificationClicked', this.notificationsClicked);
+  //   if (!has(this.notificationsClicked, notificationId)) {
+  //     console.log('PRUEBAAA Adding Click', notificationId);
+  //     this.notificationsClicked.push(notificationId);
+  //   }
+  // };
 
   //Actions
   subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
