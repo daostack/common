@@ -3,16 +3,17 @@ import {View, Text, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
 import {object, string} from 'yup';
 import TextInputField from '../Formik/TextInputField';
-import ImageField from '../FormFields/ImageField';
+import ImageField from '../Formik/ImageField';
 import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
 import {AuthStore} from '~/Types/store';
 import {CountrySelectField} from '~/Components/Formik/CountrySelectField';
 
 const validationSchema = object({
-  firstName: string().required('validation.required'),
-  lastName: string().required('validation.required'),
+  firstName: string().required().label('The first name'),
+  lastName: string().required().label('The last name'),
   photoURL: string(),
+  intro: string().label('The intro'),
 });
 
 type Props = {
@@ -21,13 +22,6 @@ type Props = {
 }
 
 function EditProfileForm({authStore,isFirstOpening}: Props): ReactElement {
-//   static FIELD_FIRST_NAME = 'firstName';
-//   static FIELD_LAST_NAME = 'lastName';
-//   static FIELD_COUNTRY = 'country';
-//   static FIELD_INTRO = 'intro';
-//   static FIELD_PROFILE_IMAGE = 'photoURL';
-
-  console.log('here');
     return (
         <Formik
             initialValues={{
@@ -38,36 +32,13 @@ function EditProfileForm({authStore,isFirstOpening}: Props): ReactElement {
             email: authStore.userInfo.email,
             intro: authStore.userInfo.intro,
             }}
-        // validate={async (form: PersonalDetails): object => {
-        //   try {
-        //     await validationSchema.validate(
-        //       {
-        //         ...form,
-        //         dateOfBirth: form.dateOfBirth ? moment.utc(form.dateOfBirth, 'DD/MM/YYYY').toDate() : null,
-        //       },
-        //       {abortEarly: false},
-        //     );
-        //     return {};
-        //   } catch (error) {
-        //     const t = error.inner.reduce(
-        //       (obj: PersonalDetails, item: ValidationError) => ({
-        //         ...obj,
-        //         [item.path]: item.message,
-        //       }),
-        //       {},
-        //     );
-        //     return t;
-        //   }
-        // }}
         validationSchema={validationSchema}
         onSubmit={({firstName, lastName, dateOfBirth}): void => console.log('t')}
         >
-        {({handleChange, handleSubmit, values, errors, touched}): ReactElement => {
-          console.log('values', values.firstName);
-
-        return (
+        {({handleChange, handleBlur, values, errors, touched}): ReactElement => {
+          console.log('values.intro',values.intro);
+          return (
       <View
-        // {...otherProps}
         style={{
           alignSelf: 'stretch',
           flexGrow: 1,
@@ -81,34 +52,34 @@ function EditProfileForm({authStore,isFirstOpening}: Props): ReactElement {
             </Text>
           </View>
         )}
-        {/* <ImageField
+        <ImageField
           isAvatar={true}
           value={values.photoURL}
           allowsEditing={true}
           title={'Select new avatar'}
-          validation={{
-            name: EditProfileForm.FIELD_PROFILE_IMAGE,
-            formStore: this.props.editProfileFormStore,
-            validateRule: 'string',
-          }}
-        /> */}
+          onChangeImage={handleChange('photoURL')}
+          name="photoURL"
+        />
 
         <View style={styles.emailContainer}>
           <Text style={text.ashleyjquimbacom}>{values.email}</Text>
         </View>
 
         <TextInputField
+          errorMessage={errors && touched.firstName && errors.firstName}
           value={values.firstName}
           viewStyle={{alignSelf: 'stretch'}}
           label="First name"
           infoLabel="Required"
           placeholderText="First name"
+          onBlur={handleBlur('firstName')}
           autoCapitalize="none"
           autoCorrect={false}
           onChangeText={handleChange('firstName')}
         />
 
         <TextInputField
+          errorMessage={errors && touched.lastName && errors.lastName}
           value={values.lastName}
           viewStyle={{alignSelf: 'stretch'}}
           label="Last name"
@@ -116,6 +87,7 @@ function EditProfileForm({authStore,isFirstOpening}: Props): ReactElement {
           placeholderText="Last name"
           autoCapitalize="none"
           autoCorrect={false}
+          onBlur={handleBlur('lastName')}
           onChangeText={handleChange('lastName')}
         />
 
@@ -124,15 +96,19 @@ function EditProfileForm({authStore,isFirstOpening}: Props): ReactElement {
             label="Country"
             infoLabel="Required"
             value={values.country}
+            onBlur={handleBlur('country')}
             onChange={handleChange('country')}
           />
         {/* )} */}
 
         <TextInputField
+          errorMessage={errors && touched.intro && errors.intro}
           label="Intro"
-          infoLabel="Required"
           placeholderText="What are you most passionate about, really good at, or love"
+          autoCapitalize="none"
+          autoCorrect={false}
           multiline={true}
+          onBlur={handleBlur('lastName')}
           value={values.intro}
           onChangeText={handleChange('intro')}
         />
@@ -157,7 +133,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.grey3,
     ...font.fontSize(2),
-    ...font.regular,
+    ...font.primary.regular,
     paddingVertical: 5,
   },
 });
