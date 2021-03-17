@@ -2,7 +2,7 @@ import {ReactElement} from 'react';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 export type BottomSheetStore = {
-    showBottomSheet: () => void;
+    showBottomSheet: (template: any, value: any) => void;
     hideBottomSheet: () => void;
     topSnap: number;
     template: ReactElement;
