@@ -83,22 +83,13 @@ export default class NotificationStore extends BaseStore<
     this.rootStore.authStore.signedInUser
       ? subscribeToUserNotifications(
           this.rootStore.authStore.signedInUser,
-          this.updateNotificationStore,
+          this.updateStoreData,
         )
       : null;
-
-  updateNotificationStore = (
-    updatedSnapshot: IFirebaseSnapshot<IBaseEntity> | IFirebaseDoc<IBaseEntity>,
-  ) => {
-    this.updateStoreData(updatedSnapshot);
-    //this.rootStore.uiStore.checkNotificationsUnRead();
-  };
 
   @action
   deleteUserNotifications = () => {
     this.data = observable.map({});
-    this.notificationsRead = [];
-    this.notificationsClicked = [];
   };
 
   // Overriden methods

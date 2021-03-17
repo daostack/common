@@ -33,7 +33,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
       }, 5000);
     });
 
-    // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
 

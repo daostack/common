@@ -64,11 +64,6 @@ export const notificationStorePropTypes = shape({
   getLoggedUserNotifications: func.isRequired,
   subscribeToLoggedUserNotifications: func.isRequired,
   deleteUserNotifications: func.isRequired,
-  add: func.isRequired,
-  addNotificationRead: func.isRequired,
-  addNotificationClicked: func.isRequired,
-  notificationsRead: array.isRequired,
-  notificationsClicked: array.isRequired,
   setNotificationItemState: func.isRequired,
   removeSeenStateForNewNotifications: func.isRequired,
 });

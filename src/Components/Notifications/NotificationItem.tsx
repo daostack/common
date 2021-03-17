@@ -1,12 +1,11 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
-import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {notificationStorePropTypes} from '~/Types/propTypes';
@@ -51,20 +50,8 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
-  // if (!item.notificationItemState) {
-  //   console.log('notificationItemState not exiists! ', item);
-  //   return null;
-  // }
-
-  // const [isRead, setRead] = useState(false);
-  // const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
-
-    // notificationStore.addNotificationRead(item.id);
-    // notificationStore.addNotificationClicked(item.id);
-    // setClicked(true);
-    // setRead(true);
 
     notificationStore.setNotificationItemState(item.id, {
       opened: true,
@@ -102,17 +89,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       );
     }
   };
-
-  useEffect(() => {
-    // setClicked(notificationStore.notificationsClicked.includes(item.id));
-    // setRead(notificationStore.notificationsRead.includes(item.id));
-    // notificationStore.addNotificationRead(item.id);
-    // ---------------------------------------------------------------
-    // notificationStore.setNotificationItemState(item.id, {
-    //   seen: true,
-    //   opened: true,
-    // });
-  }, []);
 
   return (
     <TouchableOpacity
