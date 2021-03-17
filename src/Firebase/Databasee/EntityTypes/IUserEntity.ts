@@ -1,5 +1,4 @@
 import {IBaseEntity} from './IBaseEntity';
-import {IPermission} from './IPermission';
 
 export interface IUserEntity extends IBaseEntity {
   // TODO: remove "uid" from the users collection and use "id";
@@ -14,5 +13,4 @@ export interface IUserEntity extends IBaseEntity {
   lastName: string;
   country: string;
 
-  roles?: IPermission[];
 }

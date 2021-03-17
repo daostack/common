@@ -60,15 +60,12 @@ const DiscussionMessage = ({
       data?.moderation?.moderator || data?.moderation?.reporter,
     );
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
-
   useEffect(() => {
-    (async () => {
-      const userPermission = await rootStore.authStore.getPermission(
-        commonId,
-        ownerInfo,
-      );
-      setPermission(userPermission);
-    })();
+    const userPermission = authStore.getPermission(
+      commonId,
+      ownerInfo.id,
+    );
+    setPermission(userPermission);
   }, []);
 
   // icon missing
