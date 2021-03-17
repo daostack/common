@@ -5,14 +5,12 @@ import {colors, font, layout} from '~/Theme';
 
 
 type Props = {
-  name: string;
-  multiName: string;
-  displayName: string;
-  errorMessage?: string;
+  multiName?: string;
+  errorMessage?: string | boolean;
   invisibleContainer?: boolean;
 }
 
-function ValidationMessage({name, multiName, displayName , errorMessage, invisibleContainer}: Props): ReactElement {
+function ValidationMessage({errorMessage, invisibleContainer}: Props): ReactElement {
 
     return (errorMessage || !invisibleContainer) ? (
       <Text style={{...styles.errorMessage, ...(!invisibleContainer && {minHeight: font.lineHeightForm})}}>{errorMessage || ''}</Text>
