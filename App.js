@@ -157,6 +157,7 @@ const App = ({rootStore, navigation}) => {
         routing(screenName, {
           discussionId: objectId,
           commonId,
+          fromNotificationItem: true,
         });
       }
       // create/approve proposal
@@ -164,6 +165,7 @@ const App = ({rootStore, navigation}) => {
         routing(screenName, {
           proposalId: objectId,
           tabIndex: +tabIndex,
+          fromNotificationItem: true,
         });
       }
     }
