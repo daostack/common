@@ -199,31 +199,37 @@ export class Notification extends BaseModel<INotificationEntity> {
       this.eventObjectId,
     );
     if (message) {
-      const discussion = this.rootStore.discussionStore.getDiscussionById(
+      const objectData = this.rootStore.discussionStore.getDiscussionById(
         message.discussionId,
-      );
+      ) || this.rootStore.proposalStore.getProposalById(message.discussionId);
+
       const user = this.rootStore.userStore.getUserById(message.ownerId);
 
-      if (discussion && user) {
+      const objectType = objectData.proposerId ? {
+        proposal: objectData,
+        tabIndex: 1,
+      } : {discussion: objectData};
+
+      if (objectData && user) {
         notificationData = {
           missingData: false,
           descriptionBold: `${user.firstName} ${user.lastName}`,
           description: ` ${message.text}`,
           ownerAvatar: user.photoURL,
-          discussion: discussion,
+          ...objectType,
         };
       }
 
-      if (discussion && discussion.commonId) {
+      if (objectData && objectData.commonId) {
         const common = this.rootStore.commonStore.getCommonById(
-          discussion.commonId,
+          objectData.commonId,
         );
 
         if (common && common.name) {
           notificationData = {
             ...notificationData,
             header: ' on',
-            headerBold: ` "${discussion.title}"`,
+            headerBold: ` "${objectData.title || objectData.description.title}"`,
             common,
           };
         }
