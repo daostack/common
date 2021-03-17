@@ -17,18 +17,18 @@ export default class UIStore {
   @observable
   lastNotificationIsUnread: boolean = false;
 
-  checkNotificationsUnRead = () => {
-    const notifications: Array<Notification> = this.rootStore.notificationStore.getLoggedUserNotifications();
-    const notificationsRead: string[] = this.rootStore.notificationStore
-      .notificationsRead;
-    if (notifications.length > 0) {
-      runInAction(() => {
-        this.lastNotificationIsUnread = !notificationsRead.includes(
-          notifications[0].id,
-        );
-      });
-    }
-  };
+  // checkNotificationsUnRead = () => {
+  //   const notifications: Array<Notification> = this.rootStore.notificationStore.getLoggedUserNotifications();
+  //   const notificationsRead: string[] = this.rootStore.notificationStore
+  //     .notificationsRead;
+  //   if (notifications.length > 0) {
+  //     runInAction(() => {
+  //       this.lastNotificationIsUnread = !notificationsRead.includes(
+  //         notifications[0].id,
+  //       );
+  //     });
+  //   }
+  // };
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;

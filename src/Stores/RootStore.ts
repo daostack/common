@@ -34,12 +34,12 @@ export default class RootStore {
     this.notificationStore = new NotificationStore(this);
     this.uiStore = new UIStore(this);
 
-    Promise.all([
-      hydrate('authStore', this.authStore),
-      hydrate('userStore', this.userStore),
-      hydrate('commonStore', this.commonStore),
-      hydrate('proposalStore', this.proposalStore),
-      hydrate('notificationStore', this.notificationStore),
-    ]);
+    // Promise.all([
+    hydrate('authStore', this.authStore);
+    hydrate('userStore', this.userStore);
+    hydrate('commonStore', this.commonStore);
+    hydrate('proposalStore', this.proposalStore);
+    hydrate('notificationStore', this.notificationStore);
+    // ]);
   }
 }

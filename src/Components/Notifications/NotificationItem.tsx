@@ -51,6 +51,11 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
+  // if (!item.notificationItemState) {
+  //   console.log('notificationItemState not exiists! ', item);
+  //   return null;
+  // }
+
   // const [isRead, setRead] = useState(false);
   // const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
@@ -60,6 +65,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     // notificationStore.addNotificationClicked(item.id);
     // setClicked(true);
     // setRead(true);
+
+    notificationStore.setNotificationItemState(item.id, {
+      opened: true,
+    });
 
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
@@ -94,11 +103,16 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     }
   };
 
-  // useEffect(() => {
-  //   setClicked(notificationStore.notificationsClicked.includes(item.id));
-  //   setRead(notificationStore.notificationsRead.includes(item.id));
-  //   notificationStore.addNotificationRead(item.id);
-  // }, []);
+  useEffect(() => {
+    // setClicked(notificationStore.notificationsClicked.includes(item.id));
+    // setRead(notificationStore.notificationsRead.includes(item.id));
+    // notificationStore.addNotificationRead(item.id);
+    // ---------------------------------------------------------------
+    // notificationStore.setNotificationItemState(item.id, {
+    //   seen: true,
+    //   opened: true,
+    // });
+  }, []);
 
   return (
     <TouchableOpacity

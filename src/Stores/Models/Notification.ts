@@ -15,8 +15,9 @@ import {
   IJoinRequestProposal,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
+import {persist} from 'mobx-persist';
 
-interface NotificationItemState {
+export interface NotificationItemState {
   seen: boolean;
   opened: boolean;
 }
@@ -304,16 +305,32 @@ export class Notification extends BaseModel<INotificationEntity> {
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
 
+    const defaultState = {
+      seen: false,
+      opened: false,
+    };
+
     if (this.rootStore.notificationStore.exists(newNotificationInfo.id)) {
       const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
         newNotificationInfo.id,
       );
-      this.notificationItemState = notificationFromStore.notificationItemState;
+      // It's possible to have undefined notificationItemState for existing Notification in the store,
+      // because of old notifications, before the implementation of the feature with the dot indicator.
+      // So, we are setting a default state to such of prorposals for safety.
+      if (!notificationFromStore?.notificationItemState) {
+        console.log(
+          'DEFAULT STATE FOR EXISTING NOTIFICATION',
+          newNotificationInfo.id,
+        );
+      }
+      this.notificationItemState =
+        notificationFromStore?.notificationItemState || defaultState;
     } else {
-      this.notificationItemState = {
-        seen: false,
-        opened: false,
-      };
+      console.log(
+        'DEFAULT STATE FOR NOT EXISTED NOTIFICATION',
+        newNotificationInfo.id,
+      );
+      this.notificationItemState = defaultState;
     }
   }
 }
