@@ -45,14 +45,17 @@ const props = {
 const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
+  notificationStore,
 }) => {
   const [isRead, setRead] = useState(false);
   const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
 
-    NotificationService.setNotificationClicked(item.id);
+    notificationStore.addNotificationRead(item.id);
+    notificationStore.addNotificationClicked(item.id);
     setClicked(true);
+    setRead(true);
 
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
@@ -88,13 +91,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   };
 
   useEffect(() => {
-    NotificationService.isNotificationClicked(item.id).then((result) =>
-      setClicked(result),
-    );
-    NotificationService.isNotificationRead(item.id).then((result) => {
-      setRead(result);
-    });
-    NotificationService.setNotificationRead(item.id);
+    setClicked(notificationStore.notificationsClicked.includes(item.id));
+    setRead(notificationStore.notificationsRead.includes(item.id));
+    notificationStore.addNotificationRead(item.id);
   }, []);
 
   return (
@@ -134,7 +133,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <View style={styles.messageContainer}>
-            <Text numberOfLines={2} style={{flexDirection: 'row', writingDirection: 'ltr'}}>
+            <Text
+              numberOfLines={2}
+              style={{flexDirection: 'row', writingDirection: 'ltr'}}>
               <Text style={[styles.messageStyle, {...font.primary.bold}]}>
                 {item.notificationItemData.descriptionBold}
               </Text>

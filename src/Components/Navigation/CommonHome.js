@@ -32,27 +32,12 @@ const CommonHome = ({rootStore}) => (
             return <Icon name="account" size={30} />;
           }
           case NAVIGATION_SCREENS.NOTIFICATIONS: {
-            if (focused) {
-              return (
-                <View style={styles.notificationContainer}>
-                  <Image
-                    source={require('~/Assets/notificationsSelected.png')}
-                    width={30}
-                    height={30}
-                  />
-                  {rootStore.uiStore.lastNotificationIsUnread && (
-                    <View style={styles.notReadDot} />
-                  )}
-                </View>
-              );
-            }
+            const imageName = focused
+              ? require('~/Assets/notificationsSelected.png')
+              : require('~/Assets/notificationsUnselected.png');
             return (
               <View style={styles.notificationContainer}>
-                <Image
-                  source={require('~/Assets/notificationsUnselected.png')}
-                  width={30}
-                  height={30}
-                />
+                <Image source={imageName} width={30} height={30} />
                 {rootStore.uiStore.lastNotificationIsUnread && (
                   <View style={styles.notReadDot} />
                 )}
