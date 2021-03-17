@@ -86,7 +86,7 @@ const CommonHome = ({rootStore}) => (
 );
 
 CommonHome.propTypes = {
-  rootStore: rootStorePropTypes,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({

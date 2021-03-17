@@ -19,13 +19,15 @@ export default class UIStore {
 
   checkNotificationsUnRead = () => {
     const notifications: Array<Notification> = this.rootStore.notificationStore.getLoggedUserNotifications();
-    NotificationService.isNotificationRead(notifications[0].id).then(
-      (lastNotificationRead) => {
-        runInAction(() => {
-          this.lastNotificationIsUnread = !lastNotificationRead;
-        });
-      },
-    );
+    if (notifications.length > 0) {
+      NotificationService.isNotificationRead(notifications[0].id).then(
+        (lastNotificationRead) => {
+          runInAction(() => {
+            this.lastNotificationIsUnread = !lastNotificationRead;
+          });
+        },
+      );
+    }
   };
 
   constructor(rootStore: RootStore) {

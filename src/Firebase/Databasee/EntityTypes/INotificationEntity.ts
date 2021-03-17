@@ -84,6 +84,11 @@ export const EventTitleState = {
   discussionCreated: 'New post',
 };
 
+export const notificationStorageStatus = {
+  notificationsRead: 'notificationsRead',
+  notificationsClicked: 'notificationsClicked',
+};
+
 // NOTE: EventTypesOnNotificationList legth is 10 and it is used in a firebase query with 'in' operator.
 // Firebase support up to 10 elements for `in` operator, so keep in mind when adding new event.
 export const EventTypesOnNotificationList = [

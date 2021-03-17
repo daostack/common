@@ -8,6 +8,7 @@ import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {
   EventTypesOnNotificationList,
   EventTypeState,
+  notificationStorageStatus,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {fetchCommonById} from './ListServices/CommonListService';
 import {fetchProposalById} from './ListServices/ProposalListService';
@@ -59,34 +60,48 @@ export default class NotificationService {
   }
 
   static setNotificationRead(notificationId) {
-    AsyncStorage.getItem('notificationsRead').then((notifications) => {
-      const list = notifications ? JSON.parse(notifications) : [];
-      if (!list.includes(notificationId)) {
-        list.push(notificationId);
-        AsyncStorage.setItem('notificationsRead', JSON.stringify(list));
-      }
-    });
+    AsyncStorage.getItem(notificationStorageStatus.notificationsRead).then(
+      (notifications) => {
+        const list = notifications ? JSON.parse(notifications) : [];
+        if (!list.includes(notificationId)) {
+          list.push(notificationId);
+          AsyncStorage.setItem(
+            notificationStorageStatus.notificationsRead,
+            JSON.stringify(list),
+          );
+        }
+      },
+    );
   }
 
   static async isNotificationRead(notificationId) {
-    const notifications = await AsyncStorage.getItem('notificationsRead');
+    const notifications = await AsyncStorage.getItem(
+      notificationStorageStatus.notificationsRead,
+    );
     const list = notifications ? JSON.parse(notifications) : [];
     return list.includes(notificationId);
   }
 
   static async setNotificationClicked(notificationId) {
-    AsyncStorage.getItem('notificationsClicked').then((notifications) => {
-      const list = notifications ? JSON.parse(notifications) : [];
+    AsyncStorage.getItem(notificationStorageStatus.notificationsClicked).then(
+      (notifications) => {
+        const list = notifications ? JSON.parse(notifications) : [];
 
-      if (!list.includes(notificationId)) {
-        list.push(notificationId);
-        AsyncStorage.setItem('notificationsClicked', JSON.stringify(list));
-      }
-    });
+        if (!list.includes(notificationId)) {
+          list.push(notificationId);
+          AsyncStorage.setItem(
+            notificationStorageStatus.notificationsClicked,
+            JSON.stringify(list),
+          );
+        }
+      },
+    );
   }
 
   static async isNotificationClicked(notificationId) {
-    const notifications = await AsyncStorage.getItem('notificationsClicked');
+    const notifications = await AsyncStorage.getItem(
+      notificationStorageStatus.notificationsClicked,
+    );
     const list = notifications ? JSON.parse(notifications) : [];
     return list.includes(notificationId);
   }

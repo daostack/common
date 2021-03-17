@@ -13,6 +13,7 @@ import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
+import {notificationStorageStatus} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 type SignInErrorWithCode = any;
 
@@ -68,8 +69,10 @@ class AuthStore {
           // We need to delete the notification store on logout
           // as we are keeping there only logged in user notifications.
           this.rootStore.notificationStore.deleteUserNotifications();
-          AsyncStorage.removeItem('notificationsRead');
-          AsyncStorage.removeItem('notificationsClicked');
+          AsyncStorage.removeItem(notificationStorageStatus.notificationsRead);
+          AsyncStorage.removeItem(
+            notificationStorageStatus.notificationsClicked,
+          );
           this.setSignedInUser(null);
           this.setIsLoading(false);
         }
