@@ -205,7 +205,10 @@ export class Notification extends BaseModel<INotificationEntity> {
 
       const user = this.rootStore.userStore.getUserById(message.ownerId);
 
-      const objectType = objectData.proposerId ? {proposal: objectData} : {discussion: objectData};
+      const objectType = objectData.proposerId ? {
+        proposal: objectData,
+        tabIndex: 1,
+      } : {discussion: objectData};
 
       if (objectData && user) {
         notificationData = {
