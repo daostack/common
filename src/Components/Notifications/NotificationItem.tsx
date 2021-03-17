@@ -58,6 +58,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
         proposalId: item.notificationItemData.proposal.id,
         fromNotificationItem: true,
+        tabIndex: item.notificationItemData.tabIndex || 0,
       });
     } else if (item.notificationItemData.discussion) {
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
