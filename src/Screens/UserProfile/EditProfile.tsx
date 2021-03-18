@@ -24,6 +24,7 @@ import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 import {AppRootStore} from '~/Types/store';
+import {WithNavigation} from '~/Types/navigation';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -41,15 +42,15 @@ interface Values {
   intro: string;
 }
 
-type Props = AppRootStore & {
-  route: {
-    params: {
-      isFirstOpening: boolean;
-      isSignedWithApple: boolean;
+type Props = AppRootStore &
+  WithNavigation & {
+    route: {
+      params: {
+        isFirstOpening: boolean;
+        isSignedWithApple: boolean;
+      };
     };
   };
-  navigation: any;
-};
 
 const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const authStore = rootStore.authStore;
