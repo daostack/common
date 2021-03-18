@@ -22,8 +22,8 @@ export default class NotificationStore extends BaseStore<
   getLoggedUserNotifications = (): Array<Notification> | undefined =>
     this.getDataArray
       ?.filter(
-        (notification: Notification) =>
-          notification.notificationItemData?.missingData === false,
+        (notification: Notification) => true,
+        //notification.notificationItemData?.missingData === false,
       )
       .sort(
         (notification: Notification, prevNotification: Notification) =>
@@ -89,6 +89,6 @@ export default class NotificationStore extends BaseStore<
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
-    return new Notification(entity, this.rootStore);
+    return new Notification(entity);
   }
 }

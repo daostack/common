@@ -75,6 +75,6 @@ export const rootStorePropTypes = shape({
   proposalStore: proposalStorePropTypes.isRequired,
   discussionStore: discussionStorePropTypes.isRequired,
   discussionMessageStore: discussionMessageStorePropTypes.isRequired,
-  notificationStorePropTypes: notificationStorePropTypes.isRequired,
+  notificationStore: notificationStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
 });

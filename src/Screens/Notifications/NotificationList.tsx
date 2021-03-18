@@ -9,6 +9,9 @@ import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {Notification} from '~/Stores/Models/Notification';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
+import Logger from '~/Services/Logger';
 
 const props = {
   navigation: shape({
@@ -22,9 +25,43 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 }) => {
   const notificationList: Array<Notification> = notificationStore.getLoggedUserNotifications();
 
-  const renderNotificationItem = ({item}: {item: Notification}) => (
-    <NotificationItem item={item} navigation={navigation} />
-  );
+  const renderNotificationItem = ({item}: {item: Notification}) => {
+    console.log('renderNotificationItem -> ', item);
+    switch (item.eventType) {
+      case EventTypeState.commonWhitelisted:
+      case EventTypeState.commonCreated:
+        return <CommonWhitelisted item={item} navigation={navigation} />;
+
+      case EventTypeState.fundingRequestCreated:
+      case EventTypeState.fundingRequestAccepted:
+      case EventTypeState.fundingRequestExecuted:
+      case EventTypeState.fundingRequestRejected:
+        return null;
+      //return this.getFundingRequestData();
+
+      case EventTypeState.messageCreated:
+        return null;
+
+      case EventTypeState.commonMemberAdded:
+        return null;
+
+      case EventTypeState.requestToJoinCreated:
+        return null;
+
+      case EventTypeState.requestToJoinRejected:
+        return null;
+
+      case EventTypeState.discussionCreated:
+        return null;
+      default:
+        Logger.warn(
+          `Not existing notification item event type ${item.eventType}`,
+        );
+        return null;
+    }
+
+    //<NotificationItem item={item} navigation={navigation} />
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
