@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {observer, inject} from 'mobx-react';
 import {
   StyleSheet,
@@ -6,67 +6,125 @@ import {
   View,
   Image,
   Dimensions,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {colors, font, text as textjs} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
+import {HyperText} from '~/Components/Text/HyperText';
+import {reporterName} from '../../Components/Moderation/Reported';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
-  data: {ownerId, text, createTime},
-  outcome,
+  data,
   showCurrentUserAvatar,
-  userListStore,
+  hasPermission,
+  rootStore,
+  commonId,
+  openMessageOptions,
+  isMember,
 }) => {
   let currentUserUid = null;
+  const isHidden = data.moderation?.flag === FLAGS.hidden;
+  const flag = data.moderation?.flag || '';
+  const [permission, setPermission] = useState('');
+  const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
+  const isFlagged = !!flag && flag !== FLAGS.visible;
+  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
+
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
   }
 
-  const [outcomeState, setOutcomeState] = React.useState();
-  const onwerInfo = userListStore.getUserById(ownerId);
+  const navigation = useNavigation();
+  const ownerInfo = userStore.getUserById(data.ownerId);
 
+  function goToUserProfile() {
+    navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
+      userId: ownerInfo.id,
+      ownerInfo,
+    });
+  }
+  const moderatorInfo =
+    data.moderation &&
+    userStore.getUserById(
+      data?.moderation?.moderator || data?.moderation?.reporter,
+    );
+  const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
-    if (typeof outcome === 'object') {
-      outcome.then((out) => setOutcomeState(out));
+    const userPermission = authStore.getPermission(
+      commonId,
+      ownerInfo.id,
+    );
+    setPermission(userPermission);
+  }, []);
 
-      console.log(typeof outcomeState);
-    }
-  }, [outcome]);
+  // icon missing
+  const flagView = isFlagged && (
+    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
+      {flag} by {moderatorName}
+    </Text>
+  );
+
+  const dateView = () => (
+    <Text
+      style={{
+        ...styles.date,
+        color: isHidden ? colors.grey3 : colors.formPlaceholderColor,
+      }}>
+      {moment(data.createTime.toDate()).format('HH:mm')}
+    </Text>
+  );
 
   return (
-    <View style={styles.container}>
-      {currentUserUid === ownerId ? (
+    <Pressable
+      style={styles.container}
+      onLongPress={() =>
+        (!isHidden || hasPermission) && isMember && !isOwner && openMessageOptions()
+      }>
+      {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           {showCurrentUserAvatar && (
-            <Image
-              style={{
-                backgroundColor: colors.grey3,
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                justify: 'flex-end',
-                marginLeft: 10,
-              }}
-              source={onwerInfo && {uri: onwerInfo.photoURL}}
-            />
+            <TouchableOpacity onPress={goToUserProfile}>
+              <Image
+                style={{
+                  backgroundColor: colors.grey3,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  justify: 'flex-end',
+                  marginLeft: 10,
+                }}
+                source={ownerInfo && {uri: ownerInfo.photoURL}}
+              />
+            </TouchableOpacity>
           )}
 
-          <View style={styles.contentOwner}>
-            <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-              <Text
-                style={{...styles.text, ...textjs.writingDirection(text)}}
-                selectable>
-                {text}
-              </Text>
-            </Hyperlink>
+          <View
+            style={{
+              ...styles.contentOwner,
+              backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+            }}>
+            {flagView}
+            <HyperText textStyle={{
+                  ...styles.text,
+                  color: isHidden ? colors.grey3 : colors.black,
+                  ...textjs.writingDirection(data.text),
+              }}
+              selectable>
+                {data.text}
+            </HyperText>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
-              <Text style={styles.date} numberOfLines={1}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {dateView()}
             </View>
           </View>
         </View>
@@ -74,40 +132,55 @@ const DiscussionMessage = ({
         <>
           <View style={styles.contentMember}>
             <View>
-              <Image
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                }}
-                source={onwerInfo && {uri: onwerInfo.photoURL}}
-              />
+              <TouchableOpacity onPress={goToUserProfile}>
+                <Image
+                  style={{
+                    backgroundColor: colors.grey3,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                  }}
+                  source={ownerInfo && {uri: ownerInfo.photoURL}}
+                />
+              </TouchableOpacity>
             </View>
             <View
               style={{
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: colors.paleLilacTwo,
+                backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               }}>
-              <Text style={styles.ownerName}>{onwerInfo?.displayName}</Text>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                <Text
-                  style={{...styles.text, ...textjs.writingDirection(text)}}
-                  selectable>
-                  {text}
-                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      ...styles.ownerName,
+                      color: isHidden ? colors.grey3 : colors.black,
+                    }}>
+                    {ownerInfo?.displayName}
+                  </Text>
+                  {!isHidden && !isFlagged && (
+                    <Text style={styles.permission}>{permission}</Text>
+                  )}
+                  {flagView}
+                </View>
               </Hyperlink>
-
-              <Text style={styles.date}>
-                {moment(createTime.toDate()).format('HH:mm')}
-              </Text>
+              {(!isHidden || hasPermission) && (
+                <HyperText textStyle={{
+                    ...styles.text,
+                    color: isHidden ? colors.grey3 : colors.black,
+                    ...textjs.writingDirection(data.text),
+                }}>
+                  {data.text}
+                </HyperText>
+              )}
+              {dateView()}
             </View>
           </View>
         </>
       )}
-    </View>
+    </Pressable>
   );
 };
 
@@ -117,29 +190,36 @@ DiscussionMessage.propTypes = {
     text: string,
     createTime: object,
   }),
-  outcome: shape({
-    then: func.isRequired,
-    catch: func.isRequired,
-  }),
   showCurrentUserAvatar: bool,
-  userListStore: shape({
-    getUserById: func,
-  }),
+  hasPermission: bool,
+  rootStore: rootStorePropTypes,
+  commonId: string,
+  openMessageOptions: func,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+    flexDirection: 'row',
   },
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
   },
+  permission: {
+    ...font.primary.bold,
+    fontSize: 13,
+    color: colors.grey3,
+    marginLeft: 10,
+  },
+  hiddenTitle: {
+    ...font.primary.bold,
+    fontSize: 13,
+  },
   container: {
-    // backgroundColor: colors.grey4,
     borderRadius: 8,
-    // marginHorizontal: 10,
     marginVertical: 3,
     padding: 10,
     flex: 1,
@@ -148,18 +228,16 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     marginVertical: 2,
     lineHeight: 24,
-    color: colors.black,
     ...font.primary.regular,
     ...font.fontSize(2),
   },
   date: {
-    color: colors.formPlaceholderColor,
     textAlign: 'right',
     ...font.primary.regular,
     ...font.fontSize(0),
   },
   contentOwner: {
-    backgroundColor: colors.white,
+    //backgroundColor: colors.white,
     padding: 10,
     borderRadius: 10,
     alignSelf: 'flex-end',
@@ -178,4 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userListStore')(observer(DiscussionMessage));
+export default inject('rootStore')(observer(DiscussionMessage));

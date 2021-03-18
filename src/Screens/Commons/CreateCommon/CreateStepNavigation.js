@@ -3,10 +3,11 @@ import {TouchableOpacity, StyleSheet} from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer, inject} from 'mobx-react';
-import {string, object, shape, func} from 'prop-types';
+import {string, object} from 'prop-types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
-const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
+const CreateStepNavigation = ({title, uiStore, navigation}) => (
   <NavigationBar
     statusBar={{hidden: true}}
     title={{
@@ -21,13 +22,14 @@ const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
       <TouchableOpacity
         style={{justifyContent: 'center'}}
         onPress={() => {
-          bottomSheetStore.showBottomSheet(
+          uiStore.bottomSheetStore.showBottomSheet(
             BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
             {
               navigation: navigation,
-              onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+              onContinueEditing: () =>
+                uiStore.bottomSheetStore.hideBottomSheet(),
               onLeaveWithoutSaving: () => {
-                bottomSheetStore.hideBottomSheet();
+                uiStore.bottomSheetStore.hideBottomSheet();
                 navigation.popToTop();
               },
             },
@@ -42,10 +44,7 @@ const CreateStepNavigation = ({title, bottomSheetStore, navigation}) => (
 CreateStepNavigation.propTypes = {
   title: string,
   navigation: object,
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-    hideBottomSheet: func,
-  }),
+  uiStore: uiStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -55,4 +54,4 @@ const styles = StyleSheet.create({
   icon: {marginLeft: 20},
 });
 
-export default inject('bottomSheetStore')(observer(CreateStepNavigation));
+export default inject('uiStore')(observer(CreateStepNavigation));

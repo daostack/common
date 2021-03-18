@@ -7,15 +7,15 @@ import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {subscribeToUser} from '~/Services/ListServices/UserListService';
 import {UserModel} from './Models/UserModel';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
-import {getCurrentConversionRate} from '~/Util/locale';
 
 type SignInErrorWithCode = any;
 
-class UserStore {
+class AuthStore {
   @persist('object')
   @observable
   userInfo: UserModel | null = null;
@@ -31,9 +31,6 @@ class UserStore {
   isLoading: boolean = false;
 
   @observable
-  conversionRate: number = 0;
-
-  @observable
   signInError: SignInErrorWithCode;
 
   @observable
@@ -44,9 +41,6 @@ class UserStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
-    getCurrentConversionRate().then((result) => {
-      this.conversionRate = result.data.rates.ILS;
-    });
   }
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
@@ -70,6 +64,9 @@ class UserStore {
 
           this._processUser(user);
         } else {
+          // We need to delete the notification store on logout
+          // as we are keeping there only logged in user notifications.
+          this.rootStore.notificationStore.deleteUserNotifications();
           this.setSignedInUser(null);
           this.setIsLoading(false);
         }
@@ -83,11 +80,6 @@ class UserStore {
   @action
   setSignInError = (error: SignInErrorWithCode) => {
     this.signInError = error;
-  };
-
-  @action
-  setConversionRate = (conversion: number) => {
-    this.conversionRate = conversion;
   };
 
   @action
@@ -114,22 +106,34 @@ class UserStore {
     }
   };
 
+  /**
+   * Checks if the user has permission to a certain common
+   * @return the user permission of the common with commonId
+   */
+  getPermission = (commonId: string, userId: string): string => {
+    const currCommon = this.rootStore.commonStore.getCommonById(commonId);
+    const memberObj = currCommon.members.find((member) => member.userId === userId);
+    return currCommon.metadata.founderId === userId ? 'founder' : memberObj?.permission;
+  }
+
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: any) =>
+  isProposer = (proposal: IProposalEntity) =>
     this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
 
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
+
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
   async _processUser(user: any) {
     this.unsubscribeFromUser && this.unsubscribeFromUser();
     this.unsubscribeFromUser = subscribeToUser(
       user?.uid,
-      async (updatedUser: IUserEntity | null) => {
+      async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
+        const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
-
         if (isNewUser) {
           const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
             user.providerData[0].providerId,
@@ -153,4 +157,4 @@ class UserStore {
   }
 }
 
-export default UserStore;
+export default AuthStore;

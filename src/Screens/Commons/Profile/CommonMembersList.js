@@ -4,7 +4,7 @@ import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {observer, inject} from 'mobx-react';
-import {object, array, bool, string, number, shape, func} from 'prop-types';
+import {object, array, bool, string, number} from 'prop-types';
 
 import {
   Placeholder,
@@ -12,17 +12,20 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const CommonMembersList = ({
   navigation,
   commonId,
   limit,
   horizontal,
-  userListStore,
-  commonStore,
+  rootStore,
 }) => {
+  const userStore = rootStore.userStore;
+  const commonStore = rootStore.commonStore;
+
   const currCommon = commonStore.getCommonById(commonId);
-  const membersInfo = userListStore.getCommonUsersByMembersArray(
+  const membersInfo = userStore.getCommonUsersByMembersArray(
     currCommon?.members || [],
   );
 
@@ -92,7 +95,7 @@ const CommonMembersList = ({
               style={styles.item}
               onPress={() => showUserProfile(member)}
               key={`touch_${i}`}>
-              <MemberCard key={i} userInfo={member} />
+              <MemberCard key={i} moderatorId={currCommon?.metadata?.founderId} userInfo={member} />
             </TouchableOpacity>
           ),
         )
@@ -149,13 +152,7 @@ CommonMembersList.propTypes = {
   commonId: string,
   limit: number,
   horizontal: bool,
-  bottomSheetStore: object,
-  userListStore: shape({
-    getCommonUsersByMembersArray: func,
-  }),
-  commonStore: shape({
-    getCommonById: func,
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -166,8 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userListStore',
-  'commonStore',
-)(observer(CommonMembersList));
+export default inject('rootStore')(observer(CommonMembersList));

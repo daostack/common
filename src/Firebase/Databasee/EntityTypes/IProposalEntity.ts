@@ -1,6 +1,7 @@
 import {IBaseEntity} from './IBaseEntity';
 import {ContributionType} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
+import {IModerationEntity} from './IModerationEntity';
 
 export type FundingRequestState =
   | 'countdown'
@@ -78,6 +79,11 @@ interface IBaseProposalEntity extends IBaseEntity {
    * The number of votes against the proposal
    */
   votesAgainst: number;
+
+  /**
+   * The moderation object that handles hiding/showing proposals
+   */
+  moderation?: IModerationEntity;
 }
 
 export interface IProposalVote {

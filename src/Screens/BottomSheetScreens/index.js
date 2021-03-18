@@ -8,6 +8,8 @@ import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
+import {default as LoadingExpired} from './LoadingExpired';
+import {default as HiddenContentInfo} from './HiddenContentInfo';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -36,6 +38,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
     topSnap: 480,
     content: TransactionError,
   },
+  LOADING_EXPIRED: {
+    topSnap: 480,
+    content: LoadingExpired,
+  },
   SORT_PROPOSALS: {
     topSnap: 500,
     content: SortProposals,
@@ -59,5 +65,9 @@ export const BOTTOM_SHEET_TEMPLATES = {
   BACKEND_ERROR: {
     topSnap: 420,
     content: BackendErrorSheetScreen,
+  },
+  HIDDEN_CONTENT_INFO: {
+    topSnap: 280,
+    content: HiddenContentInfo,
   },
 };

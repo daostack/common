@@ -7,24 +7,26 @@ import {
   View,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object, shape, func} from 'prop-types';
+import {string, bool, object, func} from 'prop-types';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
+import {FLAGS} from '../../Components/Moderation/constants';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -34,11 +36,25 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  userListStore,
-  proposalStore,
+  hasPermission,
+  openCommonOptions,
+  hiddenProposalNote,
+  rootStore,
+  isMember,
 }) => {
+  // Stores
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+  const authStore = rootStore.authStore;
+
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
+  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
+  const isVisible =
+    proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -75,74 +91,86 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    let currCommonInfo = commonInfo;
+    if (proposalInfo.isModerationHidden) {
+      hiddenProposalNote();
+    } else {
+      let currCommonInfo = {...commonInfo};
 
-    if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(
-        proposalInfo.commonId,
-      );
+      if (!currCommonInfo) {
+        currCommonInfo = await commonStore.getCommonById(proposalInfo.commonId);
+      }
+      navigation.navigate('ProposalScreen', {
+        proposalId: proposalInfo.id,
+        hasPermission,
+      });
     }
-
-    navigation.navigate('ProposalScreen', {
-      proposalId: proposalInfo.id,
-    });
   };
+
+  const getReporter = () =>
+    proposalInfo.moderation?.reporter &&
+    userStore.getUserById(proposalInfo.moderation?.reporter);
 
   return proposalInfo ? (
     <Animated.View
-      style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
-      <TouchableOpacity onPress={onReviewProposal}>
+      style={[
+        styles.proposalCard,
+        containerStyle,
+        {width: cardWidth(), borderRadius: showCard ? 20 : 5},
+      ]}>
+      <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
             proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
+          isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
+          moderation={proposalInfo.moderation}
+          reporter={getReporter()}
+          hasPermission={hasPermission}
         />
 
-        <View
-          style={{
-            paddingTop: 0,
-            paddingHorizontal: 7,
-            ...layout.flexStart,
-            flexWrap: 'wrap',
-          }}>
-          {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && (
-            <Text style={styles.title}>
-              {proposalInfo?.description?.title || 'Unknown title'}
-            </Text>
-          )}
-
-          <MemberCard
-            showDate={proposalInfo.isJoinRequest}
-            userInfo={userListStore.getUserById(proposalInfo.proposerId)}
-            proposalInfo={proposalInfo}
-            isPending={false}
-          />
-          <View style={{...layout.flexRow}}>
-            <ProposalApprovalTag
-              iconName="approved"
-              value={proposalInfo.votesFor || 0}
-              isMarked={true}
+        {showCard && (
+          <View style={styles.containerView}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                {isFundingRequest &&
+                  (proposalInfo?.description?.title || 'Unknown title')}
+              </Text>
+              {(!proposalInfo.isModerationHidden || hasPermission) &&
+                isMember &&
+                !isSwiper && !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+            </View>
+            <MemberCard
+              showDate={proposalInfo.isJoinRequest}
+              userInfo={userStore.getUserById(proposalInfo.proposerId)}
+              proposalInfo={proposalInfo}
+              isPending={false}
             />
-            <ProposalApprovalTag
-              iconName="declined"
-              value={proposalInfo.votesAgainst || 0}
-              isMarked={false}
-            />
-            <ProposalApprovalTag
-              iconName="discussion"
-              value={proposalDiscussionCount}
-              isMarked={false}
-            />
+            <View style={{...layout.flexRow}}>
+              <ProposalApprovalTag
+                iconName="approved"
+                value={proposalInfo.votesFor || 0}
+                isMarked={true}
+              />
+              <ProposalApprovalTag
+                iconName="declined"
+                value={proposalInfo.votesAgainst || 0}
+                isMarked={false}
+              />
+              <ProposalApprovalTag
+                iconName="discussion"
+                value={proposalDiscussionCount}
+                isMarked={false}
+              />
+            </View>
+            <View style={styles.proposalCardActionContainer}>
+              <Text style={styles.proposalActionBtnText}>
+                {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
+              </Text>
+            </View>
           </View>
-
-          <View style={styles.proposalCardActionContainer}>
-            <Text style={styles.proposalActionBtnText}>
-              {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
-            </Text>
-          </View>
-        </View>
+        )}
       </TouchableOpacity>
     </Animated.View>
   ) : (
@@ -188,12 +216,11 @@ ProposalCard.propTypes = {
   membershipRequest: bool,
   isSwiper: bool,
   commonInfo: object,
-  userListStore: shape({
-    getUserById: func,
-  }),
-  proposalStore: shape({
-    getProposalById: func,
-  }),
+  hasPermission: bool,
+  openCommonOptions: func,
+  hiddenProposalNote: func,
+  rootStore: rootStorePropTypes,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({
@@ -214,12 +241,17 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     marginVertical: 14,
   },
-
+  containerView: {
+    paddingTop: 0,
+    paddingHorizontal: 7,
+    ...layout.flexStart,
+    //flexWrap: 'wrap',
+  },
   proposalCard: {
     // marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
-    borderRadius: 20,
+    //borderRadius: 20,
     //alignSelf: 'stretch',
 
     borderStyle: 'solid',
@@ -238,11 +270,15 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
     textAlign: 'left',
-    width: '100%',
     flexWrap: 'wrap',
-    padding: 10,
     fontSize: 16,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    width: '100%',
   },
 });
 
-export default inject('userListStore', 'proposalStore')(observer(ProposalCard));
+export default inject('rootStore')(observer(ProposalCard));

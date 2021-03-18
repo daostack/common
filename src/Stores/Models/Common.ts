@@ -45,7 +45,7 @@ export class Common extends BaseModel<ICommonEntity> {
   register: CommonRegister;
 
   constructor(newCommonInfo: ICommonEntity) {
-    super();
+    super(newCommonInfo);
     this.id = newCommonInfo.id;
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;

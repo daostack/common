@@ -1,19 +1,19 @@
-import {observable, action} from 'mobx';
+import {observable} from 'mobx';
+import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 
-export class BaseModel<I> implements I {
+export class BaseModel<IEntity extends IBaseEntity> implements IBaseEntity {
   @observable
-  id: string = '';
-
-  @observable
-  createdAt: Date | null = null;
+  id: string;
 
   @observable
-  updatedAt: Date | null = null;
+  createdAt: Date;
 
-  @action
-  setUpdates = (entity: Partial<I>) => {
-    Object.keys(entity).forEach((key) => {
-      this[key] = entity[key];
-    });
-  };
+  @observable
+  updatedAt: Date;
+
+  constructor(entity: IEntity) {
+    this.id = entity.id;
+    this.createdAt = entity.createdAt;
+    this.updatedAt = entity.updatedAt;
+  }
 }

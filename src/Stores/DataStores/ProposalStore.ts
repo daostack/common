@@ -1,11 +1,10 @@
-import {computed, observable, runInAction} from 'mobx';
-import ListStore from './ListStore';
-import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
+import {computed, runInAction} from 'mobx';
+import BaseStore from './BaseStore';
 import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDocChange,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+  subscribeToProposalList,
+  fetchProposalById,
+} from '~/Services/ListServices/ProposalListService';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -48,13 +47,12 @@ export const isProposalHistory = (proposal: Proposal) =>
   PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
   !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
-export default class ProposalStore extends ListStore<Proposal> {
-  @observable
-  isLoading: boolean;
-
+export default class ProposalStore extends BaseStore<
+  Proposal,
+  IProposalEntity
+> {
   constructor(rootStore: RootStore) {
     super(rootStore);
-    this.isLoading = false;
   }
   @computed
   get myActiveProposals() {
@@ -78,8 +76,27 @@ export default class ProposalStore extends ListStore<Proposal> {
     });
   }
 
+  // Overriden methods
+  getEntityModel(entity: IProposalEntity): Proposal {
+    return new Proposal(entity);
+  }
+
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => super.getDataById(id);
+  getProposalById = (id: string): Proposal | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      fetchProposalById(id).then((proposal: IFirebaseDoc<IProposalEntity>) => {
+        runInAction(() => {
+          this.setData(
+            id,
+            this.getEntityModel(this.firestoreDocToEntity(proposal)),
+          );
+        });
+      });
+      return undefined;
+    }
+  };
 
   getUserProposals = (
     userId: string,
@@ -87,7 +104,7 @@ export default class ProposalStore extends ListStore<Proposal> {
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isProposer = proposal.proposerId === userId;
+        const isProposer = proposal?.proposerId === userId;
         if (isProposer) {
           return this._applyFilter(proposal, proposalFilter);
         }
@@ -104,7 +121,7 @@ export default class ProposalStore extends ListStore<Proposal> {
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isSameCommon = proposal.commonId === commonId;
+        const isSameCommon = proposal?.commonId === commonId;
         if (isSameCommon) {
           return this._applyFilter(proposal, proposalFilter);
         }
@@ -116,47 +133,27 @@ export default class ProposalStore extends ListStore<Proposal> {
       );
 
   //Actions
+  subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
+    subscribeToProposalList(this.updateStoreData, {
+      id: proposalId,
+    });
+
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this._updateProposalList, {
+    subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       onlyActive: true,
     });
 
   subscribeToUserAllProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this._updateProposalList, {
+    subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       showAll: true,
     });
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this._updateProposalList, {
+    subscribeToProposalList(this.updateStoreData, {
       commonId: commonId,
     });
-
-  // Private function
-  _updateProposalList = (
-    updatedUserList: IFirebaseSnapshot<IProposalEntity>,
-  ) => {
-    runInAction(() => {
-      this.isLoading = true;
-    });
-
-    const updatesMap = new Map<string, Proposal>();
-
-    // Initial loading
-    updatedUserList
-      .docChanges()
-      .forEach((updatedProposalDoc: IFirebaseDocChange<IProposalEntity>) => {
-        const updatedProposal = updatedProposalDoc.doc.data();
-
-        updatesMap.set(updatedProposal.id, new Proposal(updatedProposal));
-      });
-
-    runInAction(() => {
-      this.data.merge(updatesMap);
-      this.isLoading = false;
-    });
-  };
 
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
     // Check IProposalFilter.type filter

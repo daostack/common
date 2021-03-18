@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  Dimensions,
-  TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import moment from 'moment';
@@ -15,6 +15,7 @@ import {inject, observer} from 'mobx-react';
 
 import {colors, font, layout, text} from '../../Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens/index';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const width = Dimensions.get('window').width;
 
@@ -110,16 +111,16 @@ const statuses = {
 };
 
 const CancelSubscriptionSheetScreen = ({
-  dueDate,
-  commonName,
-  initialStatus,
-  onCancelConfirm,
-  bottomSheetStore,
+ dueDate,
+ commonName,
+ initialStatus,
+ onCancelConfirm,
+ uiStore,
 }) => {
   const [ status, setStatus ] = React.useState(initialStatus);
 
   const onClose = () => {
-    bottomSheetStore.hideBottomSheet();
+    uiStore.bottomSheetStore.hideBottomSheet();
   };
 
   const onCancel = async () => {
@@ -130,12 +131,15 @@ const CancelSubscriptionSheetScreen = ({
 
       setStatus(statuses.canceled);
     } catch (e) {
-      bottomSheetStore.hideBottomSheet();
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
-        subTitle: 'Try again later',
-        titleRed: true,
-        error: e,
-      });
+      uiStore.bottomSheetStore.hideBottomSheet();
+      uiStore.bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR,
+        {
+          subTitle: 'Try again later',
+          titleRed: true,
+          error: e,
+        }
+      );
     }
   };
 
@@ -145,10 +149,16 @@ const CancelSubscriptionSheetScreen = ({
         ? 'You will leave'
         : 'If you cancel, you will leave'}{' '}
       <Text style={styles.bold}>{commonName} </Text>
-      {dueDate > new Date() && ' in '}
-      {moment(dueDate).toNow(true, 'd')}
-      {dueDate < new Date() && ' ago'}{'  '}
-      ({moment(dueDate).format('DD.MM.YY')})
+      {dueDate > new Date()
+        ? (
+          <React.Fragment>
+            in{' '}
+            {moment(dueDate).toNow(true)}{' '}
+            ({moment(dueDate).format('DD.MM.YY')})
+          </React.Fragment>
+        ) : (
+          'in the next few days'
+        )}
     </Text>
   );
 
@@ -231,16 +241,11 @@ CancelSubscriptionSheetScreen.propTypes = {
   dueDate: PropTypes.instanceOf(Date).isRequired,
   initialStatus: PropTypes.oneOf([ ...Object.values(statuses) ]),
 
-  bottomSheetStore: PropTypes.shape({
-    hideBottomSheet: PropTypes.func,
-    showBottomSheet: PropTypes.func,
-  }),
+  uiStore: uiStorePropTypes.isRequired,
 };
 
 CancelSubscriptionSheetScreen.defaultProps = {
   initialStatus: statuses.initial,
 };
 
-export default inject('bottomSheetStore')(
-  observer(CancelSubscriptionSheetScreen)
-);
+export default inject('uiStore')(observer(CancelSubscriptionSheetScreen));

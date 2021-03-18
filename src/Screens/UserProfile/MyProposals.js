@@ -15,18 +15,21 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
-import {bool, object, shape, func} from 'prop-types';
+import {bool, object, shape} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
-import {isTypeFilterJoin} from '~/Stores/ListStore/ProposalStore';
+import {isTypeFilterJoin} from '~/Stores/DataStores/ProposalStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const MyProposals = ({
   navigation,
-  userStore,
-  proposalStore,
   route: {
     params: {proposalTypeFilter},
   },
+  rootStore,
 }) => {
+  const authStore = rootStore.authStore;
+  const proposalStore = rootStore.proposalStore;
+
   const [index, setIndex] = React.useState(0);
   const onScreenScroll = (event) => {
     navigation.setOptions({
@@ -43,7 +46,7 @@ const MyProposals = ({
     {
       key: 'active',
       title: `Active (${
-        proposalStore.getUserProposals(userStore.userInfo.uid, {
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
           stage: PROPOSAL_STAGE.Active,
           type: proposalTypeFilter,
         }).length
@@ -52,7 +55,7 @@ const MyProposals = ({
     {
       key: 'history',
       title: `History (${
-        proposalStore.getUserProposals(userStore.userInfo.uid, {
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
           stage: PROPOSAL_STAGE.History,
           type: proposalTypeFilter,
         }).length
@@ -69,13 +72,14 @@ const MyProposals = ({
       <ProposalsList
         navigation={navigation}
         userInfo={{
-          id: userStore.userInfo.uid,
+          id: authStore.userInfo.uid,
         }}
         proposalFilter={{
           stage:
             sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
           type: proposalTypeFilter,
         }}
+        isMember
       />
     </View>
   );
@@ -135,10 +139,7 @@ MyProposals.propTypes = {
     }),
   }),
   navigation: object,
-  userStore: object,
-  proposalStore: shape({
-    getUserProposals: func,
-  }),
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -172,4 +173,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'proposalStore')(observer(MyProposals));
+export default inject('rootStore')(observer(MyProposals));

@@ -1,7 +1,11 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
-import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -26,6 +30,7 @@ export const PROPOSAL_STAGES_ALL = [
 ];
 
 interface ProposalFilter {
+  id?: string;
   commonId?: string;
   userId?: string;
   showAll?: boolean;
@@ -44,6 +49,9 @@ export const subscribeToProposalList = (
 ): FirestoreUnsubscribeFn => {
   let proposalListQuery = ProposalsCollection;
 
+  if (filter.id) {
+    proposalListQuery = proposalListQuery.where('id', '==', filter.id);
+  }
   if (filter.commonId) {
     proposalListQuery = proposalListQuery.where(
       'commonId',
@@ -93,11 +101,18 @@ export const subscribeToProposalList = (
 
   return proposalListQuery.onSnapshot(
     (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
-      if (snapshot) {
-        listChangeCallback(snapshot);
-      } else {
-        console.log('!!! NULL SNAPSHOT RETURNED in PROPOSAL on SNAPSHOT !!!');
-      }
+      listChangeCallback(snapshot);
     },
   );
+};
+
+export const fetchProposalById = async (
+  proposalId: string,
+): Promise<IFirebaseDoc<IProposalEntity>> => {
+  if (!proposalId) {
+    throw new Error(
+      'Proposal Id (proposalId) is required parameter, but it was not provided',
+    );
+  }
+  return await ProposalsCollection.doc(proposalId).get();
 };

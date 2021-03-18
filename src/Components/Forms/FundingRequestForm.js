@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import MultiImageField from '../FormFields/MultiImageField';
 import MultiFileField from '../FormFields/MultiFileField';
-import MultiLinkField from '../FormFields/MultiLinkField';
+import MultiTitleValueField from '../FormFields/MultiTitleValueField';
 import {layout, text, colors, font} from '~/Theme';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
@@ -74,6 +74,7 @@ class FundingRequestForm extends React.Component {
           iconName="dollar"
           iconSize={12}
           iconStyle={{paddingRight: 5}}
+          maxLength={5}
           iconEmptyColor={colors.grey3}
           iconFillColor={colors.grey}
           viewStyle={{alignSelf: 'stretch'}}
@@ -120,7 +121,7 @@ class FundingRequestForm extends React.Component {
           Add links to resources and content related to your proposal
         </Text>
 
-        <MultiLinkField
+        <MultiTitleValueField
           link
           allowsEditing={true}
           title="Title"
@@ -128,7 +129,6 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_LINKS,
             formStore: fundingRequestFormStore,
-            validateRule: 'string|url',
           }}
         />
 

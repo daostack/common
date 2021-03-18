@@ -31,6 +31,7 @@ import CommonHeader from '~/Components/Commons/CommonHeader';
 import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
+import ModerationService from '~/Services/ModerationService';
 import CountDown from 'react-native-countdown-component';
 import {
   Placeholder,
@@ -47,6 +48,12 @@ import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
+import Toast from '~/Util/Toast.js';
+import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -54,28 +61,38 @@ import {
   BillingDetailsFormStore,
   PaymentFormStore,
 } from '~/FormStores/RequestToJoin';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
+const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
 const STICKY_HEADER_HEIGHT =
   Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
-const CommonProfile = ({
-  navigation,
-  bottomSheetStore,
-  userStore,
-  route: {params},
-  commonStore,
-  proposalStore,
-}) => {
+const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
   are undefined
   is this sth we plan on having in future?
    */
+
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const authStore = rootStore.authStore;
+  const commonStore = rootStore.commonStore;
+  const proposalStore = rootStore.proposalStore;
+  const discussionStore = rootStore.discussionStore;
+  const userStore = rootStore.userStore;
+
   const [isMember, setMemberState] = useState(false);
-  const window = Dimensions.get('window');
+  const [showModerationModal, setShowModerationModal] = useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
+  const [moderationFormStore] = useState(new ModerationFormStore());
+  const [moderationType, setModerationType] = useState(TITLES.discussion);
+  const [action, setAction] = useState(ACTIONS.report);
 
   const {refreshFeed} = params;
 
@@ -134,9 +151,9 @@ const CommonProfile = ({
     false,
   );
 
-  // right now, has permission is about user being the owner, this may change in the future
+  // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
-    userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+    authStore.getPermission(commonId, authStore?.userInfo?.uid)
   );
 
   const headerHeightLayouted = (height) => height;
@@ -147,15 +164,21 @@ const CommonProfile = ({
   };
 
   useEffect(() => {
-    const unsubscribe = proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon.id,
+    );
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon.id,
+    );
     return () => {
-      unsubscribe && unsubscribe();
+      unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
+      unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
     };
   }, [currCommon]);
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (userStore.userInfo && userStore.isDaoMember(currCommon?.members)) {
+    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
@@ -163,16 +186,16 @@ const CommonProfile = ({
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
     setHasPermission(
-      userStore?.userInfo?.uid === currCommon?.metadata.founderId,
+      authStore.getPermission(commonId, authStore?.userInfo?.uid),
     );
-  }, [params.showRequestSentModal, userStore.userInfo, currCommon?.members]);
+  }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
       unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
         commonId,
-        userStore.userInfo?.uid,
+        authStore.userInfo?.uid,
         (data) => {
           setPendingProposalsData({...data});
 
@@ -201,7 +224,7 @@ const CommonProfile = ({
         unsubscribe();
       }
     };
-  }, [commonId, isMember, userStore.userInfo]);
+  }, [commonId, isMember, authStore.userInfo]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -229,7 +252,18 @@ const CommonProfile = ({
   const Discussions = () => (
     <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
       <Text style={text.h1BlackTitle}>Discussions</Text>
-      <DiscussionList navigation={navigation} commonId={currCommon.id} />
+      <DiscussionList
+        navigation={navigation}
+        commonId={currCommon.id}
+        hasPermission={hasPermission}
+        openCommonOptions={(discussion) =>
+          openCommonOptions(discussion, TITLES.discussion)
+        }
+        showHiddenNote={(hiddenDiscussion) =>
+          showHiddenNote(hiddenDiscussion, TITLES.discussion)
+        }
+        isMember={isMember}
+      />
     </View>
   );
 
@@ -248,6 +282,14 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.Active,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
+        hasPermission={hasPermission}
+        openCommonOptions={(proposal) =>
+          openCommonOptions(proposal, TITLES.proposals)
+        }
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
+        }
+        isMember={isMember}
       />
 
       {isMember && (
@@ -274,6 +316,10 @@ const CommonProfile = ({
           stage: PROPOSAL_STAGE.History,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
+        }
+        sMember={isMember}
       />
     </View>
   );
@@ -386,6 +432,12 @@ const CommonProfile = ({
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
+      hasPermission,
+      openCommonOptions: (requestToJoin) =>
+        openCommonOptions(requestToJoin, TITLES.membershipRequest),
+      showHiddenNote: (hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin, TITLES.membershipRequest),
+      isMember,
     });
   };
 
@@ -405,14 +457,108 @@ const CommonProfile = ({
       : navigateTo('Edit Rules');
   };
 
-  const openCommonOptions = (event) => {
+  /**
+   * For other types of items
+   * @param  {[type]} actionType [description]
+   * @param  {String} itemType   [description]
+   * @param  {[type]} itemId     [description]
+   * @return {[type]}            [description]
+   */
+  const onModerate = async (actionType, itemType = '', itemId = null) => {
+    setAction(actionType);
+    bottomSheetStore.hideBottomSheet();
+
+    switch (actionType) {
+      case 'Show':
+        Toast.loading('Loading...');
+        await ModerationService.getInstance().show(
+          itemId,
+          commonId,
+          itemType.toLowerCase(),
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      case 'Hide':
+        Toast.loading('Hiding content...');
+        await ModerationService.getInstance().hide(
+          itemId,
+          itemType.toLowerCase(),
+          commonId,
+        );
+        Toast.hide();
+        Toast.success('Done');
+        setShowModerationSuccessModal(true);
+        break;
+      default:
+        // reporting
+        setShowModerationModal(true);
+        break;
+    }
+  };
+
+  const membershipRequestType = (itemTitle) =>
+    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
+
+  // consider adding itemId to edit (?)
+  const openCommonOptions = (item = null, itemType = '') => {
+    if (item) {
+      moderationFormStore.clearFormStoreState();
+      moderationFormStore.registerFormField(
+        ModerationForm.ITEM_ID,
+        'string',
+        item.id,
+      );
+    }
+    setModerationType(itemType);
+
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onEdit: (type) => onEdit(type),
+        onAction: item
+          ? (actionType) =>
+              onModerate(actionType, membershipRequestType(itemType), item.id)
+          : (type) => onEdit(type),
+        hasPermission,
+        moderatorOptions: {
+          item,
+        },
       },
     );
   };
+
+  const onReportContent = async () => {
+    setShowModerationModal(false);
+    bottomSheetStore.hideBottomSheet();
+    Toast.loading('Reporting content...');
+
+    await ModerationService.getInstance().report(
+      membershipRequestType(moderationType).toLowerCase(),
+      commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
+    setShowModerationSuccessModal(true);
+    moderationFormStore.clearFormStoreState();
+  };
+
+  const showHiddenNote = (hiddenItem, type) => {
+    const {moderation} = hiddenItem;
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
+      {
+        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        date: timeReported(moderation.updatedAt),
+        reasons: moderation.reasons,
+        moderatorNote: moderation?.moderatorNote,
+        type,
+      },
+    );
+  };
+
+  const getType = (title) => (title === TITLES.proposals ? TITLES.proposalText : title);
 
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {
@@ -439,7 +585,7 @@ const CommonProfile = ({
   };
 
   const requestToJoin = (event) => {
-    if (userStore.userInfo) {
+    if (authStore.userInfo) {
       const shouldSkipRules = calcShouldSkipRules();
 
       const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -626,7 +772,7 @@ const CommonProfile = ({
           {hasPermission && (
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 10}}
-              onPress={openCommonOptions}>
+              onPress={() => openCommonOptions()}>
               <BlurView
                 style={{
                   padding: 6,
@@ -653,7 +799,7 @@ const CommonProfile = ({
     </TouchableOpacity>
   );
 
-  const initialLayout = {width: Dimensions.get('window').width};
+  const initialLayout = {width};
 
   const slideUp = {
     transform: [
@@ -677,6 +823,22 @@ const CommonProfile = ({
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
+      <ModerationModal
+        title={moderationType}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
+      />
+      <ModerationActionSuccessModal
+        type={getType(moderationType)}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
       {currCommon ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
@@ -711,7 +873,7 @@ const CommonProfile = ({
                   uri: currCommon.image,
                 }}
                 style={{
-                  width: window.width,
+                  width: width,
                   height: headerHeight,
                   backgroundColor: colors.grey4,
                 }}>
@@ -721,12 +883,12 @@ const CommonProfile = ({
             scrollEvent={(e) => {
               setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
               upperRequestToJoinBtnRef?.current?.measure(
-                (fx, fy, width, height, px, py) => {
+                (fx, fy, mWidth, height, px, py) => {
                   setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
                 },
               );
               stickyTabBarRef?.current?.measure(
-                (fx, fy, width, height, px, py) => {
+                (fx, fy, mWidth, height, px, py) => {
                   const isVisible = py < STICKY_HEADER_HEIGHT - 80;
                   if (isVisible !== showStickyTabBar) {
                     if (isVisible) {
@@ -758,7 +920,7 @@ const CommonProfile = ({
                 isMember={isMember}
                 navigation={navigation}
                 headerHeightLayouted={headerHeightLayouted}
-                onHeaderMenuOpen={openCommonOptions}
+                onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
                   logo: currCommon.metadata?.avatar,
                   name: currCommon.name,
@@ -918,17 +1080,11 @@ CommonProfile.propTypes = {
   navigation: object.isRequired,
   route: shape({
     params: shape({
-      //commonId: string,
       currCommon: object,
       refreshFeed: func,
-      //showRequestSentModal: func,
-      //createdProposalId: func,
     }),
   }),
-  bottomSheetStore: object,
-  userStore: object,
-  commonStore: object,
-  proposalStore: object,
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -1094,9 +1250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject(
-  'bottomSheetStore',
-  'userStore',
-  'commonStore',
-  'proposalStore',
-)(observer(CommonProfile));
+export default inject('rootStore')(observer(CommonProfile));

@@ -17,6 +17,8 @@ import {
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
 import {promisedComputed} from 'computed-async-mobx';
+import Logger from '~/Services/Logger';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -62,6 +64,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
+  moderation?: IModerationEntity;
+
+  @observable
   imagesPromised = promisedComputed(
     [],
     async (): Promise<IUIProposalImage[]> => {
@@ -71,12 +76,27 @@ export class Proposal extends BaseModel<IProposalEntity> {
         await Promise.all(
           this.description.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
-              const {width, height} = await ImageSize.getSize(currImage.value);
-              tempImages.push({
-                title: currImage.title,
-                widthRatio: (width / height) * 220,
-                uri: currImage.value,
-              } as IUIProposalImage);
+              let currImageEntity: IUIProposalImage | null = null;
+              try {
+                const {width, height} = await ImageSize.getSize(
+                  currImage.value,
+                );
+
+                currImageEntity = {
+                  title: currImage.title,
+                  widthRatio: (width / height) * 220,
+                  uri: currImage.value,
+                } as IUIProposalImage;
+              } catch (err) {
+                Logger.warn(
+                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
+                  err,
+                );
+              }
+
+              if (currImageEntity) {
+                tempImages.push(currImageEntity);
+              }
             }
           }),
         );
@@ -108,9 +128,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
-      return this.join?.funding;
+      return (this as IJoinRequestProposal).join.funding;
     } else {
-      return this.fundingRequest?.amount;
+      return (this as IFundingRequestProposal).fundingRequest.amount;
     }
   }
 
@@ -129,8 +149,13 @@ export class Proposal extends BaseModel<IProposalEntity> {
     return this.votesFor + this.votesAgainst;
   }
 
+  @computed
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === 'hidden';
+  }
+
   constructor(newProposalInfo: IProposalEntity) {
-    super();
+    super(newProposalInfo);
     this.id = newProposalInfo.id;
     this.createdAt = newProposalInfo.createdAt;
     this.updatedAt = newProposalInfo.updatedAt;
@@ -144,6 +169,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
