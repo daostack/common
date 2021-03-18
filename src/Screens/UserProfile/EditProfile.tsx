@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from 'react';
+import React, {ReactElement, useState, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -55,12 +55,13 @@ type Props = AppRootStore &
 const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const formikRef = useRef();
 
   navigation.setOptions({
     headerLeft: () => (
       <TouchableOpacity
         onPress={async () => {
-          onFormClose()();
+          onFormClose();
         }}>
         <Icon name="left-arrow" size={32} />
       </TouchableOpacity>
@@ -101,7 +102,8 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     navigation.goBack();
   };
 
-  const onFormClose = (values?: Values) => () => {
+  const onFormClose = () => {
+    const values = (formikRef?.current ?? {values: {}})?.values;
     const {isFirstOpening, isSignedWithApple} = route.params;
 
     if (
@@ -140,6 +142,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
 
   return (
     <Formik
+      innerRef={formikRef}
       initialValues={
         {
           photoURL: authStore.userInfo.photoURL,
@@ -268,7 +271,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                     ...layout.btnOutline,
                     ...layout.marginRightS,
                   }}
-                  onPress={onFormClose(values)}>
+                  onPress={onFormClose}>
                   <Text style={text.buttonblue}>
                     {route.params.isFirstOpening ? 'Skip' : 'Cancel'}
                   </Text>
