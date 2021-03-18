@@ -53,9 +53,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   const navigateToDetail = () => {
     let navigate;
 
-    notificationStore.setNotificationItemState(item.id, {
-      opened: true,
-    });
+    // notificationStore.setNotificationItemState(item.id, {
+    //   opened: true,
+    // });
 
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
@@ -100,9 +100,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         style={[
           styles.messageCardContainer,
           {
-            backgroundColor: item.notificationItemState.opened
-              ? colors.white
-              : colors.paleNotificationblue,
+            // backgroundColor: item.notificationItemState.opened
+            //   ? colors.white
+            //   : colors.paleNotificationblue,
+            backgroundColor: colors.white,
           },
         ]}>
         <View
@@ -113,9 +114,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
               uri: item.notificationItemData.ownerAvatar,
             }}
           />
-          {!item.notificationItemState.seen && (
+          {/* {!item.notificationItemState.seen && (
             <View style={styles.notReadDot} />
-          )}
+          )} */}
         </View>
         <View>
           <View style={styles.headerContainer}>
