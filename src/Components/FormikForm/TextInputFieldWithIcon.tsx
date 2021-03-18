@@ -58,7 +58,7 @@ export type TextFieldProps = {
   autoCorrect?: boolean;
   onTogglePress?: (event: GestureResponderEvent) => void;
   toggleName?: string;
-  iconName?: IconNames;
+  iconName?: IconNames | null;
   iconEndName?: IconNames;
   iconSize?: number;
   iconEmptyColor?: string;
@@ -80,6 +80,8 @@ function TextField({
   numberOfLines,
   keyboardType,
   uiStore,
+  subLabel,
+  textContentType,
   // Icon props
   iconName,
   iconSize,
@@ -87,9 +89,6 @@ function TextField({
   iconFillColor,
   iconStyle,
   iconEndName,
-  // Validation management properties
-  subLabel,
-  textContentType,
   ...otherProps
 }: TextFieldProps): ReactElement {
   const [state, setState] = useState({
