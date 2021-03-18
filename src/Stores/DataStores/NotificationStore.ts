@@ -89,6 +89,24 @@ export default class NotificationStore extends BaseStore<
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
-    return new Notification(entity);
+    const defaultState = {
+      seen: false,
+      opened: false,
+    };
+
+    let notificationItemState = defaultState;
+
+    if (this.rootStore.notificationStore.exists(entity.id)) {
+      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
+        entity.id,
+      );
+      // It's possible to have undefined notificationItemState for existing Notification in the store,
+      // because of old notifications, before the implementation of the feature with the dot indicator.
+      // So, we are setting a default state to such of prorposals for safety.
+      notificationItemState =
+        notificationFromStore?.notificationItemState || defaultState;
+    }
+
+    return new Notification(entity, notificationItemState);
   }
 }

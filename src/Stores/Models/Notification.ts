@@ -301,13 +301,17 @@ export class Notification extends BaseModel<INotificationEntity> {
   //   return notificationData as NotificationItemData;
   // }
 
-  constructor(newNotificationInfo: INotificationEntity) {
+  constructor(
+    newNotificationInfo: INotificationEntity,
+    notificationItemState: NotificationItemState,
+  ) {
     super(newNotificationInfo);
 
     this.id = newNotificationInfo.id;
     this.eventObjectId = newNotificationInfo.eventObjectId;
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
+    this.notificationItemState = notificationItemState;
 
     // const defaultState = {
     //   seen: false,
