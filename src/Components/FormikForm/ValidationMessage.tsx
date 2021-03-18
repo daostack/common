@@ -3,18 +3,27 @@ import React, {ReactElement} from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 
-
 type Props = {
   multiName?: string;
   errorMessage?: string | boolean;
   invisibleContainer?: boolean;
-}
+};
 
-function ValidationMessage({errorMessage, invisibleContainer}: Props): ReactElement {
-
-    return (errorMessage || !invisibleContainer) ? (
-      <Text style={{...styles.errorMessage, ...(!invisibleContainer && {minHeight: font.lineHeightForm})}}>{errorMessage || ''}</Text>
-    ) : <></>;
+function ValidationMessage({
+  errorMessage,
+  invisibleContainer,
+}: Props): ReactElement {
+  return errorMessage || !invisibleContainer ? (
+    <Text
+      style={{
+        ...styles.errorMessage,
+        ...(!invisibleContainer && {minHeight: font.lineHeightForm}),
+      }}>
+      {errorMessage || ''}
+    </Text>
+  ) : (
+    <></>
+  );
 }
 
 const styles = StyleSheet.create({

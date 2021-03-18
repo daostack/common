@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import * as RNLocalize from 'react-native-localize';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -7,29 +7,36 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import {countryList} from '~/Util/countries';
 import {colors} from '../../Theme';
 
-import TextInputFieldWithIcon, {TextInputFieldWithIconProps, TextFieldProps} from './TextInputFieldWithIcon';
+import TextInputFieldWithIcon, {
+  TextInputFieldWithIconProps,
+  TextFieldProps,
+} from './TextInputFieldWithIcon';
 
 import {Label} from './Label';
 
 type Country = {
+  value: string;
+  name: string;
+  payin: boolean;
+  payout: boolean;
+};
+
+const getCountryIndex = (countryArr: Country[], country: string) =>
+  countryArr.findIndex((countryObj: Country) => countryObj.value === country);
+
+type Props = TextInputFieldWithIconProps &
+  TextFieldProps & {
+    onChange?: (value: string) => void;
     value: string;
-    name: string;
-    payin: boolean;
-    payout: boolean;
-}
+    label: string;
+    infoLabel: string;
+  };
 
-const getCountryIndex = (countryArr: Country[], country: string) => countryArr.findIndex(
-  (countryObj: Country) => countryObj.value === country
-);
-
-type Props = TextInputFieldWithIconProps & TextFieldProps & {
-    onChange?: (value: string) => void,
-    value: string,
-    label: string,
-    infoLabel: string,
-}
-
-export const CountrySelectField = ({onChange, value, ...props}: Props): ReactElement => {
+export const CountrySelectField = ({
+  onChange,
+  value,
+  ...props
+}: Omit<Props, 'uiStore'>): ReactElement => {
   const countries = countryList.filter((country) => country.payin) as Country[];
 
   const [selectedCountryIndex, setSelectedCountryIndex] = React.useState(
@@ -41,22 +48,20 @@ export const CountrySelectField = ({onChange, value, ...props}: Props): ReactEle
 
   // Call the callback with the initial country value
   React.useEffect(() => {
-    typeof onChange === 'function'
-      && onChange(selectedCountry);
+    typeof onChange === 'function' && onChange(selectedCountry);
   }, []);
 
   const onCountrySelected = (country: Country): void => {
     setSelectedCountry(country.value);
     setSelectedCountryIndex(getCountryIndex(countries, country.value));
 
-    typeof onChange === 'function'
-      && onChange(country.value);
+    typeof onChange === 'function' && onChange(country.value);
   };
 
   return (
     <View style={styles.container}>
       {(props.label || props.infoLabel) && (
-        <Label label={props.label} infoLabel={props.infoLabel}/>
+        <Label label={props.label} infoLabel={props.infoLabel} />
       )}
 
       <SearchableDropdown
@@ -87,7 +92,7 @@ export const CountrySelectField = ({onChange, value, ...props}: Props): ReactEle
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     position: 'relative',
   },
@@ -119,4 +124,4 @@ const styles = {
     borderColor: colors.grey4,
     borderRadius: 4,
   },
-};
+});

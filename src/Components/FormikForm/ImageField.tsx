@@ -17,25 +17,35 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission} from '~Util/Permissions';
+import {handlePermission} from '../../Util/Permissions';
 import {observer} from 'mobx-react';
 
 type Props = {
-    errorMessage?: string | boolean;
-    value?: string,
-    onChangeImage: (value: string) => void;
-    onFieldDeleted?: () => void,
-    title?: string,
-    quality?: number,
-    allowsEditing?: boolean,
-    isAvatar?: boolean,
-    disableEdit?: boolean,
-    multiName?: string;
-    displayName?: string;
-    name?: string;
-}
+  errorMessage?: string | boolean;
+  value: string;
+  onChangeImage: (value: string) => void;
+  onFieldDeleted?: () => void;
+  title?: string;
+  quality?: number;
+  allowsEditing?: boolean;
+  isAvatar?: boolean;
+  disableEdit?: boolean;
+  multiName?: string;
+  displayName?: string;
+  name?: string;
+};
 
-function ImageField({title, quality, allowsEditing, disableEdit, errorMessage, name, displayName, multiName, isAvatar, value,...props}: Props): ReactElement {
+function ImageField({
+  title,
+  quality,
+  allowsEditing,
+  disableEdit,
+  errorMessage,
+  multiName,
+  isAvatar,
+  value,
+  ...props
+}: Props): ReactElement {
   function onChangeValue(url: string): void {
     props.onChangeImage && props.onChangeImage(url);
   }
@@ -137,42 +147,42 @@ function ImageField({title, quality, allowsEditing, disableEdit, errorMessage, n
     }
   }
 
-    return (
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <View
-          style={
-            isAvatar
-              ? styles.formFieldContainer
-              : styles.formFieldContainerGeneral
-          }>
-          <View>
-            {renderImage()}
-            {!disableEdit && (isAvatar || value?.length > 0) && (
-              <TouchableOpacity
-                style={
-                  isAvatar
-                    ? styles.formImageFieldAddIconAvatar
-                    : styles.formImageFieldAddIcon
-                }
-                onPress={() => {
-                  isAvatar ? pickImage() : onFieldDeleted();
-                }}>
-                <Icon
-                  name={isAvatar ? 'addpicture' : 'delete'}
-                  size={16}
-                  color={colors.white}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+  return (
+    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={
+          isAvatar
+            ? styles.formFieldContainer
+            : styles.formFieldContainerGeneral
+        }>
+        <View>
+          {renderImage()}
+          {!disableEdit && (isAvatar || value?.length > 0) && (
+            <TouchableOpacity
+              style={
+                isAvatar
+                  ? styles.formImageFieldAddIconAvatar
+                  : styles.formImageFieldAddIcon
+              }
+              onPress={() => {
+                isAvatar ? pickImage() : onFieldDeleted();
+              }}>
+              <Icon
+                name={isAvatar ? 'addpicture' : 'delete'}
+                size={16}
+                color={colors.white}
+              />
+            </TouchableOpacity>
+          )}
         </View>
-        <ValidationMessage
-          errorMessage={errorMessage}
-          multiName={multiName}
-          invisibleContainer={true}
-        />
       </View>
-    );
+      <ValidationMessage
+        errorMessage={errorMessage}
+        multiName={multiName}
+        invisibleContainer={true}
+      />
+    </View>
+  );
 }
 
 ImageField.propTypes = {
