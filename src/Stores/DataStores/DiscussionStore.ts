@@ -1,9 +1,14 @@
 import BaseStore from './BaseStore';
-import {subscribeToCommonDiscussions} from '~/Services/ListServices/DiscussionListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {
+  subscribeToCommonDiscussions,
+  subscribeToDiscussionById,
+  fetchDiscussionId,
+} from '~/Services/ListServices/DiscussionListService';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion} from '../Models/Discussion';
+import {runInAction} from 'mobx';
 
 export default class DiscussionStore extends BaseStore<
   Discussion,
@@ -14,8 +19,24 @@ export default class DiscussionStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): IDiscussionEntity | undefined =>
-    this.getDataById(id);
+  getDiscussionById = (id: string): Discussion | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      // Temporary logic for fetching Discussion in case it's not in the store.
+      fetchDiscussionId(id).then(
+        (discussion: IFirebaseDoc<IDiscussionEntity>) => {
+          runInAction(() => {
+            this.setData(
+              id,
+              this.getEntityModel(this.firestoreDocToEntity(discussion)),
+            );
+          });
+        },
+      );
+      return undefined;
+    }
+  };
 
   getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
     this.getDataArray
@@ -27,6 +48,10 @@ export default class DiscussionStore extends BaseStore<
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);
+
+  //Actions
+  subscribeToDiscussionById = (discussionId: string): FirestoreUnsubscribeFn =>
+    subscribeToDiscussionById(discussionId, this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IDiscussionEntity): Discussion {

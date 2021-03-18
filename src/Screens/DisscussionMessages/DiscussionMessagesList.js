@@ -23,6 +23,7 @@ const DiscussionMessagesList = ({
   hasPermission,
   commonId,
   openMessageOptions,
+  isMember,
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -47,9 +48,12 @@ const DiscussionMessagesList = ({
     }, []);
 
   setTimeout(() => {
-    scrollViewRef.current.scrollToEnd({
-      animated: true,
-    });
+    // Sometimes that code is executed after we leave the actual screen, so we need that check.
+    if (scrollViewRef?.current) {
+      scrollViewRef.current?.scrollToEnd({
+        animated: true,
+      });
+    }
   }, 150);
 
   return (
@@ -73,6 +77,7 @@ const DiscussionMessagesList = ({
               hasPermission={hasPermission}
               commonId={commonId}
               openMessageOptions={() => openMessageOptions(x.item)}
+              isMember={isMember}
             />
           )}
           onScrollToIndexFailed={(info) => {
@@ -114,6 +119,7 @@ DiscussionMessagesList.propTypes = {
   commonId: string,
   action: func,
   openMessageOptions: func,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({

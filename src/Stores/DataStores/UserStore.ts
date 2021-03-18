@@ -32,11 +32,11 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     return new UserModel(entity);
   }
 
-  firestoreDocToEntity(
+  firestoreDocChangeToEntity(
     firebaseDoc: IFirebaseDocChange<IUserEntity>,
   ): IUserEntity {
-    const userDoc = super.firestoreDocToEntity(firebaseDoc);
-    // TODO: remove firestoreDocToEntity method overriding when we replace uid with id in user document
+    const userDoc = super.firestoreDocChangeToEntity(firebaseDoc);
+    // TODO: remove firestoreDocChangeToEntity method overriding when we replace uid with id in user document
     return {
       ...userDoc,
       id: userDoc.uid,

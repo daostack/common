@@ -49,6 +49,7 @@ import {
   EditCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
+import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
 import KeyboardManager from 'react-native-keyboard-manager';
@@ -64,10 +65,8 @@ import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
-import ProposalService from './src/Services/ProposalService';
-import CommonService from './src/Services/CommonService';
-import DiscussionService from './src/Services/DiscussionService';
 import Loader from '~/Components/Loader';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -87,11 +86,13 @@ const App = ({rootStore, navigation}) => {
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
+  const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [notificationRouting, setNotificationRouting] = useState(null);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
@@ -120,16 +121,20 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
+      unsubscribeLoggedUserNotifications &&
+        unsubscribeLoggedUserNotifications();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -142,36 +147,25 @@ const App = ({rootStore, navigation}) => {
         commonId,
         objectId,
         tabIndex = 0,
-      ] = remoteMessage.data.path.split('/');
-      const currCommon = await CommonService.getInstance().getCommonInfo(
-        commonId,
-      );
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
-        routing(screenName, {currCommon});
+        routing(screenName, {commonId});
       }
       // new discussionMessage
       else if (screenName === 'Discussions') {
-        const discussion = await DiscussionService.getInstance().getDiscussionInfo(
-          objectId,
-        );
         routing(screenName, {
-          data: discussion,
           discussionId: objectId,
           commonId,
+          fromNotificationItem: true,
         });
       }
       // create/approve proposal
       else {
-        const proposal = await ProposalService.getInstance().getProposalInfo(
-          objectId,
-        );
         routing(screenName, {
-          proposalId: proposal.id,
-          screenTitle: currCommon.name,
-          commonBalance: currCommon.balance,
-          proposalCardInfo: proposal,
+          proposalId: objectId,
           tabIndex: +tabIndex,
+          fromNotificationItem: true,
         });
       }
     }
@@ -182,11 +176,11 @@ const App = ({rootStore, navigation}) => {
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
     messaging().onNotificationOpenedApp((remoteMessage) => {
-      console.log(
+      logger.log(
         'Notification caused app to open from background state:',
         remoteMessage,
       );
-      console.log('onNotificationOpenedApp remoteMessage', remoteMessage);
+      logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       notificationNavigation(remoteMessage);
     });
 
@@ -194,7 +188,7 @@ const App = ({rootStore, navigation}) => {
     messaging()
       .getInitialNotification()
       .then((remoteMessage) => {
-        console.log('getInitialNotification remoteMessage', remoteMessage);
+        logger.log('getInitialNotification remoteMessage', remoteMessage);
         notificationNavigation(remoteMessage);
       });
   }, []);
@@ -259,14 +253,13 @@ const App = ({rootStore, navigation}) => {
       name: screenName,
       params: params,
     });
-    navigationRef.current?.dispatch(actions);
+    setNotificationRouting(actions);
   };
 
   useEffect(() => {
     DeepLinking.addScheme('common://');
     DeepLinking.addScheme('com.daostack.common://');
     DeepLinking.addScheme('https://app.common.io');
-    //console.log('tkt DeepLinking', DeepLinking)
 
     Linking.addEventListener('url', handleOpenURL);
 
@@ -326,6 +319,10 @@ const App = ({rootStore, navigation}) => {
     };
 
     checkOnboardingStatus();
+  }, []);
+
+  useEffect(() => {
+    crashlytics().log('App mounted.');
   }, []);
 
   if (loading) {
@@ -576,8 +573,19 @@ const App = ({rootStore, navigation}) => {
           component={MonthlyContribution}
         />
       </Stack.Navigator>
-      {appLoaderStore.isLoading && <Loader isBigger isFullScreen navigation={navigationRef}/>}
-      {bottomSheetStore.isVisible && <BottomSheetContainer />}
+      {notificationRouting && (
+        <NotificationContainer
+          notificationRouting={notificationRouting}
+          setNotificationRouting={setNotificationRouting}
+          navigation={navigationRef}
+        />
+      )}
+      {appLoaderStore.isLoading && (
+        <Loader isBigger isFullScreen navigation={navigationRef} />
+      )}
+      {bottomSheetStore.isVisible && (
+        <BottomSheetContainer navigation={navigationRef} />
+      )}
       <ToastView
         ref={hudRef}
         style={{backgroundColor: 'transparent'}}

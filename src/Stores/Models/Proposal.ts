@@ -13,11 +13,12 @@ import {
   IUIProposalImage,
   IJoinReqDescription,
   IFundingRequestDescription,
-  IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
 import {promisedComputed} from 'computed-async-mobx';
+import Logger from '~/Services/Logger';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -75,12 +76,27 @@ export class Proposal extends BaseModel<IProposalEntity> {
         await Promise.all(
           this.description.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
-              const {width, height} = await ImageSize.getSize(currImage.value);
-              tempImages.push({
-                title: currImage.title,
-                widthRatio: (width / height) * 220,
-                uri: currImage.value,
-              } as IUIProposalImage);
+              let currImageEntity: IUIProposalImage | null = null;
+              try {
+                const {width, height} = await ImageSize.getSize(
+                  currImage.value,
+                );
+
+                currImageEntity = {
+                  title: currImage.title,
+                  widthRatio: (width / height) * 220,
+                  uri: currImage.value,
+                } as IUIProposalImage;
+              } catch (err) {
+                Logger.warn(
+                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
+                  err,
+                );
+              }
+
+              if (currImageEntity) {
+                tempImages.push(currImageEntity);
+              }
             }
           }),
         );
@@ -112,9 +128,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get funding() {
     if (this.type === PROPOSAL_TYPE.Join) {
-      return this.join?.funding;
+      return (this as IJoinRequestProposal).join.funding;
     } else {
-      return this.fundingRequest?.amount;
+      return (this as IFundingRequestProposal).fundingRequest.amount;
     }
   }
 

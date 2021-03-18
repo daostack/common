@@ -63,7 +63,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {proposalId, tabIndex = 0, hasPermission},
+    params: {proposalId, tabIndex = 0, hasPermission, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -124,28 +124,42 @@ const ProposalScreen = ({
       proposalId,
     );
 
+    let unsubscribeFromProposalById = null;
+    if (fromNotificationItem) {
+      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+        proposalId,
+      );
+    }
+
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
         unsubscribeFromProposalDiscussionMessages();
+
+      unsubscribeFromProposalById && unsubscribeFromProposalById();
     };
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
-  const proposalCommon = commonStore.getCommonById(proposalInfo.commonId);
-  const proposedUser = userStore.getUserById(proposalInfo.proposerId);
+
+  const proposalCommon = proposalInfo
+    ? commonStore.getCommonById(proposalInfo.commonId)
+    : null;
+  const proposedUser = proposalInfo
+    ? userStore.getUserById(proposalInfo.proposerId)
+    : null;
 
   const showDebtInfo =
-    proposalInfo.isFundingRequest &&
+    proposalInfo?.isFundingRequest &&
     proposalInfo.isCountdown &&
     proposalInfo.fundingRequest.amount > 0;
 
   const showPaymentStatus =
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
-    proposalInfo.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.PENDING ||
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.NOT_ATTEMPTED ||
+    proposalInfo?.paymentState === PROPOSAL_PAYMENT_STATE.FAILED;
 
   const isMember = userInfo && isDaoMember(proposalCommon?.members || []);
-  const isProposer = authStore.isProposer(proposalInfo);
+  const isProposer = proposalInfo ? authStore.isProposer(proposalInfo) : false;
 
   const renderVoting =
     proposalInfo &&
@@ -154,7 +168,7 @@ const ProposalScreen = ({
     !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
   useEffect(() => {
-    if (proposalInfo.type === PROPOSAL_TYPE.Join) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
       navigation.setParams({
         title: 'Request to join',
         subtitle: proposalCommon?.name,
@@ -441,7 +455,7 @@ const ProposalScreen = ({
     }),
   };
 
-  const amount = proposalInfo.funding / 100;
+  const amount = proposalInfo?.funding / 100;
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
@@ -615,6 +629,7 @@ const ProposalScreen = ({
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
         onReportContent={() => onReportContent()}
+        hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
         type={'comment'}
@@ -750,6 +765,7 @@ const ProposalScreen = ({
                           proposalInfo?.countdownPeriod
                         }
                         onPress={() => openDebtInsufficientModal()}
+                        hasPermission={hasPermission}
                       />
                     </TouchableOpacity>
                     {proposedUser && (
@@ -784,6 +800,8 @@ const ProposalScreen = ({
                           proposalInfo?.createdAt.seconds +
                           proposalInfo?.countdownPeriod
                         }
+                        hasPermission={hasPermission}
+                        authInfo={authStore.userInfo}
                       />
                     </TouchableOpacity>
 
@@ -856,17 +874,13 @@ const ProposalScreen = ({
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalInfo.isFundingRequest
-                        ? proposalInfo.fundingRequest.amount > 0
+                        ? amount > 0
                           ? 'Requested amount'
                           : 'No funding requested'
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {proposalInfo.isFundingRequest
-                        ? proposalInfo.fundingRequest.amount > 0
-                          ? `$${proposalInfo.fundingRequest.amount / 100}`
-                          : ''
-                        : `$${proposalInfo.join.funding / 100}`}
+                      {amount > 0 ? `$${amount}` : '$0'}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -927,7 +941,7 @@ const ProposalScreen = ({
                     </View>
 
                     <Text style={text.smallBlackText}>
-                      {proposalInfo.votesCount === 0
+                      {!proposalInfo.votesCount
                         ? 'No votes yet'
                         : `${proposalInfo.votesCount} ${
                             proposalInfo.votesCount > 1 ? 'votes' : 'vote'
@@ -956,7 +970,7 @@ const ProposalScreen = ({
                       ...styles.proposalProgressBar,
                       ...{
                         backgroundColor: isNaN(
-                          proposalInfo.progressBarWidthPercent,
+                          proposalInfo?.progressBarWidthPercent,
                         )
                           ? colors.grey4
                           : colors.against,
@@ -965,7 +979,7 @@ const ProposalScreen = ({
                     <View
                       style={{
                         ...styles.proposalInnerProgressBar,
-                        width: `${proposalInfo.progressBarWidthPercent}%`,
+                        width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
                       }}
                     />
                   </View>
@@ -1015,6 +1029,7 @@ const ProposalScreen = ({
                   hasPermission={hasPermission}
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
+                  isMember={isMember}
                 />
               )}
             </View>

@@ -1,6 +1,7 @@
 import {observable, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
+import {linkRules} from '~/FormStores/ValidationRules';
 
 class FormStore {
   form;
@@ -10,6 +11,7 @@ class FormStore {
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
     this.clearFormStoreState();
+    this.registerValidationRule(linkRules.validateLink);
   }
 
   clearFormStoreState = () => {

@@ -1,15 +1,17 @@
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
-import {Image, Platform} from 'react-native';
+import {Image, Platform, StyleSheet, View} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 import Icon from '~/Assets/iconfont/Icon';
 import NotificationList from '~/Screens/Notifications/NotificationList';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {inject, observer} from 'mobx-react';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const CommonHome = () => (
+const CommonHome = ({rootStore}) => (
   <Tab.Navigator
     // initialRouteName="My feed"
     initialRouteName="Explore"
@@ -30,21 +32,16 @@ const CommonHome = () => (
             return <Icon name="account" size={30} />;
           }
           case NAVIGATION_SCREENS.NOTIFICATIONS: {
-            if (focused) {
-              return (
-                <Image
-                  source={require('~/Assets/notificationsSelected.png')}
-                  width={30}
-                  height={30}
-                />
-              );
-            }
+            const imageName = focused
+              ? require('~/Assets/notificationsSelected.png')
+              : require('~/Assets/notificationsUnselected.png');
             return (
-              <Image
-                source={require('~/Assets/notificationsUnselected.png')}
-                width={30}
-                height={30}
-              />
+              <View style={styles.notificationContainer}>
+                <Image source={imageName} width={30} height={30} />
+                {rootStore.notificationStore.hasNewNotifications && (
+                  <View style={styles.notReadDot} />
+                )}
+              </View>
             );
           }
         }
@@ -64,11 +61,33 @@ const CommonHome = () => (
     }}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
-    <Tab.Screen
-      name={NAVIGATION_SCREENS.NOTIFICATIONS}
-      component={NotificationList}
-    />
+    {rootStore.authStore.signedInUser && (
+      <Tab.Screen
+        name={NAVIGATION_SCREENS.NOTIFICATIONS}
+        component={NotificationList}
+      />
+    )}
   </Tab.Navigator>
 );
 
-export default CommonHome;
+CommonHome.propTypes = {
+  rootStore: rootStorePropTypes.isRequired,
+};
+
+const styles = StyleSheet.create({
+  notificationContainer: {
+    flexDirection: 'row',
+  },
+  notReadDot: {
+    width: 11,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: colors.error,
+    marginLeft: -12,
+    marginTop: 2,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});
+
+export default inject('rootStore')(observer(CommonHome));

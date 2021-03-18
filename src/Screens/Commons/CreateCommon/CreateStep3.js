@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import {colors, font} from '~/Theme';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import MultiLinkField from '~/Components/FormFields/MultiLinkField';
+import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
@@ -93,7 +93,7 @@ const CreateStep3 = ({
           advertising and spam, accepted language, etc.)
         </Text>
 
-        <MultiLinkField
+        <MultiTitleValueField
           rule
           allowsEditing={true}
           title="Rule title"
@@ -104,7 +104,7 @@ const CreateStep3 = ({
           validation={{
             name: CreateCommonForm.RULES,
             formStore: agendaFormStore,
-            validateRule: {common: 'string', title: 'string|max:80'},
+            validateRule: {value: 'string', title: 'string|max:80'},
           }}
         />
 

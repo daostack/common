@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  Dimensions,
-  TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import moment from 'moment';
@@ -111,13 +111,13 @@ const statuses = {
 };
 
 const CancelSubscriptionSheetScreen = ({
-  dueDate,
-  commonName,
-  initialStatus,
-  onCancelConfirm,
-  uiStore,
+ dueDate,
+ commonName,
+ initialStatus,
+ onCancelConfirm,
+ uiStore,
 }) => {
-  const [status, setStatus] = React.useState(initialStatus);
+  const [ status, setStatus ] = React.useState(initialStatus);
 
   const onClose = () => {
     uiStore.bottomSheetStore.hideBottomSheet();
@@ -138,7 +138,7 @@ const CancelSubscriptionSheetScreen = ({
           subTitle: 'Try again later',
           titleRed: true,
           error: e,
-        },
+        }
       );
     }
   };
@@ -149,17 +149,23 @@ const CancelSubscriptionSheetScreen = ({
         ? 'You will leave'
         : 'If you cancel, you will leave'}{' '}
       <Text style={styles.bold}>{commonName} </Text>
-      {dueDate > new Date() && ' in '}
-      {moment(dueDate).toNow(true, 'd')}
-      {dueDate < new Date() && ' ago'}
-      {'  '}({moment(dueDate).format('DD.MM.YY')})
+      {dueDate > new Date()
+        ? (
+          <React.Fragment>
+            in{' '}
+            {moment(dueDate).toNow(true)}{' '}
+            ({moment(dueDate).format('DD.MM.YY')})
+          </React.Fragment>
+        ) : (
+          'in the next few days'
+        )}
     </Text>
   );
 
   return (
     <View style={styles.body}>
       <View style={styles.slider}>
-        <View style={styles.lever} />
+        <View style={styles.lever}/>
       </View>
 
       <View style={styles.content}>
@@ -173,7 +179,7 @@ const CancelSubscriptionSheetScreen = ({
 
               <Text style={styles.title}>Cancel payment</Text>
 
-              <LeaveText />
+              <LeaveText/>
             </View>
 
             <View style={styles.container}>
@@ -209,7 +215,7 @@ const CancelSubscriptionSheetScreen = ({
 
             <Text style={styles.title}>Recurring payment canceled</Text>
 
-            <LeaveText />
+            <LeaveText/>
 
             <TouchableOpacity
               style={{
@@ -233,7 +239,7 @@ CancelSubscriptionSheetScreen.propTypes = {
   onCancelConfirm: PropTypes.func.isRequired,
   commonName: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date).isRequired,
-  initialStatus: PropTypes.oneOf([...Object.values(statuses)]),
+  initialStatus: PropTypes.oneOf([ ...Object.values(statuses) ]),
 
   uiStore: uiStorePropTypes.isRequired,
 };

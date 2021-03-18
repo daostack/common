@@ -9,10 +9,12 @@ const _ = require('lodash');
 export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   moderation,
   reporter,
+  currentUID,
 }) => (
   <Text style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
     {`${_.upperFirst(moderation?.flag)} by ${reporterName(
       reporter,
+      currentUID,
     )} on ${timeReported(moderation?.updatedAt)}`}
   </Text>
 );
@@ -20,17 +22,25 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
 export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
   updatedAt.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
 
-export const reporterName = (user: {firstName: string; lastName: string}) =>
-  `${user?.firstName || ''} ${user?.lastName || ''}`;
+export const reporterName = (
+  user: {firstName: string; lastName: string; uid: string},
+  currentUID: string,
+) =>
+  user?.uid === currentUID
+    ? 'you'
+    : `${user?.firstName || ''} ${user?.lastName || ''}`;
 
 const reportedProps = {
   moderation: shape({
     updatedAt: object,
     flag: string,
+    reporter: string,
   }),
+  currentUID: string,
   reporter: shape({
     firstName: string,
     lastName: string,
+    uid: string,
   }),
 };
 

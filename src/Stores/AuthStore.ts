@@ -10,6 +10,7 @@ import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
 
 type SignInErrorWithCode = any;
@@ -63,6 +64,9 @@ class AuthStore {
 
           this._processUser(user);
         } else {
+          // We need to delete the notification store on logout
+          // as we are keeping there only logged in user notifications.
+          this.rootStore.notificationStore.deleteUserNotifications();
           this.setSignedInUser(null);
           this.setIsLoading(false);
         }
@@ -102,29 +106,25 @@ class AuthStore {
     }
   };
 
-  getPermission = async (commonId: string, userInfo: UserModel) => {
-    const roles = [...userInfo.roles] || [];
-    const roleData = roles.find(
-      (roleObj) => roleObj.data.commonId === commonId,
-    );
-    let role = roleData?.role;
-
-    const common = await this.rootStore.commonStore.getCommonById(commonId);
-
-    // for older daos who don't have roles assigned to users
-    if (!role && common.metadata.founderId === userInfo.uid) {
-      role = 'founder';
-    }
-    return role;
-  };
+  /**
+   * Checks if the user has permission to a certain common
+   * @return the user permission of the common with commonId
+   */
+  getPermission = (commonId: string, userId: string): string => {
+    const currCommon = this.rootStore.commonStore.getCommonById(commonId);
+    const memberObj = currCommon.members.find((member) => member.userId === userId);
+    return currCommon.metadata.founderId === userId ? 'founder' : memberObj?.permission;
+  }
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: any) =>
+  isProposer = (proposal: IProposalEntity) =>
     this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
 
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
+
+  isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
   async _processUser(user: any) {

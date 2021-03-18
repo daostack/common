@@ -4,6 +4,7 @@ import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {string, bool, object, number, shape, oneOfType, func} from 'prop-types';
+import {LINK_VALIDATION_RULES} from '~/FormStores/ValidationRules/linkRules';
 
 const RemoveLinkBtn = ({onFieldDeleted}) => (
   <TouchableOpacity
@@ -13,7 +14,7 @@ const RemoveLinkBtn = ({onFieldDeleted}) => (
   </TouchableOpacity>
 );
 
-const MultiLinkField = (props) => {
+const MultiTitleValueField = (props) => {
   const {
     maxCount,
     validation,
@@ -111,7 +112,7 @@ const MultiLinkField = (props) => {
           name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule:
-            validation.validateRule?.common || validation.validateRule,
+            validation?.validateRule?.value || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
           customErrorMessage: `${link ? 'Link format is invalid' : 'Rule description is required' }`,
@@ -121,7 +122,7 @@ const MultiLinkField = (props) => {
           ...props.validation,
           name: `${currIndex}_title`,
           multiName: props.validation.name,
-          validateRule: validation.validateRule?.title || 'string',
+          validateRule: validation?.validateRule?.title || 'string',
           topPosition: true,
           invisibleContainer: true,
           immediateValidation: true,
@@ -188,7 +189,7 @@ const MultiLinkField = (props) => {
   );
 };
 
-MultiLinkField.propTypes = {
+MultiTitleValueField.propTypes = {
   validation: shape({
     formStore: object,
     name: string,
@@ -249,4 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MultiLinkField;
+export default MultiTitleValueField;

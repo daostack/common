@@ -16,6 +16,7 @@ import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const {width} = Dimensions.get('window');
 
@@ -27,8 +28,10 @@ const DiscussionCard = ({
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
+  isMember,
 }) => {
   const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const discussionId = data.id;
   const user = userStore.getUserById(data.ownerId);
@@ -36,7 +39,11 @@ const DiscussionCard = ({
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
 
-  const isVisible = data.moderation?.flag === 'visible' || !data.moderation;
+  const hideHeader =
+    !data.moderation || data.moderation?.flag === FLAGS.visible;
+  const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
+  const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
@@ -69,88 +76,99 @@ const DiscussionCard = ({
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.containerView}>
-          {!isVisible && (
+          {!hideHeader && (
             <DiscussionCardHeader
-              isReported={data.moderation?.flag !== 'visible'}
+              isReported={data.moderation?.flag !== FLAGS.visible}
               moderation={data.moderation}
               reporter={getReporter()}
+              hasPermission={hasPermission}
             />
           )}
-          <View style={styles.container}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title} numberOfLines={2}>
-                {data.title}
-              </Text>
-              {(!discussionMessageStore.isModerationHidden ||
-                hasPermission) && (
-                <ModerationMenu showOptions={openCommonOptions} />
-              )}
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {user.photoURL ? (
-                <FastImage style={styles.image} source={{uri: user.photoURL}} />
-              ) : (
-                <View style={styles.displayNameContainer}>
-                  <Text style={styles.displayName}>
-                    {user.displayName && user.displayName.substring(0, 1)}
-                  </Text>
-                </View>
-              )}
-              <View style={styles.primaryNameContainer}>
-                <Text style={styles.primaryName}>{user.displayName}</Text>
-                {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                <Text style={styles.date}>
-                  {moment(data.createTime.toDate()).fromNow()}
+          {showCard && (
+            <View style={styles.container}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.title} numberOfLines={2}>
+                  {data.title}
                 </Text>
+                {(!discussionMessageStore.isModerationHidden ||
+                  hasPermission) &&
+                  isMember && !isOwner && (
+                    <ModerationMenu showOptions={openCommonOptions} />
+                  )}
               </View>
-            </View>
-            <Text
-              style={{
-                ...styles.message,
-                ...text.writingDirection(data.message),
-              }}
-              numberOfLines={3}>
-              {data.message}
-            </Text>
-            <View
-              style={{
-                backgroundColor: colors.grey4,
-                height: 1,
-                marginBottom: 15,
-                marginTop: 10,
-                marginHorizontal: -20,
-              }}
-            />
-
-            {msgCount === 0 ? (
-              <View style={{}}>
-                <TouchableOpacity
-                  style={{justifyContent: 'center', alignSelf: 'center'}}
-                  onPress={() => navigateToDiscussion()}>
-                  <Text style={styles.startTheDiscussion}>
-                    Start the discussion
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {user.photoURL ? (
+                  <FastImage
+                    style={styles.image}
+                    source={{uri: user.photoURL}}
+                  />
+                ) : (
+                  <View style={styles.displayNameContainer}>
+                    <Text style={styles.displayName}>
+                      {user.displayName && user.displayName.substring(0, 1)}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.primaryNameContainer}>
+                  <Text style={styles.primaryName}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={styles.date}>
+                    {moment(data.createTime.toDate()).fromNow()}
                   </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.messageCountContainer}>
-                <View style={styles.messageCountContainer}>
-                  <Icon name="discussion" size={20} />
-                  <Text style={styles.msgCount}>{msgCount}</Text>
                 </View>
-                {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
-                <TouchableOpacity
-                  style={styles.navigateToDiscussion}
-                  onPress={() => navigateToDiscussion()}>
-                  <Text style={styles.joinTheDiscussion}>
-                    Join the discussion
-                  </Text>
-                  <Icon name="right-arrow" size={20} color={colors.mainBlue} />
-                </TouchableOpacity>
-                {/* </TouchableOpacity> */}
               </View>
-            )}
-          </View>
+              <Text
+                style={{
+                  ...styles.message,
+                  ...text.writingDirection(data.message),
+                }}
+                numberOfLines={3}>
+                {data.message}
+              </Text>
+              <View
+                style={{
+                  backgroundColor: colors.grey4,
+                  height: 1,
+                  marginBottom: 15,
+                  marginTop: 10,
+                  marginHorizontal: -20,
+                }}
+              />
+
+              {msgCount === 0 ? (
+                <View style={{}}>
+                  <TouchableOpacity
+                    style={{justifyContent: 'center', alignSelf: 'center'}}
+                    onPress={() => navigateToDiscussion()}>
+                    <Text style={styles.startTheDiscussion}>
+                      Start the discussion
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.messageCountContainer}>
+                  <View style={styles.messageCountContainer}>
+                    <Icon name="discussion" size={20} />
+                    <Text style={styles.msgCount}>{msgCount}</Text>
+                  </View>
+                  {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
+                  <TouchableOpacity
+                    style={styles.navigateToDiscussion}
+                    onPress={() => navigateToDiscussion()}>
+                    <Text style={styles.joinTheDiscussion}>
+                      Join the discussion
+                    </Text>
+                    <Icon
+                      name="right-arrow"
+                      size={20}
+                      color={colors.mainBlue}
+                    />
+                  </TouchableOpacity>
+                  {/* </TouchableOpacity> */}
+                </View>
+              )}
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     </>
@@ -171,6 +189,7 @@ DiscussionCard.propTypes = {
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
+  isMember: bool,
 };
 
 const styles = StyleSheet.create({

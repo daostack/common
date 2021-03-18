@@ -322,4 +322,9 @@ export default StyleSheet.create<Style>({
   fontColorGreySteel: {
     color: colors.greySteel,
   },
+  moderatorText: {
+    ...appFontFamily,
+    fontSize: 12,
+    color: colors.mainBlue,
+  },
 } as Style);

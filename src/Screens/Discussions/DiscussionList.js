@@ -13,6 +13,7 @@ const DiscussionList = ({
   hasPermission,
   openCommonOptions,
   showHiddenNote,
+  isMember,
 }) => {
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
 
@@ -21,7 +22,10 @@ const DiscussionList = ({
       list.map((discussion) => discussion.id),
     );
     return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+      unsubscribeFromDiscussionMessages &&
+        unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>
+          unsubscribeFromChunk(),
+        );
     };
   }, [list]);
 
@@ -39,6 +43,7 @@ const DiscussionList = ({
               hasPermission={hasPermission}
               openCommonOptions={() => openCommonOptions(item)}
               hiddenDiscussionNote={() => showHiddenNote(item)}
+              isMember={isMember}
             />
           )}
         />
@@ -59,6 +64,7 @@ DiscussionList.propTypes = {
   openCommonOptions: func,
   showHiddenNote: func,
   rootStore: rootStorePropTypes,
+  isMember: bool,
 };
 
 export default inject('rootStore')(observer(DiscussionList));

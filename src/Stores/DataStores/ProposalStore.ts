@@ -1,7 +1,10 @@
-import {computed} from 'mobx';
+import {computed, runInAction} from 'mobx';
 import BaseStore from './BaseStore';
-import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {
+  subscribeToProposalList,
+  fetchProposalById,
+} from '~/Services/ListServices/ProposalListService';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -79,7 +82,21 @@ export default class ProposalStore extends BaseStore<
   }
 
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => this.getDataById(id);
+  getProposalById = (id: string): Proposal | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (errr) {
+      fetchProposalById(id).then((proposal: IFirebaseDoc<IProposalEntity>) => {
+        runInAction(() => {
+          this.setData(
+            id,
+            this.getEntityModel(this.firestoreDocToEntity(proposal)),
+          );
+        });
+      });
+      return undefined;
+    }
+  };
 
   getUserProposals = (
     userId: string,
@@ -87,7 +104,7 @@ export default class ProposalStore extends BaseStore<
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isProposer = proposal.proposerId === userId;
+        const isProposer = proposal?.proposerId === userId;
         if (isProposer) {
           return this._applyFilter(proposal, proposalFilter);
         }
@@ -104,7 +121,7 @@ export default class ProposalStore extends BaseStore<
   ): Array<Proposal> =>
     this.getDataArray
       .filter((proposal: Proposal) => {
-        const isSameCommon = proposal.commonId === commonId;
+        const isSameCommon = proposal?.commonId === commonId;
         if (isSameCommon) {
           return this._applyFilter(proposal, proposalFilter);
         }
@@ -116,6 +133,11 @@ export default class ProposalStore extends BaseStore<
       );
 
   //Actions
+  subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
+    subscribeToProposalList(this.updateStoreData, {
+      id: proposalId,
+    });
+
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this.updateStoreData, {
       userId: userId,

@@ -1,7 +1,41 @@
+import {Common} from '~/Stores/Models/Common';
+import {Discussion} from '~/Stores/Models/Discussion';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {UserModel} from '~/Stores/Models/UserModel';
+import {IBaseEntity} from './IBaseEntity';
+
+export interface INotificationEntity extends IBaseEntity {
+  eventObjectId: string;
+  eventType: string;
+
+  userFilter: Array<string>;
+}
+
 export interface BadgeProps {
   title?: string;
   bgColor?: string;
   textColor?: string;
+}
+
+export interface IProposalNotificationData {
+  proposal: Proposal;
+  common: Common;
+  user: UserModel;
+}
+
+export interface NotificationItemData {
+  missingData: boolean;
+  discussion?: Discussion;
+  ownerAvatar?: string;
+  createdAt?: object;
+  description?: string;
+  descriptionBold?: string;
+  header?: string;
+  headerBold?: string;
+  commonName?: string;
+  common?: Common;
+  commonId?: string;
+  proposal?: Proposal;
 }
 
 export const EventTypeState = {
@@ -23,11 +57,13 @@ export const EventTypeState = {
   commonCreated: 'commonCreated',
   commonWhitelisted: 'commonWhitelisted',
   commonMemberAdded: 'commonMemberAdded',
+  welcomeNotification: 'welcomeNotification',
+  discussionCreated: 'discussionCreated',
 };
 
 export const EventTitleState = {
   creationReqToJoin: 'Request To Join Created',
-  requestToJoinCreated: 'Membership Request Created',
+  requestToJoinCreated: 'New Members',
   requestToJoinExecuted: 'Request To Join Executed',
   requestToJoinAccepted: 'Membership Approved',
   requestToJoinRejected: 'Membership Rejected',
@@ -43,5 +79,22 @@ export const EventTitleState = {
   messageCreated: 'New Comment',
   commonCreated: 'Common Created',
   commonWhitelisted: 'New Featured Common',
-  commonMemberAdded: 'Common Member Added',
+  commonMemberAdded: 'Membership Approved',
+  welcomeNotification: 'Welcome to Common!',
+  discussionCreated: 'New post',
 };
+
+// NOTE: EventTypesOnNotificationList legth is 10 and it is used in a firebase query with 'in' operator.
+// Firebase support up to 10 elements for `in` operator, so keep in mind when adding new event.
+export const EventTypesOnNotificationList = [
+  EventTypeState.commonWhitelisted,
+  EventTypeState.fundingRequestCreated,
+  EventTypeState.fundingRequestAccepted,
+  EventTypeState.fundingRequestExecuted,
+  EventTypeState.fundingRequestRejected,
+  EventTypeState.messageCreated,
+  EventTypeState.requestToJoinCreated,
+  EventTypeState.requestToJoinRejected,
+  EventTypeState.discussionCreated,
+  EventTypeState.commonMemberAdded,
+];
