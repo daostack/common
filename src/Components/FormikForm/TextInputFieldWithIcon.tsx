@@ -9,6 +9,7 @@ import {
   KeyboardTypeOptions,
   NativeSyntheticEvent,
   TextInputFocusEventData,
+  GestureResponderEvent,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {inject, observer} from 'mobx-react';
@@ -17,23 +18,26 @@ import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {UiStore} from '~/Types/store';
+import {TextContentType} from '~/Types/input';
 
 export type TextInputFieldWithIconProps = {
   fieldActionComponent?: ReactNode;
   viewStyle?: ViewStyle;
   infoMessage?: string;
-  name: string;
+  name?: string;
   invisibleContainer?: boolean;
-  displayName: string;
+  displayName?: string;
   errorMessage?: string;
-}
+};
 
 export type TextFieldProps = {
-  value: string | {
-    value: string;
-    label: string;
-  };
-  onChangeText?:  (value: string) => void;
+  value:
+    | string
+    | {
+        value: string;
+        label: string;
+      };
+  onChangeText?: (value: string) => void;
   onBlur?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   placeholderText?: string;
   label: string | ReactNode;
@@ -52,22 +56,23 @@ export type TextFieldProps = {
   multiName?: string;
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
-  onTogglePress?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onTogglePress?: (event: GestureResponderEvent) => void;
   toggleName?: string;
   iconName?: IconNames;
-  iconEndName?: string;
+  iconEndName?: IconNames;
   iconSize?: number;
   iconEmptyColor?: string;
   iconFillColor?: string;
   iconStyle?: ViewStyle;
   subLabel?: string;
-  uiStore: UiStore;
-  textContentType: string;
-  isFocused: boolean;
-  dynamicWidth: number;
-}
+  uiStore?: UiStore;
+  textContentType?: TextContentType;
+};
 
-function TextField({onTogglePress, toggleName, error, multiline,
+function TextField({
+  toggleName,
+  error,
+  multiline,
   placeholderText,
   label,
   infoLabel,
@@ -85,7 +90,8 @@ function TextField({onTogglePress, toggleName, error, multiline,
   // Validation management properties
   subLabel,
   textContentType,
-  ...otherProps}: TextFieldProps): ReactElement {
+  ...otherProps
+}: TextFieldProps): ReactElement {
   const [state, setState] = useState({
     isFocused: false,
     dynamicWidth: 50,
@@ -95,7 +101,7 @@ function TextField({onTogglePress, toggleName, error, multiline,
 
   const toggleViewStyle: ViewStyle = useMemo(() => {
     let toggleStyle: ViewStyle = {};
-    if (onTogglePress) {
+    if (otherProps.onTogglePress) {
       toggleStyle = {
         position: 'absolute',
         top: 7,
@@ -121,7 +127,7 @@ function TextField({onTogglePress, toggleName, error, multiline,
       }
     }
     return toggleStyle;
-  },[onTogglePress, toggleName]);
+  }, [otherProps.onTogglePress, toggleName]);
 
   const styleTextfield = useMemo(() => {
     let textFieldStyle = {};
@@ -140,7 +146,7 @@ function TextField({onTogglePress, toggleName, error, multiline,
     }
 
     return textFieldStyle;
-  },[error, state.isFocused, toggleName]);
+  }, [error, state.isFocused, toggleName]);
 
   const fieldStyle = useMemo(() => {
     let style: ViewStyle = {};
@@ -153,40 +159,36 @@ function TextField({onTogglePress, toggleName, error, multiline,
     }
 
     return style;
-  },[toggleName, state.dynamicWidth]);
+  }, [toggleName, state.dynamicWidth]);
 
   const defaultMultilineProps = useMemo(() => {
     let multilineProps: ViewStyle = {minHeight: 48};
-  if (multiline) {
-    let rowsNumber = numberOfLines || 4;
+    if (multiline) {
+      let rowsNumber = numberOfLines || 4;
 
-    const height = 20 * rowsNumber;
-    multilineProps = {
-      minHeight: height,
-      maxHeight: height,
-    };
-  }
+      const height = 20 * rowsNumber;
+      multilineProps = {
+        minHeight: height,
+        maxHeight: height,
+      };
+    }
 
-  return multilineProps;
-  },[multiline]);
+    return multilineProps;
+  }, [multiline]);
 
   const getValue = () => {
-      let currValue = value;
-      currValue =
-        typeof currValue === 'object'
-          ? currValue?.value?.toString()
-          : currValue?.toString();
+    let currValue = value;
+    currValue =
+      typeof currValue === 'object'
+        ? currValue?.value?.toString()
+        : currValue?.toString();
 
-      currValue = currValue.replace(',', '');
-      return +currValue ? formatNumber(currValue) : currValue;
+    currValue = currValue.replace(',', '');
+    return +currValue ? formatNumber(currValue) : currValue;
   };
 
-    function onChangeText(currText: any) {
+  function onChangeText(currText: any) {
     const unformattedText = unFormatNumber(currText);
-    // if (this.props.validation) {
-    //   const {formStore, name, multiName} = this.props.validation;
-    //   formStore.fieldChanged(name, unformattedText, false, multiName);
-    // }
     otherProps.onChangeText && otherProps.onChangeText(unformattedText);
     // only update size when text length is increasing
     if (
@@ -195,16 +197,16 @@ function TextField({onTogglePress, toggleName, error, multiline,
     ) {
       updateSize(10);
     } else {
-      setState({...state,prevTextLength: unformattedText.length});
+      setState({...state, prevTextLength: unformattedText.length});
     }
   }
 
   function onFocus(): void {
-    setState({...state,isFocused: true});
+    setState({...state, isFocused: true});
   }
 
   function onBlur(e: NativeSyntheticEvent<TextInputFocusEventData>): void {
-    setState({...state,isFocused: false});
+    setState({...state, isFocused: false});
     otherProps.onBlur && otherProps.onBlur(e);
   }
 
@@ -220,7 +222,7 @@ function TextField({onTogglePress, toggleName, error, multiline,
 
   const getConversionValue = () => {
     if (Number(value) > 0) {
-      return convertAmountToIls(value, uiStore.conversionRate);
+      return convertAmountToIls(value, uiStore?.conversionRate);
     }
   };
 
@@ -259,24 +261,28 @@ function TextField({onTogglePress, toggleName, error, multiline,
           }}
           value={getValue()}
         />
-      {otherProps.onTogglePress &&  <View style={toggleViewStyle}>
-          <View />
-          <Text style={text.textFieldplaceholder}>{toggleName}</Text>
-          <TouchableOpacity onPress={otherProps.onTogglePress}>
-            <Icon name="close" size={9} />
-          </TouchableOpacity>
-        </View>}
-
-        {toggleName && isIsraelLocale && unFormatNumber(getValue()) > 0 && (
-          <View style={styles.conversionRateStyle}>
-            <Text style={styles.rightText}>
-              {convertAmountToIls(
-                unFormatNumber(getValue()),
-                uiStore.conversionRate,
-              )}
-            </Text>
+        {otherProps.onTogglePress && (
+          <View style={toggleViewStyle}>
+            <View />
+            <Text style={text.textFieldplaceholder}>{toggleName}</Text>
+            <TouchableOpacity onPress={otherProps.onTogglePress}>
+              <Icon name="close" size={9} />
+            </TouchableOpacity>
           </View>
         )}
+
+        {toggleName &&
+          isIsraelLocale &&
+          Number(unFormatNumber(getValue())) > 0 && (
+            <View style={styles.conversionRateStyle}>
+              <Text style={styles.rightText}>
+                {convertAmountToIls(
+                  unFormatNumber(getValue()),
+                  uiStore?.conversionRate,
+                )}
+              </Text>
+            </View>
+          )}
 
         {iconEndName && (
           <View style={iconStyle}>
@@ -296,22 +302,25 @@ function TextField({onTogglePress, toggleName, error, multiline,
   );
 }
 
- function TextInputFieldWithIcon({fieldActionComponent, viewStyle, infoMessage, ...props}: TextInputFieldWithIconProps & TextFieldProps ): ReactElement {
-      return (
-        <View style={{...viewStyle}}>
-          <View>
-            <TextField {...props} />
-            {fieldActionComponent && <View>{fieldActionComponent}</View>}
-          </View>
-          <ValidationMessage
-            name={props.name}
-            displayName={props.displayName}
-            errorMessage={props.errorMessage}
-            invisibleContainer={props.invisibleContainer}
-          />
-          {infoMessage && <Text style={styles.infoMessage}>{infoMessage}</Text>}
-        </View>
-      );
+function TextInputFieldWithIcon({
+  fieldActionComponent,
+  viewStyle,
+  infoMessage,
+  ...props
+}: TextInputFieldWithIconProps & TextFieldProps): ReactElement {
+  return (
+    <View style={{...viewStyle}}>
+      <View>
+        <TextField {...props} />
+        {fieldActionComponent && <View>{fieldActionComponent}</View>}
+      </View>
+      <ValidationMessage
+        errorMessage={props.errorMessage}
+        invisibleContainer={props.invisibleContainer}
+      />
+      {infoMessage && <Text style={styles.infoMessage}>{infoMessage}</Text>}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -383,4 +392,3 @@ const styles = StyleSheet.create({
 });
 
 export default inject('uiStore')(observer(TextInputFieldWithIcon));
-
