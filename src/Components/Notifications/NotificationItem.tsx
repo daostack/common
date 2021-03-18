@@ -48,7 +48,6 @@ const props = {
 const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
-  notificationStore,
 }) => {
   const navigateToDetail = () => {
     let navigate;
