@@ -5,6 +5,7 @@ import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {showBackendError} from '~/Util';
 
 export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
@@ -12,16 +13,38 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   }
 
   // Data consuming methods
-  getUserById = (uid: string): UserModel => this.getDataById(uid);
+  getUserById = (uid: string): UserModel => {
+    try {
+      return this.getDataById(uid) as UserModel;
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        error,
+      });
+      return {} as UserModel;
+    }
+  };
 
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
-  ): Array<UserModel> =>
-    members.map((commonMember: ICommonMember) => {
-      const user = this.getUserById(commonMember.userId);
-      user.joinedAt = commonMember.joinedAt;
-      return user;
-    });
+  ): Array<UserModel> => {
+    try {
+      return members.map((commonMember: ICommonMember) => {
+        const user = this.getUserById(commonMember.userId);
+        user.joinedAt = commonMember.joinedAt;
+        return user;
+      });
+    } catch (error) {
+      setTimeout(() => {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          error: 'getCommonUsersByMembersArray',
+        });
+      }, 0);
+
+      return [];
+    }
+  };
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>

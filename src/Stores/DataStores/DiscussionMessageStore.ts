@@ -13,6 +13,7 @@ import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {runInAction} from 'mobx';
+import {showBackendError} from '~/Util';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
@@ -28,32 +29,45 @@ export default class DiscussionMessageStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchDiscussionMessageById(id).then(
-        (discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
+      fetchDiscussionMessageById(id)
+        .then((discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
           runInAction(() => {
             this.setData(
               id,
               this.getEntityModel(this.firestoreDocToEntity(discussion)),
             );
           });
-        },
-      );
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            error: 'getDiscussionMessageById',
+          });
+        });
       return undefined;
     }
   };
 
   getDiscussionMessagesByDiscussionId = (
     discussionId: string,
-  ): Array<DiscussionMessage> | undefined =>
-    this.getDataArray
-      ?.filter(
-        (message: DiscussionMessage) => message.discussionId === discussionId,
-      )
-      .sort(
-        (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
-          prevMessage?.createdAt?.seconds - message?.createdAt?.seconds,
-      );
-
+  ): Array<DiscussionMessage> | undefined => {
+    try {
+      return this.getDataArray
+        ?.filter(
+          (message: DiscussionMessage) => message.discussionId === discussionId,
+        )
+        .sort(
+          (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
+            prevMessage?.createdAt?.seconds - message?.createdAt?.seconds,
+        );
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        error: 'getDiscussionMessagesByDiscussionId',
+      });
+      return;
+    }
+  };
   //Actions
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,

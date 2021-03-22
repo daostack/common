@@ -112,9 +112,14 @@ class AuthStore {
    */
   getPermission = (commonId: string, userId: string): string => {
     const currCommon = this.rootStore.commonStore.getCommonById(commonId);
-    const memberObj = currCommon.members.find((member) => member.userId === userId);
-    return currCommon.metadata.founderId === userId ? 'founder' : memberObj?.permission;
-  }
+    console.log('currCommon------', currCommon);
+    const memberObj = currCommon?.members.find(
+      (member) => member.userId === userId,
+    );
+    return currCommon?.metadata.founderId === userId
+      ? 'founder'
+      : memberObj?.permission;
+  };
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;

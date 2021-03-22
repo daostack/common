@@ -6,6 +6,7 @@ import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificatio
 import {Notification, NotificationItemState} from '../Models/Notification';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
+import {showBackendError} from '~/Util';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -16,19 +17,34 @@ export default class NotificationStore extends BaseStore<
   }
 
   // Data consuming methods
-  getNotificationById = (id: string): Notification | undefined =>
-    this.getDataById(id);
+  getNotificationById = (id: string): Notification | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        error: 'getNotificationById',
+      });
+      return;
+    }
+  };
 
-  getLoggedUserNotifications = (): Array<Notification> | undefined =>
-    this.getDataArray
-      ?.filter(
-        (notification: Notification) =>
-          notification.notificationItemData?.missingData === false,
-      )
-      .sort(
-        (notification: Notification, prevNotification: Notification) =>
-          prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
-      );
+  getLoggedUserNotifications = (): Array<Notification> | undefined => {
+    try {
+      return this.getDataArray
+        ?.filter(
+          (notification: Notification) =>
+            notification.notificationItemData?.missingData === false,
+        )
+        .sort(
+          (notification: Notification, prevNotification: Notification) =>
+            prevNotification.createdAt?.seconds -
+            notification.createdAt?.seconds,
+        );
+    } catch (error) {
+      return [];
+    }
+  };
 
   @computed
   get hasNewNotifications() {

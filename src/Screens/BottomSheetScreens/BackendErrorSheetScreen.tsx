@@ -29,6 +29,7 @@ const propTypes = {
 const BackendErrorSheetScreen: React.FC<
   PropTypes.InferProps<typeof propTypes>
 > = ({uiStore, ...props}) => {
+  console.log('------------error', props);
   const onClose = (): void => {
     uiStore.bottomSheetStore.hideBottomSheet();
 

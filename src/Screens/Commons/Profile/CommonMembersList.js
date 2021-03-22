@@ -29,6 +29,8 @@ const CommonMembersList = ({
     currCommon?.members || [],
   );
 
+  console.log('membersInfo', membersInfo);
+
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
   };
@@ -95,7 +97,11 @@ const CommonMembersList = ({
               style={styles.item}
               onPress={() => showUserProfile(member)}
               key={`touch_${i}`}>
-              <MemberCard key={i} moderatorId={currCommon?.metadata?.founderId} userInfo={member} />
+              <MemberCard
+                key={i}
+                moderatorId={currCommon?.metadata?.founderId}
+                userInfo={member}
+              />
             </TouchableOpacity>
           ),
         )
