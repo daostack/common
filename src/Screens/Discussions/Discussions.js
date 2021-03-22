@@ -199,6 +199,8 @@ const Discussions = ({
     return url[url.length - 2];
   };
 
+  const navigateBack = () => fromNotificationItem ? navigation.replace('CommonProfile', {commonId}) : navigation.pop();
+
   const header = () => (
     // <SafeAreaView flex={1}>
     <>
@@ -216,7 +218,7 @@ const Discussions = ({
         leftButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
-            onPress={() => navigation.pop()}>
+            onPress={() => navigateBack()}>
             <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
           </TouchableOpacity>
         }
