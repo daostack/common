@@ -67,7 +67,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     content: BackendErrorSheetScreen,
   },
   HIDDEN_CONTENT_INFO: {
-    topSnap: 280,
+    topSnap: 350,
     content: HiddenContentInfo,
   },
 };

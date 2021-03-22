@@ -10,7 +10,6 @@ const DiscussionList = ({
   commonId,
   navigation,
   rootStore,
-  hasPermission,
   openCommonOptions,
   showHiddenNote,
   isMember,
@@ -34,18 +33,18 @@ const DiscussionList = ({
       {list?.length > 0 ? (
         <FlatList
           data={list}
-          renderItem={({item}) => (
-            <DiscussionCard
+          renderItem={({item}) => {
+            item.moderation && console.log('iten', item)
+            return <DiscussionCard
               key={item.id}
               data={item}
               commonId={commonId}
               navigation={navigation}
-              hasPermission={hasPermission}
               openCommonOptions={() => openCommonOptions(item)}
               hiddenDiscussionNote={() => showHiddenNote(item)}
               isMember={isMember}
             />
-          )}
+          }}
         />
       ) : (
         <ViewTabNoData
@@ -60,7 +59,6 @@ const DiscussionList = ({
 DiscussionList.propTypes = {
   commonId: string.isRequired,
   navigation: object.isRequired,
-  hasPermission: bool,
   openCommonOptions: func,
   showHiddenNote: func,
   rootStore: rootStorePropTypes,
