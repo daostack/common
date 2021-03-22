@@ -33,9 +33,8 @@ const DiscussionList = ({
       {list?.length > 0 ? (
         <FlatList
           data={list}
-          renderItem={({item}) => {
-            item.moderation && console.log('iten', item)
-            return <DiscussionCard
+          renderItem={({item}) => (
+            <DiscussionCard
               key={item.id}
               data={item}
               commonId={commonId}
@@ -44,7 +43,7 @@ const DiscussionList = ({
               hiddenDiscussionNote={() => showHiddenNote(item)}
               isMember={isMember}
             />
-          }}
+          )}
         />
       ) : (
         <ViewTabNoData
