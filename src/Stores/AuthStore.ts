@@ -112,7 +112,6 @@ class AuthStore {
    */
   getPermission = (commonId: string, userId: string): string => {
     const currCommon = this.rootStore.commonStore.getCommonById(commonId);
-    console.log('currCommon------', currCommon);
     const memberObj = currCommon?.members.find(
       (member) => member.userId === userId,
     );
