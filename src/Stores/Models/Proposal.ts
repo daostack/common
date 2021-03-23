@@ -70,7 +70,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   imagesPromised = promisedComputed(
     [],
     async (): Promise<IUIProposalImage[]> => {
-      console.log('promisedComputed');
       const tempImages: IUIProposalImage[] = [];
       if (this.description.images?.length) {
         await Promise.all(
