@@ -79,14 +79,11 @@ export const showLoadingExpirationPopUp = (
 
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
-export const showBackendError = ({
-  bottomSheetStore,
-  subtitle = null,
-  error,
-}) => {
+export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
   bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
-    subtitle,
-    error,
+    subTitle:
+      subTitle || 'This took longer than expected, please try again later',
+    shouldGoBack: true,
   });
 };
 

@@ -9,6 +9,7 @@ import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion} from '../Models/Discussion';
 import {runInAction} from 'mobx';
+import {showBackendError} from '~/Util';
 
 export default class DiscussionStore extends BaseStore<
   Discussion,
@@ -34,7 +35,9 @@ export default class DiscussionStore extends BaseStore<
           });
         })
         .catch(() => {
-          // TODO
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
         });
       return undefined;
     }

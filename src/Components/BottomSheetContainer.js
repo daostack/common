@@ -1,5 +1,6 @@
 import {View, StyleSheet, Pressable, BackHandler} from 'react-native';
 import {observer, inject} from 'mobx-react';
+import {PropTypes} from 'prop-types';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
@@ -8,7 +9,7 @@ import Animated, {Easing} from 'react-native-reanimated';
 import {bool} from 'prop-types';
 import {uiStorePropType} from '~/Types/propTypes';
 
-const BottomSheetContainer = ({uiStore, withoutHeader}) => {
+const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
   let ref = useRef();
   let fall = new Animated.Value(0);
   const state = {
@@ -68,7 +69,9 @@ const BottomSheetContainer = ({uiStore, withoutHeader}) => {
       contentStyle = {...contentStyle, ...styles.contentContainerShadow};
     }
     return (
-      <View style={contentStyle}>{uiStore.bottomSheetStore.template}</View>
+      <View style={contentStyle}>
+        {React.cloneElement(uiStore.bottomSheetStore.template, {navigation})}
+      </View>
     );
   };
 
@@ -98,6 +101,7 @@ const BottomSheetContainer = ({uiStore, withoutHeader}) => {
 BottomSheetContainer.propTypes = {
   uiStore: uiStorePropType,
   withoutHeader: bool,
+  navigation: PropTypes.any,
 };
 
 const styles = StyleSheet.create({

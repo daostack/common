@@ -99,7 +99,6 @@ export default class ProposalStore extends BaseStore<
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            error: 'getProposalById',
           });
         });
       return undefined;
@@ -126,7 +125,6 @@ export default class ProposalStore extends BaseStore<
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getUserProposals',
       });
       return [];
     }
@@ -152,7 +150,6 @@ export default class ProposalStore extends BaseStore<
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getCommonProposals',
       });
       return [];
     }

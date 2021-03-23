@@ -27,7 +27,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         this.rootStore.authStore.isDaoMember(common?.members),
       );
     } catch (error) {
-      console.log('myCommons---', error);
       return [];
     }
   }
@@ -39,7 +38,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         (proposal: Proposal) => this.getCommonById(proposal.commonId),
       );
     } catch (error) {
-      console.log('pendingCommons---', error);
       return [];
     }
   }
@@ -54,7 +52,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
           common.register === DAO_REGISTERED,
       );
     } catch (error) {
-      console.log('featuredCommons---', error);
       return [];
     }
   }
@@ -69,10 +66,8 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.getDataById(id);
     } catch (error) {
-      console.log('getCommonById---', error);
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getCommonById',
       });
       return;
     }
@@ -84,10 +79,8 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         isDaoMemberByUserId(common?.members, userId),
       );
     } catch (error) {
-      console.log('getUserCommons---', error);
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getUserCommons',
       });
       return [];
     }

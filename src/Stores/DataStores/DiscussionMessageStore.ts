@@ -41,7 +41,6 @@ export default class DiscussionMessageStore extends BaseStore<
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            error: 'getDiscussionMessageById',
           });
         });
       return undefined;
@@ -63,7 +62,6 @@ export default class DiscussionMessageStore extends BaseStore<
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getDiscussionMessagesByDiscussionId',
       });
       return;
     }

@@ -23,7 +23,6 @@ export default class NotificationStore extends BaseStore<
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error: 'getNotificationById',
       });
       return;
     }
