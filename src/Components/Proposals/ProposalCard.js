@@ -102,6 +102,7 @@ const ProposalCard = ({
       navigation.navigate('ProposalScreen', {
         proposalId: proposalInfo.id,
         hasPermission,
+        commonId: proposalInfo.commonId,
       });
     }
   };
