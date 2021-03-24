@@ -69,11 +69,12 @@ const DiscussionMessage = ({
 
   // icon missing
   const flagView = (viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR) &&
+    viewerPermission === PERMISSIONS.MODERATOR ||
+    isHidden) &&
     isFlagged && (
       <Text
         style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
-        {flag} by {moderatorName}
+        {flag} {isHidden ? '' : `by ${moderatorName}`}
       </Text>
     );
 
