@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, hasPermission, fromNotificationItem},
+    params: {commonId, discussionId, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -65,7 +65,7 @@ const Discussions = ({
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);

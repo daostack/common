@@ -36,7 +36,6 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  hasPermission,
   openCommonOptions,
   hiddenProposalNote,
   rootStore,
@@ -53,6 +52,7 @@ const ProposalCard = ({
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
     proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const hasPermission = authStore.getPermission(proposalInfo.commonId, authStore?.userInfo?.uid);
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 

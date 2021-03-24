@@ -26,7 +26,6 @@ const {width} = Dimensions.get('window');
 const DiscussionMessage = ({
   data,
   showCurrentUserAvatar,
-  hasPermission,
   rootStore,
   commonId,
   openMessageOptions,
@@ -40,6 +39,8 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
+
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
