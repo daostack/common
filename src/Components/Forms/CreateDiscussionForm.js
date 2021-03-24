@@ -1,12 +1,10 @@
 import React, {useState} from 'react';
-import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
+import {View, ScrollView, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
-import MultiFileField from '../FormFields/MultiFileField';
-import MultiImageField from '../FormFields/MultiImageField';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import {db} from '~Firebase';
 import logger from '~/Services/Logger';
