@@ -57,8 +57,7 @@ const DiscussionMessagesList = ({
   }, 150);
 
   return (
-    <View
-      style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
+    <View style={styles.viewContainer}>
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -84,9 +83,11 @@ const DiscussionMessagesList = ({
             logger.error('Something bad happened: ', info);
           }}
           renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
+            <View style={styles.timeHeaderContainer}>
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            </View>
           )}
         />
       ) : (
@@ -126,6 +127,12 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
   },
+  timeHeaderContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+  },
   timeHeader: {
     textAlign: 'center',
     marginVertical: 3,
@@ -147,6 +154,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.fontSize(2),
     ...font.primary.regular,
+  },
+  viewContainer: {
+    flex: 1,
+    backgroundColor: colors.paleLilacTwo,
+    ...layout.content,
   },
 });
 
