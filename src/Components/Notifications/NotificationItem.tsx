@@ -1,12 +1,11 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
-import NotificationService from '~/Services/NotificationService';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {notificationStorePropTypes} from '~/Types/propTypes';
@@ -34,6 +33,10 @@ const props = {
       header: string,
       headerBold: string,
     }).isRequired,
+    notificationItemState: shape({
+      seen: bool.isRequired,
+      opened: bool.isRequired,
+    }).isRequired,
   }).isRequired,
   navigation: shape({
     navigate: func.isRequired,
@@ -46,13 +49,12 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
 }) => {
-  const [isRead, setRead] = useState(false);
-  const [isClicked, setClicked] = useState(false);
   const navigateToDetail = () => {
     let navigate;
 
-    NotificationService.setNotificationClicked(item.id);
-    setClicked(true);
+    // notificationStore.setNotificationItemState(item.id, {
+    //   opened: true,
+    // });
 
     if (item.notificationItemData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
@@ -88,16 +90,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     }
   };
 
-  useEffect(() => {
-    NotificationService.isNotificationClicked(item.id).then((result) =>
-      setClicked(result),
-    );
-    NotificationService.isNotificationRead(item.id).then((result) => {
-      setRead(result);
-    });
-    NotificationService.setNotificationRead(item.id);
-  }, []);
-
   return (
     <TouchableOpacity
       onPress={() => {
@@ -107,9 +99,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         style={[
           styles.messageCardContainer,
           {
-            backgroundColor: isClicked
-              ? colors.white
-              : colors.paleNotificationblue,
+            // backgroundColor: item.notificationItemState.opened
+            //   ? colors.white
+            //   : colors.paleNotificationblue,
+            backgroundColor: colors.white,
           },
         ]}>
         <View
@@ -120,7 +113,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
               uri: item.notificationItemData.ownerAvatar,
             }}
           />
-          {!isRead && <View style={styles.notReadDot} />}
+          {/* {!item.notificationItemState.seen && (
+            <View style={styles.notReadDot} />
+          )} */}
         </View>
         <View>
           <View style={styles.headerContainer}>
@@ -135,7 +130,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <View style={styles.messageContainer}>
-            <Text numberOfLines={2} style={{flexDirection: 'row', writingDirection: 'ltr'}}>
+            <Text
+              numberOfLines={2}
+              style={{flexDirection: 'row', writingDirection: 'ltr'}}>
               <Text style={[styles.messageStyle, {...font.primary.bold}]}>
                 {item.notificationItemData.descriptionBold}
               </Text>

@@ -4,7 +4,6 @@ import {
   INotificationEntity,
   NotificationItemData,
   IProposalNotificationData,
-  IDiscussionEntity,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import RootStore from '../RootStore';
 import {BaseModel} from './BaseModel';
@@ -15,6 +14,11 @@ import {
   IJoinRequestProposal,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
+
+export interface NotificationItemState {
+  seen: boolean;
+  opened: boolean;
+}
 
 export class Notification extends BaseModel<INotificationEntity> {
   @observable
@@ -31,6 +35,9 @@ export class Notification extends BaseModel<INotificationEntity> {
 
   @observable
   userFilter: Array<string>;
+
+  @observable
+  notificationItemState: NotificationItemState;
 
   @computed
   get notificationItemData(): NotificationItemData {
@@ -261,7 +268,7 @@ export class Notification extends BaseModel<INotificationEntity> {
     }
   }
 
-  private getDiscussionData(): IDiscussionEntity | null {
+  private getDiscussionData(): NotificationItemData {
     let notificationData = {missingData: true} as NotificationItemData;
     const discussion = this.rootStore.discussionStore.getDiscussionById(
       this.eventObjectId,
@@ -291,7 +298,7 @@ export class Notification extends BaseModel<INotificationEntity> {
         }
       }
     }
-    return (notificationData as NotificationItemData) || null;
+    return notificationData as NotificationItemData;
   }
 
   constructor(newNotificationInfo: INotificationEntity, rootStore: RootStore) {
@@ -301,5 +308,23 @@ export class Notification extends BaseModel<INotificationEntity> {
     this.eventObjectId = newNotificationInfo.eventObjectId;
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
+
+    const defaultState = {
+      seen: false,
+      opened: false,
+    };
+
+    if (this.rootStore.notificationStore.exists(newNotificationInfo.id)) {
+      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
+        newNotificationInfo.id,
+      );
+      // It's possible to have undefined notificationItemState for existing Notification in the store,
+      // because of old notifications, before the implementation of the feature with the dot indicator.
+      // So, we are setting a default state to such of prorposals for safety.
+      this.notificationItemState =
+        notificationFromStore?.notificationItemState || defaultState;
+    } else {
+      this.notificationItemState = defaultState;
+    }
   }
 }

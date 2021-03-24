@@ -21,6 +21,7 @@ export const subscribeToUserNotifications = (
   return NotificationsCollection.orderBy('createdAt', 'desc')
     .where('userFilter', 'array-contains', userId)
     .where('eventType', 'in', EventTypesOnNotificationList)
+    .limit(20)
     .onSnapshot((snapshot: any) => {
       listChangeCallback(snapshot);
     });

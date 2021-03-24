@@ -255,7 +255,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       <DiscussionList
         navigation={navigation}
         commonId={currCommon.id}
-        hasPermission={hasPermission}
         openCommonOptions={(discussion) =>
           openCommonOptions(discussion, TITLES.discussion)
         }
@@ -282,7 +281,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           stage: PROPOSAL_STAGE.Active,
           type: PROPOSAL_TYPE.FundingRequest,
         }}
-        hasPermission={hasPermission}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, TITLES.proposals)
         }

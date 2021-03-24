@@ -14,7 +14,6 @@ import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
 import {fetchDiscussionId} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
-import AsyncStorage from '@react-native-community/async-storage';
 
 export const TODELETE = 'To Delete';
 
@@ -56,39 +55,6 @@ export default class NotificationService {
     if (settings) {
       logger.log('Permission settings:', settings);
     }
-  }
-
-  static setNotificationRead(notificationId) {
-    AsyncStorage.getItem('notificationsRead').then((notifications) => {
-      const list = notifications ? JSON.parse(notifications) : [];
-      if (!list.includes(notificationId)) {
-        list.push(notificationId);
-        AsyncStorage.setItem('notificationsRead', JSON.stringify(list));
-      }
-    });
-  }
-
-  static async isNotificationRead(notificationId) {
-    const notifications = await AsyncStorage.getItem('notificationsRead');
-    const list = notifications ? JSON.parse(notifications) : [];
-    return list.includes(notificationId);
-  }
-
-  static async setNotificationClicked(notificationId) {
-    AsyncStorage.getItem('notificationsClicked').then((notifications) => {
-      const list = notifications ? JSON.parse(notifications) : [];
-
-      if (!list.includes(notificationId)) {
-        list.push(notificationId);
-        AsyncStorage.setItem('notificationsClicked', JSON.stringify(list));
-      }
-    });
-  }
-
-  static async isNotificationClicked(notificationId) {
-    const notifications = await AsyncStorage.getItem('notificationsClicked');
-    const list = notifications ? JSON.parse(notifications) : [];
-    return list.includes(notificationId);
   }
 
   static async getNotificationList() {
