@@ -21,10 +21,7 @@ export default class NotificationStore extends BaseStore<
 
   getLoggedUserNotifications = (): Array<Notification> | undefined =>
     this.getDataArray
-      ?.filter(
-        (notification: Notification) => true,
-        //notification.notificationItemData?.missingData === false,
-      )
+      ?.filter((notification: Notification) => true)
       .sort(
         (notification: Notification, prevNotification: Notification) =>
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
@@ -89,12 +86,12 @@ export default class NotificationStore extends BaseStore<
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
-    const defaultState = {
+    const defaultNotificationItemState = {
       seen: false,
       opened: false,
     };
 
-    let notificationItemState = defaultState;
+    let notificationItemState = defaultNotificationItemState;
 
     if (this.rootStore.notificationStore.exists(entity.id)) {
       const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
@@ -104,7 +101,8 @@ export default class NotificationStore extends BaseStore<
       // because of old notifications, before the implementation of the feature with the dot indicator.
       // So, we are setting a default state to such of prorposals for safety.
       notificationItemState =
-        notificationFromStore?.notificationItemState || defaultState;
+        notificationFromStore?.notificationItemState ||
+        defaultNotificationItemState;
     }
 
     return new Notification(entity, notificationItemState);

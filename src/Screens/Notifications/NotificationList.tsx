@@ -12,6 +12,7 @@ import {Notification} from '~/Stores/Models/Notification';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
+import FundingRequest from '~/Components/Notifications/FundingRequest';
 
 const props = {
   navigation: shape({
@@ -36,8 +37,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
       case EventTypeState.fundingRequestAccepted:
       case EventTypeState.fundingRequestExecuted:
       case EventTypeState.fundingRequestRejected:
-        return null;
-      //return this.getFundingRequestData();
+        return <FundingRequest item={item} navigation={navigation} />;
 
       case EventTypeState.messageCreated:
         return null;

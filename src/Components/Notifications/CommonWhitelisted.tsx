@@ -25,9 +25,7 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
-  let common = null;
-
-  common = rootStore.commonStore.getCommonById(item.eventObjectId);
+  let common = rootStore.commonStore.getCommonById(item.eventObjectId);
 
   if (common) {
     const user = rootStore.userStore.getUserById(common.members[0].userId);

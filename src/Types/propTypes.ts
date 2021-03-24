@@ -46,6 +46,7 @@ export const proposalStorePropTypes = shape({
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
   getUserProposals: func.isRequired,
+  getProposalNotificationData: func.isRequired,
 });
 
 export const discussionStorePropTypes = shape({
