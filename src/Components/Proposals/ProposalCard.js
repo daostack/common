@@ -140,12 +140,14 @@ const ProposalCard = ({
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
                 isMember &&
-                !isSwiper && !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+                !isSwiper &&
+                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
               userInfo={userStore.getUserById(proposalInfo.proposerId)}
               proposalInfo={proposalInfo}
+              commonId={proposalInfo.commonId}
               isPending={false}
             />
             <View style={{...layout.flexRow}}>
