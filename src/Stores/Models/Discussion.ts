@@ -1,4 +1,4 @@
-import {observable, computed, action} from 'mobx';
+import {observable, computed} from 'mobx';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {BaseModel} from './BaseModel';
