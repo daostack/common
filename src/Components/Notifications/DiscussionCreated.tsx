@@ -12,32 +12,38 @@ const props = {
   rootStore: rootStorePropTypes.isRequired,
 };
 
-const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
+const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
-
-  // NOTE: if the commonData is still not loaded into the store, we will have an exception here
-  // TODO: catch that cases.
-  let common = rootStore.commonStore.getCommonById(item.eventObjectId);
-
-  if (common) {
-    const user = rootStore.userStore.getUserById(common.members[0].userId);
-    if (user) {
+  const discussion = rootStore.discussionStore.getDiscussionById(
+    item.eventObjectId,
+  );
+  if (discussion) {
+    const user = rootStore.userStore.getUserById(discussion.ownerId);
+    if (discussion && user) {
       notificationData = {
         missingData: false,
-        descriptionBold: `"${common.name}"`,
-        description: ' - You might want to check it out.',
+        descriptionBold: ` by ${user.firstName} ${user.lastName}`,
         ownerAvatar: user.photoURL,
-        common,
+        discussion: discussion,
       };
     }
-  }
 
-  console.log('notificationData -> ', notificationData);
-  console.log('item -> ', item);
+    if (discussion && discussion.commonId) {
+      const common = rootStore.commonStore.getCommonById(discussion.commonId);
+
+      if (common && common.name) {
+        notificationData = {
+          ...notificationData,
+          headerBold: ` "${discussion.title}"`,
+          common,
+        };
+      }
+    }
+  }
 
   //Skip in case of missiing data
   if (notificationData.missingData) {
@@ -53,6 +59,6 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-CommonWhitelisted.propTypes = props;
+DiscussionCreated.propTypes = props;
 
-export default inject('rootStore')(observer(CommonWhitelisted));
+export default inject('rootStore')(observer(DiscussionCreated));

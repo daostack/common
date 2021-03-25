@@ -2,7 +2,10 @@ import BaseStore from './BaseStore';
 import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  INotificationEntity,
+  IProposalNotificationData,
+} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification, NotificationItemState} from '../Models/Notification';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
@@ -106,5 +109,27 @@ export default class NotificationStore extends BaseStore<
     }
 
     return new Notification(entity, notificationItemState);
+  }
+
+  private getProposalNotificationData(
+    eventObjectId: string,
+  ): IProposalNotificationData | null {
+    let user = null;
+    let common = null;
+    let proposal = this.rootStore.proposalStore.getProposalById(eventObjectId);
+    if (proposal) {
+      common = this.rootStore.commonStore.getCommonById(proposal.commonId);
+      user = this.rootStore.userStore.getUserById(proposal.proposerId);
+    }
+
+    if (proposal && user && common) {
+      return {
+        proposal,
+        common,
+        user,
+      } as IProposalNotificationData;
+    } else {
+      return null;
+    }
   }
 }

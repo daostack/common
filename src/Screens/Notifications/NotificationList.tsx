@@ -13,6 +13,11 @@ import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEnti
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingRequest from '~/Components/Notifications/FundingRequest';
+import MessageCreated from '~/Components/Notifications/MessageCreated';
+import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
+import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
+import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
+import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 
 const props = {
   navigation: shape({
@@ -40,19 +45,19 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         return <FundingRequest item={item} navigation={navigation} />;
 
       case EventTypeState.messageCreated:
-        return null;
+        return <MessageCreated item={item} navigation={navigation} />;
 
       case EventTypeState.commonMemberAdded:
-        return null;
+        return <CommonMemberAdded item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinCreated:
-        return null;
+        return <RequestToJoinCreated item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinRejected:
-        return null;
+        return <RequestToJoinRejected item={item} navigation={navigation} />;
 
       case EventTypeState.discussionCreated:
-        return null;
+        return <DiscussionCreated item={item} navigation={navigation} />;
       default:
         Logger.warn(
           `Not existing notification item event type ${item.eventType}`,

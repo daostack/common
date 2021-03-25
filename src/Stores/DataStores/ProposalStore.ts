@@ -133,28 +133,6 @@ export default class ProposalStore extends BaseStore<
           prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
       );
 
-  private getProposalNotificationData(
-    proposalId: string,
-  ): IProposalNotificationData | null {
-    let user = null;
-    let common = null;
-    let proposal = this.rootStore.proposalStore.getProposalById(proposalId);
-    if (proposal) {
-      common = this.rootStore.commonStore.getCommonById(proposal.commonId);
-      user = this.rootStore.userStore.getUserById(proposal.proposerId);
-    }
-
-    if (proposal && user && common) {
-      return {
-        proposal,
-        common,
-        user,
-      } as IProposalNotificationData;
-    } else {
-      return null;
-    }
-  }
-
   //Actions
   subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this.updateStoreData, {

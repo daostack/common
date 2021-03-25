@@ -46,7 +46,6 @@ export const proposalStorePropTypes = shape({
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
   getUserProposals: func.isRequired,
-  getProposalNotificationData: func.isRequired,
 });
 
 export const discussionStorePropTypes = shape({
@@ -58,6 +57,7 @@ export const discussionStorePropTypes = shape({
 export const discussionMessageStorePropTypes = shape({
   subscribeToDiscussionsMessages: func.isRequired,
   getDiscussionMessagesByDiscussionId: func.isRequired,
+  getDiscussionMessageById: func.isRequired,
 });
 
 export const notificationStorePropTypes = shape({
@@ -67,6 +67,7 @@ export const notificationStorePropTypes = shape({
   deleteUserNotifications: func.isRequired,
   setNotificationItemState: func.isRequired,
   removeSeenStateForNewNotifications: func.isRequired,
+  getProposalNotificationData: func.isRequired,
 });
 
 export const rootStorePropTypes = shape({
