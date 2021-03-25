@@ -440,13 +440,14 @@ const Discussions = ({
               ...styles.inputContainer,
               height: Math.max(100, inputHeight + 50),
             }}>
+            {/* should be added in better discussion batch 3
             <TouchableOpacity
               onPress={() => {}}
               style={{
                 justifyContent: 'center',
               }}>
               <Icon name="add-24" size={30} color={colors.mainBlue} />
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
             <TextInput
               ref={inputRef}
               editable={true}
