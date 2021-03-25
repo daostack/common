@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -27,6 +28,12 @@ const DiscussionMessagesList = ({
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
+
+  const viewerPermission = rootStore.authStore.getPermission(
+    commonId,
+    auth().currentUser.uid,
+  );
+
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -75,6 +82,7 @@ const DiscussionMessagesList = ({
               data={x.item}
               showCurrentUserAvatar
               hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
               commonId={commonId}
               openMessageOptions={() => openMessageOptions(x.item)}
               isMember={isMember}
