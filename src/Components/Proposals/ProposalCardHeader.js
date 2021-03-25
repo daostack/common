@@ -10,6 +10,7 @@ import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -120,12 +121,21 @@ const ProposalCardHeader = ({
   reporter,
   hasPermission,
   rootStore,
+  viewerPermission,
 }) => {
   const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
-  const showCountdown = !isReported || !moderation;
+  const showCountdown =
+    moderation?.flag !== FLAGS.hidden &&
+    viewerPermission !== PERMISSIONS.FOUNDER &&
+    viewerPermission !== PERMISSIONS.MODERATOR;
+
   const showIcon =
-    !showCountdown && moderation?.flag === FLAGS.hidden && !hasPermission;
+    !showCountdown &&
+    moderation?.flag === FLAGS.hidden &&
+    !hasPermission &&
+    (viewerPermission === PERMISSIONS.FOUNDER ||
+      viewerPermission === PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -193,6 +203,7 @@ const ProposalCardHeader = ({
           moderation={moderation}
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
+          viewerPermission={viewerPermission}
         />
       )}
       {showIcon && (
@@ -218,6 +229,7 @@ ProposalCardHeader.propTypes = {
   reporter: object,
   hasPermission: bool,
   rootStore: rootStorePropTypes.isRequired,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({

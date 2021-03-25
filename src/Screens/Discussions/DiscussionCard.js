@@ -29,6 +29,7 @@ const DiscussionCard = ({
   hiddenDiscussionNote,
   rootStore,
   isMember,
+  viewerPermission,
 }) => {
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
@@ -82,6 +83,7 @@ const DiscussionCard = ({
               moderation={data.moderation}
               reporter={getReporter()}
               hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
             />
           )}
           {showCard && (
@@ -92,7 +94,8 @@ const DiscussionCard = ({
                 </Text>
                 {(!discussionMessageStore.isModerationHidden ||
                   hasPermission) &&
-                  isMember && !isOwner && (
+                  isMember &&
+                  !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}
               </View>
@@ -190,6 +193,7 @@ DiscussionCard.propTypes = {
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
   isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({

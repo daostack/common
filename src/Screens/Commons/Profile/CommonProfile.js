@@ -153,7 +153,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    authStore.getPermission(commonId, authStore?.userInfo?.uid),
   );
 
   const headerHeightLayouted = (height) => height;
@@ -558,7 +558,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     );
   };
 
-  const getType = (title) => (title === TITLES.proposals ? TITLES.proposalText : title);
+  const getType = (title) =>
+    title === TITLES.proposals ? TITLES.proposalText : title;
 
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {

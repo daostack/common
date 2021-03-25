@@ -3,10 +3,11 @@ import {StyleSheet, View} from 'react-native';
 import {layout, colors, sizeXS, sizeM} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
-import {bool, object, InferProps} from 'prop-types';
+import {bool, object, InferProps, string} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const props = {
   isReported: bool,
@@ -14,6 +15,7 @@ const props = {
   reporter: object,
   hasPermission: bool,
   rootStore: rootStorePropTypes.isRequired,
+  viewerPermission: string,
 };
 
 const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
@@ -22,9 +24,14 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
   reporter,
   hasPermission,
   rootStore,
+  viewerPermission,
 }) => {
   const authStore = rootStore.authStore;
-  const showIcon = moderation?.flag === FLAGS.hidden && !hasPermission;
+  const showIcon =
+    moderation?.flag === FLAGS.hidden &&
+    !hasPermission &&
+    (viewerPermission === PERMISSIONS.FOUNDER ||
+      viewerPermission === PERMISSIONS.MODERATOR);
 
   return (
     <View
@@ -34,6 +41,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
           moderation={moderation}
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
+          viewerPermission={viewerPermission}
         />
       )}
       {showIcon && (

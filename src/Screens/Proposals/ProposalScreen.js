@@ -16,6 +16,7 @@ import {
   Pressable,
   Image,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
@@ -28,7 +29,7 @@ import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import {observer, inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
@@ -140,6 +141,14 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+
+  let viewerPermission = '';
+  if (proposalInfo) {
+    viewerPermission = rootStore.authStore.getPermission(
+      proposalInfo?.id,
+      auth()?.currentUser?.uid,
+    );
+  }
 
   const proposalCommon = proposalInfo
     ? commonStore.getCommonById(proposalInfo.commonId)
@@ -766,6 +775,7 @@ const ProposalScreen = ({
                         }
                         onPress={() => openDebtInsufficientModal()}
                         hasPermission={hasPermission}
+                        viewerPermission={viewerPermission}
                       />
                     </TouchableOpacity>
                     {proposedUser && (
@@ -802,6 +812,7 @@ const ProposalScreen = ({
                         }
                         hasPermission={hasPermission}
                         authInfo={authStore.userInfo}
+                        viewerPermission={viewerPermission}
                       />
                     </TouchableOpacity>
 
