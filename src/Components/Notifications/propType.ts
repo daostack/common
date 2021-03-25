@@ -1,4 +1,4 @@
-import {func, string, object, shape, number, array, bool} from 'prop-types';
+import {string, object, shape, number, bool} from 'prop-types';
 
 export const notificationDataPropTypes = shape({
   missingData: bool.isRequired,

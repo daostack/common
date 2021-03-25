@@ -24,7 +24,7 @@ export default class NotificationStore extends BaseStore<
 
   getLoggedUserNotifications = (): Array<Notification> | undefined =>
     this.getDataArray
-      ?.filter((notification: Notification) => true)
+      ?.filter(() => true)
       .sort(
         (notification: Notification, prevNotification: Notification) =>
           prevNotification.createdAt?.seconds - notification.createdAt?.seconds,

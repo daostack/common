@@ -1,10 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {colors, text, font} from '~/Theme';
-import {InferProps, string, object} from 'prop-types';
+import React from 'react';
+import {InferProps, object} from 'prop-types';
 import {
-  BadgeProps,
-  EventTitleState,
   EventTypeState,
   NotificationItemData,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';

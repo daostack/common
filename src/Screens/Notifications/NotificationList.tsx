@@ -3,7 +3,6 @@ import React, {useEffect} from 'react';
 import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {func, InferProps, shape} from 'prop-types';
-import NotificationItem from '~/Components/Notifications/NotificationItem';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
@@ -64,8 +63,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         );
         return null;
     }
-
-    //<NotificationItem item={item} navigation={navigation} />
   };
 
   useEffect(() => {
