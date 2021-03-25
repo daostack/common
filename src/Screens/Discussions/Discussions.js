@@ -68,7 +68,6 @@ const Discussions = ({
 
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
@@ -234,7 +233,7 @@ const Discussions = ({
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
         <View style={styles.headerContainer}>
-          {isExpanded ? (
+          {dataState.isExpanded ? (
             <View
               style={{
                 paddingTop: 20,
@@ -277,7 +276,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
@@ -290,7 +289,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
