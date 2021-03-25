@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -166,6 +166,7 @@ const App = ({rootStore, navigation}) => {
           proposalId: objectId,
           tabIndex: +tabIndex,
           fromNotificationItem: true,
+          commonId,
         });
       }
     }
@@ -394,8 +395,19 @@ const App = ({rootStore, navigation}) => {
         <Stack.Screen
           name="ProposalScreen"
           component={ProposalScreen}
-          options={({route}) => ({
+          options={({route, ...rest}) => ({
             headerBackTitleVisible: false,
+            headerLeft: () => (
+              <HeaderBackButton
+                onPress={() =>
+                  route?.params.fromNotificationItem
+                    ? rest?.navigation.replace('CommonProfile', {
+                        commonId: route?.params.commonId,
+                      })
+                    : navigation.pop()
+                }
+              />
+            ),
             headerTitle: () => (
               <View style={{alignItems: 'center'}}>
                 <Text

@@ -45,7 +45,6 @@ const props = {
   }),
   showMax: number,
   isSwiper: bool,
-  hasPermission: bool,
   openCommonOptions: func.isRequired,
   showHiddenNote: func.isRequired,
   isMember: bool,
@@ -102,7 +101,6 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
-            hasPermission={hasPermission}
             openCommonOptions={() => openCommonOptions(item)}
             hiddenProposalNote={() => showHiddenNote(item)}
             isMember={isMember}
@@ -130,7 +128,6 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
-          hasPermission={hasPermission}
           openCommonOptions={() => openCommonOptions(item)}
           hiddenProposalNote={() => showHiddenNote(item)}
           isMember={isMember}

@@ -24,7 +24,6 @@ const DiscussionCard = ({
   data,
   commonId,
   navigation,
-  hasPermission,
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
@@ -39,7 +38,7 @@ const DiscussionCard = ({
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
-
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
   const hideHeader =
     !data.moderation || data.moderation?.flag === FLAGS.visible;
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
@@ -56,7 +55,6 @@ const DiscussionCard = ({
           data: data,
           discussionId: data.id,
           commonId: commonId,
-          hasPermission,
         },
       });
       navigation.dispatch(navigate);
@@ -188,7 +186,6 @@ DiscussionCard.propTypes = {
   }),
   commonId: string,
   navigation: object.isRequired,
-  hasPermission: bool,
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
