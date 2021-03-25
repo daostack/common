@@ -14,7 +14,6 @@ import {
   PROPOSAL_STAGES_HISTORY,
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
-import {IProposalNotificationData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
