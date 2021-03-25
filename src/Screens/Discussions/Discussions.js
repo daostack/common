@@ -11,7 +11,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
-  Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
@@ -44,6 +43,7 @@ const Discussions = ({
   },
   rootStore,
 }) => {
+  const redirectBack = !commonId && fromNotificationItem;
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
@@ -65,7 +65,10 @@ const Discussions = ({
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -199,7 +202,10 @@ const Discussions = ({
     return url[url.length - 2];
   };
 
-  const navigateBack = () => fromNotificationItem ? navigation.replace('CommonProfile', {commonId}) : navigation.pop();
+  const navigateBack = () =>
+    fromNotificationItem && !redirectBack
+      ? navigation.replace('CommonProfile', {commonId})
+      : navigation.pop();
 
   const header = () => (
     // <SafeAreaView flex={1}>
@@ -526,15 +532,6 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.black,
   },
-  title: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    color: colors.black,
-    textAlign: 'center',
-    // textAlignVertical: 'center',
-    flex: 1,
-    lineHeight: 20,
-  },
   galleryImage: {
     marginRight: 15,
     width: 120,
@@ -557,13 +554,6 @@ const styles = StyleSheet.create({
     height: 35,
     backgroundColor: colors.grey4,
     borderRadius: 17.5,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    padding: 10,
-    backgroundColor: colors.mainBlue,
   },
   inputContainer: {
     flex: 1,
@@ -595,58 +585,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 15,
   },
-  textInput: {
-    flex: 1,
-    paddingTop: 0,
-    marginBottom: Platform.OS === 'ios' ? 10 : 0,
-    marginHorizontal: 10,
-  },
-  sendMessageIcon: {
-    marginBottom: Platform.OS === 'ios' ? 10 : 0,
-  },
-  timeHeader: {
-    textAlign: 'center',
-    marginVertical: 3,
-    color: colors.grey3,
-    ...font.fontSize(2),
-    ...font.primary.regular,
-  },
-
-  sheetTitle: {
-    ...font.fontSize(4),
-    ...font.primary.bold,
-    color: colors.black,
-    paddingVertical: 15,
-    textAlign: 'center',
-  },
-  bottomSheet: {
-    paddingBottom: 40,
-  },
-  modalStyle: {
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  sheetText: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    color: colors.black,
-    marginLeft: 10,
-  },
-  sheetButton: {
-    flexDirection: 'row',
-    width: width,
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-    marginHorizontal: 20,
-    justifyContent: 'flex-start',
-  },
   adsText: {
     ...font.fontSize(2),
     textDecorationLine: 'underline',
     ...font.primary.regular,
     ...layout.marginLeftXS,
   },
-
   adRow: {
     alignItems: 'center',
     ...layout.flexRow,
@@ -661,22 +605,6 @@ const styles = StyleSheet.create({
     paddingTop: sizeS,
     paddingBottom: sizeXL,
     alignSelf: 'center',
-  },
-  emptyContainer: {
-    flex: 0.8,
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyTitle: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    paddingVertical: 12,
-  },
-  emptyBody: {
-    textAlign: 'center',
-    ...font.fontSize(2),
-    ...font.primary.regular,
   },
   headerContainer: {
     backgroundColor: colors.white,

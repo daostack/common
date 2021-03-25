@@ -4,7 +4,7 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
-import {InferProps, object, shape, string, bool, func} from 'prop-types';
+import {InferProps, object, shape, string, bool, func, number} from 'prop-types';
 import {formatNotificationDate} from '~/Util/DateUtil';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
@@ -23,6 +23,7 @@ const props = {
       }),
       proposal: shape({
         id: string,
+        commonId: string,
       }),
       discussion: shape({
         id: string,
@@ -32,6 +33,7 @@ const props = {
       descriptionBold: string,
       header: string,
       headerBold: string,
+      tabIndex: number,
     }).isRequired,
     notificationItemState: shape({
       seen: bool.isRequired,
