@@ -192,32 +192,32 @@ workflows:
         stack: osx-xcode-12.2.x
   setup:
     steps:
-    - activate-ssh-key@4:
-        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-    - git-clone@4: {}
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
-        - source: $BITRISEIO_google_services_json_URL
-        title: Download - google services
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
-        - source: $BITRISEIO_GoogleService_Info_plist_URL
-        title: Download - GoogleService-Info.plist
-    - yarn@0:
-        inputs:
-        - command: install
-        title: Run yarn install
-    - yarn@0:
-        inputs:
-        - command: test
-        title: Run yarn test
-    - cocoapods-install@1:
-        inputs:
-        - install_cocoapods_version: 1.10.1
-        - verbose: 'false'
-        - podfile_path: $source_root_path/ios/Podfile
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      - git-clone@4: {}
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
+            - source: $BITRISEIO_google_services_json_URL
+          title: Download - google services
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
+            - source: $BITRISEIO_GoogleService_Info_plist_URL
+          title: Download - GoogleService-Info.plist
+      - yarn@0:
+          inputs:
+            - command: install
+          title: Run yarn install
+      - yarn@0:
+          inputs:
+            - command: test
+          title: Run yarn test
+      - cocoapods-install@1:
+          inputs:
+            - install_cocoapods_version: 1.10.1
+            - verbose: 'false'
+            - podfile_path: $source_root_path/ios/Podfile
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
@@ -666,21 +666,21 @@ workflows:
 
                 # not just bash, e.g.:
 
-            # ruby ./path/to/script.rb
-        title: Set up Firebase config
-    - yarn@0:
-        inputs:
-        - command: install
-        title: Run yarn install
-    - yarn@0:
-        inputs:
-        - command: test
-        title: Run yarn test
-    - cocoapods-install@1:
-        inputs:
-        - install_cocoapods_version: 1.10.1
-        - verbose: 'false'
-        - podfile_path: $source_root_path/ios/Podfile
+                # ruby ./path/to/script.rb
+          title: Set up Firebase config
+      - yarn@0:
+          inputs:
+            - command: install
+          title: Run yarn install
+      - yarn@0:
+          inputs:
+            - command: test
+          title: Run yarn test
+      - cocoapods-install@1:
+          inputs:
+            - install_cocoapods_version: 1.10.1
+            - verbose: 'false'
+            - podfile_path: $source_root_path/ios/Podfile
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
@@ -1092,10 +1092,10 @@ app:
       firebaseWebClientId: 854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com
     - opts:
         is_expand: false
-      CODEPUSH_TARGET_VERSION_PRODUCTION: '>=1.9.5'
+      CODEPUSH_TARGET_VERSION_PRODUCTION: '>=1.9.4'
     - opts:
         is_expand: false
-      CODEPUSH_TARGET_VERSION_STAGING: '>=1.9.5'
+      CODEPUSH_TARGET_VERSION_STAGING: '>=1.9.4'
     - opts:
         is_expand: false
       APPCENTER_APP_ID_ANDROID: DAOstack/common-android
