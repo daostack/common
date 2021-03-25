@@ -10,7 +10,6 @@ const DiscussionList = ({
   commonId,
   navigation,
   rootStore,
-  hasPermission,
   openCommonOptions,
   showHiddenNote,
   isMember,
@@ -40,7 +39,6 @@ const DiscussionList = ({
               data={item}
               commonId={commonId}
               navigation={navigation}
-              hasPermission={hasPermission}
               openCommonOptions={() => openCommonOptions(item)}
               hiddenDiscussionNote={() => showHiddenNote(item)}
               isMember={isMember}
@@ -60,7 +58,6 @@ const DiscussionList = ({
 DiscussionList.propTypes = {
   commonId: string.isRequired,
   navigation: object.isRequired,
-  hasPermission: bool,
   openCommonOptions: func,
   showHiddenNote: func,
   rootStore: rootStorePropTypes,

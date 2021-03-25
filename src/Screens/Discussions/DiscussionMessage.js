@@ -20,17 +20,18 @@ import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
 import {reporterName} from '../../Components/Moderation/Reported';
 import {FLAGS} from '../../Components/Moderation/constants';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
   data,
   showCurrentUserAvatar,
-  hasPermission,
   rootStore,
   commonId,
   openMessageOptions,
   isMember,
+  viewerPermission,
 }) => {
   let currentUserUid = null;
   const isHidden = data.moderation?.flag === FLAGS.hidden;
@@ -40,6 +41,8 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
+
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -61,19 +64,20 @@ const DiscussionMessage = ({
     );
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
-    const userPermission = authStore.getPermission(
-      commonId,
-      ownerInfo.id,
-    );
+    const userPermission = authStore.getPermission(commonId, ownerInfo.id);
     setPermission(userPermission);
   }, []);
 
   // icon missing
-  const flagView = isFlagged && (
-    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
-      {flag} by {moderatorName}
-    </Text>
-  );
+  const flagView = (viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR ||
+    isHidden) &&
+    isFlagged && (
+      <Text
+        style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
+        {flag} {isHidden ? '' : `by ${moderatorName}`}
+      </Text>
+    );
 
   const dateView = () => (
     <Text
@@ -89,7 +93,10 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || hasPermission) && isMember && !isOwner && openMessageOptions()
+        (!isHidden || hasPermission) &&
+        isMember &&
+        !isOwner &&
+        openMessageOptions()
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
@@ -115,13 +122,14 @@ const DiscussionMessage = ({
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
             }}>
             {flagView}
-            <HyperText textStyle={{
-                  ...styles.text,
-                  color: isHidden ? colors.grey3 : colors.black,
-                  ...textjs.writingDirection(data.text),
+            <HyperText
+              textStyle={{
+                ...styles.text,
+                color: isHidden ? colors.grey3 : colors.black,
+                ...textjs.writingDirection(data.text),
               }}
               selectable>
-                {data.text}
+              {data.text}
             </HyperText>
             <View style={{position: 'relative', right: 0, bottom: 0}}>
               {dateView()}
@@ -167,11 +175,12 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <HyperText textStyle={{
+                <HyperText
+                  textStyle={{
                     ...styles.text,
                     color: isHidden ? colors.grey3 : colors.black,
                     ...textjs.writingDirection(data.text),
-                }}>
+                  }}>
                   {data.text}
                 </HyperText>
               )}
@@ -196,6 +205,7 @@ DiscussionMessage.propTypes = {
   commonId: string,
   openMessageOptions: func,
   isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({

@@ -40,7 +40,7 @@ const {width} = Dimensions.get('window');
 const Discussions = ({
   navigation,
   route: {
-    params: {commonId, discussionId, hasPermission, fromNotificationItem},
+    params: {commonId, discussionId, fromNotificationItem},
   },
   rootStore,
 }) => {
@@ -65,7 +65,7 @@ const Discussions = ({
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -199,6 +199,8 @@ const Discussions = ({
     return url[url.length - 2];
   };
 
+  const navigateBack = () => fromNotificationItem ? navigation.replace('CommonProfile', {commonId}) : navigation.pop();
+
   const header = () => (
     // <SafeAreaView flex={1}>
     <>
@@ -216,7 +218,7 @@ const Discussions = ({
         leftButton={
           <TouchableOpacity
             style={{justifyContent: 'center'}}
-            onPress={() => navigation.pop()}>
+            onPress={() => navigateBack()}>
             <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
           </TouchableOpacity>
         }
