@@ -10,6 +10,7 @@ import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEnti
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {inject, observer} from 'mobx-react';
 import {notificationDataPropTypes} from './propType';
+import {formatNotificationDate} from '~/Util/DateUtil';
 
 const props = {
   item: shape({
@@ -125,7 +126,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             </Text>
           </View>
           <Text style={styles.dateStyle}>
-            {/* {formatNotificationDate(item.createdAt.toDate())} */}
+            {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
+            {formatNotificationDate(
+              item.createdAt.toDate && item.createdAt.toDate(),
+            )}
             {notificationData.common && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}
