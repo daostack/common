@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import {layout, text, colors, font} from '~/Theme';
 import DiscussionMessage from '../Discussions/DiscussionMessage';
 import {observer, inject} from 'mobx-react';
@@ -27,6 +28,12 @@ const DiscussionMessagesList = ({
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
+
+  const viewerPermission = rootStore.authStore.getPermission(
+    commonId,
+    auth()?.currentUser?.uid,
+  );
+
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -57,8 +64,7 @@ const DiscussionMessagesList = ({
   }, 150);
 
   return (
-    <View
-      style={{flex: 1, backgroundColor: colors.paleGrey, ...layout.content}}>
+    <View style={styles.viewContainer}>
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -75,6 +81,7 @@ const DiscussionMessagesList = ({
               data={x.item}
               showCurrentUserAvatar
               hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
               commonId={commonId}
               openMessageOptions={() => openMessageOptions(x.item)}
               isMember={isMember}
@@ -84,9 +91,11 @@ const DiscussionMessagesList = ({
             logger.error('Something bad happened: ', info);
           }}
           renderSectionFooter={({section: {date}}) => (
-            <Text style={styles.timeHeader}>
-              {moment().isSame(date, 'day') ? 'Today' : date}
-            </Text>
+            <View style={styles.timeHeaderContainer}>
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            </View>
           )}
         />
       ) : (
@@ -126,6 +135,12 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
   },
+  timeHeaderContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+  },
   timeHeader: {
     textAlign: 'center',
     marginVertical: 3,
@@ -147,6 +162,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.fontSize(2),
     ...font.primary.regular,
+  },
+  viewContainer: {
+    flex: 1,
+    backgroundColor: colors.paleLilacTwo,
+    ...layout.content,
   },
 });
 

@@ -68,6 +68,7 @@ export const notificationStorePropTypes = shape({
   setNotificationItemState: func.isRequired,
   removeSeenStateForNewNotifications: func.isRequired,
   getProposalNotificationData: func.isRequired,
+  getParentDiscussion: func.isRequired,
 });
 
 export const rootStorePropTypes = shape({

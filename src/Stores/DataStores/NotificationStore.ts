@@ -9,6 +9,9 @@ import {
 import {Notification, NotificationItemState} from '../Models/Notification';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {Discussion} from '../Models/Discussion';
+import {Proposal} from '../Models/Proposal';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -74,7 +77,7 @@ export default class NotificationStore extends BaseStore<
   };
 
   //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
     this.rootStore.authStore.signedInUser
       ? subscribeToUserNotifications(
           this.rootStore.authStore.signedInUser,
@@ -111,7 +114,7 @@ export default class NotificationStore extends BaseStore<
     return new Notification(entity, notificationItemState);
   }
 
-  private getProposalNotificationData(
+  getProposalNotificationData(
     eventObjectId: string,
   ): IProposalNotificationData | null {
     let user = null;
@@ -131,5 +134,18 @@ export default class NotificationStore extends BaseStore<
     } else {
       return null;
     }
+  }
+
+  getParentDiscussion(
+    message: IDiscussionMessageEntity,
+  ): Discussion | Proposal {
+    return (
+      (this.rootStore.discussionStore.getDiscussionById(
+        message.discussionId,
+      ) as Discussion) ||
+      (this.rootStore.proposalStore.getProposalById(
+        message.discussionId,
+      ) as Proposal)
+    );
   }
 }

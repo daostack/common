@@ -24,11 +24,11 @@ const DiscussionCard = ({
   data,
   commonId,
   navigation,
-  hasPermission,
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
   isMember,
+  viewerPermission,
 }) => {
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
@@ -38,7 +38,7 @@ const DiscussionCard = ({
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
-
+  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
   const hideHeader =
     !data.moderation || data.moderation?.flag === FLAGS.visible;
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
@@ -55,7 +55,6 @@ const DiscussionCard = ({
           data: data,
           discussionId: data.id,
           commonId: commonId,
-          hasPermission,
         },
       });
       navigation.dispatch(navigate);
@@ -82,6 +81,7 @@ const DiscussionCard = ({
               moderation={data.moderation}
               reporter={getReporter()}
               hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
             />
           )}
           {showCard && (
@@ -92,7 +92,8 @@ const DiscussionCard = ({
                 </Text>
                 {(!discussionMessageStore.isModerationHidden ||
                   hasPermission) &&
-                  isMember && !isOwner && (
+                  isMember &&
+                  !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}
               </View>
@@ -185,11 +186,11 @@ DiscussionCard.propTypes = {
   }),
   commonId: string,
   navigation: object.isRequired,
-  hasPermission: bool,
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
   isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({

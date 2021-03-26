@@ -5,7 +5,6 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import Logger from '~/Services/Logger';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -13,32 +12,28 @@ const props = {
   rootStore: rootStorePropTypes.isRequired,
 };
 
-const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
+const CommonMemberAdded: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
+  const discussion = rootStore.discussionStore.getDiscussionById(
+    item.eventObjectId,
+  );
+  if (discussion) {
+    const reporter = rootStore.userStore.getUserById(discussion.ownerId);
 
-  // NOTE: if the commonData is still not loaded into the store, we will have an exception here
-  // TODO: catch that cases.
-  try {
-    let common = rootStore.commonStore.getCommonById(item.eventObjectId);
+    if (discussion && discussion.commonId) {
+      const common = rootStore.commonStore.getCommonById(discussion.commonId);
 
-    if (common) {
-      const user = rootStore.userStore.getUserById(common.members[0].userId);
-      if (user) {
-        notificationData = {
-          missingData: false,
-          descriptionBold: `"${common.name}"`,
-          description: ' - You might want to check it out.',
-          ownerAvatar: user.photoURL,
-          common,
-        };
-      }
+      notificationData = {
+        missingData: false,
+        description: 'A post was reported',
+        ownerAvatar: reporter.photoURL,
+        common,
+      };
     }
-  } catch (error) {
-    Logger.warn('Not found data');
   }
 
   //Skip in case of missiing data
@@ -55,6 +50,6 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-CommonWhitelisted.propTypes = props;
+CommonMemberAdded.propTypes = props;
 
-export default inject('rootStore')(observer(CommonWhitelisted));
+export default inject('rootStore')(observer(CommonMemberAdded));
