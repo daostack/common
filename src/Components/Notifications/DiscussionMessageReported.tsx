@@ -5,8 +5,8 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import { Proposal } from '~/Stores/Models/Proposal';
-import { Discussion } from '~/Stores/Models/Discussion';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {Discussion} from '~/Stores/Models/Discussion';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -19,15 +19,15 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-
-  const getParentObject = (discussionObject: Proposal | Discussion): Record<any, any> {
-    return discussionObject?.proposerId
+  const getParentObject = (
+    discussionObject: Proposal | Discussion,
+  ): Record<any, any> =>
+    discussionObject?.proposerId
       ? {
           proposal: discussionObject,
           tabIndex: 1,
         }
       : {discussion: discussionObject};
-  }
 
   let notificationData = {missingData: true} as NotificationItemData;
   const messageReportedData = rootStore.discussionMessageStore.getDiscussionMessageById(
