@@ -21,7 +21,6 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   let notificationData = {missingData: true} as NotificationItemData;
 
   // NOTE: if the commonData is still not loaded into the store, we will have an exception here
-  // TODO: catch that cases.
   try {
     let common = rootStore.commonStore.getCommonById(item.eventObjectId);
 
