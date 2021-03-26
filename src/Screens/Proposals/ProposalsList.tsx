@@ -22,6 +22,7 @@ import {
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width, height} = Dimensions.get('window');
 
@@ -69,6 +70,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     isMember,
   }) => {
     const [viewerPermission, setViewerPermission] = React.useState('');
+    const isModerator =
+      viewerPermission === PERMISSIONS.FOUNDER ||
+      viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
       list = rootStore.proposalStore.getCommonProposals(
@@ -104,7 +108,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             navigation={navigation}
             hasPermission={hasPermission}
             openCommonOptions={() => openCommonOptions(item)}
-            hiddenProposalNote={() => showHiddenNote(item)}
+            hiddenProposalNote={() =>
+              showHiddenNote({hiddenItem: item, isModerator})
+            }
             isMember={isMember}
             viewerPermission={viewerPermission}
           />
@@ -132,7 +138,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           navigation={navigation}
           hasPermission={hasPermission}
           openCommonOptions={() => openCommonOptions(item)}
-          hiddenProposalNote={() => showHiddenNote(item)}
+          hiddenProposalNote={() =>
+            showHiddenNote({hiddenItem: item, isModerator})
+          }
           isMember={isMember}
           viewerPermission={viewerPermission}
         />

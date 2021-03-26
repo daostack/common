@@ -131,11 +131,9 @@ const ProposalCardHeader = ({
     viewerPermission !== PERMISSIONS.MODERATOR;
 
   const showIcon =
-    !showCountdown &&
-    moderation?.flag === FLAGS.hidden &&
-    !hasPermission &&
-    (viewerPermission === PERMISSIONS.FOUNDER ||
-      viewerPermission === PERMISSIONS.MODERATOR);
+    (!showCountdown && moderation?.flag === FLAGS.hidden && !hasPermission) ||
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR;
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>

@@ -6,6 +6,7 @@ import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object, bool, func} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const DiscussionList = ({
   commonId,
@@ -21,6 +22,9 @@ const DiscussionList = ({
     commonId,
     auth()?.currentUser?.uid,
   );
+  const isModerator =
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
     const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
@@ -47,7 +51,9 @@ const DiscussionList = ({
               navigation={navigation}
               hasPermission={hasPermission}
               openCommonOptions={() => openCommonOptions(item)}
-              hiddenDiscussionNote={() => showHiddenNote(item)}
+              hiddenDiscussionNote={() =>
+                showHiddenNote({hiddenItem: item, isModerator})
+              }
               isMember={isMember}
               viewerPermission={viewerPermission}
             />

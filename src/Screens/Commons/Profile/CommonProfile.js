@@ -544,7 +544,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     moderationFormStore.clearFormStoreState();
   };
 
-  const showHiddenNote = (hiddenItem, type) => {
+  const showHiddenNote = ({hiddenItem, isModerator = false}, type) => {
     const {moderation} = hiddenItem;
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
@@ -554,6 +554,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,
         type,
+        isModerator,
       },
     );
   };
