@@ -133,8 +133,11 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications &&
-        unsubscribeLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications?.forEach(
+        (unsubscribeLoggedUserNotificationsBatch) =>
+          unsubscribeLoggedUserNotificationsBatch &&
+          unsubscribeLoggedUserNotificationsBatch(),
+      );
     };
   }, [authStore.userInfo?.uid]);
 
