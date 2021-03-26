@@ -13,7 +13,10 @@ import {
   IFundingRequestProposal,
   IJoinRequestProposal,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {PROPOSAL_TYPE} from '~/Config';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {Discussion} from '~/Stores/Models/Discussion';
 
 export interface NotificationItemState {
   seen: boolean;
@@ -67,6 +70,12 @@ export class Notification extends BaseModel<INotificationEntity> {
 
         case EventTypeState.discussionCreated:
           return this.getDiscussionData();
+        case EventTypeState.discussionMessageReported:
+          return this.getDiscussionMessageReportedData();
+        case EventTypeState.proposalReported:
+          return this.getProposalReportedData();
+        case EventTypeState.discussionReported:
+          return this.getDiscussionReportedData();
       }
     } catch (err) {
       logger.warn(
@@ -92,6 +101,30 @@ export class Notification extends BaseModel<INotificationEntity> {
           missingData: false,
           descriptionBold: `"${common.name}"`,
           description: ' - You might want to check it out.',
+          ownerAvatar: user.photoURL,
+          common,
+        };
+      }
+    }
+
+    return (notificationData as NotificationItemData) || null;
+  }
+
+  private getProposalReportedData() {
+    let notificationData = {missingData: true} as NotificationItemData;
+    const proposalNotificationData = this.getProposalNotificationData();
+
+    if (proposalNotificationData) {
+      const {proposal, user, common} = proposalNotificationData;
+      const type =
+        proposal.type === PROPOSAL_TYPE.Join
+          ? 'membership request'
+          : 'proposal';
+
+      if (proposalNotificationData) {
+        notificationData = {
+          missingData: false,
+          description: `A ${type} was reported`,
           ownerAvatar: user.photoURL,
           common,
         };
@@ -200,22 +233,68 @@ export class Notification extends BaseModel<INotificationEntity> {
     return (notificationData as NotificationItemData) || null;
   }
 
+  private getDiscussionMessageReportedData(): NotificationItemData {
+    let notificationData = {missingData: true} as NotificationItemData;
+    const messageReportedData = this.rootStore.discussionMessageStore.getDiscussionMessageById(
+      this.eventObjectId,
+    );
+
+    if (messageReportedData) {
+      const {moderation} = messageReportedData;
+      const objectData = this.getParentDiscussion(messageReportedData);
+
+      if (objectData) {
+        const common = this.rootStore.commonStore.getCommonById(
+          objectData.commonId,
+        );
+        const reporter = this.rootStore.userStore.getUserById(
+          moderation.reporter,
+        );
+        notificationData = {
+          missingData: false,
+          description: 'A comment was reported',
+          ownerAvatar: reporter.photoURL,
+          common,
+          ...this.getParentObject(objectData),
+        };
+      }
+    }
+    return (notificationData as NotificationItemData) || null;
+  }
+
+  private getParentDiscussion(
+    message: IDiscussionMessageEntity,
+  ): Discussion | Proposal {
+    return (
+      (this.rootStore.discussionStore.getDiscussionById(
+        message.discussionId,
+      ) as Discussion) ||
+      (this.rootStore.proposalStore.getProposalById(
+        message.discussionId,
+      ) as Proposal)
+    );
+  }
+
+  private getParentObject(
+    discussionObject: Proposal | Discussion,
+  ): Record<any, any> {
+    return discussionObject?.proposerId
+      ? {
+          proposal: discussionObject,
+          tabIndex: 1,
+        }
+      : {discussion: discussionObject};
+  }
+
   private getMessageCreatedData(): NotificationItemData {
     let notificationData = {missingData: true} as NotificationItemData;
     const message = this.rootStore.discussionMessageStore.getDiscussionMessageById(
       this.eventObjectId,
     );
     if (message) {
-      const objectData = this.rootStore.discussionStore.getDiscussionById(
-        message.discussionId,
-      ) || this.rootStore.proposalStore.getProposalById(message.discussionId);
+      const objectData = this.getParentDiscussion(message);
 
       const user = this.rootStore.userStore.getUserById(message.ownerId);
-
-      const objectType = objectData.proposerId ? {
-        proposal: objectData,
-        tabIndex: 1,
-      } : {discussion: objectData};
 
       if (objectData && user) {
         notificationData = {
@@ -223,7 +302,7 @@ export class Notification extends BaseModel<INotificationEntity> {
           descriptionBold: `${user.firstName} ${user.lastName}`,
           description: ` ${message.text}`,
           ownerAvatar: user.photoURL,
-          ...objectType,
+          ...this.getParentObject(objectData),
         };
       }
 
@@ -236,7 +315,9 @@ export class Notification extends BaseModel<INotificationEntity> {
           notificationData = {
             ...notificationData,
             header: ' on',
-            headerBold: ` "${objectData.title || objectData.description.title}"`,
+            headerBold: ` "${
+              objectData.title || objectData.description.title
+            }"`,
             common,
           };
         }
@@ -266,6 +347,30 @@ export class Notification extends BaseModel<INotificationEntity> {
     } else {
       return null;
     }
+  }
+
+  private getDiscussionReportedData() {
+    let notificationData = {missingData: true} as NotificationItemData;
+    const discussion = this.rootStore.discussionStore.getDiscussionById(
+      this.eventObjectId,
+    );
+    if (discussion) {
+      const reporter = this.rootStore.userStore.getUserById(discussion.ownerId);
+
+      if (discussion && discussion.commonId) {
+        const common = this.rootStore.commonStore.getCommonById(
+          discussion.commonId,
+        );
+
+        notificationData = {
+          missingData: false,
+          description: 'A post was reported',
+          ownerAvatar: reporter.photoURL,
+          common,
+        };
+      }
+    }
+    return notificationData as NotificationItemData;
   }
 
   private getDiscussionData(): NotificationItemData {
