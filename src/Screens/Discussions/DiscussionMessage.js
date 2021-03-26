@@ -101,26 +101,11 @@ const DiscussionMessage = ({
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
-          {showCurrentUserAvatar && (
-            <TouchableOpacity onPress={goToUserProfile}>
-              <Image
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                  justify: 'flex-end',
-                  marginLeft: 10,
-                }}
-                source={ownerInfo && {uri: ownerInfo.photoURL}}
-              />
-            </TouchableOpacity>
-          )}
-
           <View
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+              elevation: 2,
             }}>
             {flagView}
             <HyperText
@@ -158,7 +143,7 @@ const DiscussionMessage = ({
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+                backgroundColor: isHidden ? colors.paleLilacTwo : colors.mainBlueOpacity,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <View style={{flexDirection: 'row'}}>
@@ -248,9 +233,8 @@ const styles = StyleSheet.create({
     ...font.fontSize(0),
   },
   contentOwner: {
-    //backgroundColor: colors.white,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 15,
     alignSelf: 'flex-end',
     flexShrink: 1,
     shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -260,7 +244,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
-    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',
