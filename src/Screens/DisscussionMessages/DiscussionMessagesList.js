@@ -31,7 +31,7 @@ const DiscussionMessagesList = ({
 
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
-    auth().currentUser.uid,
+    auth()?.currentUser?.uid,
   );
 
   const msgGroups = discussionMessageStore

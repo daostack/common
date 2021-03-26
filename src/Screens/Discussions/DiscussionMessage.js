@@ -41,8 +41,13 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
-
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
+  const isModerator =
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -69,15 +74,11 @@ const DiscussionMessage = ({
   }, []);
 
   // icon missing
-  const flagView = (viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR ||
-    isHidden) &&
-    isFlagged && (
-      <Text
-        style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
-        {flag} {isHidden ? '' : `by ${moderatorName}`}
-      </Text>
-    );
+  const flagView = (isModerator || isHidden) && isFlagged && (
+    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
+      {flag} {isHidden && !isModerator ? '' : `by ${moderatorName}`}
+    </Text>
+  );
 
   const dateView = () => (
     <Text

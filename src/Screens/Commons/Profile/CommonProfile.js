@@ -153,7 +153,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    authStore.getPermission(commonId, authStore?.userInfo?.uid),
   );
 
   const headerHeightLayouted = (height) => height;
@@ -542,7 +542,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     moderationFormStore.clearFormStoreState();
   };
 
-  const showHiddenNote = (hiddenItem, type) => {
+  const showHiddenNote = ({hiddenItem, isModerator = false}, type) => {
     const {moderation} = hiddenItem;
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
@@ -552,11 +552,13 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,
         type,
+        isModerator,
       },
     );
   };
 
-  const getType = (title) => (title === TITLES.proposals ? TITLES.proposalText : title);
+  const getType = (title) =>
+    title === TITLES.proposals ? TITLES.proposalText : title;
 
   const navigateTo = (screenTitle) => {
     navigation.navigate('EditCommon', {

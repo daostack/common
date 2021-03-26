@@ -3,6 +3,7 @@ import {firebase} from '~/Firebase';
 import {Text} from 'react-native';
 import {string, object, InferProps, shape} from 'prop-types';
 import {colors, text} from '~/Theme';
+import {MESSAGE_STATUSES, PERMISSIONS} from '~/Util/constants/permissions.enum';
 import moment from 'moment';
 const _ = require('lodash');
 
@@ -10,14 +11,31 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   moderation,
   reporter,
   currentUID,
-}) => (
-  <Text style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
-    {`${_.upperFirst(moderation?.flag)} by ${reporterName(
-      reporter,
-      currentUID,
-    )} on ${timeReported(moderation?.updatedAt)}`}
-  </Text>
-);
+  viewerPermission,
+}) => {
+  const reporterUserName =
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR
+      ? ` by ${reporterName(reporter, currentUID)}`
+      : '';
+
+  if (
+    moderation?.flag === MESSAGE_STATUSES.REPORTED &&
+    viewerPermission !== PERMISSIONS.FOUNDER &&
+    viewerPermission !== PERMISSIONS.MODERATOR
+  ) {
+    return <></>;
+  }
+
+  return (
+    <Text
+      style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
+      {`${_.upperFirst(moderation?.flag)}${reporterUserName} on ${timeReported(
+        moderation?.updatedAt,
+      )}`}
+    </Text>
+  );
+};
 
 export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
   updatedAt.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
@@ -42,6 +60,7 @@ const reportedProps = {
     lastName: string,
     uid: string,
   }),
+  viewerPermission: string,
 };
 
 Reported.propTypes = reportedProps;
