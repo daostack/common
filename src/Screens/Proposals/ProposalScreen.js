@@ -63,7 +63,13 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {commonId, proposalId, tabIndex = 0, hasPermission, fromNotificationItem},
+    params: {
+      commonId,
+      proposalId,
+      tabIndex = 0,
+      hasPermission,
+      fromNotificationItem,
+    },
   },
   rootStore,
 }) => {
