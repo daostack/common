@@ -35,8 +35,8 @@ const HiddenContentInfo = ({
   isModerator,
 }) => (
   <View style={styles.root}>
-    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
-       <View style={{...styles.body, height: moderatorNote  ? '90%' : '60%'}}>
+    <ScrollView contentContainerStyle={{flex: 1, paddingBottom: 100}}>
+      <View style={{...styles.body, height: moderatorNote ? '90%' : '60%'}}>
         <Text style={styles.title}>Hidden {type}</Text>
         <Text style={styles.text}>
           This {type} was hidden
@@ -51,7 +51,9 @@ const HiddenContentInfo = ({
               boldText={'Moderator note:'}
               style={{marginBottom: 10, fontSize: 15}}
             />
-            <Text style={{...styles.text, textAlign: 'left'}}>{moderatorNote}</Text>
+            <Text style={{...styles.text, textAlign: 'left'}}>
+              {moderatorNote}
+            </Text>
           </View>
         )}
       </View>
