@@ -1,10 +1,12 @@
 import React, {useEffect} from 'react';
 import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
+import auth from '@react-native-firebase/auth';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object, bool, func} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const DiscussionList = ({
   commonId,
@@ -15,6 +17,13 @@ const DiscussionList = ({
   isMember,
 }) => {
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
+  const viewerPermission = rootStore.authStore.getPermission(
+    commonId,
+    auth()?.currentUser?.uid,
+  );
+  const isModerator =
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
     const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
@@ -40,8 +49,11 @@ const DiscussionList = ({
               commonId={commonId}
               navigation={navigation}
               openCommonOptions={() => openCommonOptions(item)}
-              hiddenDiscussionNote={() => showHiddenNote(item)}
+              hiddenDiscussionNote={() =>
+                showHiddenNote({hiddenItem: item, isModerator})
+              }
               isMember={isMember}
+              viewerPermission={viewerPermission}
             />
           )}
         />

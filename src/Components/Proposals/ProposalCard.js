@@ -40,6 +40,7 @@ const ProposalCard = ({
   hiddenProposalNote,
   rootStore,
   isMember,
+  viewerPermission,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
@@ -97,7 +98,9 @@ const ProposalCard = ({
       let currCommonInfo = {...commonInfo};
 
       if (!currCommonInfo) {
-        currCommonInfo = await commonStore.getCommonById(proposalInfo.commonId);
+        currCommonInfo = await commonStore.getCommonById(
+          proposalInfo?.commonId,
+        );
       }
       navigation.navigate('ProposalScreen', {
         proposalId: proposalInfo.id,
@@ -129,6 +132,7 @@ const ProposalCard = ({
           moderation={proposalInfo.moderation}
           reporter={getReporter()}
           hasPermission={hasPermission}
+          viewerPermission={viewerPermission}
         />
 
         {showCard && (
@@ -224,6 +228,7 @@ ProposalCard.propTypes = {
   hiddenProposalNote: func,
   rootStore: rootStorePropTypes,
   isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
