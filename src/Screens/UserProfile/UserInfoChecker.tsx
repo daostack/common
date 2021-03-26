@@ -1,0 +1,33 @@
+import React, {FC, useEffect} from 'react';
+import {WithNavigationRef} from '~/Types/navigation';
+import {CommonActions} from '@react-navigation/native';
+import AuthStore from '~/Stores/AuthStore';
+
+type Props = WithNavigationRef & {
+	authStore: AuthStore;
+}
+
+const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
+	useEffect(() => {
+		if (navigation.current) {
+			const {firstName, lastName} = authStore.userInfo || {};
+
+			// always redirect to edit profile when data is empty
+			if (!firstName || !lastName) {
+				const navigate = CommonActions.navigate({
+					name: 'EditProfile',
+					params: {
+						isFirstOpening: true,
+						isForceOpen: true,
+					},
+				});
+				// @ts-ignore
+				navigation.current?.dispatch(navigate);
+			}
+		}
+	}, [navigation]);
+
+	return <></>;
+};
+
+export default UserInfoChecker;

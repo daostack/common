@@ -67,6 +67,7 @@ import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
 import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
+import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -592,6 +593,7 @@ const App = ({rootStore, navigation}) => {
           navigation={navigationRef}
         />
       )}
+      <UserInfoChecker authStore={authStore} navigation={navigationRef}  />
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}
