@@ -74,7 +74,7 @@ export default class NotificationStore extends BaseStore<
   };
 
   //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
     this.rootStore.authStore.signedInUser
       ? subscribeToUserNotifications(
           this.rootStore.authStore.signedInUser,

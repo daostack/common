@@ -133,8 +133,11 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications &&
-        unsubscribeLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications?.forEach(
+        (unsubscribeLoggedUserNotificationsBatch) =>
+          unsubscribeLoggedUserNotificationsBatch &&
+          unsubscribeLoggedUserNotificationsBatch(),
+      );
     };
   }, [authStore.userInfo?.uid]);
 
@@ -401,9 +404,11 @@ const App = ({rootStore, navigation}) => {
               <HeaderBackButton
                 onPress={() =>
                   route?.params.fromNotificationItem
-                    ? rest?.navigation.replace('CommonProfile', {
-                        commonId: route?.params.commonId,
-                      })
+                    ? route?.params.commonId
+                      ? rest?.navigation.replace('CommonProfile', {
+                          commonId: route?.params.commonId,
+                        })
+                      : rest?.navigation.pop()
                     : navigation.pop()
                 }
               />

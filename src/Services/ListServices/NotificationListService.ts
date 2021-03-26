@@ -3,6 +3,7 @@ import {NotificationsCollection} from '~/Firebase/Databasee/Collections/Notifica
 import {
   INotificationEntity,
   EventTypesOnNotificationList,
+  EventTypesOnNotificationList1,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 export type commonNotificationListLoadCallbackFn = (
@@ -18,11 +19,22 @@ export const subscribeToUserNotifications = (
       'subscribeToUserNotifications method has required userId parameter',
     );
   }
-  return NotificationsCollection.orderBy('createdAt', 'desc')
+
+  const batch1 = NotificationsCollection.orderBy('createdAt', 'desc')
     .where('userFilter', 'array-contains', userId)
     .where('eventType', 'in', EventTypesOnNotificationList)
     .limit(20)
     .onSnapshot((snapshot: any) => {
       listChangeCallback(snapshot);
     });
+
+  const batch2 = NotificationsCollection.orderBy('createdAt', 'desc')
+    .where('userFilter', 'array-contains', userId)
+    .where('eventType', 'in', EventTypesOnNotificationList1)
+    .limit(20)
+    .onSnapshot((snapshot: any) => {
+      listChangeCallback(snapshot);
+    });
+
+  return [batch1, batch2];
 };

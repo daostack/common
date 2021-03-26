@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import {text, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
@@ -35,25 +35,27 @@ const HiddenContentInfo = ({
   isModerator,
 }) => (
   <View style={styles.root}>
-    <View style={{...styles.body, height: moderatorNote  ? '90%' : '60%'}}>
-      <Text style={styles.title}>Hidden {type}</Text>
-      <Text style={styles.text}>
-        This {type} was hidden
-        {isModerator ? ' by ' : ''}
-        <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
-        <Bold boldText={date} /> {getReasons(reasons)}
-      </Text>
-      {!!moderatorNote && (
-        <View style={styles.moderatorNoteContainer}>
-          <View style={styles.divider} />
-          <Bold
-            boldText={'Moderator note:'}
-            style={{marginBottom: 10, fontSize: 15}}
-          />
-          <Text style={{...styles.text, textAlign: 'left'}}>{moderatorNote}</Text>
-        </View>
-      )}
-    </View>
+    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+       <View style={{...styles.body, height: moderatorNote  ? '90%' : '60%'}}>
+        <Text style={styles.title}>Hidden {type}</Text>
+        <Text style={styles.text}>
+          This {type} was hidden
+          {isModerator ? ' by ' : ''}
+          <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
+          <Bold boldText={date} /> {getReasons(reasons)}
+        </Text>
+        {!!moderatorNote && (
+          <View style={styles.moderatorNoteContainer}>
+            <View style={styles.divider} />
+            <Bold
+              boldText={'Moderator note:'}
+              style={{marginBottom: 10, fontSize: 15}}
+            />
+            <Text style={{...styles.text, textAlign: 'left'}}>{moderatorNote}</Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
   </View>
 );
 
