@@ -10,13 +10,14 @@ const Bold = ({boldText, style = {}}) => (
 
 const getReasons = (reasonArr) => {
   if (reasonArr.length) {
-    const last = reasonArr.splice(-1, 1);
+    const clone = reasonArr.slice();
+    const last = clone.splice(-1, 1);
     return (
       <Text style={styles.text}>
         {' due to '}
-        {reasonArr.length !== 0 && (
+        {clone.length !== 0 && (
           <>
-            <Bold boldText={reasonArr.join(', ')} /> and{' '}
+            <Bold boldText={clone.join(', ')} /> and{' '}
           </>
         )}
         {<Bold boldText={last.toString()} />}
@@ -34,7 +35,7 @@ const HiddenContentInfo = ({
   isModerator,
 }) => (
   <View style={styles.root}>
-    <View style={{...styles.body, height: moderatorNote ? '100%' : '60%'}}>
+    <View style={{...styles.body, height: moderatorNote  ? '90%' : '60%'}}>
       <Text style={styles.title}>Hidden {type}</Text>
       <Text style={styles.text}>
         This {type} was hidden
@@ -49,7 +50,7 @@ const HiddenContentInfo = ({
             boldText={'Moderator note:'}
             style={{marginBottom: 10, fontSize: 15}}
           />
-          <Text style={styles.text}>{moderatorNote}</Text>
+          <Text style={{...styles.text, textAlign: 'left'}}>{moderatorNote}</Text>
         </View>
       )}
     </View>
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderColor: colors.grey4,
-    marginVertical: 30,
+    marginVertical: 20,
   },
   moderatorNoteContainer: {
     alignSelf: 'flex-start',
