@@ -63,7 +63,6 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     commonInfo,
     userInfo,
     rootStore,
-    hasPermission,
     openCommonOptions,
     showHiddenNote,
     isMember,
