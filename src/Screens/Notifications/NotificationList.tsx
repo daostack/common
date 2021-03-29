@@ -17,6 +17,7 @@ import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
 import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
 import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
+import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 
