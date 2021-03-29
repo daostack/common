@@ -217,7 +217,7 @@ const Discussions = ({
         }}
         title={{
           title: dataState.title,
-          style: [text.h2Black, {paddingLeft: 50, paddingRight: 20}],
+          style: text.h2Black,
           ellipsizeMode: 'tail',
           numberOfLines: 1,
         }}
