@@ -5,6 +5,8 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PROPOSAL_TYPE} from '~/Config';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -12,24 +14,31 @@ const props = {
   rootStore: rootStorePropTypes.isRequired,
 };
 
-const CommonMemberAdded: React.FC<InferProps<typeof props>> = ({
+const ProposalReported: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
-  const discussion = rootStore.discussionStore.getDiscussionById(
-    item.eventObjectId,
-  );
-  if (discussion) {
-    const reporter = rootStore.userStore.getUserById(discussion.ownerId);
-
-    if (discussion && discussion.commonId) {
-      const common = rootStore.commonStore.getCommonById(discussion.commonId);
+  let eventType = item.eventType;
+  const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
+  if (proposal) {
+    const reporter = rootStore.userStore.getUserById(
+      proposal.moderation.reporter,
+    );
+    const isJoin = proposal.type === PROPOSAL_TYPE.Join;
+    //const eventType = isJoin ? EventTypeState.membershipRequestReported
+    if (isJoin) {
+      eventType = EventTypeState.membershipRequestReported;
+    }
+    if (proposal && proposal.commonId) {
+      const common = rootStore.commonStore.getCommonById(proposal.commonId);
 
       notificationData = {
         missingData: false,
-        description: 'A post was reported',
+        description: `A ${
+          isJoin ? 'membership request' : 'proposal'
+        } was reported`,
         ownerAvatar: reporter.photoURL,
         common,
       };
@@ -43,13 +52,13 @@ const CommonMemberAdded: React.FC<InferProps<typeof props>> = ({
 
   return (
     <NotificationItem
-      item={item}
+      item={{...item, eventType}}
       notificationData={notificationData}
       navigation={navigation}
     />
   );
 };
 
-CommonMemberAdded.propTypes = props;
+ProposalReported.propTypes = props;
 
-export default inject('rootStore')(observer(CommonMemberAdded));
+export default inject('rootStore')(observer(ProposalReported));
