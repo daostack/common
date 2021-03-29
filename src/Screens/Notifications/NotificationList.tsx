@@ -31,7 +31,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   const notificationList: Array<Notification> = notificationStore.getLoggedUserNotifications();
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
-    console.log('renderNotificationItem -> ', item);
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
