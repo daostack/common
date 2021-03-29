@@ -17,6 +17,8 @@ import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
 import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
 import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
+import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
+import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 
 const props = {
   navigation: shape({
@@ -56,6 +58,18 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
       case EventTypeState.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;
+
+      case EventTypeState.proposalReported:
+        return <ProposalReported item={item} navigation={navigation} />;
+
+      case EventTypeState.discussionReported:
+        return <DiscussionReported item={item} navigation={navigation} />;
+
+      case EventTypeState.discussionMessageReported:
+        return (
+          <DiscussionMessageReported item={item} navigation={navigation} />
+        );
+
       default:
         Logger.warn(
           `Not existing notification item event type ${item.eventType}`,
