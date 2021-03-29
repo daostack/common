@@ -122,18 +122,17 @@ const ProposalCardHeader = ({
   hasPermission,
   rootStore,
   viewerPermission,
+  proposalInfo,
 }) => {
   const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
   const showCountdown =
-    moderation?.flag !== FLAGS.hidden &&
-    viewerPermission !== PERMISSIONS.FOUNDER &&
-    viewerPermission !== PERMISSIONS.MODERATOR;
-
-  const showIcon =
-    (!showCountdown && moderation?.flag === FLAGS.hidden && !hasPermission) ||
-    viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR;
+    !moderation?.flag ||
+    moderation?.flag === FLAGS.visible ||
+    (moderation?.flag !== FLAGS.hidden &&
+      moderation?.flag === FLAGS.reported &&
+      viewerPermission !== PERMISSIONS.FOUNDER &&
+      viewerPermission !== PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -174,7 +173,7 @@ const ProposalCardHeader = ({
             }
           : {
               ...styles.hiddenCardHeader,
-              justifyContent: showIcon ? 'space-between' : 'center',
+              justifyContent: !showCountdown ? 'space-between' : 'center',
               borderTopLeftRadius: hasPermission ? 20 : 5,
               borderTopRightRadius: hasPermission ? 20 : 5,
             }
@@ -204,7 +203,7 @@ const ProposalCardHeader = ({
           viewerPermission={viewerPermission}
         />
       )}
-      {showIcon && (
+      {!showCountdown && (
         <Icon
           name="questionMark"
           size={16}
