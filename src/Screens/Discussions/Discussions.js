@@ -247,7 +247,7 @@ const Discussions = ({
               style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
-                maxHeight: '94%',
+                shadowColor: 'rgba(0, 0, 0, 0.12)',
               }}>
               <ScrollView>
                 <View
@@ -442,8 +442,7 @@ const Discussions = ({
             flex: 1,
             color: '#fbfdff',
           }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={0}>
+          behavior={'height'}>
           <View
             style={{
               ...styles.inputContainer,
