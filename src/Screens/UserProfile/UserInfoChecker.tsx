@@ -11,7 +11,7 @@ type Props = WithNavigationRef & {
 
 const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
   useEffect(() => {
-    if (navigation.current && authStore.userInfo) {
+    if (authStore.signedInUser && navigation.current) {
       const {firstName, lastName} = authStore.userInfo || {};
 
       // always redirect to edit profile when data is empty
@@ -29,7 +29,7 @@ const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
         navigation.current?.dispatch(navigate);
       }
     }
-  }, [navigation]);
+  }, [navigation, authStore.signedInUser]);
 
   return <></>;
 };
