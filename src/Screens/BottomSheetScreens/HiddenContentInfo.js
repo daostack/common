@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   body: {
+    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     alignContent: 'flex-start',
