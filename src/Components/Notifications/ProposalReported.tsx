@@ -27,7 +27,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
       proposal.moderation.reporter,
     );
     const isJoin = proposal.type === PROPOSAL_TYPE.Join;
-    //const eventType = isJoin ? EventTypeState.membershipRequestReported
+
     if (isJoin) {
       eventType = EventTypeState.membershipRequestReported;
     }
