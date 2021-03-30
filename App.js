@@ -402,6 +402,10 @@ const App = ({rootStore, navigation}) => {
             headerBackTitleVisible: false,
             headerLeft: () => (
               <HeaderBackButton
+                backImage={() => (
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                )}
+                label=" "
                 onPress={() =>
                   route?.params.fromNotificationItem
                     ? route?.params.commonId
@@ -409,7 +413,7 @@ const App = ({rootStore, navigation}) => {
                           commonId: route?.params.commonId,
                         })
                       : rest?.navigation.pop()
-                    : navigation.pop()
+                    : navigationRef.current.goBack()
                 }
               />
             ),

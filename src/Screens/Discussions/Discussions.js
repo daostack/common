@@ -11,6 +11,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
@@ -71,7 +72,6 @@ const Discussions = ({
   );
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
@@ -242,7 +242,7 @@ const Discussions = ({
       />
       <View style={{overflow: 'hidden', paddingBottom: 5}}>
         <View style={styles.headerContainer}>
-          {isExpanded ? (
+          {dataState.isExpanded ? (
             <View
               style={{
                 paddingTop: 20,
@@ -285,7 +285,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
@@ -298,7 +298,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
@@ -422,7 +422,7 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
+      <ScrollView style={styles.scrollView} ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}
           inputRef={inputRef}
@@ -441,45 +441,48 @@ const Discussions = ({
             bottom: 0,
             flex: 1,
             color: '#fbfdff',
-          }}>
-          <View style={styles.inputContainer}>
-            <View
-              style={[styles.input, {height: Math.max(35, inputHeight + 50)}]}>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(event) => {
-                  setInputHeight(event.nativeEvent.contentSize.height);
-                }}
-                style={{
-                  flex: 1,
-                  maxHeight: 120,
-                  paddingVertical: 10,
-                  marginHorizontal: 10,
-                  height: Math.max(35, inputHeight + 32),
-                }}
+          }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={0}>
+          <View
+            style={{
+              ...styles.inputContainer,
+              height: Math.max(100, inputHeight + 50),
+            }}>
+            {/* should be added in better discussion batch 3
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                justifyContent: 'center',
+              }}>
+              <Icon name="add-24" size={30} color={colors.mainBlue} />
+            </TouchableOpacity>*/}
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              fontSize={15}
+              multiline
+              placeholder="What do you think?"
+              placeholderTextColor={colors.black}
+              onChangeText={(currText) => setInputText(currText)}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
+              }}
+              style={styles.input}
+            />
+            <TouchableOpacity
+              onPress={sendMessageToDiscussion}
+              style={{
+                justifyContent: 'center',
+              }}>
+              <Icon
+                name="send-message"
+                size={25}
+                color={
+                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
+                }
               />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  paddingRight: 15,
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="send-message"
-                  size={20}
-                  color={
-                    inputText && inputText.trim()
-                      ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       ) : (
@@ -556,23 +559,11 @@ const styles = StyleSheet.create({
     borderRadius: 17.5,
   },
   inputContainer: {
-    flex: 1,
-    height: 100,
+    width,
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: '#fbfdff',
-  },
-  input: {
-    // backgroundColor: colors.white,
-    backgroundColor: '#fbfdff',
-    borderTopColor: colors.grey4,
-    borderTopWidth: 1,
-    minHeight: 65,
-    maxHeight: 140,
-    width: width,
-    flexDirection: 'row',
+    backgroundColor: colors.white,
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
@@ -581,8 +572,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+  },
+  input: {
+    backgroundColor: colors.paleLilacTwo,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    width: '75%',
+    flexDirection: 'row',
+    borderRadius: 40,
+    textAlignVertical: 'center',
+    paddingTop: Platform.OS === 'ios' ? 15 : 10,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
     paddingHorizontal: 15,
   },
   adsText: {
@@ -624,6 +627,11 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+  },
+  scrollView: {
+    flex: 1,
+    paddingBottom: 30,
+    backgroundColor: colors.paleLilacTwo,
   },
 });
 
