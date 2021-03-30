@@ -122,7 +122,6 @@ const ProposalCardHeader = ({
   hasPermission,
   rootStore,
   viewerPermission,
-  proposalInfo,
 }) => {
   const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
