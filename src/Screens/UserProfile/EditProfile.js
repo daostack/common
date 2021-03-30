@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -36,6 +36,18 @@ const EditProfile = ({rootStore, route, navigation}) => {
       </TouchableOpacity>
     ),
   });
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+        // Prevent default behavior of leaving the screen
+        const {firstName, lastName} = authStore.userInfo || {};
+        if (!firstName || !lastName) {
+          e.preventDefault();
+        }
+      }),
+    [navigation]
+  );
 
   const [editProfileFormStore] = useState(new EditProfileFormStore());
 

@@ -14,6 +14,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
@@ -38,9 +39,16 @@ const DiscussionCard = ({
   const msgCount =
     discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
       ?.length || 0;
-  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
-  const hideHeader =
-    !data.moderation || data.moderation?.flag === FLAGS.visible;
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
+  const showHeader =
+    data.moderation?.flag === FLAGS.hidden ||
+    (data.moderation?.flag === FLAGS.reported &&
+      (viewerPermission === PERMISSIONS.FOUNDER ||
+        viewerPermission === PERMISSIONS.MODERATOR));
+
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
@@ -75,7 +83,7 @@ const DiscussionCard = ({
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
         <View style={styles.containerView}>
-          {!hideHeader && (
+          {showHeader && (
             <DiscussionCardHeader
               isReported={data.moderation?.flag !== FLAGS.visible}
               moderation={data.moderation}
