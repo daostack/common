@@ -75,7 +75,6 @@ const DiscussionMessage = ({
     setPermission(userPermission);
   }, []);
 
-  // icon missing
   const flagView = (isModerator || isHidden) && isFlagged && (
     <View style={{flexDirection: 'row', marginLeft: 30}}>
       <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />
@@ -173,7 +172,7 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <View style={{...styles.textContainer}}>
+                <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{
                       ...styles.text,
