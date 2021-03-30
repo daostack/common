@@ -108,16 +108,18 @@ const DiscussionMessage = ({
               elevation: 2,
             }}>
             {flagView}
-            <HyperText
-              textStyle={{
-                ...styles.text,
-                color: isHidden ? colors.grey3 : colors.black,
-                ...textjs.writingDirection(data.text),
-              }}
-              selectable>
-              {data.text}
-            </HyperText>
-            <View style={{position: 'relative', right: 0, bottom: 0}}>
+            <View style={styles.textContainer}>
+              <HyperText
+                textStyle={{
+                  ...styles.text,
+                  color: isHidden ? colors.grey3 : colors.black,
+                  ...textjs.writingDirection(data.text),
+                  maxWidth: '95%',
+                  minWidth: '20%',
+                }}
+                selectable>
+                {data.text}
+              </HyperText>
               {dateView()}
             </View>
           </View>
@@ -143,7 +145,9 @@ const DiscussionMessage = ({
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: isHidden ? colors.paleLilacTwo : colors.mainBlueOpacity,
+                backgroundColor: isHidden
+                  ? colors.paleLilacTwo
+                  : colors.mainBlueOpacity,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <View style={{flexDirection: 'row'}}>
@@ -161,16 +165,20 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <HyperText
-                  textStyle={{
-                    ...styles.text,
-                    color: isHidden ? colors.grey3 : colors.black,
-                    ...textjs.writingDirection(data.text),
-                  }}>
-                  {data.text}
-                </HyperText>
+                <View style={styles.textContainer}>
+                  <HyperText
+                    textStyle={{
+                      ...styles.text,
+                      color: isHidden ? colors.grey3 : colors.black,
+                      ...textjs.writingDirection(data.text),
+                      maxWidth: '95%',
+                      minWidth: '40%',
+                    }}>
+                    {data.text}
+                  </HyperText>
+                  {dateView()}
+                </View>
               )}
-              {dateView()}
             </View>
           </View>
         </>
@@ -230,10 +238,12 @@ const styles = StyleSheet.create({
   date: {
     textAlign: 'right',
     ...font.primary.regular,
-    ...font.fontSize(0),
+    fontSize: 10,
+    marginVertical: 2,
+    alignSelf: 'flex-end',
   },
   contentOwner: {
-    padding: 10,
+    padding: 12,
     borderRadius: 15,
     alignSelf: 'flex-end',
     flexShrink: 1,
@@ -247,6 +257,10 @@ const styles = StyleSheet.create({
   },
   contentMember: {
     flexDirection: 'row',
+  },
+  textContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
   },
 });
 

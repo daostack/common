@@ -9,6 +9,7 @@ import {
   Text,
   I18nManager,
   UIManager,
+  TouchableOpacity,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -390,6 +391,7 @@ const App = ({rootStore, navigation}) => {
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
             headerRightContainerStyle: {marginRight: 20},
+            headerTitleAlign: 'center',
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
@@ -519,6 +521,14 @@ const App = ({rootStore, navigation}) => {
           name="New Post"
           options={({nav, route}) => ({
             headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
+            headerLeft: null,
+            headerRightContainerStyle: {marginRight: 20},
+            headerRight: () => (
+              <TouchableOpacity onPress={() => navigationRef.current.goBack()}>
+                <Icon name="close" color={colors.black} size={20} />
+              </TouchableOpacity>
+            ),
           })}
           component={DiscussionPost}
         />
@@ -572,6 +582,7 @@ const App = ({rootStore, navigation}) => {
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
           })}
           name="FundingProposal"
           component={FundingProposal}
