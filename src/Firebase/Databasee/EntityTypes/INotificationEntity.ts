@@ -62,6 +62,7 @@ export const EventTypeState = {
   discussionMessageReported: 'discussionMessageReported',
   proposalReported: 'proposalReported',
   discussionReported: 'discussionReported',
+  membershipRequestReported: 'membershipRequestReported',
 };
 
 export const EventTitleState = {
@@ -88,6 +89,7 @@ export const EventTitleState = {
   discussionMessageReported: 'Comment Reported',
   proposalReported: 'Proposal Reported',
   discussionReported: 'Post Reported',
+  membershipRequestReported: 'Membership Request Reported',
 };
 
 // NOTE: EventTypesOnNotificationList legth is 10 and it is used in a firebase query with 'in' operator.
