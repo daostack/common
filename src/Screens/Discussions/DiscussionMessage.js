@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, font, text as textjs} from '~/Theme';
+import {colors, font, text as textjs, layout} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
@@ -21,6 +21,8 @@ import {HyperText} from '~/Components/Text/HyperText';
 import {reporterName} from '../../Components/Moderation/Reported';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import Icon from '~/Assets/iconfont/Icon';
+import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -75,9 +77,13 @@ const DiscussionMessage = ({
 
   // icon missing
   const flagView = (isModerator || isHidden) && isFlagged && (
-    <Text style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
-      {flag} {isHidden && !isModerator ? '' : `by ${moderatorName}`}
-    </Text>
+    <View style={{flexDirection: 'row', marginLeft: 30}}>
+      <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />
+      <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
+        {_.upperFirst(flag)}
+        {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
+      </Text>
+    </View>
   );
 
   const dateView = () => (
@@ -108,20 +114,22 @@ const DiscussionMessage = ({
               elevation: 2,
             }}>
             {flagView}
-            <View style={styles.textContainer}>
-              <HyperText
-                textStyle={{
-                  ...styles.text,
-                  color: isHidden ? colors.grey3 : colors.black,
-                  ...textjs.writingDirection(data.text),
-                  maxWidth: '95%',
-                  minWidth: '20%',
-                }}
-                selectable>
-                {data.text}
-              </HyperText>
-              {dateView()}
-            </View>
+            {(!isHidden || hasPermission) && (
+              <View style={styles.textContainer}>
+                <HyperText
+                  textStyle={{
+                    ...styles.text,
+                    color: isHidden ? colors.grey3 : colors.black,
+                    ...textjs.writingDirection(data.text),
+                    maxWidth: '95%',
+                    minWidth: '20%',
+                  }}
+                  selectable>
+                  {data.text}
+                </HyperText>
+                {!isHidden && dateView()}
+              </View>
+            )}
           </View>
         </View>
       ) : (
@@ -165,18 +173,18 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <View style={styles.textContainer}>
+                <View style={{...styles.textContainer}}>
                   <HyperText
                     textStyle={{
                       ...styles.text,
                       color: isHidden ? colors.grey3 : colors.black,
                       ...textjs.writingDirection(data.text),
-                      maxWidth: '95%',
+                      maxWidth: '93%',
                       minWidth: '40%',
                     }}>
                     {data.text}
                   </HyperText>
-                  {dateView()}
+                  {!isHidden && dateView()}
                 </View>
               )}
             </View>
@@ -260,7 +268,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
 });
 
