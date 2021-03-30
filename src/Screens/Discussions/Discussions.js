@@ -486,7 +486,7 @@ const Discussions = ({
           </View>
         </KeyboardAvoidingView>
       ) : (
-        <View style={styles.input}>
+        <View style={{paddingTop: 10}}>
           <Text style={{...styles.joinCommonText}}>
             Only members can send messages
           </Text>
