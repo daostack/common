@@ -247,7 +247,7 @@ const Discussions = ({
               style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
-                maxHeight: '94%',
+                shadowColor: 'rgba(0, 0, 0, 0.12)',
               }}>
               <ScrollView>
                 <View
@@ -486,7 +486,7 @@ const Discussions = ({
           </View>
         </KeyboardAvoidingView>
       ) : (
-        <View style={styles.input}>
+        <View style={{paddingTop: 10}}>
           <Text style={{...styles.joinCommonText}}>
             Only members can send messages
           </Text>
