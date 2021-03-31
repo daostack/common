@@ -2,10 +2,16 @@ import BaseStore from './BaseStore';
 import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  INotificationEntity,
+  IProposalNotificationData,
+} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification, NotificationItemState} from '../Models/Notification';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {Discussion} from '../Models/Discussion';
+import {Proposal} from '../Models/Proposal';
 import {showBackendError} from '~/Util';
 
 export default class NotificationStore extends BaseStore<
@@ -31,19 +37,15 @@ export default class NotificationStore extends BaseStore<
   getLoggedUserNotifications = (): Array<Notification> | undefined => {
     try {
       return this.getDataArray
-        ?.filter(
-          (notification: Notification) =>
-            notification.notificationItemData?.missingData === false,
-        )
+        ?.filter(() => true)
         .sort(
           (notification: Notification, prevNotification: Notification) =>
-            prevNotification.createdAt?.seconds -
-            notification.createdAt?.seconds,
+                prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
         );
-    } catch (error) {
-      return [];
+    } catch(error) {
+        return [];
     }
-  };
+  }
 
   @computed
   get hasNewNotifications() {
@@ -89,7 +91,7 @@ export default class NotificationStore extends BaseStore<
   };
 
   //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn | null =>
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
     this.rootStore.authStore.signedInUser
       ? subscribeToUserNotifications(
           this.rootStore.authStore.signedInUser,
@@ -104,6 +106,60 @@ export default class NotificationStore extends BaseStore<
 
   // Overriden methods
   getEntityModel(entity: INotificationEntity): Notification {
-    return new Notification(entity, this.rootStore);
+    const defaultNotificationItemState = {
+      seen: false,
+      opened: false,
+    };
+
+    let notificationItemState = defaultNotificationItemState;
+
+    if (this.rootStore.notificationStore.exists(entity.id)) {
+      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
+        entity.id,
+      );
+      // It's possible to have undefined notificationItemState for existing Notification in the store,
+      // because of old notifications, before the implementation of the feature with the dot indicator.
+      // So, we are setting a default state to such of prorposals for safety.
+      notificationItemState =
+        notificationFromStore?.notificationItemState ||
+        defaultNotificationItemState;
+    }
+
+    return new Notification(entity, notificationItemState);
+  }
+
+  getProposalNotificationData(
+    eventObjectId: string,
+  ): IProposalNotificationData | null {
+    let user = null;
+    let common = null;
+    let proposal = this.rootStore.proposalStore.getProposalById(eventObjectId);
+    if (proposal) {
+      common = this.rootStore.commonStore.getCommonById(proposal.commonId);
+      user = this.rootStore.userStore.getUserById(proposal.proposerId);
+    }
+
+    if (proposal && user && common) {
+      return {
+        proposal,
+        common,
+        user,
+      } as IProposalNotificationData;
+    } else {
+      return null;
+    }
+  }
+
+  getParentDiscussion(
+    message: IDiscussionMessageEntity,
+  ): Discussion | Proposal {
+    return (
+      (this.rootStore.discussionStore.getDiscussionById(
+        message.discussionId,
+      ) as Discussion) ||
+      (this.rootStore.proposalStore.getProposalById(
+        message.discussionId,
+      ) as Proposal)
+    );
   }
 }

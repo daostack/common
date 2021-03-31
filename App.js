@@ -9,10 +9,11 @@ import {
   Text,
   I18nManager,
   UIManager,
+  TouchableOpacity,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -68,6 +69,7 @@ import {fontSize} from './src/Theme/font';
 import Loader from '~/Components/Loader';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import crashlytics from '@react-native-firebase/crashlytics';
+import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -134,8 +136,11 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications &&
-        unsubscribeLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications?.forEach(
+        (unsubscribeLoggedUserNotificationsBatch) =>
+          unsubscribeLoggedUserNotificationsBatch &&
+          unsubscribeLoggedUserNotificationsBatch(),
+      );
     };
   }, [authStore.userInfo?.uid]);
 
@@ -167,6 +172,7 @@ const App = ({rootStore, navigation}) => {
           proposalId: objectId,
           tabIndex: +tabIndex,
           fromNotificationItem: true,
+          commonId,
         });
       }
     }
@@ -352,142 +358,170 @@ const App = ({rootStore, navigation}) => {
             options={{headerShown: false}}
             authStore={authStore}
           />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
-          <Stack.Screen
-            name="CommonProfile"
-            component={CommonProfile}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="CommonAgenda"
-            component={CommonAgenda}
-            options={({route}) => ({
-              title: route.params.screenTitle,
-              headerBackTitleVisible: false,
-            })}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={UserProfile}
-            options={({route}) => ({
-              headerBackTitleVisible: false,
-            })}
-          />
-          <Stack.Screen
-            name="EditCommon"
-            component={EditCommon}
-            options={{
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="CommonExplanation"
-            component={CommonExplanation}
-            options={({nav, route}) => ({
-              headerTitle: 'Create a Common',
-              headerBackTitleVisible: false,
-              headerLeftContainerStyle: {marginLeft: 20},
-              headerRightContainerStyle: {marginRight: 20},
-              headerBackImage: () => (
-                <Icon name="left-arrow" color={colors.black} size={32} />
-              ),
-            })}
-          />
-          <Stack.Screen
-            name="ProposalScreen"
-            component={ProposalScreen}
-            options={({route}) => ({
-              headerBackTitleVisible: false,
-              headerTitle: () => (
-                <View style={{alignItems: 'center'}}>
-                  <Text
-                    style={{
-                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
-                    }}>
-                    {route?.params.title?.length > 20
-                      ? route?.params.title.substring(0, 17) + '...'
-                      : route?.params.title}
+        )}
+        <Stack.Screen
+          name="CommonHome"
+          component={CommonHome}
+          options={{headerShown: false}}
+          authStore={authStore}
+        />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
+        <Stack.Screen
+          name="CommonProfile"
+          component={CommonProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CommonAgenda"
+          component={CommonAgenda}
+          options={({route}) => ({
+            title: route.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={UserProfile}
+          options={({route}) => ({
+            headerBackTitleVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="EditCommon"
+          component={EditCommon}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="CommonExplanation"
+          component={CommonExplanation}
+          options={({nav, route}) => ({
+            headerTitle: 'Create a Common',
+            headerBackTitleVisible: false,
+            headerLeftContainerStyle: {marginLeft: 20},
+            headerRightContainerStyle: {marginRight: 20},
+            headerTitleAlign: 'center',
+            headerBackImage: () => (
+              <Icon name="left-arrow" color={colors.black} size={32} />
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="ProposalScreen"
+          component={ProposalScreen}
+          options={({route, ...rest}) => ({
+            headerBackTitleVisible: false,
+            headerLeft: () => (
+              <HeaderBackButton
+                backImage={() => (
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                )}
+                label=" "
+                onPress={() =>
+                  route?.params.fromNotificationItem
+                    ? route?.params.commonId
+                      ? rest?.navigation.replace('CommonProfile', {
+                          commonId: route?.params.commonId,
+                        })
+                      : rest?.navigation.pop()
+                    : navigationRef.current.goBack()
+                }
+              />
+            ),
+            headerTitle: () => (
+              <View style={{alignItems: 'center'}}>
+                <Text
+                  style={{
+                    ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                  }}>
+                  {route?.params.title?.length > 20
+                    ? route?.params.title.substring(0, 17) + '...'
+                    : route?.params.title}
+                </Text>
+
+                {route?.params.subtitle && (
+                  <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                    {route.params.subtitle}
                   </Text>
 
-                  {route?.params.subtitle && (
-                    <Text style={{opacity: 0.4, ...fontSize(1)}}>
-                      {route.params.subtitle}
-                    </Text>
-                  )}
-                </View>
-              ),
-            })}
-          />
-          <Stack.Screen
-            name="RulesStep"
-            component={RulesStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="IntroductionStep"
-            component={IntroductionStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="ContributionStep"
-            component={ContributionStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="BillingDetailsStep"
-            component={BillingDetailsStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="PaymentDetailsStep"
-            component={PaymentDetailsStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep1"
-            component={CreateStep1}
-            options={({nav, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep2"
-            component={CreateStep2}
-            options={({nav, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep3"
-            component={CreateStep3}
-            options={({nav, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep4"
-            component={CreateStep4}
-            options={({nav, route}) => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="Discussions"
-            component={Discussions}
-            options={({nav, route}) => ({
-              headerShown: false,
-            })}
-          />
+        <Stack.Screen
+          name="FullScreenCreationLoader"
+          component={FullScreenCreationLoader}
+          options={({nav, route}) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name="New Post"
+          options={({nav, route}) => ({
+            headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
+            headerLeft: null,
+            headerRightContainerStyle: {marginRight: 20},
+            headerRight: () => (
+              <TouchableOpacity onPress={() => navigationRef.current.goBack()}>
+                <Icon name="close" color={colors.black} size={20} />
+              </TouchableOpacity>
+            ),
+          })}
+          component={DiscussionPost}
+        />
+        <Stack.Screen
+          options={({route}) => ({
+            title: route.params.isFirstOpening ? false : 'Edit my profile',
+          })}
+          name="EditProfile"
+          component={EditProfile}
+        />
+        <Stack.Screen name="PDFViewer" component={PDFViewer} />
+        <Stack.Screen
+          name="Browser"
+          options={({nav, route}) => ({headerBackTitle: 'Back'})}
+          component={Browser}
+        />
+        <Stack.Screen
+          options={{
+            title: 'My Profile',
+            headerBackTitleVisible: false,
+          }}
+          name="MyWallet"
+          component={MyWallet}
+        />
+        <Stack.Screen name="HUDTest" component={HUDTest} />
+        <Stack.Screen
+          options={{
+            title: 'My Profile',
+            headerBackTitleVisible: false,
+          }}
+          name="MyProposals"
+          component={MyProposals}
+        />
+        <Stack.Screen
+          options={{
+            title: 'My Profile',
+            headerBackTitleVisible: false,
+          }}
+          name="MyCommons"
+          component={MyCommons}
+        />
+        <Stack.Screen
+          name="CommonMembers"
+          component={CommonMembers}
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+          })}
+        />
+        <Stack.Screen
+          options={({route}) => ({
+            title: route?.params.screenTitle,
+            headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
+          })}
+          name="FundingProposal"
+          component={FundingProposal}
+        />
 
           <Stack.Screen
             name="FullScreenCreationLoader"
@@ -593,8 +627,27 @@ const App = ({rootStore, navigation}) => {
           style={{backgroundColor: 'transparent'}}
           positionValue={160}
         />
-      </NavigationContainer>
-    </ErrorBoundary>
+      </Stack.Navigator>
+      {notificationRouting && (
+        <NotificationContainer
+          notificationRouting={notificationRouting}
+          setNotificationRouting={setNotificationRouting}
+          navigation={navigationRef}
+        />
+      )}
+      <UserInfoChecker authStore={authStore} navigation={navigationRef}  />
+      {appLoaderStore.isLoading && (
+        <Loader isBigger isFullScreen navigation={navigationRef} />
+      )}
+      {bottomSheetStore.isVisible && (
+        <BottomSheetContainer navigation={navigationRef} />
+      )}
+      <ToastView
+        ref={hudRef}
+        style={{backgroundColor: 'transparent'}}
+        positionValue={160}
+      />
+    </NavigationContainer>
   );
 };
 

@@ -100,6 +100,7 @@ const CommonMembersList = ({
               <MemberCard
                 key={i}
                 moderatorId={currCommon?.metadata?.founderId}
+                commonId={currCommon.id}
                 userInfo={member}
               />
             </TouchableOpacity>

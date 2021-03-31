@@ -38,12 +38,15 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
   moderation?: IModerationEntity;
 
+  @observable
+  isExpanded: boolean;
+
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === 'hidden';
   }
 
-  constructor(newDiscussionInfo: IDiscussionEntity) {
+  constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
     super(newDiscussionInfo);
     this.id = newDiscussionInfo.id;
     this.title = newDiscussionInfo.title;
@@ -58,5 +61,6 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.images = newDiscussionInfo.images;
     this.followers = newDiscussionInfo.followers;
     this.moderation = newDiscussionInfo.moderation;
+    this.isExpanded = isExpanded;
   }
 }

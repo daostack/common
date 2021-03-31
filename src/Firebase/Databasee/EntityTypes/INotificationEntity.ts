@@ -59,6 +59,10 @@ export const EventTypeState = {
   commonMemberAdded: 'commonMemberAdded',
   welcomeNotification: 'welcomeNotification',
   discussionCreated: 'discussionCreated',
+  discussionMessageReported: 'discussionMessageReported',
+  proposalReported: 'proposalReported',
+  discussionReported: 'discussionReported',
+  membershipRequestReported: 'membershipRequestReported',
 };
 
 export const EventTitleState = {
@@ -82,6 +86,10 @@ export const EventTitleState = {
   commonMemberAdded: 'Membership Approved',
   welcomeNotification: 'Welcome to Common!',
   discussionCreated: 'New post',
+  discussionMessageReported: 'Comment Reported',
+  proposalReported: 'Proposal Reported',
+  discussionReported: 'Post Reported',
+  membershipRequestReported: 'Membership Request Reported',
 };
 
 // NOTE: EventTypesOnNotificationList legth is 10 and it is used in a firebase query with 'in' operator.
@@ -97,4 +105,10 @@ export const EventTypesOnNotificationList = [
   EventTypeState.requestToJoinRejected,
   EventTypeState.discussionCreated,
   EventTypeState.commonMemberAdded,
+];
+
+export const EventTypesOnNotificationList1 = [
+  EventTypeState.discussionMessageReported,
+  EventTypeState.proposalReported,
+  EventTypeState.discussionReported,
 ];
