@@ -120,7 +120,7 @@ const DiscussionMessage = ({
                     ...styles.text,
                     color: isHidden ? colors.grey3 : colors.black,
                     ...textjs.writingDirection(data.text),
-                    maxWidth: '95%',
+                    maxWidth: '93%',
                     minWidth: '20%',
                   }}
                   selectable>
