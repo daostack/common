@@ -103,6 +103,7 @@ class AuthStore {
     this.userInfo = newUserInfo;
     if (isUserChanged) {
       this.signedInUser = newUserInfo?.uid;
+      this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
 
