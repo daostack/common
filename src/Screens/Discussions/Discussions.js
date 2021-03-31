@@ -442,7 +442,8 @@ const Discussions = ({
             flex: 1,
             color: '#fbfdff',
           }}
-          behavior={'height'}>
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={0}>
           <View
             style={{
               ...styles.inputContainer,
