@@ -1,12 +1,11 @@
 import {View, StyleSheet, Pressable, BackHandler} from 'react-native';
 import {observer, inject} from 'mobx-react';
-import {PropTypes} from 'prop-types';
 import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
 import Animated, {Easing} from 'react-native-reanimated';
-import {bool} from 'prop-types';
+import {bool, object} from 'prop-types';
 import {uiStorePropType} from '~/Types/propTypes';
 
 const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
@@ -101,7 +100,7 @@ const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
 BottomSheetContainer.propTypes = {
   uiStore: uiStorePropType,
   withoutHeader: bool,
-  navigation: PropTypes.any,
+  navigation: object,
 };
 
 const styles = StyleSheet.create({
