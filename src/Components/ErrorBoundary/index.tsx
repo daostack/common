@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {
   Dimensions,
   Image,
@@ -54,10 +54,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export class ErrorBoundary extends React.Component {
+type Props = {
+  children: ReactElement;
+};
+
+export class ErrorBoundary extends React.Component<Props> {
   state = {hasError: false};
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return {hasError: true};
   }
 

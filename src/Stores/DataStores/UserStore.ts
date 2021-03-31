@@ -19,7 +19,6 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-        error,
       });
       return {} as UserModel;
     }

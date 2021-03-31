@@ -29,8 +29,6 @@ const CommonMembersList = ({
     currCommon?.members || [],
   );
 
-  console.log('membersInfo', membersInfo);
-
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
   };

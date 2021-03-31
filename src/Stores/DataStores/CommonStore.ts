@@ -66,9 +66,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.getDataById(id);
     } catch (error) {
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
       return;
     }
   };

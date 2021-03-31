@@ -96,7 +96,7 @@ export default class ProposalStore extends BaseStore<
             );
           });
         })
-        .catch(() => {
+        .catch((error) => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           });

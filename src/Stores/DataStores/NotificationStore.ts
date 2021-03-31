@@ -40,12 +40,13 @@ export default class NotificationStore extends BaseStore<
         ?.filter(() => true)
         .sort(
           (notification: Notification, prevNotification: Notification) =>
-                prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
+            prevNotification.createdAt?.seconds -
+            notification.createdAt?.seconds,
         );
-    } catch(error) {
-        return [];
+    } catch (error) {
+      return [];
     }
-  }
+  };
 
   @computed
   get hasNewNotifications() {
