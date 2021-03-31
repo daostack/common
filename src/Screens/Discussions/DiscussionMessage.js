@@ -77,7 +77,7 @@ const DiscussionMessage = ({
 
   const flagView = (isModerator || isHidden) && isFlagged && (
     <View style={{flexDirection: 'row', marginLeft: 30}}>
-      <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />
+      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
         {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
