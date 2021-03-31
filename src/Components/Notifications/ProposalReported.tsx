@@ -23,8 +23,8 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   let eventType = item.eventType;
   const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
   if (proposal) {
-    const reporter = rootStore.userStore.getUserById(
-      proposal.moderation.reporter,
+    const proposer = rootStore.userStore.getUserById(
+      proposal.proposerId,
     );
     const isJoin = proposal.type === PROPOSAL_TYPE.Join;
 
@@ -39,7 +39,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
         description: `A ${
           isJoin ? 'membership request' : 'proposal'
         } was reported`,
-        ownerAvatar: reporter.photoURL,
+        ownerAvatar: proposer.photoURL,
         common,
       };
     }

@@ -35,18 +35,17 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
   );
 
   if (messageReportedData) {
-    const {moderation} = messageReportedData;
     const objectData = rootStore.notificationStore.getParentDiscussion(
       messageReportedData,
     );
 
     if (objectData) {
       const common = rootStore.commonStore.getCommonById(objectData.commonId);
-      const reporter = rootStore.userStore.getUserById(moderation.reporter);
+      const messageOwner = rootStore.userStore.getUserById(messageReportedData.ownerId);
       notificationData = {
         missingData: false,
         description: 'A comment was reported',
-        ownerAvatar: reporter.photoURL,
+        ownerAvatar: messageOwner.photoURL,
         common,
         ...getParentObject(objectData),
       };
