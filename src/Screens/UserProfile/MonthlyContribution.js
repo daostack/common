@@ -55,7 +55,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
   React.useEffect(() => {
     (async () => {
       await getSubscription(route.params?.subscription?.id, (snap) => {
-        setSubscription(snap.data());
+        setSubscription(snap?.data());
       });
     })();
   }, [route.params?.subscription?.id]);
