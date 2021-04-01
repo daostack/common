@@ -25,16 +25,13 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
     let common = rootStore.commonStore.getCommonById(item.eventObjectId);
 
     if (common) {
-      const user = rootStore.userStore.getUserById(common.members[0].userId);
-      if (user) {
-        notificationData = {
-          missingData: false,
-          descriptionBold: `"${common.name}"`,
-          description: ' - You might want to check it out.',
-          ownerAvatar: user.photoURL,
-          common,
-        };
-      }
+      notificationData = {
+        missingData: false,
+        descriptionBold: `"${common.name}"`,
+        description: ' - You might want to check it out.',
+        ownerAvatar: common.image,
+        common,
+      };
     }
   } catch (error) {
     Logger.warn('Not found data');
