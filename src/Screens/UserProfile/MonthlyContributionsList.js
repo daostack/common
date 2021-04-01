@@ -53,7 +53,7 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
   React.useEffect(() => {
     (async () => {
       await getUserSubscriptions(authStore.userInfo.uid, (snap) => {
-        setSubs(snap.docs.map((doc) => doc.data()));
+        setSubs(snap?.docs.map((doc) => doc.data()));
       });
     })();
   }, []);
