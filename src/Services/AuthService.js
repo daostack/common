@@ -93,6 +93,7 @@ export default class AuthService {
       await this.googleSignOut();
       await auth().signOut();
     } catch (error) {
+      console.log('ERRRRRROR -> ', error);
       const {accessToken} = await GoogleSignin.getTokens();
       await GoogleSignin.clearCachedAccessToken(accessToken);
       return error;
