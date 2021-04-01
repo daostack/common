@@ -613,7 +613,7 @@ const App = ({rootStore, navigation}) => {
           navigation={navigationRef}
         />
       )}
-      <UserInfoChecker navigation={navigationRef} />
+      {/* <UserInfoChecker navigation={navigationRef} /> */}
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}
