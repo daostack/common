@@ -77,7 +77,7 @@ export class ErrorBoundary extends React.Component<Props> {
           </View>
 
           <View style={styles.textContainer}>
-            <Text style={[styles.title]}>{'Something went wrong'}</Text>
+            <Text style={[styles.title]}>Something went wrong</Text>
           </View>
 
           <TouchableOpacity
