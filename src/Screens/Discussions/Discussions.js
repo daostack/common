@@ -244,18 +244,17 @@ const Discussions = ({
         style={{
           overflow: 'hidden',
           paddingBottom: 5,
-          height: dataState.isExpanded ? '60%' : '5%',
+          maxHeight: '50%',
         }}>
-        <View style={{...styles.headerContainer, height: '100%'}}>
+        <View style={styles.headerContainer}>
           {dataState.isExpanded ? (
             <View
               style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
                 shadowColor: 'rgba(0, 0, 0, 0.12)',
-                height: '100%',
               }}>
-              <ScrollView>
+              <ScrollView style={{maxHeight: '90%'}}>
                 <View
                   style={{
                     flexDirection: 'row',
