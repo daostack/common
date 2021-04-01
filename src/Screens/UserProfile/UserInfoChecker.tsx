@@ -12,9 +12,6 @@ type Props = WithNavigationRef & {
 
 const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
   useEffect(() => {
-    // console.log('UserInfoChecker');
-    // console.log('authStore.userInfo -> ', authStore.userInfo);
-
     if (authStore.userInfo && navigation.current) {
       const {firstName, lastName} = authStore.userInfo || {};
 
@@ -29,7 +26,7 @@ const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
         });
 
         // @ts-ignore
-        //navigation.current?.dispatch(navigate);
+        navigation.current?.dispatch(navigate);
       }
     }
   }, [navigation, authStore.userInfo]);
