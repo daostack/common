@@ -20,8 +20,7 @@ const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
           name: 'EditProfile',
 
           params: {
-            isFirstOpening: true,
-            isForceOpen: true,
+            isCompleteAccount: true,
           },
         });
 
