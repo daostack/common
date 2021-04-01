@@ -36,11 +36,11 @@ const ProposalCard = ({
   containerStyle,
   isSwiper,
   commonInfo,
-  hasPermission,
   openCommonOptions,
   hiddenProposalNote,
   rootStore,
   isMember,
+  viewerPermission,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
@@ -53,6 +53,7 @@ const ProposalCard = ({
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
     proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const hasPermission = authStore.getPermission(proposalInfo.commonId, authStore?.userInfo?.uid);
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
@@ -97,11 +98,14 @@ const ProposalCard = ({
       let currCommonInfo = {...commonInfo};
 
       if (!currCommonInfo) {
-        currCommonInfo = await commonStore.getCommonById(proposalInfo.commonId);
+        currCommonInfo = await commonStore.getCommonById(
+          proposalInfo?.commonId,
+        );
       }
       navigation.navigate('ProposalScreen', {
         proposalId: proposalInfo.id,
         hasPermission,
+        commonId: proposalInfo.commonId,
       });
     }
   };
@@ -128,6 +132,7 @@ const ProposalCard = ({
           moderation={proposalInfo.moderation}
           reporter={getReporter()}
           hasPermission={hasPermission}
+          viewerPermission={viewerPermission}
         />
 
         {showCard && (
@@ -139,12 +144,14 @@ const ProposalCard = ({
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
                 isMember &&
-                !isSwiper && !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+                !isSwiper &&
+                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
               userInfo={userStore.getUserById(proposalInfo.proposerId)}
               proposalInfo={proposalInfo}
+              commonId={proposalInfo.commonId}
               isPending={false}
             />
             <View style={{...layout.flexRow}}>
@@ -221,6 +228,7 @@ ProposalCard.propTypes = {
   hiddenProposalNote: func,
   rootStore: rootStorePropTypes,
   isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
