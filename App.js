@@ -535,7 +535,7 @@ const App = ({rootStore, navigation}) => {
         />
         <Stack.Screen
           options={({route}) => ({
-            title: route.params.isFirstOpening ? false : 'Edit my profile',
+            title: route.params.isCompleteAccount ? false : 'Edit my profile',
           })}
           name="EditProfile"
           component={EditProfile}
@@ -613,7 +613,7 @@ const App = ({rootStore, navigation}) => {
           navigation={navigationRef}
         />
       )}
-      <UserInfoChecker authStore={authStore} navigation={navigationRef}  />
+      <UserInfoChecker authStore={authStore} navigation={navigationRef} />
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}

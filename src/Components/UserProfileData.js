@@ -56,11 +56,11 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
     };
   }, [userId, currUserInfo, userInfo]);
 
-  const navigateToEditProfile = (isFirstOpening) => {
+  const navigateToEditProfile = (isCompleteAccount) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
-        isFirstOpening: isFirstOpening,
+        isCompleteAccount: isCompleteAccount,
       },
     });
     navigation.dispatch(navigate);
