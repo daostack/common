@@ -19,7 +19,7 @@ class EditProfileForm extends React.Component {
     const {
       authStore,
       editProfileFormStore,
-      isFirstOpening,
+      isCompleteAccount,
       ...otherProps
     } = this.props;
 
@@ -31,7 +31,7 @@ class EditProfileForm extends React.Component {
           flexGrow: 1,
           marginTop: 0,
         }}>
-        {isFirstOpening && (
+        {isCompleteAccount && (
           <View style={{marginBottom: 32}}>
             <Text style={styles.title}>Complete your account</Text>
             <Text style={styles.subtitle}>
@@ -99,7 +99,7 @@ class EditProfileForm extends React.Component {
           }}
         />
 
-        {isFirstOpening && (
+        {isCompleteAccount && (
           <CountrySelectField
             label="Country"
             value={
@@ -139,7 +139,7 @@ class EditProfileForm extends React.Component {
 EditProfileForm.propTypes = {
   authStore: authStorePropTypes.isRequired,
   editProfileFormStore: object.isRequired,
-  isFirstOpening: bool,
+  isCompleteAccount: bool,
 };
 
 const styles = StyleSheet.create({

@@ -28,7 +28,7 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
     notificationData = {
       missingData: false,
       description:
-        ' Your Common has new pending members, view their requests and vote',
+        "Don't give up, there are plenty of other Commons you can join.",
       ownerAvatar: common.image,
       common,
       proposal,

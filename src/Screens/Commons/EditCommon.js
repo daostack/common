@@ -14,7 +14,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
-import {bool, object, shape, InferProps} from 'prop-types';
+import {bool, object, shape, InferProps, string} from 'prop-types';
 import {EditCommonFormStore} from '~/FormStores/EditCommonFormStore';
 import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
 import EditInfo from '~/Components/EditCommon/EditInfo';
@@ -206,7 +206,8 @@ EditCommon.propTypes = {
   rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
-      isFirstOpening: bool,
+      currCommon: bool,
+      title: string,
     }),
   }),
   navigation: object,

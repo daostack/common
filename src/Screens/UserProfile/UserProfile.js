@@ -78,7 +78,7 @@ const UserProfile = ({authStore, navigation, route}) => {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
         params: {
-          isFirstOpening: true,
+          isCompleteAccount: true,
           isSignedWithApple,
         },
       });

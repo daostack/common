@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
@@ -202,14 +202,11 @@ const ContributionStep = ({
           onAmountSelected={onAmountSelected}
           minFeeToJoin={metadata.minFeeToJoin / 100}
         />
-        <Text
-          style={{
-            ...text.regularText,
-            textAlign: 'center',
-            color: colors.slate,
-          }}>
-          You can cancel the recurring payment at any time
-        </Text>
+        {isMonthly && (
+          <Text style={styles.monthlyBottomMessage}>
+            You can cancel the recurring payment at any time
+          </Text>
+        )}
       </View>
     </StepDotLayout>
   );
@@ -234,5 +231,13 @@ ContributionStep.propTypes = {
   }),
   uiStore: uiStorePropTypes,
 };
+
+const styles = StyleSheet.create({
+  monthlyBottomMessage: {
+    ...text.regularText,
+    textAlign: 'center',
+    color: colors.slate,
+  },
+});
 
 export default inject('uiStore')(ContributionStep);

@@ -217,7 +217,7 @@ const Discussions = ({
         }}
         title={{
           title: dataState.title,
-          style: text.h2Black,
+          style: {...text.h2Black, maxWidth: '70%'},
           ellipsizeMode: 'tail',
           numberOfLines: 1,
         }}
@@ -240,14 +240,20 @@ const Discussions = ({
         //   </TouchableOpacity>
         // }
       />
-      <View style={{overflow: 'hidden', paddingBottom: 5}}>
-        <View style={styles.headerContainer}>
+      <View
+        style={{
+          overflow: 'hidden',
+          paddingBottom: 5,
+          height: dataState.isExpanded ? '60%' : '5%',
+        }}>
+        <View style={{...styles.headerContainer, height: '100%'}}>
           {dataState.isExpanded ? (
             <View
               style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
                 shadowColor: 'rgba(0, 0, 0, 0.12)',
+                height: '100%',
               }}>
               <ScrollView>
                 <View

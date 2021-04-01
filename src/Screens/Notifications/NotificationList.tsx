@@ -20,6 +20,7 @@ import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
+import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
 
 const props = {
   navigation: shape({
@@ -70,6 +71,8 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         return (
           <DiscussionMessageReported item={item} navigation={navigation} />
         );
+      case EventTypeState.welcomeNotification:
+        return <WelcomeNotification item={item} navigation={navigation} />;
 
       default:
         Logger.warn(
