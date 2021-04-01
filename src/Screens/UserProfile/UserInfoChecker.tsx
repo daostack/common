@@ -4,6 +4,7 @@ import {CommonActions} from '@react-navigation/native';
 import AuthStore from '~/Stores/AuthStore';
 import {func, shape} from 'prop-types';
 import {authStorePropTypes} from '~/Types/propTypes';
+import {inject, observer} from 'mobx-react';
 
 type Props = WithNavigationRef & {
   authStore: AuthStore;
@@ -11,7 +12,7 @@ type Props = WithNavigationRef & {
 
 const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
   useEffect(() => {
-    if (authStore.signedInUser && navigation.current) {
+    if (authStore.userInfo && navigation.current) {
       const {firstName, lastName} = authStore.userInfo || {};
 
       // always redirect to edit profile when data is empty
@@ -28,7 +29,7 @@ const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
         navigation.current?.dispatch(navigate);
       }
     }
-  }, [navigation, authStore.signedInUser]);
+  }, [navigation, authStore.userInfo]);
 
   return <></>;
 };
@@ -43,4 +44,4 @@ UserInfoChecker.propTypes = {
   authStore: authStorePropTypes.isRequired,
 };
 
-export default UserInfoChecker;
+export default inject('authStore')(observer(UserInfoChecker));
