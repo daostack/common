@@ -117,7 +117,7 @@ const Discussions = ({
     }
 
     const message = inputText;
-    if (message && message.trim().length) {
+    if (!isEmptyMessage()) {
       inputRef.current.clear();
 
       db.collection('discussionMessage')
@@ -141,7 +141,6 @@ const Discussions = ({
           setIsSending(false);
         });
     } else {
-      Toast.error('Empty Message');
       setIsSending(false);
     }
   };
@@ -408,6 +407,8 @@ const Discussions = ({
     );
   }
 
+  const isEmptyMessage = () => !(inputText && inputText.trim().length);
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -468,7 +469,7 @@ const Discussions = ({
               fontSize={15}
               multiline
               placeholder="What do you think?"
-              placeholderTextColor={colors.black}
+              placeholderTextColor={colors.grey3}
               onChangeText={(currText) => setInputText(currText)}
               onContentSizeChange={(event) => {
                 setInputHeight(event.nativeEvent.contentSize.height);
@@ -479,13 +480,12 @@ const Discussions = ({
               onPress={sendMessageToDiscussion}
               style={{
                 justifyContent: 'center',
-              }}>
+              }}
+              disabled={isEmptyMessage()}>
               <Icon
                 name="send-message"
                 size={25}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
-                }
+                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
               />
             </TouchableOpacity>
           </View>
