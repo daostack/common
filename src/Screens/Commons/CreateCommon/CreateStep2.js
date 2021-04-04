@@ -21,6 +21,11 @@ const CreateStep2 = ({
   },
 }) => {
   const fundingFormStore = formStores.fundingFormStore;
+
+  fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', {
+    value: moment({}).unix(),
+  });
+
   const getContributionValue = () =>
     fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
 
@@ -40,11 +45,6 @@ const CreateStep2 = ({
     `required|integer|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
-    fundingFormStore.registerFormField(
-      CreateCommonForm.DEADLINE,
-      'required',
-      `${moment().unix()}`,
-    );
     fundingFormStore.registerFormField(
       CreateCommonForm.CONTRIBUTION,
       'required',
