@@ -81,7 +81,7 @@ const CreateDiscussionForm = ({
             infoLabel="Required"
             autoCapitalize="sentences"
             autoCorrect={false}
-            fontWeight="bold"
+            style={styles.textInputStyle}
             validation={{
               name: TITLE,
               formStore: createDiscussionStore,
@@ -145,6 +145,9 @@ const styles = StyleSheet.create({
   },
   filesContainer: {
     marginVertical: sizeM,
+  },
+  textInputStyle: {
+    fontWeight: 'bold',
   },
 });
 
