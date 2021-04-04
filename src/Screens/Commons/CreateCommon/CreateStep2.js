@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Pressable} from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
@@ -9,6 +9,7 @@ import moment from 'moment';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import Icon from '~/Assets/iconfont/Icon';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -40,6 +41,8 @@ const CreateStep2 = ({
   const [contributionIndex, setContributionIndex] = useState(
     initialContributionIndex,
   );
+
+  const [zeroContribution, setZeroContribution] = useState(false);
 
   const minimumFieldRules = (currContribIndex) =>
     `required|integer|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
@@ -145,35 +148,23 @@ const CreateStep2 = ({
             ).toLocaleString('en')}.`,
           }}
         />
-        {/*<View style={{marginTop: 24}}>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.label}>Funds safety period</Text>
-                    <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
-                      Required
-                    </Text>
-                  </View>
-                  <Text style={styles.info2}>
-                    Set a period in which members will not be able to create proposals
-                    and allocate the funds. This will allow more members to join and
-                    participate in the decision-making process.
-                  </Text>
-        
-                  <SegmentedControlTab
-                    tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
-                    tabStyle={{borderColor: colors.grey4}}
-                    activeTabStyle={{backgroundColor: colors.mainBlue}}
-                    values={[
-                      '1 week',
-                      '1 month',
-                      pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
-                    ]}
-                    tabTextStyle={styles.tabTextStyle}
-                    borderRadius={8}
-                    selectedIndex={segmentedIndex}
-                    onTabPress={onTabChange}
-                  />
-                  {DatePickerModal}
-                </View>*/}
+        <Pressable
+          onPress={() => {
+            setZeroContribution(!zeroContribution);
+          }}>
+          <View style={styles.zeroContributionView}>
+            <View style={styles.checkMark}>
+              <Icon
+                name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
+                size={24}
+              />
+            </View>
+            <Text style={styles.agreeText}>
+              Let users join the Common without a personal contribution
+            </Text>
+          </View>
+        </Pressable>
+
         {/* <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
@@ -271,6 +262,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     position: 'relative',
     width: '100%',
+  },
+  zeroContributionView: {
+    flexDirection: 'row',
+    marginTop: 24,
+  },
+  checkMark: {
+    height: 24,
+    width: 24,
+    marginRight: 8,
+  },
+  agreeText: {
+    color: colors.slate,
+    ...font.primary.primary,
+    fontSize: 16,
+    lineHeight: 23,
+    flex: 1,
   },
 });
 
