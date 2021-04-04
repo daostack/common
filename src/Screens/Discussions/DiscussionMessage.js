@@ -72,11 +72,13 @@ const DiscussionMessage = ({
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
     const userPermission = authStore.getPermission(commonId, ownerInfo.id);
-    setPermission(userPermission);
+    if (userPermission) {
+      setPermission('Moderator');
+    }
   }, []);
 
   const flagView = (isModerator || isHidden) && isFlagged && (
-    <View style={{flexDirection: 'row', marginLeft: 30}}>
+    <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
       {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
@@ -111,6 +113,7 @@ const DiscussionMessage = ({
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               elevation: 2,
+              alignItems: 'flex-end',
             }}>
             {flagView}
             {(!isHidden || hasPermission) && (
@@ -157,7 +160,7 @@ const DiscussionMessage = ({
                   : colors.mainBlueOpacity,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={styles.userTitleView}>
                   <Text
                     style={{
                       ...styles.ownerName,
@@ -266,6 +269,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  userTitleView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
