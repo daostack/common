@@ -43,13 +43,8 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
-  const isModerator =
-    viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR;
+
+  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -73,7 +68,7 @@ const DiscussionMessage = ({
   useEffect(() => {
     const userPermission = authStore.getPermission(commonId, ownerInfo.id);
     if (userPermission) {
-      setPermission('Moderator');
+      setPermission(userPermission);
     }
   }, []);
 
@@ -101,7 +96,7 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || hasPermission) &&
+        (!isHidden || viewerPermission) &&
         isMember &&
         !isOwner &&
         openMessageOptions()
@@ -112,11 +107,10 @@ const DiscussionMessage = ({
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
-              elevation: 2,
-              alignItems: 'flex-end',
+              alignItems: isHidden ? 'flex-start' : 'flex-end',
             }}>
             {flagView}
-            {(!isHidden || hasPermission) && (
+            {(!isHidden || viewerPermission) && (
               <View style={styles.textContainer}>
                 <HyperText
                   textStyle={{
@@ -174,7 +168,7 @@ const DiscussionMessage = ({
                   {flagView}
                 </View>
               </Hyperlink>
-              {(!isHidden || hasPermission) && (
+              {(!isHidden || viewerPermission) && (
                 <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{
@@ -264,6 +258,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
+    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',
