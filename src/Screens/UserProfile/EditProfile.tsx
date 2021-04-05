@@ -25,10 +25,17 @@ import logger from '~/Services/Logger';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
+import {latinOnly} from '~/Util/constants/validation';
 
 const validationSchema = object({
-  firstName: string().required().label('The first name'),
-  lastName: string().required().label('The last name'),
+  firstName: string()
+    .matches(latinOnly, 'The first name should use latin characters only')
+    .required()
+    .label('The first name'),
+  lastName: string()
+    .matches(latinOnly, 'The first name should use latin characters only')
+    .required()
+    .label('The last name'),
   photoURL: string(),
   intro: string().label('The intro'),
 });
