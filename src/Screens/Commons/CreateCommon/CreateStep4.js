@@ -69,7 +69,7 @@ const CreateStep4 = ({
     navigation.dispatch(navigate);
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = () => {
     const {name} = generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
@@ -103,8 +103,8 @@ const CreateStep4 = ({
         image: data.image,
         rules: data.rules,
         links: escapeUrl(data.links),
-        byline: data.byline,
-        description: data.description,
+        byline: data.byline || '',
+        description: data.description || '',
         contributionType: data.contributionType,
         contributionAmount: data.contributionAmount,
         fundingGoalDeadline: data.fundingGoalDeadline,
