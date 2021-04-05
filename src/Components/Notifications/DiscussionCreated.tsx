@@ -5,6 +5,7 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {FLAGS} from '~/Components/Moderation/constants';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -46,7 +47,10 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (
+    notificationData.missingData ||
+    discussion?.moderation?.flag === FLAGS.hidden
+  ) {
     return null;
   }
 

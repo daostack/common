@@ -14,6 +14,7 @@ import {
   IFundingRequestProposal,
   IJoinRequestProposal,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {FLAGS} from '~/Components/Moderation/constants';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -67,7 +68,10 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
   }
 
   // Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (
+    notificationData.missingData ||
+    proposalNotificationData?.moderation?.flag === FLAGS.hidden
+  ) {
     return null;
   }
 
