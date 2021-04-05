@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, font, text as textjs} from '~/Theme';
+import {colors, font, text as textjs, layout} from '~/Theme';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
@@ -21,6 +21,8 @@ import {HyperText} from '~/Components/Text/HyperText';
 import {reporterName} from '../../Components/Moderation/Reported';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import Icon from '~/Assets/iconfont/Icon';
+import _ from 'lodash';
 
 const {width} = Dimensions.get('window');
 
@@ -41,8 +43,13 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
-
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
+  const isModerator =
+    viewerPermission === PERMISSIONS.FOUNDER ||
+    viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -68,16 +75,15 @@ const DiscussionMessage = ({
     setPermission(userPermission);
   }, []);
 
-  // icon missing
-  const flagView = (viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR ||
-    isHidden) &&
-    isFlagged && (
-      <Text
-        style={{...styles.hiddenTitle, color: colors.grey3, marginLeft: 30}}>
-        {flag} {isHidden ? '' : `by ${moderatorName}`}
+  const flagView = (isModerator || isHidden) && isFlagged && (
+    <View style={{flexDirection: 'row', marginLeft: 30}}>
+      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
+      <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
+        {_.upperFirst(flag)}
+        {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
       </Text>
-    );
+    </View>
+  );
 
   const dateView = () => (
     <Text
@@ -100,40 +106,29 @@ const DiscussionMessage = ({
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
-          {showCurrentUserAvatar && (
-            <TouchableOpacity onPress={goToUserProfile}>
-              <Image
-                style={{
-                  backgroundColor: colors.grey3,
-                  height: 40,
-                  width: 40,
-                  borderRadius: 20,
-                  justify: 'flex-end',
-                  marginLeft: 10,
-                }}
-                source={ownerInfo && {uri: ownerInfo.photoURL}}
-              />
-            </TouchableOpacity>
-          )}
-
           <View
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+              elevation: 2,
             }}>
             {flagView}
-            <HyperText
-              textStyle={{
-                ...styles.text,
-                color: isHidden ? colors.grey3 : colors.black,
-                ...textjs.writingDirection(data.text),
-              }}
-              selectable>
-              {data.text}
-            </HyperText>
-            <View style={{position: 'relative', right: 0, bottom: 0}}>
-              {dateView()}
-            </View>
+            {(!isHidden || hasPermission) && (
+              <View style={styles.textContainer}>
+                <HyperText
+                  textStyle={{
+                    ...styles.text,
+                    color: isHidden ? colors.grey3 : colors.black,
+                    ...textjs.writingDirection(data.text),
+                    maxWidth: '93%',
+                    minWidth: '20%',
+                  }}
+                  selectable>
+                  {data.text}
+                </HyperText>
+                {!isHidden && dateView()}
+              </View>
+            )}
           </View>
         </View>
       ) : (
@@ -157,7 +152,9 @@ const DiscussionMessage = ({
                 ...styles.contentOwner,
                 marginLeft: 10,
                 maxWidth: width - 90,
-                backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
+                backgroundColor: isHidden
+                  ? colors.paleLilacTwo
+                  : colors.mainBlueOpacity,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
                 <View style={{flexDirection: 'row'}}>
@@ -175,16 +172,20 @@ const DiscussionMessage = ({
                 </View>
               </Hyperlink>
               {(!isHidden || hasPermission) && (
-                <HyperText
-                  textStyle={{
-                    ...styles.text,
-                    color: isHidden ? colors.grey3 : colors.black,
-                    ...textjs.writingDirection(data.text),
-                  }}>
-                  {data.text}
-                </HyperText>
+                <View style={styles.textContainer}>
+                  <HyperText
+                    textStyle={{
+                      ...styles.text,
+                      color: isHidden ? colors.grey3 : colors.black,
+                      ...textjs.writingDirection(data.text),
+                      maxWidth: '93%',
+                      minWidth: '40%',
+                    }}>
+                    {data.text}
+                  </HyperText>
+                  {!isHidden && dateView()}
+                </View>
               )}
-              {dateView()}
             </View>
           </View>
         </>
@@ -244,12 +245,13 @@ const styles = StyleSheet.create({
   date: {
     textAlign: 'right',
     ...font.primary.regular,
-    ...font.fontSize(0),
+    fontSize: 10,
+    marginVertical: 2,
+    alignSelf: 'flex-end',
   },
   contentOwner: {
-    //backgroundColor: colors.white,
-    padding: 10,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 15,
     alignSelf: 'flex-end',
     flexShrink: 1,
     shadowColor: 'rgba(0, 0, 0, 0.2)',
@@ -259,10 +261,13 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
-    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',
+  },
+  textContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

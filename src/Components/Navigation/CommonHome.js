@@ -38,9 +38,9 @@ const CommonHome = ({rootStore}) => (
             return (
               <View style={styles.notificationContainer}>
                 <Image source={imageName} width={30} height={30} />
-                {/* {rootStore.notificationStore.hasNewNotifications && (
+                {rootStore.notificationStore.hasNewNotifications && (
                   <View style={styles.notReadDot} />
-                )} */}
+                )}
               </View>
             );
           }

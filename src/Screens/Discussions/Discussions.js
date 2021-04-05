@@ -44,6 +44,7 @@ const Discussions = ({
   },
   rootStore,
 }) => {
+  const redirectBack = !commonId && fromNotificationItem;
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
@@ -65,10 +66,12 @@ const Discussions = ({
     ? userStore.getUserById(dataState?.ownerId)
     : null;
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(commonId, authStore?.userInfo?.uid);
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
@@ -114,7 +117,7 @@ const Discussions = ({
     }
 
     const message = inputText;
-    if (message && message.trim().length) {
+    if (!isEmptyMessage()) {
       inputRef.current.clear();
 
       db.collection('discussionMessage')
@@ -138,7 +141,6 @@ const Discussions = ({
           setIsSending(false);
         });
     } else {
-      Toast.error('Empty Message');
       setIsSending(false);
     }
   };
@@ -199,7 +201,10 @@ const Discussions = ({
     return url[url.length - 2];
   };
 
-  const navigateBack = () => fromNotificationItem ? navigation.replace('CommonProfile', {commonId}) : navigation.pop();
+  const navigateBack = () =>
+    fromNotificationItem && !redirectBack
+      ? navigation.replace('CommonProfile', {commonId})
+      : navigation.pop();
 
   const header = () => (
     // <SafeAreaView flex={1}>
@@ -211,7 +216,7 @@ const Discussions = ({
         }}
         title={{
           title: dataState.title,
-          style: [text.h2Black, {paddingLeft: 50, paddingRight: 20}],
+          style: {...text.h2Black, maxWidth: '70%'},
           ellipsizeMode: 'tail',
           numberOfLines: 1,
         }}
@@ -234,16 +239,21 @@ const Discussions = ({
         //   </TouchableOpacity>
         // }
       />
-      <View style={{overflow: 'hidden', paddingBottom: 5}}>
+      <View
+        style={{
+          overflow: 'hidden',
+          paddingBottom: 5,
+          maxHeight: '50%',
+        }}>
         <View style={styles.headerContainer}>
-          {isExpanded ? (
+          {dataState.isExpanded ? (
             <View
               style={{
                 paddingTop: 20,
                 paddingHorizontal: 20,
-                maxHeight: '94%',
+                shadowColor: 'rgba(0, 0, 0, 0.12)',
               }}>
-              <ScrollView>
+              <ScrollView style={{maxHeight: '90%'}}>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -279,7 +289,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
@@ -292,7 +302,7 @@ const Discussions = ({
               <TouchableOpacity
                 style={{alignItems: 'center', paddingVertical: 10}}
                 onPress={() => {
-                  setIsExpanded(!isExpanded);
+                  dataState.isExpanded = !dataState.isExpanded;
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
@@ -397,6 +407,8 @@ const Discussions = ({
     );
   }
 
+  const isEmptyMessage = () => !(inputText && inputText.trim().length);
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -416,7 +428,7 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={{flex: 1, paddingBottom: 30}} ref={scrollRef}>
+      <ScrollView style={styles.scrollView} ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}
           inputRef={inputRef}
@@ -435,49 +447,51 @@ const Discussions = ({
             bottom: 0,
             flex: 1,
             color: '#fbfdff',
-          }}>
-          <View style={styles.inputContainer}>
-            <View
-              style={[styles.input, {height: Math.max(35, inputHeight + 50)}]}>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(event) => {
-                  setInputHeight(event.nativeEvent.contentSize.height);
-                }}
-                style={{
-                  flex: 1,
-                  maxHeight: 120,
-                  paddingVertical: 10,
-                  marginHorizontal: 10,
-                  height: Math.max(35, inputHeight + 32),
-                }}
+          }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={0}>
+          <View
+            style={{
+              ...styles.inputContainer,
+              height: Math.max(100, inputHeight + 50),
+            }}>
+            {/* should be added in better discussion batch 3
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                justifyContent: 'center',
+              }}>
+              <Icon name="add-24" size={30} color={colors.mainBlue} />
+            </TouchableOpacity>*/}
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              fontSize={15}
+              multiline
+              placeholder="What do you think?"
+              placeholderTextColor={colors.grey3}
+              onChangeText={(currText) => setInputText(currText)}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
+              }}
+              style={styles.input}
+            />
+            <TouchableOpacity
+              onPress={sendMessageToDiscussion}
+              style={{
+                justifyContent: 'center',
+              }}
+              disabled={isEmptyMessage()}>
+              <Icon
+                name="send-message"
+                size={25}
+                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
               />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  paddingRight: 15,
-                  justifyContent: 'center',
-                }}>
-                <Icon
-                  name="send-message"
-                  size={20}
-                  color={
-                    inputText && inputText.trim()
-                      ? colors.mainBlue
-                      : colors.grey3
-                  }
-                />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       ) : (
-        <View style={styles.input}>
+        <View style={{paddingTop: 10}}>
           <Text style={{...styles.joinCommonText}}>
             Only members can send messages
           </Text>
@@ -526,15 +540,6 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.black,
   },
-  title: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    color: colors.black,
-    textAlign: 'center',
-    // textAlignVertical: 'center',
-    flex: 1,
-    lineHeight: 20,
-  },
   galleryImage: {
     marginRight: 15,
     width: 120,
@@ -558,31 +563,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey4,
     borderRadius: 17.5,
   },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    padding: 10,
-    backgroundColor: colors.mainBlue,
-  },
   inputContainer: {
-    flex: 1,
-    height: 100,
+    width,
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: '#fbfdff',
-  },
-  input: {
-    // backgroundColor: colors.white,
-    backgroundColor: '#fbfdff',
-    borderTopColor: colors.grey4,
-    borderTopWidth: 1,
-    minHeight: 65,
-    maxHeight: 140,
-    width: width,
-    flexDirection: 'row',
+    backgroundColor: colors.white,
     shadowColor: 'rgba(0, 0, 0, 0.2)',
     shadowOffset: {
       width: 0,
@@ -591,54 +577,21 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 15,
-  },
-  textInput: {
-    flex: 1,
-    paddingTop: 0,
-    marginBottom: Platform.OS === 'ios' ? 10 : 0,
-    marginHorizontal: 10,
-  },
-  sendMessageIcon: {
-    marginBottom: Platform.OS === 'ios' ? 10 : 0,
-  },
-  timeHeader: {
-    textAlign: 'center',
-    marginVertical: 3,
-    color: colors.grey3,
-    ...font.fontSize(2),
-    ...font.primary.regular,
-  },
-
-  sheetTitle: {
-    ...font.fontSize(4),
-    ...font.primary.bold,
-    color: colors.black,
-    paddingVertical: 15,
-    textAlign: 'center',
-  },
-  bottomSheet: {
-    paddingBottom: 40,
-  },
-  modalStyle: {
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  sheetText: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    color: colors.black,
-    marginLeft: 10,
-  },
-  sheetButton: {
     flexDirection: 'row',
-    width: width,
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-    marginHorizontal: 20,
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+  },
+  input: {
+    backgroundColor: colors.paleLilacTwo,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    width: '75%',
+    flexDirection: 'row',
+    borderRadius: 40,
+    textAlignVertical: 'center',
+    paddingTop: Platform.OS === 'ios' ? 15 : 10,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
+    paddingHorizontal: 15,
   },
   adsText: {
     ...font.fontSize(2),
@@ -646,7 +599,6 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...layout.marginLeftXS,
   },
-
   adRow: {
     alignItems: 'center',
     ...layout.flexRow,
@@ -661,22 +613,6 @@ const styles = StyleSheet.create({
     paddingTop: sizeS,
     paddingBottom: sizeXL,
     alignSelf: 'center',
-  },
-  emptyContainer: {
-    flex: 0.8,
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyTitle: {
-    ...font.fontSize(3),
-    ...font.primary.bold,
-    paddingVertical: 12,
-  },
-  emptyBody: {
-    textAlign: 'center',
-    ...font.fontSize(2),
-    ...font.primary.regular,
   },
   headerContainer: {
     backgroundColor: colors.white,
@@ -696,6 +632,11 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+  },
+  scrollView: {
+    flex: 1,
+    paddingBottom: 30,
+    backgroundColor: colors.paleLilacTwo,
   },
 });
 

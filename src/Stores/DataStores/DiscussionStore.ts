@@ -53,8 +53,22 @@ export default class DiscussionStore extends BaseStore<
   subscribeToDiscussionById = (discussionId: string): FirestoreUnsubscribeFn =>
     subscribeToDiscussionById(discussionId, this.updateStoreData);
 
+  // helper function
+  // if discussion already exists in database,
+  // we don't want to initialize isExpanded with the default true value,
+  // but the current isExpanded state of the discussion
+  getIsExpanded = (discussionId: string): boolean => {
+    try {
+      const existingDiscussion = this.getDataById(discussionId);
+      if (existingDiscussion) {
+        return existingDiscussion.isExpanded;
+      }
+    } catch (err) {}
+    return true;
+  };
+
   // Overriden methods
   getEntityModel(entity: IDiscussionEntity): Discussion {
-    return new Discussion(entity);
+    return new Discussion(entity, this.getIsExpanded(entity.id));
   }
 }

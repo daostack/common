@@ -5,39 +5,24 @@ import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
-import {formatNotificationDate} from '~/Util/DateUtil';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {inject, observer} from 'mobx-react';
+import {notificationDataPropTypes} from './propType';
+import {formatNotificationDate} from '~/Util/DateUtil';
 
 const props = {
   item: shape({
     id: string.isRequired,
     eventType: string.isRequired,
     createdAt: object.isRequired,
-    notificationItemData: shape({
-      missingData: bool.isRequired,
-      common: shape({
-        name: string,
-      }),
-      proposal: shape({
-        id: string,
-      }),
-      discussion: shape({
-        id: string,
-      }),
-      ownerAvatar: string.isRequired,
-      description: string,
-      descriptionBold: string,
-      header: string,
-      headerBold: string,
-    }).isRequired,
     notificationItemState: shape({
       seen: bool.isRequired,
       opened: bool.isRequired,
     }).isRequired,
   }).isRequired,
+  notificationData: notificationDataPropTypes.isRequired,
   navigation: shape({
     navigate: func.isRequired,
     dispatch: func.isRequired,
@@ -47,31 +32,33 @@ const props = {
 
 const NotificationItem: React.FC<InferProps<typeof props>> = ({
   item,
+  notificationData,
   navigation,
+  notificationStore,
 }) => {
   const navigateToDetail = () => {
     let navigate;
 
-    // notificationStore.setNotificationItemState(item.id, {
-    //   opened: true,
-    // });
+    notificationStore.setNotificationItemState(item.id, {
+      opened: true,
+    });
 
-    if (item.notificationItemData.proposal) {
+    if (notificationData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
-        proposalId: item.notificationItemData.proposal.id,
+        proposalId: notificationData.proposal.id,
         fromNotificationItem: true,
-        tabIndex: item.notificationItemData.tabIndex || 0,
+        tabIndex: notificationData.tabIndex || 0,
       });
-    } else if (item.notificationItemData.discussion) {
+    } else if (notificationData.discussion) {
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
-        discussionId: item.notificationItemData.discussion.id,
+        discussionId: notificationData.discussion.id,
         fromNotificationItem: true,
       });
-    } else if (item.notificationItemData.common) {
+    } else if (notificationData.common) {
       navigate = CommonActions.navigate({
         name: NAVIGATION_SCREENS.COMMON_PROFILE,
         params: {
-          currCommon: item.notificationItemData.common,
+          currCommon: notificationData.common,
           fromNotificationItem: true,
         },
       });
@@ -99,10 +86,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         style={[
           styles.messageCardContainer,
           {
-            // backgroundColor: item.notificationItemState.opened
-            //   ? colors.white
-            //   : colors.paleNotificationblue,
-            backgroundColor: colors.white,
+            backgroundColor: item.notificationItemState?.opened
+              ? colors.white
+              : colors.paleNotificationblue,
           },
         ]}>
         <View
@@ -110,22 +96,20 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           <FastImage
             style={styles.userImage}
             source={{
-              uri: item.notificationItemData.ownerAvatar,
+              uri: notificationData.ownerAvatar,
             }}
           />
-          {/* {!item.notificationItemState.seen && (
+          {!item.notificationItemState?.seen && (
             <View style={styles.notReadDot} />
-          )} */}
+          )}
         </View>
         <View>
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
             <Text>
-              <Text style={styles.prefixStyle}>
-                {item.notificationItemData.header}
-              </Text>
+              <Text style={styles.prefixStyle}>{notificationData.header}</Text>
               <Text style={styles.whereStyle}>
-                {item.notificationItemData.headerBold}
+                {notificationData.headerBold}
               </Text>
             </Text>
           </View>
@@ -134,17 +118,20 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
               numberOfLines={2}
               style={{flexDirection: 'row', writingDirection: 'ltr'}}>
               <Text style={[styles.messageStyle, {...font.primary.bold}]}>
-                {item.notificationItemData.descriptionBold}
+                {notificationData.descriptionBold}
               </Text>
               <Text style={[styles.messageStyle, {flexShrink: 1}]}>
-                {item.notificationItemData.description}
+                {notificationData.description}
               </Text>
             </Text>
           </View>
           <Text style={styles.dateStyle}>
-            {formatNotificationDate(item.createdAt.toDate())}
-            {item.notificationItemData.common && (
-              <Text>{`, ${item.notificationItemData.common.name}`}</Text>
+            {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
+            {formatNotificationDate(
+              item.createdAt.toDate && item.createdAt.toDate(),
+            )}
+            {notificationData.common && (
+              <Text>{`, ${notificationData.common.name}`}</Text>
             )}
           </Text>
         </View>

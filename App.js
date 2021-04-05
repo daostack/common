@@ -9,6 +9,7 @@ import {
   Text,
   I18nManager,
   UIManager,
+  TouchableOpacity,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
@@ -133,8 +134,11 @@ const App = ({rootStore, navigation}) => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications &&
-        unsubscribeLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications?.forEach(
+        (unsubscribeLoggedUserNotificationsBatch) =>
+          unsubscribeLoggedUserNotificationsBatch &&
+          unsubscribeLoggedUserNotificationsBatch(),
+      );
     };
   }, [authStore.userInfo?.uid]);
 
@@ -387,6 +391,7 @@ const App = ({rootStore, navigation}) => {
             headerBackTitleVisible: false,
             headerLeftContainerStyle: {marginLeft: 20},
             headerRightContainerStyle: {marginRight: 20},
+            headerTitleAlign: 'center',
             headerBackImage: () => (
               <Icon name="left-arrow" color={colors.black} size={32} />
             ),
@@ -399,12 +404,18 @@ const App = ({rootStore, navigation}) => {
             headerBackTitleVisible: false,
             headerLeft: () => (
               <HeaderBackButton
+                backImage={() => (
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                )}
+                label=" "
                 onPress={() =>
                   route?.params.fromNotificationItem
-                    ? rest?.navigation.replace('CommonProfile', {
-                        commonId: route?.params.commonId,
-                      })
-                    : navigation.pop()
+                    ? route?.params.commonId
+                      ? rest?.navigation.replace('CommonProfile', {
+                          commonId: route?.params.commonId,
+                        })
+                      : rest?.navigation.pop()
+                    : navigationRef.current.goBack()
                 }
               />
             ),
@@ -510,12 +521,20 @@ const App = ({rootStore, navigation}) => {
           name="New Post"
           options={({nav, route}) => ({
             headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
+            headerLeft: null,
+            headerRightContainerStyle: {marginRight: 20},
+            headerRight: () => (
+              <TouchableOpacity onPress={() => navigationRef.current.goBack()}>
+                <Icon name="close" color={colors.black} size={20} />
+              </TouchableOpacity>
+            ),
           })}
           component={DiscussionPost}
         />
         <Stack.Screen
           options={({route}) => ({
-            title: route.params.isFirstOpening ? false : 'Edit my profile',
+            title: route.params.isCompleteAccount ? false : 'Edit my profile',
           })}
           name="EditProfile"
           component={EditProfile}
@@ -563,6 +582,7 @@ const App = ({rootStore, navigation}) => {
           options={({route}) => ({
             title: route?.params.screenTitle,
             headerBackTitleVisible: false,
+            headerTitleAlign: 'center',
           })}
           name="FundingProposal"
           component={FundingProposal}
@@ -592,6 +612,7 @@ const App = ({rootStore, navigation}) => {
           navigation={navigationRef}
         />
       )}
+      {/* <UserInfoChecker navigation={navigationRef} /> */}
       {appLoaderStore.isLoading && (
         <Loader isBigger isFullScreen navigation={navigationRef} />
       )}

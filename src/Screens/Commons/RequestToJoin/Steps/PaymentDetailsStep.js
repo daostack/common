@@ -133,7 +133,7 @@ const PaymentDetailsStep = ({
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
-      to this common
+      to this Common
     </Text>
   );
 
@@ -256,20 +256,15 @@ const PaymentDetailsStep = ({
           />
         </View>
 
-        <Text
-          style={{
-            ...text.regularText,
-            color: colors.grey2,
-            textAlign: 'center',
-          }}>
+        <Text style={styles.monthlyBottomMessage}>
           If your membership request will not be accepted, you will not be
-          charged. Your card will be saved for the monthly contribution of $
-          {
-            personalContributionFormStore.getFormField(
-              RequestToJoinForm.FIELD_AMOUNT,
-            )?.value?.value
-          }
-          , you can cancel at any time.
+          charged.
+          {isMonthly &&
+            `Your card will be saved for the monthly contribution of ${
+              personalContributionFormStore.getFormField(
+                RequestToJoinForm.FIELD_AMOUNT,
+              )?.value?.value
+            }, you can cancel at any time.`}
         </Text>
       </View>
     </StepDotLayout>
@@ -281,6 +276,11 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     marginTop: 20,
+  },
+  monthlyBottomMessage: {
+    ...text.regularText,
+    color: colors.grey2,
+    textAlign: 'center',
   },
 };
 

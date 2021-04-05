@@ -1,8 +1,8 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import {text, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {string, array, object} from 'prop-types';
+import {string, array, object, bool} from 'prop-types';
 
 const Bold = ({boldText, style = {}}) => (
   <Text style={{...styles.bold, ...style}}>{boldText}</Text>
@@ -32,25 +32,32 @@ const HiddenContentInfo = ({
   reasons,
   moderatorNote = null,
   type,
+  isModerator,
 }) => (
   <View style={styles.root}>
-    <View style={{...styles.body, height: moderatorNote  ? '90%' : '60%'}}>
-      <Text style={styles.title}>Hidden {type}</Text>
-      <Text style={styles.text}>
-        This {type} was hidden by <Bold boldText={userName} />
-        {' '}at{'\n'} <Bold boldText={date} /> {getReasons(reasons)}
-      </Text>
-      {!!moderatorNote && (
-        <View style={styles.moderatorNoteContainer}>
-          <View style={styles.divider} />
-          <Bold
-            boldText={'Moderator note:'}
-            style={{marginBottom: 10, fontSize: 15}}
-          />
-          <Text style={{...styles.text, textAlign: 'left'}}>{moderatorNote}</Text>
-        </View>
-      )}
-    </View>
+    <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+      <View style={{...styles.body, height: moderatorNote ? '90%' : '60%'}}>
+        <Text style={styles.title}>Hidden {type}</Text>
+        <Text style={styles.text}>
+          This {type} was hidden
+          {isModerator ? ' by ' : ''}
+          <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
+          <Bold boldText={date} /> {getReasons(reasons)}
+        </Text>
+        {!!moderatorNote && (
+          <View style={styles.moderatorNoteContainer}>
+            <View style={styles.divider} />
+            <Bold
+              boldText={'Moderator note:'}
+              style={{marginBottom: 10, fontSize: 15}}
+            />
+            <Text style={{...styles.text, textAlign: 'left'}}>
+              {moderatorNote}
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
   </View>
 );
 
@@ -60,6 +67,7 @@ HiddenContentInfo.propTypes = {
   reasons: array,
   moderatorNote: string,
   type: string,
+  isModerator: bool,
 };
 
 Bold.propTypes = {
@@ -75,6 +83,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   body: {
+    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     alignContent: 'flex-start',

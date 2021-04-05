@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
@@ -20,7 +21,8 @@ import {
   isTypeFilterJoin,
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
-import {proposalStorePropTypes} from '~/Types/propTypes';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width, height} = Dimensions.get('window');
 
@@ -49,7 +51,7 @@ const props = {
   isMember: bool,
 
   // Injected
-  proposalStore: proposalStorePropTypes.isRequired,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -60,17 +62,37 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     isSwiper,
     commonInfo,
     userInfo,
-    proposalStore,
+    rootStore,
     openCommonOptions,
     showHiddenNote,
     isMember,
   }) => {
+    const [viewerPermission, setViewerPermission] = React.useState('');
+    const isModerator =
+      viewerPermission === PERMISSIONS.FOUNDER ||
+      viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
-      list = proposalStore.getCommonProposals(commonInfo.id, proposalFilter);
+      list = rootStore.proposalStore.getCommonProposals(
+        commonInfo.id,
+        proposalFilter,
+      );
     } else if (userInfo) {
-      list = proposalStore.getUserProposals(userInfo.id, proposalFilter);
+      list = rootStore.proposalStore.getUserProposals(
+        userInfo.id,
+        proposalFilter,
+      );
     }
+
+    React.useEffect(() => {
+      if (commonInfo) {
+        const permission = rootStore.authStore.getPermission(
+          commonInfo?.id,
+          auth()?.currentUser?.uid,
+        );
+        setViewerPermission(permission);
+      }
+    }, [commonInfo]);
 
     let listRef = useRef([]);
     const renderProposalCard = (item: Proposal, index: number) =>
@@ -83,8 +105,11 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             commonInfo={commonInfo}
             navigation={navigation}
             openCommonOptions={() => openCommonOptions(item)}
-            hiddenProposalNote={() => showHiddenNote(item)}
+            hiddenProposalNote={() =>
+              showHiddenNote({hiddenItem: item, isModerator})
+            }
             isMember={isMember}
+            viewerPermission={viewerPermission}
           />
         ) : (
           <TouchableOpacity
@@ -109,8 +134,11 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           commonInfo={commonInfo}
           navigation={navigation}
           openCommonOptions={() => openCommonOptions(item)}
-          hiddenProposalNote={() => showHiddenNote(item)}
+          hiddenProposalNote={() =>
+            showHiddenNote({hiddenItem: item, isModerator})
+          }
           isMember={isMember}
+          viewerPermission={viewerPermission}
         />
       );
 
@@ -244,4 +272,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('proposalStore')(ProposalsList);
+export default inject('rootStore')(ProposalsList);

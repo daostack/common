@@ -3,13 +3,14 @@ import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS, sizeS, font, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
-import CountDown from 'react-native-countdown-component';
 import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer, inject} from 'mobx-react';
-import {Reported} from '../../Components/Moderation/Reported';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {Reported} from '~/Components/Moderation/Reported';
+import {FLAGS} from '~/Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -73,42 +74,6 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
   return status;
 };
 
-const renderCountDown = (closingAt) => {
-  /*
-  const isLessThanOneHour = remainingSeconds < 3600;
-
-  let counterTextColor = styles.timerText;
-  let timerBackground = colors.paleblue;
-
-  if (isLessThanOneHour) {
-    counterTextColor = {...styles.timerText, ...{color: colors.white}};
-    timerBackground = colors.orangeDark;
-  }
-*/
-  let counterTextColor = styles.timerText;
-
-  const remainingSeconds = closingAt ? closingAt - Date.now() / 1000 : null;
-
-  return (
-    <View style={styles.timerContainer}>
-      <View style={{...styles.timer}}>
-        <CountDown
-          timeToShow={['D', 'H', 'M', 'S']}
-          digitTxtStyle={counterTextColor}
-          timeLabels={false}
-          showSeparator={true}
-          separatorStyle={counterTextColor}
-          digitStyle={{
-            height: 'auto',
-            width: 'auto',
-          }}
-          until={remainingSeconds}
-        />
-      </View>
-    </View>
-  );
-};
-
 const ProposalCardHeader = ({
   state,
   closingAt,
@@ -120,12 +85,17 @@ const ProposalCardHeader = ({
   reporter,
   hasPermission,
   rootStore,
+  viewerPermission,
 }) => {
   const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
-  const showCountdown = !isReported || !moderation;
-  const showIcon =
-    !showCountdown && moderation?.flag === FLAGS.hidden && !hasPermission;
+  const showCountdown =
+    !moderation?.flag ||
+    moderation?.flag === FLAGS.visible ||
+    (moderation?.flag !== FLAGS.hidden &&
+      moderation?.flag === FLAGS.reported &&
+      viewerPermission !== PERMISSIONS.FOUNDER &&
+      viewerPermission !== PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -145,7 +115,9 @@ const ProposalCardHeader = ({
 
         <Text style={{...styles.stateText}}>{headerStatus.text}</Text>
 
-        {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
+        {headerStatus.text === TITLES.COUNTDOWN && (
+          <ProposalCountDown closingAt={closingAt} />
+        )}
 
         {headerStatus.text === TITLES.INSUFFICIENT_BALANCE && (
           <Icon
@@ -166,7 +138,7 @@ const ProposalCardHeader = ({
             }
           : {
               ...styles.hiddenCardHeader,
-              justifyContent: showIcon ? 'space-between' : 'center',
+              justifyContent: !showCountdown ? 'space-between' : 'center',
               borderTopLeftRadius: hasPermission ? 20 : 5,
               borderTopRightRadius: hasPermission ? 20 : 5,
             }
@@ -193,9 +165,10 @@ const ProposalCardHeader = ({
           moderation={moderation}
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
+          viewerPermission={viewerPermission}
         />
       )}
-      {showIcon && (
+      {!showCountdown && (
         <Icon
           name="questionMark"
           size={16}
@@ -218,6 +191,7 @@ ProposalCardHeader.propTypes = {
   reporter: object,
   hasPermission: bool,
   rootStore: rootStorePropTypes.isRequired,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
@@ -268,25 +242,6 @@ const styles = StyleSheet.create({
   rightIcon: {
     position: 'absolute',
     right: sizeS,
-  },
-
-  timerText: {
-    ...text.smallBlackText,
-    ...text.bold,
-    color: colors.white,
-    ...font.fontSize(0),
-  },
-
-  timer: {
-    paddingHorizontal: 0,
-    paddingVertical: 1,
-    borderRadius: 12,
-  },
-
-  timerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 5,
   },
 });
 
