@@ -23,10 +23,6 @@ const CreateStep2 = ({
 }) => {
   const fundingFormStore = formStores.fundingFormStore;
 
-  fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', {
-    value: moment({}).unix(),
-  });
-
   const getContributionValue = () =>
     fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
 
@@ -48,6 +44,18 @@ const CreateStep2 = ({
     `required|integer|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
+    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', {
+      value: moment().unix(),
+    });
+
+    fundingFormStore.registerFormField(
+      CreateCommonForm.ZERO_CONTRIBUTION,
+      'required',
+      {
+        value: false,
+      },
+    );
+
     fundingFormStore.registerFormField(
       CreateCommonForm.CONTRIBUTION,
       'required',
@@ -67,6 +75,13 @@ const CreateStep2 = ({
       null,
       minimumFieldRules(index),
     );
+  };
+
+  const onCheckboxChecked = (state) => {
+    fundingFormStore.fieldChanged(CreateCommonForm.ZERO_CONTRIBUTION, {
+      value: state,
+    });
+    setZeroContribution(state);
   };
 
   const push = async () => {
@@ -148,10 +163,7 @@ const CreateStep2 = ({
             ).toLocaleString('en')}.`,
           }}
         />
-        <Pressable
-          onPress={() => {
-            setZeroContribution(!zeroContribution);
-          }}>
+        <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
           <View style={styles.zeroContributionView}>
             <View style={styles.checkMark}>
               <Icon

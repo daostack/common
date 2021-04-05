@@ -53,7 +53,7 @@ const CreateStep4 = ({
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
-    ...fundingFormStore.getChangedFormFieldsJson(),
+    ...fundingFormStore.getFormFieldsJson(),
     ...agendaFormStore.getChangedFormFieldsJson(),
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
@@ -108,6 +108,7 @@ const CreateStep4 = ({
         contributionType: data.contributionType,
         contributionAmount: data.contributionAmount,
         fundingGoalDeadline: data.fundingGoalDeadline,
+        zeroContribution: data.zeroContribution,
       };
 
       navigation.navigate({

@@ -10,6 +10,7 @@ class CreateCommonForm {
   static ACTION = 'action';
   static RULES = 'rules';
   static IMAGE = 'image';
+  static ZERO_CONTRIBUTION = 'zeroContribution';
 }
 
 export default CreateCommonForm;
