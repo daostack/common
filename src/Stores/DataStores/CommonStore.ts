@@ -95,7 +95,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
    */
   updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
-      return updateCommon(updateCommonInfo);
+      return await updateCommon(updateCommonInfo);
     } catch (err) {
       throw err;
     }
