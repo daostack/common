@@ -169,135 +169,128 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
         errors,
         touched,
         handleSubmit,
-      }): ReactElement => {
-        console.log('values.intro', values.country, authStore.userInfo.country);
-        return (
-          <>
-            <StatusBar barStyle="dark-content" />
+      }): ReactElement => (
+        <>
+          <StatusBar barStyle="dark-content" />
 
-            <SafeAreaView style={styles.container}>
-              <ScrollView
-                contentInsetAdjustmentBehavior="automatic"
-                keyboardShouldPersistTaps="always"
-                style={styles.scrollView}>
-                {authStore.userInfo ? (
-                  <View style={styles.body}>
-                    <View
-                      style={{
-                        alignSelf: 'stretch',
-                        flexGrow: 1,
-                        marginTop: 0,
-                      }}>
-                      {route?.params?.isFirstOpening && (
-                        <View style={{marginBottom: 32}}>
-                          <Text style={styles.title}>
-                            Complete your account
-                          </Text>
-                          <Text style={styles.subtitleForm}>
-                            Help the community to get to know you better
-                          </Text>
-                        </View>
-                      )}
-                      <ImageField
-                        isAvatar={true}
-                        value={values.photoURL}
-                        allowsEditing={true}
-                        title={'Select new avatar'}
-                        onChangeImage={handleChange('photoURL')}
-                        name="photoURL"
-                      />
-
-                      <View style={styles.emailContainer}>
-                        <Text style={text.ashleyjquimbacom}>
-                          {values.email}
+          <SafeAreaView style={styles.container}>
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              keyboardShouldPersistTaps="always"
+              style={styles.scrollView}>
+              {authStore.userInfo ? (
+                <View style={styles.body}>
+                  <View
+                    style={{
+                      alignSelf: 'stretch',
+                      flexGrow: 1,
+                      marginTop: 0,
+                    }}>
+                    {route?.params?.isFirstOpening && (
+                      <View style={{marginBottom: 32}}>
+                        <Text style={styles.title}>Complete your account</Text>
+                        <Text style={styles.subtitleForm}>
+                          Help the community to get to know you better
                         </Text>
                       </View>
+                    )}
+                    <ImageField
+                      isAvatar={true}
+                      value={values.photoURL}
+                      allowsEditing={true}
+                      title={'Select new avatar'}
+                      onChangeImage={handleChange('photoURL')}
+                      name="photoURL"
+                    />
 
-                      <TextInputField
-                        errorMessage={
-                          errors && touched.firstName && errors.firstName
-                        }
-                        value={values.firstName}
-                        viewStyle={{alignSelf: 'stretch'}}
-                        label="First name"
-                        infoLabel="Required"
-                        placeholderText="First name"
-                        onBlur={handleBlur('firstName')}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        onChangeText={handleChange('firstName')}
-                      />
-
-                      <TextInputField
-                        errorMessage={
-                          errors && touched.lastName && errors.lastName
-                        }
-                        value={values.lastName}
-                        viewStyle={{alignSelf: 'stretch'}}
-                        label="Last name"
-                        infoLabel="Required"
-                        placeholderText="Last name"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        onBlur={handleBlur('lastName')}
-                        onChangeText={handleChange('lastName')}
-                      />
-
-                      {route.params.isFirstOpening && (
-                        <CountrySelectField
-                          label="Country"
-                          infoLabel="Required"
-                          value={values.country}
-                          onBlur={handleBlur('country')}
-                          onChange={handleChange('country')}
-                        />
-                      )}
-
-                      <TextInputField
-                        errorMessage={errors && touched.intro && errors.intro}
-                        label="Intro"
-                        placeholderText="What are you most passionate about, really good at, or love"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        multiline={true}
-                        onBlur={handleBlur('lastName')}
-                        value={values.intro}
-                        onChangeText={handleChange('intro')}
-                      />
+                    <View style={styles.emailContainer}>
+                      <Text style={text.ashleyjquimbacom}>{values.email}</Text>
                     </View>
+
+                    <TextInputField
+                      errorMessage={
+                        errors && touched.firstName && errors.firstName
+                      }
+                      value={values.firstName}
+                      viewStyle={{alignSelf: 'stretch'}}
+                      label="First name"
+                      infoLabel="Required"
+                      placeholderText="First name"
+                      onBlur={handleBlur('firstName')}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      onChangeText={handleChange('firstName')}
+                    />
+
+                    <TextInputField
+                      errorMessage={
+                        errors && touched.lastName && errors.lastName
+                      }
+                      value={values.lastName}
+                      viewStyle={{alignSelf: 'stretch'}}
+                      label="Last name"
+                      infoLabel="Required"
+                      placeholderText="Last name"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      onBlur={handleBlur('lastName')}
+                      onChangeText={handleChange('lastName')}
+                    />
+
+                    {route.params.isFirstOpening && (
+                      <CountrySelectField
+                        label="Country"
+                        infoLabel="Required"
+                        value={values.country}
+                        onBlur={handleBlur('country')}
+                        onChange={handleChange('country')}
+                      />
+                    )}
+
+                    <TextInputField
+                      errorMessage={errors && touched.intro && errors.intro}
+                      label="Intro"
+                      placeholderText="What are you most passionate about, really good at, or love"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      multiline={true}
+                      onBlur={handleBlur('lastName')}
+                      value={values.intro}
+                      onChangeText={handleChange('intro')}
+                    />
                   </View>
-                ) : (
-                  <Loader />
-                )}
-              </ScrollView>
+                </View>
+              ) : (
+                <Loader />
+              )}
+            </ScrollView>
 
-              <View style={styles.containerRow}>
-                <TouchableOpacity
-                  style={{
-                    ...styles.btns,
-                    ...layout.btnOutline,
-                    ...layout.marginRightS,
-                  }}
-                  onPress={onFormClose}>
-                  <Text style={text.buttonblue}>
-                    {route.params.isFirstOpening ? 'Skip' : 'Cancel'}
-                  </Text>
-                </TouchableOpacity>
+            <View style={styles.containerRow}>
+              <TouchableOpacity
+                style={{
+                  ...styles.btns,
+                  ...layout.btnOutline,
+                  ...layout.marginRightS,
+                }}
+                onPress={onFormClose}>
+                <Text style={text.buttonblue}>
+                  {route.params.isFirstOpening ? 'Skip' : 'Cancel'}
+                </Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={{
-                    ...styles.btns,
-                    ...layout.btnPrimary,
-                    ...layout.marginLeftS,
-                  }}
-                  onPress={handleSubmit}>
-                  <Text style={text.buttoncenterwhite}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </SafeAreaView>
-          </>
-        );
-      }}
+              <TouchableOpacity
+                style={{
+                  ...styles.btns,
+                  ...layout.btnPrimary,
+                  ...layout.marginLeftS,
+                }}
+                onPress={handleSubmit}>
+                <Text style={text.buttoncenterwhite}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </>
+      )}
     </Formik>
   );
 };
