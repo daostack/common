@@ -112,7 +112,7 @@ export default abstract class BaseStore<
 
   firestoreDocToEntity(firebaseDoc: IFirebaseDoc<IEntity>): IEntity {
     let docData: IEntity = firebaseDoc.data() as IEntity;
-    return this.prepareDocData(docData, firebaseDoc?.id);
+    return this.prepareDocData(docData, firebaseDoc.id);
   }
 
   firestoreDocChangeToEntity(
