@@ -118,7 +118,7 @@ class AuthStore {
       const memberObj = currCommon.members.find(
         (member) => member.userId === userId,
       );
-      if (currCommon.metadata.founderId === userId || memberObj?.permission) {
+      if (currCommon?.metadata?.founderId === userId || memberObj?.permission) {
         return PERMISSIONS.MODERATOR;
       }
     } catch (error) {
