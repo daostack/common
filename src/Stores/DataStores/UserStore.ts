@@ -1,10 +1,11 @@
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
 import BaseStore from './BaseStore';
-import {subscribeToAllUsers} from '~/Services/ListServices/UserListService';
-import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
+import {subscribeToAllUsers, getUserById} from '~/Services/ListServices/UserListService';
+import {FirestoreUnsubscribeFn, IFirebaseDocChange, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {runInAction} from 'mobx';
 
 export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
@@ -12,15 +13,33 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   }
 
   // Data consuming methods
-  getUserById = (uid: string): UserModel => this.getDataById(uid);
+  getUserById = (uid: string): UserModel | undefined => {
+    try {
+      return this.getDataById(uid);
+    } catch (err) {
+      getUserById(uid).then(
+        (user: IFirebaseDoc<IUserEntity>) => {
+          runInAction(() => {
+            this.setData(
+              uid,
+              this.getEntityModel(this.firestoreDocToEntity(user))
+              );
+          });
+        }
+      );
+      return undefined;
+    }
+  };
 
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
-  ): Array<UserModel> =>
+  ): Array<UserModel | undefined> =>
     members.map((commonMember: ICommonMember) => {
       const user = this.getUserById(commonMember.userId);
-      user.joinedAt = commonMember.joinedAt;
-      return user;
+      if (user) {
+        user.joinedAt = commonMember.joinedAt;
+        return user;
+      }
     });
 
   //Actions
