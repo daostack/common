@@ -3,6 +3,7 @@ import BaseStore from './BaseStore';
 import {
   subscribeToAllCommons,
   updateCommon,
+  fetchCommonById,
 } from '~/Services/ListServices/CommonListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
@@ -11,6 +12,8 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId} from '~/Util';
+import {runInAction} from 'mobx';
+
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
@@ -50,7 +53,20 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   }
 
   // Data consuming methods
-  getCommonById = (id: string): Common | undefined => this.getDataById(id);
+  getCommonById = (id: string): Common | undefined => {
+    try {
+      console.log('got here trying');
+      return this.getDataById(id);
+    } catch (err) {
+      console.log('got here', id);
+      fetchCommonById(id).then((common: ICommonEntity) => {
+        runInAction(() => {
+          this.setData(id, this.getEntityModel(common));
+        });
+      });
+      return undefined;
+    }
+  };
 
   getUserCommons = (userId: string) =>
     this.getDataArray.filter((common: Common) =>
