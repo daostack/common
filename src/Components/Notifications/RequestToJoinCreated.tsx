@@ -25,6 +25,10 @@ const RequestToJoinCreated: React.FC<InferProps<typeof props>> = ({
   if (proposalNotificationData) {
     const {proposal, common} = proposalNotificationData;
 
+    if (proposal?.isModerationHidden) {
+      return null;
+    }
+
     notificationData = {
       missingData: false,
       description:

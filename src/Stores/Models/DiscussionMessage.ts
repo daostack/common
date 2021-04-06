@@ -4,6 +4,8 @@ import {
   IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {BaseModel} from './BaseModel';
+import {FLAGS} from '~/Components/Moderation/constants';
+
 
 export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   @observable
@@ -29,7 +31,7 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === 'hidden';
+    return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
