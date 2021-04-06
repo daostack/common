@@ -12,6 +12,7 @@ import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 type SignInErrorWithCode = any;
 
@@ -103,6 +104,7 @@ class AuthStore {
     this.userInfo = newUserInfo;
     if (isUserChanged) {
       this.signedInUser = newUserInfo?.uid;
+      this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
 
@@ -116,9 +118,9 @@ class AuthStore {
       const memberObj = currCommon.members.find(
         (member) => member.userId === userId,
       );
-      return currCommon?.metadata.founderId === userId
-        ? 'founder'
-        : memberObj?.permission;
+      if (currCommon?.metadata?.founderId === userId || memberObj?.permission) {
+        return PERMISSIONS.MODERATOR;
+      }
     } catch (error) {
       return '';
     }

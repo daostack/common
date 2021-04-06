@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,28 +26,22 @@ const EditProfile = ({rootStore, route, navigation}) => {
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
-  navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={async () => {
-          onFormClose();
-        }}>
-        <Icon name="left-arrow" size={32} />
-      </TouchableOpacity>
-    ),
-  });
-
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-        // Prevent default behavior of leaving the screen
-        const {firstName, lastName} = authStore.userInfo || {};
-        if (!firstName || !lastName) {
-          e.preventDefault();
-        }
-      }),
-    [navigation]
-  );
+  if (route.params.isCompleteAccount) {
+    navigation.setOptions({
+      headerLeft: false,
+    });
+  } else {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={async () => {
+            onFormClose();
+          }}>
+          <Icon name="left-arrow" size={32} />
+        </TouchableOpacity>
+      ),
+    });
+  }
 
   const [editProfileFormStore] = useState(new EditProfileFormStore());
 
@@ -94,11 +88,11 @@ const EditProfile = ({rootStore, route, navigation}) => {
   };
 
   const onFormClose = () => {
-    const {isFirstOpening, isSignedWithApple} = route.params;
+    const {isCompleteAccount, isSignedWithApple} = route.params;
 
     if (
       isSignedWithApple &&
-      isFirstOpening &&
+      isCompleteAccount &&
       (!editProfileFormStore.isFormValid() ||
         !authStore.userInfo?.firstName ||
         !authStore.userInfo?.lastName)
@@ -125,7 +119,7 @@ const EditProfile = ({rootStore, route, navigation}) => {
     authStore.userInfo ? (
       <View style={styles.body}>
         <EditProfileForm
-          isFirstOpening={route.params.isFirstOpening}
+          isCompleteAccount={route.params.isCompleteAccount}
           editProfileFormStore={editProfileFormStore}
         />
       </View>
@@ -133,6 +127,10 @@ const EditProfile = ({rootStore, route, navigation}) => {
       <Loader />
     ),
   );
+
+  const saveBtnStyle = route.params.isCompleteAccount
+    ? styles.bigSaveBtn
+    : layout.marginLeftS;
 
   return (
     <>
@@ -146,18 +144,13 @@ const EditProfile = ({rootStore, route, navigation}) => {
           <EditForm />
         </ScrollView>
 
-        <View style={styles.containerRow}>
-          {route.params.isFirstOpening ? (
-            <TouchableOpacity
-              style={{
-                ...styles.btns,
-                ...layout.btnOutline,
-                ...layout.marginRightS,
-              }}
-              onPress={onFormClose}>
-              <Text style={text.buttonblue}>Skip</Text>
-            </TouchableOpacity>
-          ) : (
+        <View
+          style={
+            route.params.isCompleteAccount
+              ? styles.oneBtnContainer
+              : styles.multiBtnContainer
+          }>
+          {!route.params.isCompleteAccount && (
             <TouchableOpacity
               style={{
                 ...styles.btns,
@@ -173,7 +166,7 @@ const EditProfile = ({rootStore, route, navigation}) => {
             style={{
               ...styles.btns,
               ...layout.btnPrimary,
-              ...layout.marginLeftS,
+              ...saveBtnStyle,
             }}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
@@ -188,7 +181,7 @@ EditProfile.propTypes = {
   rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
-      isFirstOpening: bool,
+      isCompleteAccount: bool,
     }),
   }),
   navigation: object,
@@ -198,7 +191,14 @@ const styles = StyleSheet.create({
   btns: {
     alignSelf: 'stretch',
   },
-  containerRow: {
+  bigSaveBtn: {
+    width: '100%',
+  },
+  oneBtnContainer: {
+    padding: 20,
+    backgroundColor: colors.white,
+  },
+  multiBtnContainer: {
     ...layout.content,
     ...layout.flexRow,
     justifyContent: 'space-between',

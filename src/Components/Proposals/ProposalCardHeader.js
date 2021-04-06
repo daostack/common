@@ -94,7 +94,6 @@ const ProposalCardHeader = ({
     moderation?.flag === FLAGS.visible ||
     (moderation?.flag !== FLAGS.hidden &&
       moderation?.flag === FLAGS.reported &&
-      viewerPermission !== PERMISSIONS.FOUNDER &&
       viewerPermission !== PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (

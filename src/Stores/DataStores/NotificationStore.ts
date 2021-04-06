@@ -3,6 +3,7 @@ import {subscribeToUserNotifications} from '~/Services/ListServices/Notification
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {
+  EventTypeState,
   INotificationEntity,
   IProposalNotificationData,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
@@ -103,6 +104,23 @@ export default class NotificationStore extends BaseStore<
   @action
   deleteUserNotifications = () => {
     this.data = observable.map({});
+  };
+
+  @action
+  addWelcomeNotification = () => {
+    const welcomeNotification = {
+      id: EventTypeState.welcomeNotification,
+      createdAt: this.rootStore.authStore.userInfo?.createdAt,
+      updatedAt: this.rootStore.authStore.userInfo?.createdAt,
+      eventObjectId: '',
+      userFilter: [],
+      eventType: EventTypeState.welcomeNotification,
+    } as INotificationEntity;
+
+    this.setData(
+      EventTypeState.welcomeNotification,
+      this.getEntityModel(welcomeNotification),
+    );
   };
 
   // Overriden methods

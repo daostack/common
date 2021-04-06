@@ -241,7 +241,7 @@ const ProposalScreen = ({
       }
       setIsSending(true);
       const message = inputText;
-      if (message && message.trim().length) {
+      if (!isEmptyMessage()) {
         inputRef.current.clear();
 
         db.collection('discussionMessage')
@@ -265,7 +265,6 @@ const ProposalScreen = ({
             setIsSending(false);
           });
       } else {
-        Toast.error('Empty Message');
         setIsSending(false);
       }
     };
@@ -274,6 +273,8 @@ const ProposalScreen = ({
     if (isMember) {
       viewStyle = {...viewStyle, borderBottomWidth: 0};
     }
+
+    const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
     return isMember || isProposer ? (
       <KeyboardAvoidingView
@@ -308,13 +309,12 @@ const ProposalScreen = ({
               style={{
                 paddingRight: 15,
                 justifyContent: 'center',
-              }}>
+              }}
+              disabled={isEmptyMessage()}>
               <Icon
                 name="send-message"
                 size={20}
-                color={
-                  inputText && inputText.trim() ? colors.mainBlue : colors.grey3
-                }
+                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
               />
             </TouchableOpacity>
           </View>

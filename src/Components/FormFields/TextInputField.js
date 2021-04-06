@@ -107,7 +107,7 @@ class TextInputField extends React.Component {
       validation,
       maxLength,
       autofill,
-      fontWeight,
+      style,
       ...otherProps
     } = this.props;
     const {formStore, name, multiName} = validation;
@@ -154,7 +154,7 @@ class TextInputField extends React.Component {
             {...autoComplete}
             maxLength={maxLength}
             multiline={multiline}
-            style={{...styles.textfield, fontWeight}}
+            style={{...styles.textfield, ...style}}
             placeholder={placeholderText}
             placeholderTextColor={colors.grey3}
             onChangeText={this.onChangeText}
@@ -213,7 +213,7 @@ TextInputField.propTypes = {
   onSubmit: func,
   format: func,
   autofill: string,
-  fontWeight: string,
+  style: object,
 };
 
 const styles = StyleSheet.create({
