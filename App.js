@@ -67,8 +67,8 @@ import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
 import Loader from '~/Components/Loader';
-import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import crashlytics from '@react-native-firebase/crashlytics';
+import {ErrorBoundary} from '~/Components/ErrorBoundary';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -432,83 +432,85 @@ const App = ({rootStore, navigation}) => {
                       : route?.params.title}
                   </Text>
 
-        <Stack.Screen
-          name="FullScreenCreationLoader"
-          component={FullScreenCreationLoader}
-          options={({nav, route}) => ({
-            headerShown: false,
-          })}
-        />
-        <Stack.Screen
-          name="New Post"
-          options={({nav, route}) => ({
-            headerBackTitleVisible: false,
-            headerTitleAlign: 'center',
-            headerLeft: null,
-            headerRightContainerStyle: {marginRight: 20},
-            headerRight: () => (
-              <TouchableOpacity onPress={() => navigationRef.current.goBack()}>
-                <Icon name="close" color={colors.black} size={20} />
-              </TouchableOpacity>
-            ),
-          })}
-          component={DiscussionPost}
-        />
-        <Stack.Screen
-          options={({route}) => ({
-            title: route.params.isCompleteAccount ? false : 'Edit my profile',
-          })}
-          name="EditProfile"
-          component={EditProfile}
-        />
-        <Stack.Screen name="PDFViewer" component={PDFViewer} />
-        <Stack.Screen
-          name="Browser"
-          options={({nav, route}) => ({headerBackTitle: 'Back'})}
-          component={Browser}
-        />
-        <Stack.Screen
-          options={{
-            title: 'My Profile',
-            headerBackTitleVisible: false,
-          }}
-          name="MyWallet"
-          component={MyWallet}
-        />
-        <Stack.Screen name="HUDTest" component={HUDTest} />
-        <Stack.Screen
-          options={{
-            title: 'My Profile',
-            headerBackTitleVisible: false,
-          }}
-          name="MyProposals"
-          component={MyProposals}
-        />
-        <Stack.Screen
-          options={{
-            title: 'My Profile',
-            headerBackTitleVisible: false,
-          }}
-          name="MyCommons"
-          component={MyCommons}
-        />
-        <Stack.Screen
-          name="CommonMembers"
-          component={CommonMembers}
-          options={({route}) => ({
-            title: route?.params.screenTitle,
-            headerBackTitleVisible: false,
-          })}
-        />
-        <Stack.Screen
-          options={({route}) => ({
-            title: route?.params.screenTitle,
-            headerBackTitleVisible: false,
-            headerTitleAlign: 'center',
-          })}
-          name="FundingProposal"
-          component={FundingProposal}
-        />
+                  {route?.params.subtitle && (
+                    <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                      {route.params.subtitle}
+                    </Text>
+                  )}
+                </View>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="RulesStep"
+            component={RulesStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="IntroductionStep"
+            component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="ContributionStep"
+            component={ContributionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="BillingDetailsStep"
+            component={BillingDetailsStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PaymentDetailsStep"
+            component={PaymentDetailsStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep1"
+            component={CreateStep1}
+            options={({nav, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep2"
+            component={CreateStep2}
+            options={({nav, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep3"
+            component={CreateStep3}
+            options={({nav, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="CreateStep4"
+            component={CreateStep4}
+            options={({nav, route}) => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="Discussions"
+            component={Discussions}
+            options={({nav, route}) => ({
+              headerShown: false,
+            })}
+          />
 
           <Stack.Screen
             name="FullScreenCreationLoader"
@@ -535,7 +537,7 @@ const App = ({rootStore, navigation}) => {
           />
           <Stack.Screen
             options={({route}) => ({
-              title: route.params.isFirstOpening ? false : 'Edit my profile',
+              title: route.params.isCompleteAccount ? false : 'Edit my profile',
             })}
             name="EditProfile"
             component={EditProfile}
@@ -613,7 +615,7 @@ const App = ({rootStore, navigation}) => {
             navigation={navigationRef}
           />
         )}
-        <UserInfoChecker authStore={authStore} navigation={navigationRef} />
+        {/* <UserInfoChecker navigation={navigationRef} /> */}
         {appLoaderStore.isLoading && (
           <Loader isBigger isFullScreen navigation={navigationRef} />
         )}
@@ -625,27 +627,7 @@ const App = ({rootStore, navigation}) => {
           style={{backgroundColor: 'transparent'}}
           positionValue={160}
         />
-      </Stack.Navigator>
-      {notificationRouting && (
-        <NotificationContainer
-          notificationRouting={notificationRouting}
-          setNotificationRouting={setNotificationRouting}
-          navigation={navigationRef}
-        />
-      )}
-      {/* <UserInfoChecker navigation={navigationRef} /> */}
-      {appLoaderStore.isLoading && (
-        <Loader isBigger isFullScreen navigation={navigationRef} />
-      )}
-      {bottomSheetStore.isVisible && (
-        <BottomSheetContainer navigation={navigationRef} />
-      )}
-      <ToastView
-        ref={hudRef}
-        style={{backgroundColor: 'transparent'}}
-        positionValue={160}
-      />
-    </NavigationContainer>
+      </NavigationContainer>
     </ErrorBoundary>
   );
 };
