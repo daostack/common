@@ -1,5 +1,5 @@
 export const unFormatNumber = (number: string) =>
-  number ? number.replace(',', '') : '';
+  number ? number.replace(',', '.') : '';
 
 export const formatNumber = (number: string | number) => {
   /* The next line is making the whole formatting right, but it's not working for Android.
