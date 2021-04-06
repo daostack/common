@@ -14,52 +14,85 @@ import {TabView} from 'react-native-tab-view';
 import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
-import {string, func, array, object, shape} from 'prop-types';
+import {string, func, array, object, shape, bool} from 'prop-types';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {observer, inject} from 'mobx-react';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
   `${objectName} (${count ? count : 0})`;
 
-const Members = ({navigation, members, commonId}) => (
-  <CommonMembersList
-    navigation={navigation}
-    members={members}
-    commonId={commonId}
-  />
+const Members = ({navigation, commonId}) => (
+  <CommonMembersList navigation={navigation} commonId={commonId} />
 );
 
-const Pending = ({navigation, commonId, onProposalsCountChange}) => (
+const Pending = ({
+  navigation,
+  commonId,
+  hasPermission,
+  openCommonOptions,
+  showHiddenNote,
+  isMember,
+}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
       commonInfo={{id: commonId}}
-      onlyRequestsToJoin={true}
-      onCountChange={onProposalsCountChange}
+      proposalFilter={{
+        stage: PROPOSAL_STAGE.Active,
+        type: PROPOSAL_TYPE.Join,
+      }}
+      hasPermission={hasPermission}
+      openCommonOptions={(requestToJoin) => openCommonOptions(requestToJoin)}
+      showHiddenNote={(hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin)
+      }
+      isMember={isMember}
     />
   </View>
 );
 
-const History = ({navigation, commonId, onProposalsCountChange}) => (
+const History = ({navigation, commonId}) => (
   <View style={layout.content}>
     <ProposalsList
       navigation={navigation}
       commonInfo={{id: commonId}}
-      onlyRequestsToJoin={true}
-      isHistory={true}
-      onCountChange={onProposalsCountChange}
+      proposalFilter={{
+        stage: PROPOSAL_STAGE.History,
+        type: PROPOSAL_TYPE.Join,
+      }}
     />
   </View>
 );
 
-const CommonMembers = ({navigation, route: router}) => {
+const CommonMembers = ({navigation, route: router, rootStore}) => {
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+
+  const {
+    commonId,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
+    isMember,
+  } = router.params;
   const [index, setIndex] = useState(0);
-  const [pendingCount, setPendingCount] = useState(0);
-  const [historyCount, setHistoryCount] = useState(0);
-
-  const {members, commonId} = router.params;
+  const pendingCount = proposalStore.getCommonProposals(commonId, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
+  const historyCount = proposalStore.getCommonProposals(commonId, {
+    stage: PROPOSAL_STAGE.History,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
+  const membersCount = commonStore.getCommonById(commonId)?.members.length;
 
   const routes = [
-    {key: 'members', title: getTabName('Members', members.length)},
+    {
+      key: 'members',
+      title: getTabName('Members', membersCount),
+    },
     {key: 'pending', title: getTabName('Pending', pendingCount)},
     {key: 'history', title: getTabName('History', historyCount)},
   ];
@@ -67,29 +100,20 @@ const CommonMembers = ({navigation, route: router}) => {
   const renderScene = ({route}) => {
     switch (route.key) {
       case 'members':
-        return (
-          <Members
-            navigation={navigation}
-            members={members}
-            commonId={commonId}
-          />
-        );
+        return <Members navigation={navigation} commonId={commonId} />;
       case 'pending':
         return (
           <Pending
             navigation={navigation}
             commonId={commonId}
-            onProposalsCountChange={(count) => setPendingCount(count)}
+            hasPermission={hasPermission}
+            openCommonOptions={openCommonOptions}
+            showHiddenNote={showHiddenNote}
+            isMember={isMember}
           />
         );
       case 'history':
-        return (
-          <History
-            navigation={navigation}
-            commonId={commonId}
-            onProposalsCountChange={(count) => setHistoryCount(count)}
-          />
-        );
+        return <History navigation={navigation} commonId={commonId} />;
       default:
         return null;
     }
@@ -135,6 +159,10 @@ Pending.propTypes = {
   navigation: object,
   commonId: string,
   onProposalsCountChange: func,
+  hasPermission: bool,
+  openCommonOptions: func,
+  showHiddenNote: func,
+  isMember: bool,
 };
 
 History.propTypes = {
@@ -149,8 +177,10 @@ CommonMembers.propTypes = {
     params: shape({
       members: array,
       commonId: string,
+      isMember: bool,
     }),
   }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -183,4 +213,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonMembers;
+export default inject('rootStore')(observer(CommonMembers));

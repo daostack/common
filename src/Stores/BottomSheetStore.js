@@ -28,19 +28,24 @@ class BottomSheetStore {
     this.template = null;
   };
 
-  increseTopSnap = (increseVal) => {
+  increaseTopSnap = (increseVal) => {
     this.topSnap = this.topSnap + increseVal;
   };
 
-  decreseTopSnap = (decreseVal) => {
+  decreaseTopSnap = (decreseVal) => {
     this.topSnap = this.topSnap - decreseVal;
+  };
+
+  setSnap = (snap) => {
+    this.topSnap = snap;
   };
 }
 
 decorate(BottomSheetStore, {
   showBottomSheet: action,
-  increseTopSnap: action,
-  decreseTopSnap: action,
+  increaseTopSnap: action,
+  decreaseTopSnap: action,
+  setSnap: action,
   topSnap: observable,
   template: observable,
   isVisible: observable,

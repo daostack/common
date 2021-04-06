@@ -13,9 +13,10 @@ import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/CommonBox';
 import {layout, colors, text, font, sizeS} from '~/Theme';
 import {CommonActions} from '@react-navigation/native';
-import {object, shape, func, array} from 'prop-types';
+import {object} from 'prop-types';
+import {commonStorePropTypes} from '~/Types/propTypes';
 
-const MyCommons = ({navigation, daoStore, userStore}) => {
+const MyCommons = ({navigation, commonStore}) => {
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title:
@@ -44,17 +45,14 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
     />
   );
 
-  const AllCommonsList = (daos) => (
+  const MyCommonsList = () => (
     <View style={{flex: 1, padding: 20}}>
       <FlatList
-        data={daos}
+        data={commonStore.myCommons}
         renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
       />
     </View>
   );
-
-  const myDaos = (daoList) =>
-    daoList.filter((dao) => userStore.isDaoMember(dao?.members));
 
   return (
     <>
@@ -73,7 +71,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
             <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
-            {AllCommonsList(myDaos(daoStore.daos))}
+            <MyCommonsList />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -83,13 +81,7 @@ const MyCommons = ({navigation, daoStore, userStore}) => {
 
 MyCommons.propTypes = {
   navigation: object,
-  daoStore: shape({
-    setDao: func,
-    daos: array,
-  }),
-  userStore: shape({
-    isDaoMember: func,
-  }),
+  commonStore: commonStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -122,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('daoStore', 'userStore')(observer(MyCommons));
+export default inject('commonStore')(observer(MyCommons));

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -12,50 +12,18 @@ import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import ImageView from 'react-native-image-viewing';
 import Loader from '~/Components/Loader';
-import ImageSize from 'react-native-image-size';
+
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
 import {PROPOSAL_TYPE} from '~/Config';
-import logger from '../../Services/Logger';
 import {string, func, shape, array, bool, oneOfType} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {HyperText} from '~/Components/Text/HyperText';
 
-const ProposalData = ({proposalId, proposalInfo, showMore}) => {
+const ProposalData = ({proposalId, rootStore}) => {
   const navigation = useNavigation();
-  const [proposalInfoState, setProposalInfo] = useState(proposalInfo);
+  const proposalInfoState = rootStore.proposalStore.getProposalById(proposalId);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-
-  useEffect(() => {
-    // noinspection JSAnnotator
-    const loadProposalInfo = async (currProposalInfo) => {
-      // noinspection JSAnnotator
-      if (currProposalInfo) {
-        let tempImages = [];
-        if (currProposalInfo.description.images?.length) {
-          await Promise.all(
-            currProposalInfo.description.images.map(async (currImage) => {
-              if (currImage.value) {
-                try {
-                  const {width, height} = await ImageSize.getSize(
-                    currImage.value,
-                  );
-                  tempImages.push({
-                    title: currImage.title,
-                    widthRatio: (width / height) * 220,
-                    uri: currImage.value,
-                  });
-                } catch (e) {
-                  logger.log(e);
-                }
-              }
-            }),
-          );
-        }
-        setProposalInfo({...currProposalInfo, ...{images: tempImages}});
-      }
-    };
-
-    loadProposalInfo(proposalInfo);
-  }, [proposalInfo]);
 
   const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>
@@ -74,15 +42,15 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
             : 'Intro'}
         </Text>
         <View style={{...layout.content, ...layout.flexStart, width: '100%'}}>
-          <Text
-            style={{
+          <HyperText
+            textStyle={{
               ...text.regularTextBig,
               ...text.writingDirection(
                 proposalInfoState.description.description,
               ),
             }}>
             {proposalInfoState.description.description}
-          </Text>
+          </HyperText>
         </View>
 
         <View
@@ -172,6 +140,7 @@ const ProposalData = ({proposalId, proposalInfo, showMore}) => {
 };
 
 ProposalData.propTypes = {
+  rootStore: rootStorePropTypes,
   proposalId: string,
   proposalInfo: oneOfType([
     bool,
@@ -334,4 +303,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(ProposalData));
+export default inject('rootStore')(observer(ProposalData));

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,201 +6,180 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object} from 'prop-types';
+import {string, shape, object, func, bool} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import UserService from '~/Services/UserService';
 import moment from 'moment';
-import BottomSheetModal from '~/Components/BottomSheetModal';
-import NotificationService from '~/Services/NotificationService';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {db} from '~/Firebase';
-import logger from '~/Services/Logger';
 import {CommonActions} from '@react-navigation/native';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
+import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
+import {FLAGS} from '../../Components/Moderation/constants';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionCard = ({
   data,
   commonId,
-  userStore: {userInfo},
   navigation,
-  bottomSheetStore,
+  openCommonOptions,
+  hiddenDiscussionNote,
+  rootStore,
+  isMember,
+  viewerPermission,
 }) => {
-  //when will data.owner be not undefined?
+  const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
+  const discussionMessageStore = rootStore.discussionMessageStore;
   const discussionId = data.id;
-  const [user, setUser] = useState({});
-  const [msgCount, setMsgCount] = useState(0);
-  const [showMenu, setShowMenu] = useState(false);
-  var isFollowing = false;
+  const user = userStore.getUserById(data.ownerId);
+  const msgCount =
+    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
+      ?.length || 0;
+  const hasPermission = authStore.getPermission(
+    commonId,
+    authStore?.userInfo?.uid,
+  );
+  const showHeader =
+    data.moderation?.flag === FLAGS.hidden ||
+    (data.moderation?.flag === FLAGS.reported &&
+      (viewerPermission === PERMISSIONS.FOUNDER ||
+        viewerPermission === PERMISSIONS.MODERATOR));
 
-  if (userInfo) {
-    isFollowing = userInfo.following.includes(data.ownerId);
-  }
-
-  const hideMenu = () => {
-    setShowMenu(false);
-  };
+  const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
+  const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   const navigateToDiscussion = () => {
-    const navigate = CommonActions.navigate({
-      name: 'Discussions',
-      params: {
-        data: data,
-        discussionId: data.id,
-        commonId: commonId,
-      },
-    });
-    navigation.dispatch(navigate);
+    if (data.isModerationHidden) {
+      hiddenDiscussionNote();
+    } else {
+      const navigate = CommonActions.navigate({
+        name: 'Discussions',
+        params: {
+          data: data,
+          discussionId: data.id,
+          commonId: commonId,
+        },
+      });
+      navigation.dispatch(navigate);
+    }
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await UserService.getInstance().getUserById(
-        data.ownerId,
-      );
-      if (userData) {
-        // logger.log('userData', userData);
-        setUser(userData);
-      }
-    };
-    fetchUser();
-  }, [data]);
+  const getReporter = () =>
+    data.moderation?.reporter &&
+    userStore.getUserById(data.moderation?.reporter);
 
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('discussionMessage')
-      .where('discussionId', '==', discussionId)
-      .onSnapshot((snapshot) => {
-        setMsgCount(snapshot.docs.length);
-      });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [discussionId]);
-
-  const follow = () => {
+  /*const follow = () => {
     logger.log('Follow user id', data.ownerId);
     NotificationService.follow(data.ownerId);
     bottomSheetStore.hideBottomSheet();
-  };
-
-  const showOptions = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.SCREEN_OPTIONS, {
-      onFollow: follow,
-    });
-  };
+  };*/
 
   return (
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
-        <View style={styles.container}>
-          <TouchableOpacity onPress={showOptions}>
-            <Icon name="menu" size={20} />
-          </TouchableOpacity>
-          <Text style={{...styles.title}} numberOfLines={2}>
-            {data.title}
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {user.photoURL ? (
-              <FastImage style={styles.image} source={{uri: user.photoURL}} />
-            ) : (
-              <View style={styles.displayNameContainer}>
-                <Text style={styles.displayName}>
-                  {user.displayName && user.displayName.substring(0, 1)}
+        <View style={styles.containerView}>
+          {showHeader && (
+            <DiscussionCardHeader
+              isReported={data.moderation?.flag !== FLAGS.visible}
+              moderation={data.moderation}
+              reporter={getReporter()}
+              hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
+            />
+          )}
+          {showCard && (
+            <View style={styles.container}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.title} numberOfLines={2}>
+                  {data.title}
                 </Text>
+                {(!discussionMessageStore.isModerationHidden ||
+                  hasPermission) &&
+                  isMember &&
+                  !isOwner && (
+                    <ModerationMenu showOptions={openCommonOptions} />
+                  )}
               </View>
-            )}
-            <View style={styles.primaryNameContainer}>
-              <Text style={styles.primaryName}>{user.displayName}</Text>
-              {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-              <Text style={styles.date}>
-                {moment(data.createTime.toDate()).fromNow()}
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                {user.photoURL ? (
+                  <FastImage
+                    style={styles.image}
+                    source={{uri: user.photoURL}}
+                  />
+                ) : (
+                  <View style={styles.displayNameContainer}>
+                    <Text style={styles.displayName}>
+                      {user.displayName && user.displayName.substring(0, 1)}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.primaryNameContainer}>
+                  <Text style={styles.primaryName}>{user.displayName}</Text>
+                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
+                  <Text style={styles.date}>
+                    {moment(data.createTime.toDate()).fromNow()}
+                  </Text>
+                </View>
+              </View>
+              <Text
+                style={{
+                  ...styles.message,
+                  ...text.writingDirection(data.message),
+                }}
+                numberOfLines={3}>
+                {data.message}
               </Text>
-            </View>
-          </View>
-          <Text
-            style={{...styles.message, ...text.writingDirection(data.message)}}
-            numberOfLines={3}>
-            {data.message}
-          </Text>
-          <View
-            style={{
-              backgroundColor: colors.grey4,
-              height: 1,
-              marginBottom: 15,
-              marginTop: 10,
-              marginHorizontal: -20,
-            }}
-          />
+              <View
+                style={{
+                  backgroundColor: colors.grey4,
+                  height: 1,
+                  marginBottom: 15,
+                  marginTop: 10,
+                  marginHorizontal: -20,
+                }}
+              />
 
-          {msgCount === 0 ? (
-            <View style={{}}>
-              <TouchableOpacity
-                style={{justifyContent: 'center', alignSelf: 'center'}}
-                onPress={() => navigateToDiscussion()}>
-                <Text style={styles.startTheDiscussion}>
-                  Start the discussion
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.messageCountContainer}>
-              <View style={styles.messageCountContainer}>
-                <Icon name="discussion" size={20} />
-                <Text style={styles.msgCount}>{msgCount}</Text>
-              </View>
-              {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
-              <TouchableOpacity
-                style={styles.navigateToDiscussion}
-                onPress={() => navigateToDiscussion()}>
-                <Text style={styles.joinTheDiscussion}>
-                  Join the discussion
-                </Text>
-                <Icon name="right-arrow" size={20} color={colors.mainBlue} />
-              </TouchableOpacity>
-              {/* </TouchableOpacity> */}
+              {msgCount === 0 ? (
+                <View style={{}}>
+                  <TouchableOpacity
+                    style={{justifyContent: 'center', alignSelf: 'center'}}
+                    onPress={() => navigateToDiscussion()}>
+                    <Text style={styles.startTheDiscussion}>
+                      Start the discussion
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.messageCountContainer}>
+                  <View style={styles.messageCountContainer}>
+                    <Icon name="discussion" size={20} />
+                    <Text style={styles.msgCount}>{msgCount}</Text>
+                  </View>
+                  {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
+                  <TouchableOpacity
+                    style={styles.navigateToDiscussion}
+                    onPress={() => navigateToDiscussion()}>
+                    <Text style={styles.joinTheDiscussion}>
+                      Join the discussion
+                    </Text>
+                    <Icon
+                      name="right-arrow"
+                      size={20}
+                      color={colors.mainBlue}
+                    />
+                  </TouchableOpacity>
+                  {/* </TouchableOpacity> */}
+                </View>
+              )}
             </View>
           )}
         </View>
       </TouchableOpacity>
-
-      <BottomSheetModal
-        isVisible={showMenu}
-        onClose={hideMenu}
-        style={styles.modalStyle}>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.sheetTitle}>Options</Text>
-          <TouchableOpacity
-            onPress={() => {
-              logger.log('Follow user id', data.ownerId);
-              if (isFollowing) {
-                NotificationService.unfollow(data.ownerId);
-              } else {
-                NotificationService.follow(data.ownerId);
-              }
-              setShowMenu(false);
-            }}>
-            <View style={styles.sheetButton}>
-              <Icon name="following" color={colors.black} />
-              <View style={{flex: 1}}>
-                <Text style={[styles.sheetText, {color: colors.black}]}>
-                  {isFollowing ? 'UnFollow' : 'Follow'}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.sheetButton}>
-              <Icon name="report" color={colors.against} />
-              <Text style={styles.sheetText}>Report</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
     </>
   );
 };
@@ -214,11 +193,12 @@ DiscussionCard.propTypes = {
     message: string.isRequired,
   }),
   commonId: string,
-  userStore: shape({
-    userInfo: object,
-  }).isRequired,
   navigation: object.isRequired,
-  bottomSheetStore: object.isRequired,
+  openCommonOptions: func,
+  hiddenDiscussionNote: func,
+  rootStore: rootStorePropTypes,
+  isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
@@ -275,16 +255,10 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.black,
   },
-  container: {
+  containerView: {
     backgroundColor: colors.white,
-    // borderTopWidth: 1,
-    // borderTopColor: colors.grey4,
-    // borderBottomWidth: 4,
-    // borderBottomColor: colors.grey4,
     marginHorizontal: 25,
     marginVertical: 10,
-    borderRadius: 10,
-    padding: 20,
     shadowColor: 'rgba(0, 0, 0, 0.22)',
     shadowOffset: {
       width: 0,
@@ -293,6 +267,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     shadowOpacity: 0.5,
     elevation: 2,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  container: {
+    backgroundColor: colors.white,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
   },
   primaryNameContainer: {
     flex: 1,
@@ -308,6 +294,10 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     marginBottom: 20,
     color: colors.black,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   sheetTitle: {
     ...font.primary.bold,
@@ -343,9 +333,10 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     textAlign: 'center',
   },
+  textReported: {
+    fontSize: 15,
+    color: colors.grey3,
+  },
 });
 
-export default inject(
-  'userStore',
-  'bottomSheetStore',
-)(observer(DiscussionCard));
+export default inject('rootStore', 'userStore')(observer(DiscussionCard));

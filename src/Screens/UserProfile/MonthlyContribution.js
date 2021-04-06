@@ -19,12 +19,13 @@ import {
   PAYMENT_FAILED,
 } from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
-const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
+const MonthlyContribution = ({navigation, route, uiStore}) => {
   const [subscription, setSubscription] = React.useState(null);
 
   const onCancelClick = () => {
-    bottomSheetStore.showBottomSheet(
+    uiStore.bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION,
       {
         onCancelConfirm: async () => {
@@ -54,7 +55,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
   React.useEffect(() => {
     (async () => {
       await getSubscription(route.params?.subscription?.id, (snap) => {
-        setSubscription(snap.data());
+        setSubscription(snap?.data());
       });
     })();
   }, [route.params?.subscription?.id]);
@@ -65,7 +66,10 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
         <Text>Status</Text>
 
         {subscription ? (
-          <MonthlyContributionStatus status={subscription.status} />
+          <MonthlyContributionStatus
+            status={subscription.status}
+            dueDate={subscription.dueDate.toDate()}
+          />
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -80,12 +84,18 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
           {subscription?.status === CANCELED_BY_USER &&
           subscription?.dueDate.toDate() > new Date()
             ? 'Cancels on'
-            : 'Next payment'}
+            : subscription?.status === ACTIVE
+            ? 'Next payment'
+            : 'Last Payment'}
         </Text>
 
         {subscription ? (
           <Text>
-            {subscription.dueDate.toDate() < new Date()
+            {(subscription.status === CANCELED_BY_USER &&
+              subscription?.dueDate.toDate() < new Date()) ||
+            subscription.status === CANCELED_BY_PAYMENT
+              ? formatDate(subscription.lastChargedAt.toDate())
+              : subscription.dueDate.toDate() < new Date()
               ? 'In the following days'
               : formatDate(subscription.dueDate.toDate())}
           </Text>
@@ -113,7 +123,7 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
       </View>
 
       <View style={styles.row}>
-        <Text>Subscribed since</Text>
+        <Text>Subscribed at</Text>
 
         {subscription ? (
           <Text>{formatDate(subscription.createdAt.toDate())}</Text>
@@ -149,7 +159,8 @@ const MonthlyContribution = ({navigation, route, bottomSheetStore}) => {
           {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some(
             (status) => status === subscription.status,
           ) &&
-            subscription.dueDate.toDate() < new Date() && (
+            subscription.dueDate.toDate() < new Date() &&
+            subscription.revoked && (
               <TouchableOpacity style={styles.button} onPress={onJoinClick}>
                 <Text style={styles.stayText}>Request to join again</Text>
               </TouchableOpacity>
@@ -227,12 +238,8 @@ MonthlyContribution.propTypes = {
       }),
     }),
   }),
-
-  bottomSheetStore: PropTypes.shape({
-    showBottomSheet: PropTypes.func,
-  }),
-
+  uiStore: uiStorePropTypes,
   navigation: PropTypes.object,
 };
 
-export default inject('bottomSheetStore')(observer(MonthlyContribution));
+export default inject('uiStore')(observer(MonthlyContribution));

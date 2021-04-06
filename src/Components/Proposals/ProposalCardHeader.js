@@ -1,10 +1,16 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, sizeXS, sizeS, font} from '~/Theme';
+import {text, layout, colors, sizeXS, sizeS, font, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
-import CountDown from 'react-native-countdown-component';
-import {string, number, bool} from 'prop-types';
+import {string, number, bool, func, object} from 'prop-types';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {observer, inject} from 'mobx-react';
+import {Reported} from '~/Components/Moderation/Reported';
+import {FLAGS} from '~/Components/Moderation/constants';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -13,6 +19,7 @@ const TITLES = {
   COUNTDOWN: 'Countdown',
   PAYMENT_FAILED: 'Payment Failed',
   PAYMENT_PENDING: 'Pending Payment',
+  INSUFFICIENT_BALANCE: 'Insufficient Balance',
 };
 
 const calcStatus = (state, isScreenHeader, paymentStatus) => {
@@ -52,6 +59,11 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
     status.icon = 'declined';
+  } else if (state === PROPOSAL_STAGE.passedInsufficientBalance) {
+    status.text = TITLES.INSUFFICIENT_BALANCE;
+    status.lightColor = colors.redLightish;
+    status.darkColor = colors.error;
+    status.icon = 'declined';
   } else {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
@@ -62,85 +74,108 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
   return status;
 };
 
-const renderCountDown = (closingAt) => {
-  /*
-  const isLessThanOneHour = remainingSeconds < 3600;
-
-  let counterTextColor = styles.timerText;
-  let timerBackground = colors.paleblue;
-
-  if (isLessThanOneHour) {
-    counterTextColor = {...styles.timerText, ...{color: colors.white}};
-    timerBackground = colors.orangeDark;
-  }
-*/
-  let counterTextColor = styles.timerText;
-
-  const remainingSeconds = closingAt ? closingAt - Date.now() / 1000 : null;
-
-  return (
-    <View style={styles.timerContainer}>
-      <View style={{...styles.timer}}>
-        <CountDown
-          timeToShow={['D', 'H', 'M', 'S']}
-          digitTxtStyle={counterTextColor}
-          timeLabels={false}
-          showSeparator={true}
-          separatorStyle={counterTextColor}
-          digitStyle={{
-            height: 'auto',
-            width: 'auto',
-          }}
-          until={remainingSeconds}
-        />
-      </View>
-    </View>
-  );
-};
-
 const ProposalCardHeader = ({
   state,
   closingAt,
   isScreenHeader = false,
   paymentStatus,
+  onPress,
+  isReported,
+  moderation,
+  reporter,
+  hasPermission,
+  rootStore,
+  viewerPermission,
 }) => {
+  const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
+  const showCountdown =
+    !moderation?.flag ||
+    moderation?.flag === FLAGS.visible ||
+    (moderation?.flag !== FLAGS.hidden &&
+      moderation?.flag === FLAGS.reported &&
+      viewerPermission !== PERMISSIONS.FOUNDER &&
+      viewerPermission !== PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (
-    <View
-      style={{
-        ...styles.stateCard,
-        ...{
-          backgroundColor: headerStatus.darkColor,
-          paddingHorizontal: 50,
-        },
-      }}>
-      <Icon
-        style={styles.stateIcon}
-        name={headerStatus.icon}
-        color={colors.white}
-      />
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View
+        style={{
+          ...styles.stateCard,
+          ...{
+            backgroundColor: headerStatus.darkColor,
+            paddingHorizontal: 50,
+          },
+        }}>
+        <Icon
+          style={styles.stateIcon}
+          name={headerStatus.icon}
+          color={colors.white}
+        />
 
-      <Text style={styles.stateText}>{headerStatus.text}</Text>
+        <Text style={{...styles.stateText}}>{headerStatus.text}</Text>
 
-      {headerStatus.text === TITLES.COUNTDOWN && renderCountDown(closingAt)}
-    </View>
+        {headerStatus.text === TITLES.COUNTDOWN && (
+          <ProposalCountDown closingAt={closingAt} />
+        )}
+
+        {headerStatus.text === TITLES.INSUFFICIENT_BALANCE && (
+          <Icon
+            style={styles.rightIcon}
+            name={'questionMark'}
+            color={colors.white}
+          />
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   ) : (
     <View
-      style={{
-        ...styles.proposalCardHeader,
-        backgroundColor: headerStatus.lightColor,
-      }}>
-      <Icon name={headerStatus.icon} color={headerStatus.darkColor} size={16} />
-
-      <Text
-        style={{
-          ...text.orangeSmallBold,
-          marginHorizontal: 5,
-          color: headerStatus.darkColor,
-        }}>
-        {headerStatus.text}
-      </Text>
+      style={
+        showCountdown
+          ? {
+              ...styles.proposalCardHeader,
+              backgroundColor: headerStatus.lightColor,
+            }
+          : {
+              ...styles.hiddenCardHeader,
+              justifyContent: !showCountdown ? 'space-between' : 'center',
+              borderTopLeftRadius: hasPermission ? 20 : 5,
+              borderTopRightRadius: hasPermission ? 20 : 5,
+            }
+      }>
+      {showCountdown && (
+        <View style={{flexDirection: 'row'}}>
+          <Icon
+            name={headerStatus.icon}
+            color={headerStatus.darkColor}
+            size={16}
+          />
+          <Text
+            style={{
+              ...text.orangeSmallBold,
+              marginHorizontal: 5,
+              color: headerStatus.darkColor,
+            }}>
+            {headerStatus.text}
+          </Text>
+        </View>
+      )}
+      {isReported && !!moderation && (
+        <Reported
+          moderation={moderation}
+          reporter={reporter}
+          currentUID={authStore?.userInfo?.uid}
+          viewerPermission={viewerPermission}
+        />
+      )}
+      {!showCountdown && (
+        <Icon
+          name="questionMark"
+          size={16}
+          style={{padding: 10}}
+          color={colors.blueGray1}
+        />
+      )}
     </View>
   );
 };
@@ -150,6 +185,13 @@ ProposalCardHeader.propTypes = {
   closingAt: number,
   isScreenHeader: bool,
   paymentStatus: string,
+  onPress: func,
+  isReported: bool,
+  moderation: object,
+  reporter: object,
+  hasPermission: bool,
+  rootStore: rootStorePropTypes.isRequired,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
@@ -162,6 +204,13 @@ const styles = StyleSheet.create({
     padding: sizeXS,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  hiddenCardHeader: {
+    ...layout.flexRow,
+    alignItems: 'center',
+    backgroundColor: colors.blueGray,
+    paddingHorizontal: sizeM,
+    height: 35,
   },
   launchedColor: {
     color: colors.mainBlue,
@@ -190,25 +239,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: sizeS,
   },
-
-  timerText: {
-    ...text.smallBlackText,
-    ...text.bold,
-    color: colors.white,
-    ...font.fontSize(0),
-  },
-
-  timer: {
-    paddingHorizontal: 0,
-    paddingVertical: 1,
-    borderRadius: 12,
-  },
-
-  timerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 5,
+  rightIcon: {
+    position: 'absolute',
+    right: sizeS,
   },
 });
 
-export default ProposalCardHeader;
+export default inject('rootStore')(observer(ProposalCardHeader));

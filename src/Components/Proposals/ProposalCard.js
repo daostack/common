@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {observer, inject} from 'mobx-react';
 import {
   Text,
   StyleSheet,
@@ -6,69 +7,61 @@ import {
   View,
   Animated,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
-import UserService from '~/Services/UserService';
-import DaoService from '~/Services/DaoService';
 import ProposalApprovalTag from './ProposalApprovalTag';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object} from 'prop-types';
+import {string, bool, object, func} from 'prop-types';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
+import {FLAGS} from '../../Components/Moderation/constants';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
 const ProposalCard = ({
   proposalId,
-  data,
   navigation,
   containerStyle,
-  membershipRequest,
   isSwiper,
-  isMember,
   commonInfo,
+  openCommonOptions,
+  hiddenProposalNote,
+  rootStore,
+  isMember,
+  viewerPermission,
 }) => {
-  const [proposalCardInfo, setProposalCardInfo] = useState(false);
+  // Stores
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+  const authStore = rootStore.authStore;
+
+  const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
+  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
+  const isVisible =
+    proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const hasPermission = authStore.getPermission(proposalInfo.commonId, authStore?.userInfo?.uid);
+  const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
-    let unsubscribeProposalInfo = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
-          currProposalId,
-          async (currProposalInfo) => {
-            //RequestToJoin proposal
-            let funding = null;
-            if (currProposalInfo.type === PROPOSAL_TYPE.Join) {
-              funding = currProposalInfo.join.funding;
-            }
-            //FundingRequest proposal
-            else {
-              funding = currProposalInfo.fundingRequest.amount;
-            }
-            const currProposedUser = await UserService.getInstance().getUserById(
-              currProposalInfo.proposerId,
-            );
-            setProposalCardInfo({
-              proposedUser: currProposedUser,
-              proposalInfo: {...currProposalInfo, funding},
-            });
-          },
-        );
-
         unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
           currProposalId,
           (discussionsCount) => {
@@ -81,68 +74,15 @@ const ProposalCard = ({
       }
     };
 
-    if (proposalId) {
-      getProposalInfo(proposalId);
+    if (proposalInfo) {
+      getProposalInfo(proposalInfo.id);
     }
 
     return () => {
       unsubscribeProposalDiscussionsCount &&
         unsubscribeProposalDiscussionsCount();
-      unsubscribeProposalInfo && unsubscribeProposalInfo();
     };
-  }, [proposalId]);
-
-  useEffect(() => {
-    let unsubscribeProposalDiscussionsCount = null;
-    let unsubscribeProposalInfo = null;
-
-    const loadProposalInfo = async (currProposalInfo) => {
-      try {
-        unsubscribeProposalInfo = await ProposalService.getInstance().subscribeToProposalById(
-          currProposalInfo.id,
-          async (updatedProposalInfo) => {
-            //RequestToJoin proposal
-            const proposedMemberUser = await UserService.getInstance().getUserById(
-              updatedProposalInfo.proposerId,
-            );
-            let funding = null;
-            if (updatedProposalInfo.type === PROPOSAL_TYPE.Join) {
-              funding = updatedProposalInfo.join.funding;
-            }
-            //FundingRequest proposal
-            else {
-              funding = updatedProposalInfo.fundingRequest.amount;
-            }
-            const allProposalInfo = {...updatedProposalInfo, funding};
-            setProposalCardInfo({
-              proposedUser: proposedMemberUser,
-              proposalInfo: allProposalInfo,
-            });
-          },
-        );
-
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalInfo.id,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
-      } catch (error) {
-        logger.log('error: ', error);
-        Toast.error(error?.toString());
-      }
-    };
-
-    if (data) {
-      loadProposalInfo(data);
-    }
-
-    return () => {
-      unsubscribeProposalDiscussionsCount &&
-        unsubscribeProposalDiscussionsCount();
-      unsubscribeProposalInfo && unsubscribeProposalInfo();
-    };
-  }, [data]);
+  }, [proposalInfo]);
 
   const cardWidth = () => {
     if (isSwiper && Platform.OS === 'ios') {
@@ -152,82 +92,92 @@ const ProposalCard = ({
   };
 
   const onReviewProposal = async () => {
-    let currCommonInfo = commonInfo;
+    if (proposalInfo.isModerationHidden) {
+      hiddenProposalNote();
+    } else {
+      let currCommonInfo = {...commonInfo};
 
-    if (!currCommonInfo) {
-      currCommonInfo = await DaoService.getInstance().getDaoById(
-        proposalCardInfo.proposalInfo.commonId,
-      );
+      if (!currCommonInfo) {
+        currCommonInfo = await commonStore.getCommonById(
+          proposalInfo?.commonId,
+        );
+      }
+      navigation.navigate('ProposalScreen', {
+        proposalId: proposalInfo.id,
+        hasPermission,
+        commonId: proposalInfo.commonId,
+      });
     }
-
-    navigation.navigate('ProposalScreen', {
-      title: commonInfo?.name,
-      proposalId: proposalCardInfo.proposalInfo.id,
-      proposalCardInfo,
-      commonBalance: commonInfo?.balance,
-      isMember,
-      paymentState: proposalCardInfo.proposalInfo?.paymentState,
-    });
   };
 
-  return proposalCardInfo ? (
+  const getReporter = () =>
+    proposalInfo.moderation?.reporter &&
+    userStore.getUserById(proposalInfo.moderation?.reporter);
+
+  return proposalInfo ? (
     <Animated.View
-      style={[styles.proposalCard, containerStyle, {width: cardWidth()}]}>
-      <TouchableOpacity onPress={onReviewProposal}>
+      style={[
+        styles.proposalCard,
+        containerStyle,
+        {width: cardWidth(), borderRadius: showCard ? 20 : 5},
+      ]}>
+      <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
-          state={proposalCardInfo.proposalInfo?.state}
-          paymentStatus={proposalCardInfo.proposalInfo?.paymentState}
+          state={proposalInfo?.state}
+          paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            proposalCardInfo.proposalInfo?.createdAt.seconds +
-            proposalCardInfo.proposalInfo?.countdownPeriod
+            proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
           }
+          isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
+          moderation={proposalInfo.moderation}
+          reporter={getReporter()}
+          hasPermission={hasPermission}
+          viewerPermission={viewerPermission}
         />
 
-        <View
-          style={{
-            paddingTop: 0,
-            paddingHorizontal: 7,
-            ...layout.flexStart,
-            flexWrap: 'wrap',
-          }}>
-          {proposalCardInfo?.proposalInfo?.type ===
-            PROPOSAL_TYPE.FundingRequest && (
-            <Text style={styles.title}>
-              {proposalCardInfo.proposalInfo?.description?.title ||
-                'Unknown title'}
-            </Text>
-          )}
-
-          <MemberCard
-            showDate={membershipRequest}
-            userInfo={proposalCardInfo.proposedUser}
-            proposalInfo={proposalCardInfo.proposalInfo}
-            isPending={false}
-          />
-          <View style={{...layout.flexRow}}>
-            <ProposalApprovalTag
-              iconName="approved"
-              value={proposalCardInfo?.proposalInfo.votesFor || 0}
-              isMarked={true}
+        {showCard && (
+          <View style={styles.containerView}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                {isFundingRequest &&
+                  (proposalInfo?.description?.title || 'Unknown title')}
+              </Text>
+              {(!proposalInfo.isModerationHidden || hasPermission) &&
+                isMember &&
+                !isSwiper &&
+                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+            </View>
+            <MemberCard
+              showDate={proposalInfo.isJoinRequest}
+              userInfo={userStore.getUserById(proposalInfo.proposerId)}
+              proposalInfo={proposalInfo}
+              commonId={proposalInfo.commonId}
+              isPending={false}
             />
-            <ProposalApprovalTag
-              iconName="declined"
-              value={proposalCardInfo?.proposalInfo.votesAgainst || 0}
-              isMarked={false}
-            />
-            <ProposalApprovalTag
-              iconName="discussion"
-              value={proposalDiscussionCount}
-              isMarked={false}
-            />
+            <View style={{...layout.flexRow}}>
+              <ProposalApprovalTag
+                iconName="approved"
+                value={proposalInfo.votesFor || 0}
+                isMarked={true}
+              />
+              <ProposalApprovalTag
+                iconName="declined"
+                value={proposalInfo.votesAgainst || 0}
+                isMarked={false}
+              />
+              <ProposalApprovalTag
+                iconName="discussion"
+                value={proposalDiscussionCount}
+                isMarked={false}
+              />
+            </View>
+            <View style={styles.proposalCardActionContainer}>
+              <Text style={styles.proposalActionBtnText}>
+                {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
+              </Text>
+            </View>
           </View>
-
-          <View style={styles.proposalCardActionContainer}>
-            <Text style={styles.proposalActionBtnText}>
-              {membershipRequest ? 'View request' : 'View proposal'}
-            </Text>
-          </View>
-        </View>
+        )}
       </TouchableOpacity>
     </Animated.View>
   ) : (
@@ -272,8 +222,13 @@ ProposalCard.propTypes = {
   containerStyle: object,
   membershipRequest: bool,
   isSwiper: bool,
-  isMember: bool,
   commonInfo: object,
+  hasPermission: bool,
+  openCommonOptions: func,
+  hiddenProposalNote: func,
+  rootStore: rootStorePropTypes,
+  isMember: bool,
+  viewerPermission: string,
 };
 
 const styles = StyleSheet.create({
@@ -294,12 +249,17 @@ const styles = StyleSheet.create({
     color: colors.mainBlue,
     marginVertical: 14,
   },
-
+  containerView: {
+    paddingTop: 0,
+    paddingHorizontal: 7,
+    ...layout.flexStart,
+    //flexWrap: 'wrap',
+  },
   proposalCard: {
     // marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
-    borderRadius: 20,
+    //borderRadius: 20,
     //alignSelf: 'stretch',
 
     borderStyle: 'solid',
@@ -318,11 +278,15 @@ const styles = StyleSheet.create({
   title: {
     ...text.h3Black,
     textAlign: 'left',
-    width: '100%',
     flexWrap: 'wrap',
-    padding: 10,
     fontSize: 16,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    width: '100%',
   },
 });
 
-export default ProposalCard;
+export default inject('rootStore')(observer(ProposalCard));

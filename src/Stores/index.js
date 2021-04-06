@@ -1,9 +1,15 @@
-import UserStore from './UserStore';
-import DaoStore from './DaoStore';
-import BottomSheetStore from './BottomSheetStore';
+import RootStore from './RootStore';
+
+const rootStore = new RootStore();
 
 export default {
-  userStore: new UserStore(),
-  daoStore: new DaoStore(),
-  bottomSheetStore: new BottomSheetStore(),
+  rootStore,
+  authStore: rootStore.authStore,
+  userStore: rootStore.userStore,
+  commonStore: rootStore.commonStore,
+  proposalStore: rootStore.proposalStore,
+  discussionStore: rootStore.discussionStore,
+  discussionMessageStore: rootStore.discussionMessageStore,
+  notificationStore: rootStore.notificationStore,
+  uiStore: rootStore.uiStore,
 };

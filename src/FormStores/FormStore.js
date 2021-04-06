@@ -1,6 +1,7 @@
 import {observable, action, decorate} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
+import {linkRules} from '~/FormStores/ValidationRules';
 
 class FormStore {
   form;
@@ -10,6 +11,7 @@ class FormStore {
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
     this.clearFormStoreState();
+    this.registerValidationRule(linkRules.validateLink);
   }
 
   clearFormStoreState = () => {
@@ -319,7 +321,7 @@ class FormStore {
       const formField = this.getFormField(fieldName, multiField);
       fieldsData[fieldName] =
         typeof formField.value === 'object'
-          ? formField.value.value
+          ? formField.value?.value
           : formField.value;
       fieldsRule[fieldName] = formField.rule;
     } else {
@@ -345,7 +347,7 @@ class FormStore {
         } else {
           fieldsData[key] =
             typeof formField.value === 'object'
-              ? formField.value.value
+              ? formField.value?.value
               : formField.value;
           fieldsRule[key] = formField.rule;
         }

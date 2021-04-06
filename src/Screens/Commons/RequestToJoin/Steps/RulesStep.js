@@ -1,23 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  ScrollView,
-  Dimensions,
-  StyleSheet,
-  SafeAreaView,
-  Animated,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
-import CreateStepHeader from '../RequestStepHeader';
-import CreateStepDotHeader from '../RequestStepDotHeader';
 import {colors} from '~/Theme';
-import CreateStepNavigation from '../RequestStepNavigation';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
-const {width, height} = Dimensions.get('window');
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 
 const RulesStep = ({
   navigation,
@@ -25,18 +15,15 @@ const RulesStep = ({
     params: {formStores, currCommon, currDaoId, refreshFeed},
   },
 }) => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
   const [pass, setPass] = useState(false);
+  const [contentHeight, setContentHeight] = useState(0);
+  const [contentStaticHeight, setContentStaticHeight] = useState(0);
 
   useEffect(() => {
-    const newHeight = scrollY.interpolate({
-      inputRange: [50, 50],
-      outputRange: [0, 67],
-      extrapolate: 'clamp',
-    });
-    setHeaderHeight(newHeight);
-  }, [scrollY]);
+    if (contentStaticHeight !== 0 && contentHeight !== 0) {
+      setPass(!(contentHeight > contentStaticHeight));
+    }
+  }, [contentHeight, contentStaticHeight]);
 
   const onScrollToBottom = () => {
     setPass(true);
@@ -58,75 +45,48 @@ const RulesStep = ({
   };
 
   return (
-    <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
-      <SafeAreaView
+    <StepDotLayout
+      navigation={navigation}
+      stepDotHeaderTitle="Accept Common Rules"
+      navTitle={currCommon.name}
+      currentIndex={1}
+      layoutTitle={<MembershipRequest />}
+      isRequestToJoin={true}
+      onScrollEndDrag={onScrollToBottom}
+      onContentSizeChange={(height) => setContentStaticHeight(height)}
+      requestStepActionButton={
+        <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
+      }>
+      <View
         style={{
           flex: 1,
+          // alignItems: 'center',
           backgroundColor: 'white',
         }}>
-        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
-        <CreateStepDotHeader
-          title="Approve Common Rules"
-          currentIndex={1}
-          navigation={navigation}
-          headerHeight={headerHeight}
+        <RequestStepHeaderTitle
+          title="Accept Common Rules"
+          subtitle="If the Common approves your request you will become a member with equal voting rights."
         />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          onScrollEndDrag={onScrollToBottom}
-          scrollEventThrottle={16}
-          width={width}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {y: scrollY},
-                },
-              },
-            ],
-            {useNativeDriver: false},
-          )}
-          contentContainerStyle={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 24,
-          }}
-          onContentSizeChange={(_width, contentHeight) => {
-            contentHeight < height - 150 && setPass(true);
+
+        <View style={styles.content} />
+
+        <View
+          onLayout={(event) => {
+            setContentHeight(event.nativeEvent.layout.height);
           }}>
-          <MembershipRequest />
-
-          <CreateStepHeader currentIndex={0} isFirstStepSkipped={false} />
-
-          <View
-            style={{
-              flex: 1,
-              // alignItems: 'center',
-              backgroundColor: 'white',
-            }}>
-            <RequestStepHeaderTitle
-              title="Accept Common Rules"
-              subtitle="If the Common approves your request you will become a member with equal voting rights."
-            />
-
-            <View style={styles.content} />
-
-            {currCommon?.rules?.length > 0 &&
-              currCommon.rules.map((rule, index) => (
-                <RequestToJoinRule
-                  key={index}
-                  index={index + 1}
-                  title={rule.title}
-                  description={rule.description}
-                  url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
-                />
-              ))}
-          </View>
-        </ScrollView>
-        <RequestStepActionButton title="Continue" pass={pass} onPress={push} />
-      </SafeAreaView>
-    </React.Fragment>
+          {currCommon?.rules?.length > 0 &&
+            currCommon.rules.map((rule, index) => (
+              <RequestToJoinRule
+                key={index}
+                index={index + 1}
+                title={rule.title}
+                description={rule.description}
+                url={rule.value || rule.url} // NOTE: value of multiple fields was stored in url prop before
+              />
+            ))}
+        </View>
+      </View>
+    </StepDotLayout>
   );
 };
 

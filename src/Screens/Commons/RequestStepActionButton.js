@@ -34,6 +34,7 @@ RequestStepActionButton.propTypes = {
   onPress: func,
   title: string,
   formStore: object,
+  messageBox: object,
 };
 
 const styles = StyleSheet.create({

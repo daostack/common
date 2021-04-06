@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import {
   SafeAreaView,
@@ -14,37 +14,28 @@ import {layout, colors, text, font, sizeS} from '~/Theme';
 import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
-import ProposalService from '~/Services/ProposalService';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape} from 'prop-types';
+import {PROPOSAL_STAGE} from '~/Config';
+import {isTypeFilterJoin} from '~/Stores/DataStores/ProposalStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const MyProposals = ({
   navigation,
-  userStore,
   route: {
-    params: {onlyMembershipRequests, onlyFundingRequests},
+    params: {proposalTypeFilter},
   },
+  rootStore,
 }) => {
+  const authStore = rootStore.authStore;
+  const proposalStore = rootStore.proposalStore;
+
   const [index, setIndex] = React.useState(0);
-  const [stats, setStats] = React.useState({all: 0, active: 0, history: 0});
-
-  useEffect(() => {
-    const getStats = async () => {
-      const userProposalsStats = await ProposalService.getInstance().getUserProposalsCounts(
-        userStore.userInfo.uid,
-        onlyMembershipRequests,
-        onlyFundingRequests,
-      );
-      setStats({...userProposalsStats});
-    };
-    getStats();
-  }, [userStore.userInfo.uid]);
-
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title:
         event.nativeEvent.contentOffset.y > 75
-          ? onlyMembershipRequests
+          ? isTypeFilterJoin(proposalTypeFilter)
             ? 'My membership requests'
             : 'My Proposals'
           : 'My Profile',
@@ -54,11 +45,21 @@ const MyProposals = ({
   const routes = [
     {
       key: 'active',
-      title: `Active (${stats.active})`,
+      title: `Active (${
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
+          stage: PROPOSAL_STAGE.Active,
+          type: proposalTypeFilter,
+        }).length
+      })`,
     },
     {
       key: 'history',
-      title: `History (${stats.history})`,
+      title: `History (${
+        proposalStore.getUserProposals(authStore.userInfo.uid, {
+          stage: PROPOSAL_STAGE.History,
+          type: proposalTypeFilter,
+        }).length
+      })`,
     },
   ];
 
@@ -69,11 +70,16 @@ const MyProposals = ({
   const SceneRenderer = (sceneIndex) => (
     <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
       <ProposalsList
-        userId={userStore.userInfo.uid}
-        membershipRequests={onlyMembershipRequests}
-        onlyFundingRequests={onlyFundingRequests}
-        isHistory={sceneIndex === 2}
         navigation={navigation}
+        userInfo={{
+          id: authStore.userInfo.uid,
+        }}
+        proposalFilter={{
+          stage:
+            sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
+          type: proposalTypeFilter,
+        }}
+        isMember
       />
     </View>
   );
@@ -104,7 +110,10 @@ const MyProposals = ({
           scrollEventThrottle={16}>
           <View style={styles.sectionContainer}>
             <Text style={styles.title}>
-              My {onlyMembershipRequests ? 'membership requests' : 'proposals'}
+              My{' '}
+              {isTypeFilterJoin(proposalTypeFilter)
+                ? 'membership requests'
+                : 'proposals'}
             </Text>
           </View>
           <View style={styles.sectionTabView}>
@@ -130,7 +139,7 @@ MyProposals.propTypes = {
     }),
   }),
   navigation: object,
-  userStore: object,
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -164,4 +173,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(MyProposals));
+export default inject('rootStore')(observer(MyProposals));

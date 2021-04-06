@@ -5,73 +5,105 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {func, bool} from 'prop-types';
+import {inject, observer} from 'mobx-react';
+import {object, func, bool} from 'prop-types';
 
-const CommonProfileOptions = ({onFollow, isCommonProfile}) => (
-  <ScrollView
-    contentInsetAdjustmentBehavior="automatic"
-    style={styles.scrollView}
-    vertical={true}
-    nestedScrollEnabled={true}
-    directionalLockEnabled={true}>
-    <View style={styles.body}>
-      <Text style={{...text.h2Black, alignSelf: 'center', marginBottom: 30}}>
-        Options
-      </Text>
+const CommonProfileOptions = ({
+  moderatorOptions = null,
+  onAction,
+  hasPermission,
+}) => {
+  const [actions, setActions] = useState(
+    moderatorOptions.actions || ['Hide', 'Report'],
+  );
+  const [iconName, setIconName] = useState('hidden');
+  const {item} = moderatorOptions;
+  useEffect(() => {
+    if (item) {
+      if (item?.moderation) {
+        if (item?.moderation?.flag === 'hidden') {
+          setActions(['Show']);
+          setIconName('show');
+        }
+      }
+    }
+  }, []);
 
-      <TouchableOpacity style={styles.optionBtn} onPress={onFollow}>
-        <Icon
-          name="following"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Unfollow</Text>
-      </TouchableOpacity>
-      {isCommonProfile && (
-        <>
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="donate-16"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Contribute</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="agenda"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>View agenda</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionBtn}>
-            <Icon
-              name="share-32"
-              style={layout.marginRightS}
-              color={colors.black}
-            />
-            <Text style={text.buttonblack}>Share</Text>
-          </TouchableOpacity>
-        </>
-      )}
-
-      <TouchableOpacity style={styles.optionBtn}>
-        <Icon name="report" style={layout.marginRightS} color={colors.error} />
-        <Text style={text.buttonred}>Report</Text>
-      </TouchableOpacity>
-    </View>
-  </ScrollView>
-);
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={styles.scrollView}
+      vertical={true}
+      nestedScrollEnabled={true}
+      directionalLockEnabled={true}>
+      <View style={styles.body}>
+        <Text style={styles.text}>Options</Text>
+        {!item && (
+          <>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction('info')}>
+              <Icon
+                name="dao-general-info-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit info and cover photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction('rules')}>
+              <Icon
+                name="agenda-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={text.buttonblack}>Edit rules</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {item && (
+          <>
+            {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
+            {hasPermission && (
+              <TouchableOpacity
+                style={styles.optionBtn}
+                onPress={() => onAction(actions[0])}>
+                <Icon
+                  name={iconName}
+                  style={layout.marginRightS}
+                  color={colors.error}
+                />
+                <Text style={text.buttonred}>{actions[0]}</Text>
+              </TouchableOpacity>
+            )}
+            {actions[1] && (
+              <TouchableOpacity
+                style={styles.optionBtn}
+                onPress={() => onAction(actions[1])}>
+                <Icon
+                  name="report-16"
+                  style={layout.marginRightS}
+                  color={colors.error}
+                />
+                <Text style={text.buttonred}>{actions[1]}</Text>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
 
 CommonProfileOptions.propTypes = {
-  onFollow: func,
-  isCommonProfile: bool,
+  bottomSheetStore: object,
+  moderatorOptions: object,
+  onAction: func,
+  hasPermission: bool,
 };
 
 const styles = StyleSheet.create({
@@ -83,11 +115,10 @@ const styles = StyleSheet.create({
     ...text.centered,
   },
   body: {
-    alignSelf: 'stretch',
-    ...layout.content,
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
+    paddingVertical: 20,
   },
 
   safeArea: {
@@ -103,8 +134,13 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    width: 330,
+    width: 350,
+  },
+  text: {
+    ...text.h2Black,
+    alignSelf: 'center',
+    marginBottom: 30,
   },
 });
 
-export default CommonProfileOptions;
+export default inject('rootStore')(observer(CommonProfileOptions));

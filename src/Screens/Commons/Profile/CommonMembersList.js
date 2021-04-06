@@ -1,12 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
-import UserService from '~/Services/UserService';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {observer, inject} from 'mobx-react';
 import {object, array, bool, string, number} from 'prop-types';
-import DaoService from '~/Services/DaoService';
 
 import {
   Placeholder,
@@ -14,16 +12,22 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const CommonMembersList = ({
   navigation,
-  members,
   commonId,
   limit,
   horizontal,
-  bottomSheetStore,
+  rootStore,
 }) => {
-  const [membersInfo, setMembersInfo] = useState(null);
+  const userStore = rootStore.userStore;
+  const commonStore = rootStore.commonStore;
+
+  const currCommon = commonStore.getCommonById(commonId);
+  const membersInfo = userStore.getCommonUsersByMembersArray(
+    currCommon?.members || [],
+  );
 
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
@@ -34,63 +38,36 @@ const CommonMembersList = ({
       ? commonMembers.slice(0, limit)
       : commonMembers || [];
 
-  const getAllCommonMembers = async (commonMembers) => {
-    const size = 10;
-    let allUserInfos = [];
+  // That's the old way of fatching commong members.
+  // Let's keep it here as refference untill find better way of fetching it from DB at once.
+  //
+  // const size = 10;
+  // let allUserInfos = [];
 
-    const currCommonMembers = limit
-      ? limitCommonMembers(commonMembers)
-      : commonMembers;
+  // const currCommonMembers = limit
+  //   ? limitCommonMembers(commonMembers)
+  //   : commonMembers;
 
-    await Promise.all(
-      Array.from(
-        {length: Math.ceil(currCommonMembers.length / size)},
-        async (v, i) => {
-          const currArrChunk = currCommonMembers.slice(
-            i * size,
-            i * size + size,
-          );
-          const currChunkUserIds = currArrChunk.map((member) => member.userId);
-          const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
-            currChunkUserIds,
-          );
-          allUserInfos = allUserInfos.concat(currChunkUserInfos);
-        },
-      ),
-    );
-    return allUserInfos;
-  };
+  // await Promise.all(
+  //   Array.from(
+  //     {length: Math.ceil(currCommonMembers.length / size)},
+  //     async (v, i) => {
+  //       const currArrChunk = currCommonMembers.slice(
+  //         i * size,
+  //         i * size + size,
+  //       );
+  //       const currChunkUserIds = currArrChunk.map((member) => member.userId);
+  //       const currChunkUserInfos = await UserService.getInstance().getUsersByUpTo10Ids(
+  //         currChunkUserIds,
+  //       );
+  //       allUserInfos = allUserInfos.concat(currChunkUserInfos)
+  //       .map((userInfo, index) => ({joinedAt: members[index].joinedAt, ...userInfo}));;
+  //     },
+  //   ),
+  // );
+  // return allUserInfos;
 
-  useEffect(() => {
-    const loadCommonMembers = async (currCommonMembers) => {
-      setMembersInfo(await getAllCommonMembers(currCommonMembers));
-    };
-    if (members) {
-      loadCommonMembers(members);
-    }
-  }, []);
-
-  useEffect(() => {
-    let unsubscribeCommon = null;
-    const subscribeToCommon = async (currCommonId) => {
-      unsubscribeCommon = await DaoService.getInstance().subscribeToDaoById(
-        currCommonId,
-        async (snapshot) => {
-          const updatedCommon = snapshot.data();
-          setMembersInfo(await getAllCommonMembers(updatedCommon?.members));
-        },
-      );
-    };
-    if (commonId) {
-      subscribeToCommon(commonId);
-    }
-
-    return () => {
-      unsubscribeCommon && unsubscribeCommon();
-    };
-  }, [commonId]);
-
-  const limitedMembers = limit ? limitCommonMembers(members) : members;
+  const limitedMembers = limit ? limitCommonMembers(membersInfo) : membersInfo;
 
   return (
     <View
@@ -101,7 +78,7 @@ const CommonMembersList = ({
         }
       }>
       {membersInfo ? (
-        membersInfo.map((member, i) =>
+        limitedMembers.map((member, i) =>
           horizontal ? (
             <TouchableOpacity
               style={{position: 'relative', left: i * -15}}
@@ -118,7 +95,12 @@ const CommonMembersList = ({
               style={styles.item}
               onPress={() => showUserProfile(member)}
               key={`touch_${i}`}>
-              <MemberCard key={i} userInfo={member} />
+              <MemberCard
+                key={i}
+                moderatorId={currCommon?.metadata?.founderId}
+                commonId={currCommon.id}
+                userInfo={member}
+              />
             </TouchableOpacity>
           ),
         )
@@ -175,7 +157,7 @@ CommonMembersList.propTypes = {
   commonId: string,
   limit: number,
   horizontal: bool,
-  bottomSheetStore: object,
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -186,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(CommonMembersList));
+export default inject('rootStore')(observer(CommonMembersList));

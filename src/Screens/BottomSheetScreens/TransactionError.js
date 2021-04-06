@@ -4,19 +4,20 @@ import React from 'react';
 import {text, layout, colors, font} from '~/Theme/index';
 import PropTypes from 'prop-types';
 import Icon from '../../Assets/iconfont/Icon';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const VALIDATION_ERROR = 'ValidationError';
 
-const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
+const TransactionError = ({uiStore, errorMessage, errorObj}) => {
   const [showMore, setShowMore] = React.useState(false);
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
     const changeHeight = 60 + errorObj?.data?.detailedErrors?.length * 30 || 0;
     if (showMore) {
-      bottomSheetStore.decreseTopSnap(changeHeight);
+      uiStore.bottomSheetStore.decreaseTopSnap(changeHeight);
     } else {
-      bottomSheetStore.increseTopSnap(changeHeight);
+      uiStore.bottomSheetStore.increaseTopSnap(changeHeight);
     }
   };
 
@@ -83,7 +84,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 
         <TouchableOpacity
           style={styles.dismissButton}
-          onPress={bottomSheetStore.hideBottomSheet}>
+          onPress={uiStore.bottomSheetStore.hideBottomSheet}>
           <Text style={text.buttonblue}>Dismiss</Text>
         </TouchableOpacity>
       </View>
@@ -92,11 +93,7 @@ const TransactionError = ({bottomSheetStore, errorMessage, errorObj}) => {
 };
 
 TransactionError.propTypes = {
-  bottomSheetStore: PropTypes.shape({
-    hideBottomSheet: PropTypes.func,
-    increseTopSnap: PropTypes.func,
-    decreseTopSnap: PropTypes.func,
-  }),
+  uiStore: uiStorePropTypes,
   errorMessage: PropTypes.string,
   errorObj: PropTypes.oneOfType([
     PropTypes.shape({
@@ -178,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(observer(TransactionError));
+export default inject('uiStore')(observer(TransactionError));

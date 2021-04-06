@@ -4,19 +4,22 @@ import TextInputField from '../FormFields/TextInputField';
 import ImageField from '../FormFields/ImageField';
 import {inject} from 'mobx-react';
 import {layout, text, font, colors} from '~/Theme';
-import {string, shape, bool, object} from 'prop-types';
+import {bool, object} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
+import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 
 class EditProfileForm extends React.Component {
   static FIELD_FIRST_NAME = 'firstName';
   static FIELD_LAST_NAME = 'lastName';
+  static FIELD_COUNTRY = 'country';
   static FIELD_INTRO = 'intro';
   static FIELD_PROFILE_IMAGE = 'photoURL';
 
   render() {
     const {
-      userStore,
+      authStore,
       editProfileFormStore,
-      firstOpening,
+      isCompleteAccount,
       ...otherProps
     } = this.props;
 
@@ -28,7 +31,7 @@ class EditProfileForm extends React.Component {
           flexGrow: 1,
           marginTop: 0,
         }}>
-        {firstOpening && (
+        {isCompleteAccount && (
           <View style={{marginBottom: 32}}>
             <Text style={styles.title}>Complete your account</Text>
             <Text style={styles.subtitle}>
@@ -41,7 +44,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_PROFILE_IMAGE,
-            )?.value || userStore.userInfo.photoURL
+            )?.value || authStore.userInfo.photoURL
           }
           allowsEditing={true}
           title={'Select new avatar'}
@@ -53,14 +56,14 @@ class EditProfileForm extends React.Component {
         />
 
         <View style={styles.emailContainer}>
-          <Text style={text.ashleyjquimbacom}>{userStore.userInfo.email}</Text>
+          <Text style={text.ashleyjquimbacom}>{authStore.userInfo.email}</Text>
         </View>
 
         <TextInputField
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_FIRST_NAME,
-            )?.value || userStore.userInfo.firstName
+            )?.value || authStore.userInfo.firstName
           }
           viewStyle={{alignSelf: 'stretch'}}
           label="First name"
@@ -80,7 +83,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_LAST_NAME,
-            )?.value || userStore.userInfo.lastName
+            )?.value || authStore.userInfo.lastName
           }
           viewStyle={{alignSelf: 'stretch'}}
           label="Last name"
@@ -96,6 +99,23 @@ class EditProfileForm extends React.Component {
           }}
         />
 
+        {isCompleteAccount && (
+          <CountrySelectField
+            label="Country"
+            value={
+              this.props.editProfileFormStore.getFormField(
+                EditProfileForm.FIELD_COUNTRY,
+              )?.value || authStore.userInfo.country
+            }
+            validation={{
+              name: EditProfileForm.FIELD_COUNTRY,
+              formStore: this.props.editProfileFormStore,
+              validateRule: 'required|string',
+              displayName: 'country',
+            }}
+          />
+        )}
+
         <TextInputField
           label="Intro"
           placeholderText="What are you most passionate about, really good at, or love"
@@ -103,7 +123,7 @@ class EditProfileForm extends React.Component {
           value={
             this.props.editProfileFormStore.getFormField(
               EditProfileForm.FIELD_INTRO,
-            )?.value || userStore.userInfo.intro
+            )?.value || authStore.userInfo.intro
           }
           validation={{
             name: EditProfileForm.FIELD_INTRO,
@@ -117,17 +137,9 @@ class EditProfileForm extends React.Component {
 }
 
 EditProfileForm.propTypes = {
-  userStore: shape({
-    userInfo: shape({
-      photoURL: string,
-      email: string,
-      firstName: string,
-      lastName: string,
-      intro: string,
-    }),
-  }).isRequired,
+  authStore: authStorePropTypes.isRequired,
   editProfileFormStore: object.isRequired,
-  firstOpening: bool,
+  isCompleteAccount: bool,
 };
 
 const styles = StyleSheet.create({
@@ -150,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(EditProfileForm);
+export default inject('authStore')(EditProfileForm);

@@ -22,18 +22,23 @@ import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
+import DebtWarningNote from './components/DebtWarningNote';
+import ModalDebtWarning from './components/ModalDebtWarning';
+import {uiStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl} from '~/Util';
 
 const FundingProposal = ({
   navigation,
   route: {
     params: {commonId, common},
   },
-  bottomSheetStore,
+  uiStore,
 }) => {
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
+  const [debtModalVisible, setDebtModalVisible] = useState(false);
 
-  const createProposal = async (e) => {
+  const createProposal = async () => {
     navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
     Keyboard.dismiss();
@@ -44,7 +49,7 @@ const FundingProposal = ({
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
           amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
-          links: formData[FundingRequestForm.FIELD_LINKS],
+          links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
           commonId,
@@ -60,10 +65,13 @@ const FundingProposal = ({
         const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
           data,
         );
+
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
 
           navigation.pop();
+
+          // @question Is it good UX to show the ID to the user. Doesn't it look kinda scary to the end user?
           Toast.done(`Funding Proposal with id ${proposalId} created!`);
 
           const navigate = CommonActions.navigate({
@@ -76,22 +84,66 @@ const FundingProposal = ({
           navigation.dispatch(navigate);
         } else {
           navigation.pop();
-          showErrorPopUp(bottomSheetStore, createFundingProposalResponse);
+          showErrorPopUp(
+            uiStore.bottomSheetStore,
+            createFundingProposalResponse,
+          );
         }
       } catch (error) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, error);
+        showErrorPopUp(uiStore.bottomSheetStore, error);
       }
     }
   };
+
+  const closeDebtModal = () => {
+    setDebtModalVisible(false);
+  };
+
+  const openDebtModal = () => {
+    setDebtModalVisible(true);
+  };
+
+  const onCreateProposalButtonPressed = async () => {
+    if (fundingRequestFormStore.isFormValid()) {
+      Keyboard.dismiss();
+
+      navigation.setOptions({
+        headerShown: false,
+      });
+
+      const formData = fundingRequestFormStore.getChangedFormFieldsJson();
+
+      if (Number(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED])) {
+        setUseOfFundsVisible(true);
+      } else {
+        await createProposal();
+      }
+    }
+  };
+
+  const hideModal = () => {
+    navigation.setOptions({headerShown: true});
+    setUseOfFundsVisible(false);
+  };
+
   return (
-    <>
+    <React.Fragment>
       <StatusBar barStyle="dark-content" />
       <Modal
         animationType="slide"
         transparent={true}
         visible={useOfFundsVisible}>
-        <UseOfFunds onPressAgree={createProposal} />
+        <UseOfFunds
+          onPressAgree={createProposal}
+          onCancel={() => hideModal()}
+        />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={debtModalVisible}>
+        <ModalDebtWarning onPressClose={() => closeDebtModal()} />
       </Modal>
       <SafeAreaView style={{flex: 1}}>
         <ScrollView
@@ -110,20 +162,17 @@ const FundingProposal = ({
           <FundingRequestForm
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
+            navigation={navigation}
           />
+          <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
           formStore={fundingRequestFormStore}
-          onPress={() => {
-            if (fundingRequestFormStore.isFormValid()) {
-              navigation.setOptions({headerShown: false});
-              Keyboard.dismiss();
-              setUseOfFundsVisible(true);
-            }
-          }}
+          onPress={onCreateProposalButtonPressed}
         />
       </SafeAreaView>
+
       {useOfFundsVisible && (
         <BlurView
           style={styles.blurView}
@@ -132,7 +181,7 @@ const FundingProposal = ({
           reducedTransparencyFallbackColor={colors.black}
         />
       )}
-    </>
+    </React.Fragment>
   );
 };
 
@@ -144,7 +193,7 @@ FundingProposal.propTypes = {
       common: object,
     }),
   }),
-  bottomSheetStore: object,
+  uiStore: uiStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -171,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('bottomSheetStore')(FundingProposal);
+export default inject('uiStore')(FundingProposal);

@@ -1,19 +1,18 @@
 import React, {useState} from 'react';
-import {View, ScrollView, Text, StyleSheet, Keyboard} from 'react-native';
+import {View, ScrollView, StyleSheet, Keyboard} from 'react-native';
 import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
-import MultiFileField from '../FormFields/MultiFileField';
-import MultiImageField from '../FormFields/MultiImageField';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import {db} from '~Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
+import {authStorePropTypes} from '~/Types/propTypes';
 
 const CreateDiscussionForm = ({
-  userStore,
+  authStore,
   navigation,
   onFormSubmit,
   commonId,
@@ -27,7 +26,7 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, userStore} = this.props;
+      //const {createDiscussionStore, authStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
@@ -44,7 +43,7 @@ const CreateDiscussionForm = ({
             files: files.filter((file) => file.value !== ''),
             createTime: new Date(),
             lastMessage: new Date(),
-            ownerId: userStore.userInfo.uid,
+            ownerId: authStore.userInfo.uid,
             commonId: commonId,
             follower: [],
           })
@@ -78,10 +77,11 @@ const CreateDiscussionForm = ({
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Title"
+            label="Post title"
             infoLabel="Required"
             autoCapitalize="sentences"
             autoCorrect={false}
+            fontWeight="bold"
             validation={{
               name: TITLE,
               formStore: createDiscussionStore,
@@ -91,46 +91,17 @@ const CreateDiscussionForm = ({
 
           <TextInputField
             label="Message"
-            placeholderText="What do you want to say?"
             infoLabel="Required"
             multiline={true}
-            numberOfLines={5}
+            numberOfLines={10}
             value={''}
+            maxLength={690}
             validation={{
               name: MESSAGE,
               formStore: createDiscussionStore,
               validateRule: 'required',
             }}
           />
-          <View style={styles.filesContainer}>
-            <Text style={styles.title}>Files</Text>
-            <Text style={styles.subtitle}>
-              Anything you want to attach to this proposal?
-            </Text>
-            <MultiFileField
-              navigation={navigation}
-              allowsEditing={true}
-              title={'Add file'}
-              validation={{
-                name: FILES,
-                formStore: createDiscussionStore,
-                validateRule: 'string',
-              }}
-            />
-          </View>
-          <View style={styles.filesContainer}>
-            <Text style={styles.title}>Images</Text>
-            <Text style={styles.subtitle}>An image is worth a 1,000 words</Text>
-            <MultiImageField
-              allowsEditing={false}
-              title={'Add Image'}
-              validation={{
-                name: IMAGES,
-                formStore: createDiscussionStore,
-                validateRule: 'string',
-              }}
-            />
-          </View>
         </View>
       </ScrollView>
       <RequestStepActionButton
@@ -148,7 +119,7 @@ CreateDiscussionForm.propTypes = {
     getChangedFormFieldsJson: func,
     form: object,
   }),
-  userStore: object,
+  authStore: authStorePropTypes,
   commonId: string,
   onFormSubmit: func,
   onFormClose: func,
@@ -177,4 +148,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(CreateDiscussionForm);
+export default inject('authStore')(CreateDiscussionForm);

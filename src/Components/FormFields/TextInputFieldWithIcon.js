@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {observer} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, font, text, sizeS, sizeL} from '~/Theme';
 import {
@@ -21,6 +21,8 @@ import {
   node,
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
+import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -159,6 +161,8 @@ class TextInputFieldWithIcon extends React.Component {
       multiline,
       numberOfLines,
       keyboardType,
+      toggleName,
+      uiStore,
 
       // Icon props
       iconName,
@@ -171,6 +175,7 @@ class TextInputFieldWithIcon extends React.Component {
       // Validation management properties
       validation,
       subLabel,
+      textContentType,
       ...otherProps
     } = this.props;
 
@@ -222,7 +227,7 @@ class TextInputFieldWithIcon extends React.Component {
         )?.value;
         currValue =
           typeof currValue === 'object'
-            ? currValue.value?.toString()
+            ? currValue?.value?.toString()
             : currValue?.toString();
 
         currValue = currValue.replace(',', '');
@@ -230,6 +235,17 @@ class TextInputFieldWithIcon extends React.Component {
         return +currValue ? formatNumber(currValue) : currValue;
       }
       return value;
+    };
+
+    const getConversionValue = () => {
+      let currValue = Number(
+        validation.formStore.getFormField(validation.name, validation.multiName)
+          ?.value,
+      );
+
+      if (currValue > 0) {
+        return convertAmountToIls(currValue, uiStore.conversionRate);
+      }
     };
 
     return (
@@ -252,6 +268,7 @@ class TextInputFieldWithIcon extends React.Component {
             {...defaultMultilineProps}
             {...otherProps}
             multiline={multiline}
+            textContentType={textContentType}
             style={fieldStyle}
             placeholder={placeholderText}
             onChangeText={this.onChangeText}
@@ -268,6 +285,17 @@ class TextInputFieldWithIcon extends React.Component {
           />
           {this.toggleValueBtn}
 
+          {toggleName && isIsraelLocale && unFormatNumber(getValue()) > 0 && (
+            <View style={styles.conversionRateStyle}>
+              <Text style={styles.rightText}>
+                {convertAmountToIls(
+                  unFormatNumber(getValue()),
+                  uiStore.conversionRate,
+                )}
+              </Text>
+            </View>
+          )}
+
           {iconEndName && (
             <View style={iconStyle}>
               <Icon
@@ -276,6 +304,10 @@ class TextInputFieldWithIcon extends React.Component {
                 color={getValue() === '' ? iconEmptyColor : iconFillColor}
               />
             </View>
+          )}
+
+          {iconName === 'dollar' && isIsraelLocale && (
+            <Text style={styles.rightText}>{getConversionValue()}</Text>
           )}
         </View>
       </View>
@@ -320,6 +352,7 @@ TextInputFieldWithIcon.defaultProps = {
 };
 
 TextInputFieldWithIcon.propTypes = {
+  textContentType: string,
   validation: shape({
     name: string,
     formStore: object,
@@ -351,6 +384,7 @@ TextInputFieldWithIcon.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
+  uiStore: uiStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -367,6 +401,14 @@ const styles = StyleSheet.create({
     borderColor: colors.grey4,
     paddingHorizontal: 12,
     ...layout.marginTopS,
+  },
+  conversionRateStyle: {
+    position: 'absolute',
+    bottom: 10,
+    left: 15,
+    right: 15,
+    ...layout.content,
+    padding: 0,
   },
   subLabel: {
     marginVertical: sizeS,
@@ -391,6 +433,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     flex: 1,
   },
+  rightText: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.grey2,
+  },
   infoLabel: {
     ...font.primary.italic,
     ...font.fontSize(2),
@@ -408,4 +455,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(TextInputFieldWithIcon);
+export default inject('uiStore')(observer(TextInputFieldWithIcon));

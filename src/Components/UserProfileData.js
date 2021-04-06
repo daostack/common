@@ -1,17 +1,18 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
-import UserService from '~/Services/UserService';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
-import {UserAvatar} from '~/Components';
+import {UserAvatar} from '~/Components/index';
 import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
-import {string, object, shape} from 'prop-types';
+import {string, object} from 'prop-types';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {
   Placeholder,
@@ -20,51 +21,46 @@ import {
   Fade,
 } from 'rn-placeholder';
 
-const UserProfileData = ({
-  userId,
-  currUserInfo,
-  navigation,
-  userStore: {userInfo},
-}) => {
-  const [user, setUser] = useState(currUserInfo);
-  const [proposalsCount, setProposalsCount] = useState(0);
-  const [requestsCount, setRequestsCount] = useState(0);
-  const [commonsCount, setCommonsCount] = useState(0);
-  const [isOwnProfile, setIsOwnProfile] = useState(false);
+const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
+  const userInfo = rootStore.authStore.userInfo;
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+
+  const providedUserId = userId || currUserInfo.uid;
+  const isOwnProfile = providedUserId === userInfo?.uid;
+  const user = isOwnProfile ? userInfo : userStore.getUserById(providedUserId);
+
+  navigation.setOptions({
+    title: user.displayNameFormatted,
+  });
+
+  const requestsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.Join,
+  }).length;
+
+  const proposalsCount = proposalStore.getUserProposals(user.uid, {
+    stage: PROPOSAL_STAGE.Active,
+    type: PROPOSAL_TYPE.FundingRequest,
+  }).length;
+
+  const commonsCount = commonStore.getUserCommons(user.uid).length;
 
   useEffect(() => {
-    const getUser = async () => {
-      if (userId === userInfo?.uid) {
-        setUser(userInfo);
-        setIsOwnProfile(true);
-      } else {
-        if (!user) {
-          const usr = await UserService.getInstance().getUserById(userId);
-          setUser(usr);
-        }
-
-        setIsOwnProfile(false);
-
-        navigation.setOptions({
-          // The regex below is used to separate names and
-          // make them less at most 25 character, but with cutting
-          // the name only at whitespaces
-          title: user.displayName?.match(/.{1,25}(\s|$)/g)[0],
-        });
-      }
+    const unsubscribeUserActiveProposals = !isOwnProfile
+      ? proposalStore.subscribeToUserActiveProposals(userId)
+      : null;
+    return () => {
+      unsubscribeUserActiveProposals && unsubscribeUserActiveProposals();
     };
-
-    setUser(currUserInfo);
-    setIsOwnProfile(false);
-
-    getUser();
   }, [userId, currUserInfo, userInfo]);
 
-  const navigateToEditProfile = (isFirstOpening) => {
+  const navigateToEditProfile = (isCompleteAccount) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
       params: {
-        isFirstOpening: isFirstOpening,
+        isCompleteAccount: isCompleteAccount,
       },
     });
     navigation.dispatch(navigate);
@@ -130,20 +126,9 @@ const UserProfileData = ({
     );
   }
 
-  const onProposalsCountChange = (newCount) => {
-    setProposalsCount(newCount);
-  };
-
-  const onCommonsCountChange = (newCount) => {
-    setCommonsCount(newCount);
-  };
-
   /**
    * @param newCount {number} - the new count of the requests
    */
-  const onRequestsCountChange = (newCount) => {
-    setRequestsCount(newCount);
-  };
 
   const showMaxData = user.uid === userInfo?.uid ? 5 : null;
 
@@ -209,7 +194,6 @@ const UserProfileData = ({
         <CommonsSwiper
           navigation={navigation}
           userId={user.uid}
-          onCountChange={onCommonsCountChange}
           showMax={showMaxData}
         />
       </View>
@@ -225,7 +209,9 @@ const UserProfileData = ({
           {showMaxData && proposalsCount > 0 && (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('MyProposals', {onlyFundingRequests: true})
+                navigation.navigate('MyProposals', {
+                  proposalTypeFilter: PROPOSAL_TYPE.FundingRequest,
+                })
               }
               style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
               <Text
@@ -241,13 +227,16 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          onlyFundingRequests
           navigation={navigation}
-          userId={user.uid}
-          showAll={true}
           isSwiper={true}
-          showMax={showMaxData}
-          onCountChange={onProposalsCountChange}
+          userInfo={{
+            id: user.uid,
+          }}
+          proposalFilter={{
+            stage: PROPOSAL_STAGE.Active,
+            type: PROPOSAL_TYPE.FundingRequest,
+          }}
+          isMember
         />
       </View>
 
@@ -266,7 +255,7 @@ const UserProfileData = ({
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('MyProposals', {
-                  onlyMembershipRequests: true,
+                  proposalTypeFilter: PROPOSAL_TYPE.Join,
                 })
               }
               style={{
@@ -286,13 +275,15 @@ const UserProfileData = ({
         </View>
 
         <ProposalsList
-          membershipRequests
           navigation={navigation}
-          userId={user.uid}
-          showAll={true}
           isSwiper={true}
-          showMax={showMaxData}
-          onCountChange={onRequestsCountChange}
+          userInfo={{
+            id: user.uid,
+          }}
+          proposalFilter={{
+            stage: PROPOSAL_STAGE.Active,
+            type: PROPOSAL_TYPE.Join,
+          }}
         />
       </View>
     </React.Fragment>
@@ -303,11 +294,7 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  userStore: shape({
-    userInfo: shape({
-      uid: string,
-    }),
-  }),
+  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -371,4 +358,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore')(observer(UserProfileData));
+export default inject('rootStore')(observer(UserProfileData));

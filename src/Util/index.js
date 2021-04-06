@@ -14,6 +14,11 @@ export const LAYOUT_ANIMATION_CONFIG = {
   },
 };
 
+export const LAYOUT_ANIMATION_CONFIG_SLOW = {
+  ...LAYOUT_ANIMATION_CONFIG,
+  duration: 450,
+};
+
 export const numberFormatter = (num) => {
   const denom = Math.abs(Number(num));
   return denom >= 1.0e9
@@ -59,6 +64,15 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
   }
 };
 
+// This function requires the bottomSheetStore as a variable as you can't
+// access the mobx store outside of a react component
+export const showLoadingExpirationPopUp = (bottomSheetStore, errorMessage, navigation) => {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRED, {
+      errorMessage,
+      navigation,
+    });
+};
+
 export const getErrorObject = (axiosError) => {
   try {
     return axiosError.response.data;
@@ -86,6 +100,24 @@ export const formatNumber = (num) =>
     ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + 'K'
     : Math.sign(num) * Math.abs(num);
 
-export const formatCurrency = (amount) =>
-  (amount / 100).toLocaleString('en-US', {style: 'currency', currency: 'USD'});
-export const formatDate = (date) => moment(date).format('DD MMM, YYYY');
+export const formatCurrency = (amount) => {
+  const formattedAmount = (amount / 100)
+    .toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    })
+    // If the amount is whole number don't show the centes
+    .split('.00')[0];
+
+  return formattedAmount.indexOf('$') === -1
+    ? `$${formattedAmount}`
+    : formattedAmount;
+};
+
+export const escapeUrl = (linkArr) =>
+  linkArr?.map((link) => {
+    link.value = encodeURI(link.value.trim());
+    return link;
+  });
+
+export const formatDate = (date) => moment(date).format('DD MMMM YYYY');

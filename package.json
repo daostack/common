@@ -40,7 +40,7 @@
     "@react-native-firebase/crashlytics": "^8.4.11",
     "@react-native-firebase/dynamic-links": "^7.5.10",
     "@react-native-firebase/firestore": "^7.8.7",
-    "@react-native-firebase/messaging": "^7.9.1",
+    "@react-native-firebase/messaging": "^11.1.2",
     "@react-native-firebase/storage": "^7.4.10",
     "@react-navigation/bottom-tabs": "^5.1.1",
     "@react-navigation/native": "^5.0.9",
@@ -49,11 +49,15 @@
     "base-64": "^0.1.0",
     "bn.js": "^5.1.1",
     "buffer": "^5.6.0",
+    "compare-versions": "^3.6.0",
+    "computed-async-mobx": "^6.1.0",
     "graphql-tag": "^2.11.0",
     "hermes-engine": "0.5.2-rc1",
     "lodash": "^4.17.15",
     "mobx": "^5.15.4",
+    "mobx-persist": "^0.4.1",
     "mobx-react": "^6.1.8",
+    "mobx-utils": "^6.0.3",
     "moment": "^2.24.0",
     "react": "16.11.0",
     "react-native": "0.63.2",
@@ -103,11 +107,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
-    "@testing-library/jest-native": "^3.4.3",
-    "@testing-library/react-native": "^7.1.0",
     "@babel/helper-validator-identifier": "^7.9.0",
+    "@babel/plugin-proposal-decorators": "^7.12.12",
     "@babel/runtime": "^7.8.7",
     "@react-native-community/eslint-config": "^0.0.7",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
     "@types/jest": "^26.0.10",
     "@types/react": "^16.9.46",
     "@types/react-native": "^0.63.9",
@@ -136,6 +141,8 @@
   },
   "jest": {
     "preset": "react-native",
-    "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"]
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ]
   }
 }

@@ -1,20 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Text,
-  View,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-  Animated,
-  Image,
-} from 'react-native';
+import React from 'react';
+import {Text, View, Dimensions, Image, Platform} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
 import {inject} from 'mobx-react';
-import CreateStepHeader from '../RequestStepHeader';
-import CreateStepNavigation from '../RequestStepNavigation';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import CreateStepDotHeader from '../RequestStepDotHeader';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
@@ -28,7 +17,11 @@ import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
 import {formatNumber} from '~/Util/FormatUtil';
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
+import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -36,9 +29,11 @@ const PaymentDetailsStep = ({
   route: {
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
-  userStore: {userInfo},
-  bottomSheetStore,
+  rootStore,
 }) => {
+  const userInfo = rootStore.authStore.userInfo;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
@@ -46,18 +41,6 @@ const PaymentDetailsStep = ({
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
-
-  const [scrollY] = useState(new Animated.Value(0));
-  const [headerHeight, setHeaderHeight] = useState(0);
-
-  useEffect(() => {
-    const height = scrollY.interpolate({
-      inputRange: [50, 50],
-      outputRange: [0, 67],
-      extrapolate: 'clamp',
-    });
-    setHeaderHeight(height);
-  }, [scrollY]);
 
   const push = async () => {
     if (paymentFormStore.isFormValid()) {
@@ -72,12 +55,11 @@ const PaymentDetailsStep = ({
         const data = {
           description: formData.intro,
           funding: formData.amount * 100,
-          preAuthId: false,
           commonId: currDaoId,
         };
 
         if (formData.links) {
-          data.links = formData.links;
+          data.links = escapeUrl(formData.links);
         }
 
         navigation.navigate({
@@ -89,6 +71,7 @@ const PaymentDetailsStep = ({
 
         const createdCard = await createCard({
           ...formData,
+          links: escapeUrl(formData.links),
           ...userInfo,
         });
 
@@ -122,7 +105,11 @@ const PaymentDetailsStep = ({
         }
       } catch (e) {
         navigation.pop();
-        showErrorPopUp(bottomSheetStore, e);
+
+        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+          subTitle: "We couldn't create your proposal",
+          error: e,
+        });
       }
     }
   };
@@ -146,177 +133,141 @@ const PaymentDetailsStep = ({
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}
       </Text>
-      to this common
+      to this Common
     </Text>
   );
 
   return (
-    <React.Fragment>
-      <SafeAreaView style={{backgroundColor: colors.white}} />
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-        }}>
-        <CreateStepNavigation navigation={navigation} title={currCommon.name} />
-
-        <CreateStepDotHeader
-          title="Payment Details"
-          currentIndex={5}
-          isFirstStepSkipped={skipFirstStep}
-          navigation={navigation}
-          headerHeight={headerHeight}
-        />
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          width={width}
-          contentContainerStyle={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 24,
-          }}
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {y: scrollY}}}],
-            {useNativeDriver: false},
-          )}>
-          <MembershipRequest />
-
-          <CreateStepHeader
-            isFirstStepSkipped={skipFirstStep}
-            currentIndex={4}
-          />
-
-          <View
-            style={{
-              flex: 1,
-              // padding: 24,
-              backgroundColor: 'white',
-            }}>
-            <RequestStepHeaderTitle
-              title="Payment Details"
-              subtitle={subtitle}
-            />
-            <TextInputField
-              label="Credit card number"
-              value={
-                testCard
-                  ? '4007410000000006'
-                  : paymentFormStore.getFormField(
-                      RequestToJoinForm.FIELD_CARD_NUMBER,
-                    )?.value
-              }
-              editable={true}
-              keyboardType={'number-pad'}
-              validation={{
-                name: RequestToJoinForm.FIELD_CARD_NUMBER,
-                formStore: paymentFormStore,
-                validateRule: [
-                  'required',
-                  'numeric',
-                  VALIDATION_RULES.IS_VALID_CREDIT_CARD,
-                  VALIDATION_RULES.CREDIT_CARD_PROVIDER,
-                ],
-              }}
-            />
-
-            <View
-              style={{
-                ...layout.content,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignContent: 'flex-start',
-                alignItems: 'flex-start',
-
-                padding: 0,
-                flex: 1,
-              }}>
-              <TextInputField
-                viewStyle={{
-                  width: '45%',
-                }}
-                label="Expiration date"
-                value={
-                  testCard
-                    ? moment().format('MM/YY')
-                    : paymentFormStore.getFormField(
-                        RequestToJoinForm.FIELD_EXPIRATION_DATE,
-                      )?.value
-                }
-                placeholderText="MM / YY"
-                editable={true}
-                format={(date) => formatDate(date)}
-                keyboardType={'number-pad'}
-                validation={{
-                  name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
-                  formStore: paymentFormStore,
-                  validateRule: [
-                    'required',
-                    VALIDATION_RULES.VALID_DATE_FORMAT,
-                    VALIDATION_RULES.CARD_EXP_DATE,
-                  ],
-                }}
-              />
-              <TextInputField
-                viewStyle={{
-                  width: '45%',
-                }}
-                label="CVV"
-                value={testCard ? '123' : ''}
-                keyboardType={'number-pad'}
-                editable={true}
-                validation={{
-                  name: RequestToJoinForm.FIELD_CVV,
-                  formStore: paymentFormStore,
-                  validateRule: 'required|numeric|digits_between:3,4',
-                }}
-              />
-            </View>
-
-            <View style={styles.circleContainer}>
-              <Text
-                style={{
-                  ...text.regularText,
-                  color: colors.grey2,
-                  marginBottom: -25,
-                }}>
-                Powered by
-              </Text>
-
-              <Image
-                resizeMode="contain"
-                source={require('../../../../Assets/circle.png')}
-                style={{
-                  width: width * 0.3,
-                }}
-              />
-            </View>
-
-            <Text
-              style={{
-                ...text.regularText,
-                color: colors.grey2,
-                textAlign: 'center',
-              }}>
-              If your membership request will not be accepted, you will not be
-              charged. Your card will be saved for the monthly contribution of $
-              {
-                personalContributionFormStore.getFormField(
-                  RequestToJoinForm.FIELD_AMOUNT,
-                )?.value?.value
-              }
-              , you can cancel at any time.
-            </Text>
-          </View>
-        </ScrollView>
+    <StepDotLayout
+      navigation={navigation}
+      stepDotHeaderTitle="Payment Details"
+      navTitle={currCommon.name}
+      currentIndex={5}
+      skipFirstStep={skipFirstStep}
+      isRequestToJoin={true}
+      layoutTitle={<MembershipRequest />}
+      requestStepActionButton={
         <RequestStepActionButton
           title="Pay Now"
           formStore={paymentFormStore}
           onPress={push}
         />
-      </SafeAreaView>
-    </React.Fragment>
+      }>
+      <View
+        style={{
+          flex: 1,
+          // padding: 24,
+          backgroundColor: 'white',
+        }}>
+        <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
+        <TextInputField
+          label="Credit card number"
+          autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'cc-number'}
+          value={
+            testCard
+              ? '4007410000000006'
+              : paymentFormStore.getFormField(
+                  RequestToJoinForm.FIELD_CARD_NUMBER,
+                )?.value
+          }
+          editable={true}
+          keyboardType={'number-pad'}
+          validation={{
+            name: RequestToJoinForm.FIELD_CARD_NUMBER,
+            formStore: paymentFormStore,
+            validateRule: [
+              'required',
+              'numeric',
+              VALIDATION_RULES.IS_VALID_CREDIT_CARD,
+              VALIDATION_RULES.CREDIT_CARD_PROVIDER,
+            ],
+          }}
+        />
+
+        <View
+          style={{
+            ...layout.content,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignContent: 'flex-start',
+            alignItems: 'flex-start',
+
+            padding: 0,
+            flex: 1,
+          }}>
+          <TextInputField
+            viewStyle={{
+              width: '45%',
+            }}
+            label="Expiration date"
+            value={
+              testCard
+                ? moment().format('MM/YY')
+                : paymentFormStore.getFormField(
+                    RequestToJoinForm.FIELD_EXPIRATION_DATE,
+                  )?.value
+            }
+            placeholderText="MM / YY"
+            editable={true}
+            format={(date) => formatDate(date)}
+            keyboardType={'number-pad'}
+            validation={{
+              name: RequestToJoinForm.FIELD_EXPIRATION_DATE,
+              formStore: paymentFormStore,
+              validateRule: [
+                'required',
+                VALIDATION_RULES.VALID_DATE_FORMAT,
+                VALIDATION_RULES.CARD_EXP_DATE,
+              ],
+            }}
+          />
+          <TextInputField
+            viewStyle={{
+              width: '45%',
+            }}
+            label="CVV"
+            value={testCard ? '123' : ''}
+            keyboardType={'number-pad'}
+            editable={true}
+            validation={{
+              name: RequestToJoinForm.FIELD_CVV,
+              formStore: paymentFormStore,
+              validateRule: 'required|numeric|digits_between:3,4',
+            }}
+          />
+        </View>
+
+        <View style={styles.circleContainer}>
+          <Text
+            style={{
+              ...text.regularText,
+              color: colors.grey2,
+              marginBottom: -25,
+            }}>
+            Powered by
+          </Text>
+
+          <Image
+            resizeMode="contain"
+            source={require('../../../../Assets/circle.png')}
+            style={{
+              width: width * 0.3,
+            }}
+          />
+        </View>
+
+        <Text style={styles.monthlyBottomMessage}>
+          If your membership request will not be accepted, you will not be
+          charged.
+          {isMonthly &&
+            `Your card will be saved for the monthly contribution of ${
+              personalContributionFormStore.getFormField(
+                RequestToJoinForm.FIELD_AMOUNT,
+              )?.value?.value
+            }, you can cancel at any time.`}
+        </Text>
+      </View>
+    </StepDotLayout>
   );
 };
 
@@ -325,6 +276,11 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     marginTop: 20,
+  },
+  monthlyBottomMessage: {
+    ...text.regularText,
+    color: colors.grey2,
+    textAlign: 'center',
   },
 };
 
@@ -335,16 +291,6 @@ PaymentDetailsStep.propTypes = {
       skipFirstStep: bool,
       currDaoId: string,
       refreshFeed: func,
-    }),
-  }),
-  daoStore: shape({
-    dao: shape({
-      name: string,
-    }),
-  }),
-  userStore: shape({
-    userInfo: shape({
-      ethereumAddress: string,
     }),
   }),
   paymentFormStore: shape({
@@ -363,7 +309,7 @@ PaymentDetailsStep.propTypes = {
     getFormFieldsJson: func,
     form: object,
   }),
-  bottomSheetStore: object,
+  rootStore: rootStorePropTypes,
 };
 
-export default inject('bottomSheetStore', 'userStore')(PaymentDetailsStep);
+export default inject('rootStore')(PaymentDetailsStep);

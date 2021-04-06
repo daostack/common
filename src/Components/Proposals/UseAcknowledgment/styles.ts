@@ -1,9 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Platform} from 'react-native';
 import {colors, font} from '~/Theme';
 
 export default StyleSheet.create({
-  root:  {
-    paddingTop: 65,
+  root: {
+    paddingTop: Platform.OS === 'ios' ? 140 : 70,
     height: '100%',
   },
   view: {
@@ -92,7 +92,7 @@ export default StyleSheet.create({
   centerText: {textAlign: 'center'},
   line: {
     backgroundColor: colors.grey4,
-    height:1,
+    height: 1,
     marginVertical: 24,
   },
   item: {

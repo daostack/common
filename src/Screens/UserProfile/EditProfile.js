@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import EditProfileForm from '~/Components/Forms/EditProfileForm';
 import {colors, text, layout} from '~/Theme';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -18,20 +18,30 @@ import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
 import {filterObjectByKeys} from '~/Util';
 import logger from '~/Services/Logger';
-import {bool, object, shape, func} from 'prop-types';
+import {bool, object, shape} from 'prop-types';
 import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
-const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
-  navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={async () => {
-          onFormClose();
-        }}>
-        <Icon name="left-arrow" size={32} />
-      </TouchableOpacity>
-    ),
-  });
+const EditProfile = ({rootStore, route, navigation}) => {
+  const authStore = rootStore.authStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
+  if (route.params.isCompleteAccount) {
+    navigation.setOptions({
+      headerLeft: false,
+    });
+  } else {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={async () => {
+            onFormClose();
+          }}>
+          <Icon name="left-arrow" size={32} />
+        </TouchableOpacity>
+      ),
+    });
+  }
 
   const [editProfileFormStore] = useState(new EditProfileFormStore());
 
@@ -45,6 +55,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
         EditProfileForm.FIELD_FIRST_NAME,
         EditProfileForm.FIELD_LAST_NAME,
         EditProfileForm.FIELD_PROFILE_IMAGE,
+        EditProfileForm.FIELD_COUNTRY,
       ]);
       let publicData = filterObjectByKeys(changedFields, [
         EditProfileForm.FIELD_INTRO,
@@ -72,12 +83,23 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
   };
 
   const onFormSubmitEnd = (updatedFields) => {
-    userStore.setSignedInUser({...userStore.userInfo, ...updatedFields});
     Toast.done('Your profile is updated');
     navigation.goBack();
   };
 
   const onFormClose = () => {
+    const {isCompleteAccount, isSignedWithApple} = route.params;
+
+    if (
+      isSignedWithApple &&
+      isCompleteAccount &&
+      (!editProfileFormStore.isFormValid() ||
+        !authStore.userInfo?.firstName ||
+        !authStore.userInfo?.lastName)
+    ) {
+      return;
+    }
+
     if (editProfileFormStore.isFormChanged()) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
@@ -93,14 +115,22 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
     bottomSheetStore.hideBottomSheet();
   };
 
-  const renderBody = () => (
-    <View style={styles.body}>
-      <EditProfileForm
-        isFirstOpening={route.params.isFirstOpening}
-        editProfileFormStore={editProfileFormStore}
-      />
-    </View>
+  const EditForm = observer(() =>
+    authStore.userInfo ? (
+      <View style={styles.body}>
+        <EditProfileForm
+          isCompleteAccount={route.params.isCompleteAccount}
+          editProfileFormStore={editProfileFormStore}
+        />
+      </View>
+    ) : (
+      <Loader />
+    ),
   );
+
+  const saveBtnStyle = route.params.isCompleteAccount
+    ? styles.bigSaveBtn
+    : layout.marginLeftS;
 
   return (
     <>
@@ -109,22 +139,18 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
       <SafeAreaView style={styles.container}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="always"
           style={styles.scrollView}>
-          {userStore.userInfo ? renderBody() : <Loader />}
+          <EditForm />
         </ScrollView>
 
-        <View style={styles.containerRow}>
-          {route.params.isFirstOpening ? (
-            <TouchableOpacity
-              style={{
-                ...styles.btns,
-                ...layout.btnOutline,
-                ...layout.marginRightS,
-              }}
-              onPress={onFormClose}>
-              <Text style={text.buttonblue}>Skip</Text>
-            </TouchableOpacity>
-          ) : (
+        <View
+          style={
+            route.params.isCompleteAccount
+              ? styles.oneBtnContainer
+              : styles.multiBtnContainer
+          }>
+          {!route.params.isCompleteAccount && (
             <TouchableOpacity
               style={{
                 ...styles.btns,
@@ -140,7 +166,7 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
             style={{
               ...styles.btns,
               ...layout.btnPrimary,
-              ...layout.marginLeftS,
+              ...saveBtnStyle,
             }}
             onPress={formSave}>
             <Text style={text.buttoncenterwhite}>Save</Text>
@@ -152,17 +178,10 @@ const EditProfile = ({userStore, bottomSheetStore, route, navigation}) => {
 };
 
 EditProfile.propTypes = {
-  userStore: shape({
-    userInfo: object,
-    setSignedInUser: func,
-  }),
-  bottomSheetStore: shape({
-    showBottomSheet: func,
-    hideBottomSheet: func,
-  }),
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
-      isFirstOpening: bool,
+      isCompleteAccount: bool,
     }),
   }),
   navigation: object,
@@ -172,7 +191,14 @@ const styles = StyleSheet.create({
   btns: {
     alignSelf: 'stretch',
   },
-  containerRow: {
+  bigSaveBtn: {
+    width: '100%',
+  },
+  oneBtnContainer: {
+    padding: 20,
+    backgroundColor: colors.white,
+  },
+  multiBtnContainer: {
     ...layout.content,
     ...layout.flexRow,
     justifyContent: 'space-between',
@@ -196,4 +222,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('userStore', 'bottomSheetStore')(EditProfile);
+export default inject('rootStore')(EditProfile);

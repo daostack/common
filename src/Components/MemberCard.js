@@ -1,5 +1,6 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
+import {observer, inject} from 'mobx-react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
@@ -7,8 +8,28 @@ import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
 import {LAUNCHED_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
-const MemberCard = ({userInfo, proposalInfo = null}) => {
+const MemberCard = ({
+  userInfo,
+  proposalInfo = null,
+  moderatorId,
+  commonId,
+  rootStore,
+}) => {
+  const viewerPermission = rootStore.authStore.getPermission(
+    commonId,
+    userInfo.id,
+  );
+
+  const isModerator = useMemo(
+    () =>
+      viewerPermission === PERMISSIONS.FOUNDER ||
+      viewerPermission === PERMISSIONS.MODERATOR,
+    [moderatorId],
+  );
+
   const renderRightContainer = () => {
     if (proposalInfo) {
       const closingAt =
@@ -21,6 +42,7 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
             {proposalInfo.funding > 0 && (
               <Text style={text.h2Black}>
                 {`$${proposalInfo.funding / 100}`}
+                {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}
 
@@ -51,15 +73,13 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
       );
     } else {
       let memberCreatedDateInfo = null;
-      if (userInfo?.createdAt) {
-        const memberCreatedDate = new Date(userInfo.createdAt.seconds * 1000);
+      if (userInfo?.joinedAt) {
+        const memberCreatedDate = new Date(userInfo.joinedAt.seconds * 1000);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
               monthShortNames[memberCreatedDate.getMonth()]
             } ${memberCreatedDate.getDate()} `
           : '';
-      } else {
-        memberCreatedDateInfo = 'NOT app user';
       }
 
       return (
@@ -83,6 +103,7 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
           flex: 1.9,
           flexWrap: 'wrap',
         }}>
+        {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
@@ -98,6 +119,8 @@ const MemberCard = ({userInfo, proposalInfo = null}) => {
 };
 
 MemberCard.propTypes = {
+  rootStore: rootStorePropTypes,
+  moderatorId: string,
   memberSince: string,
   commonsCount: number,
   userInfo: shape({
@@ -116,6 +139,7 @@ MemberCard.propTypes = {
     }),
     state: string,
   }),
+  commonId: string,
 };
 
 const styles = StyleSheet.create({
@@ -144,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MemberCard;
+export default inject('rootStore')(observer(MemberCard));

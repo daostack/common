@@ -226,5 +226,8 @@ export default StyleSheet.create({
     borderTopColor: colors.redLight,
   },
 
-  // Forms
+  // Backgrounds {
+  backgroundWhite: {
+    backgroundColor: colors.white,
+  },
 });
