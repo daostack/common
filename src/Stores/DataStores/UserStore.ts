@@ -1,8 +1,11 @@
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
 import BaseStore from './BaseStore';
-import {subscribeToAllUsers, getUserById} from '~/Services/ListServices/UserListService';
-import {FirestoreUnsubscribeFn, IFirebaseDocChange, IFirebaseDoc} from '~/Firebase/types';
+import {
+  subscribeToAllUsers,
+  getUserById,
+} from '~/Services/ListServices/UserListService';
+import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {runInAction} from 'mobx';
@@ -17,16 +20,11 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     try {
       return this.getDataById(uid);
     } catch (err) {
-      getUserById(uid).then(
-        (user: IFirebaseDoc<IUserEntity>) => {
-          runInAction(() => {
-            this.setData(
-              uid,
-              this.getEntityModel(this.firestoreDocToEntity(user))
-              );
-          });
-        }
-      );
+      getUserById(uid).then((user: IUserEntity) => {
+        runInAction(() => {
+          this.setData(uid, this.getEntityModel(user));
+        });
+      });
       return undefined;
     }
   };

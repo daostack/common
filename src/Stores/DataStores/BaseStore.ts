@@ -129,7 +129,6 @@ export default abstract class BaseStore<
         id,
       };
     }
-    console.log('return docData', docData, 'id', id);
     return docData;
   }
 }
