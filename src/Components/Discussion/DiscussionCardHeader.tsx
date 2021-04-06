@@ -29,7 +29,6 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
   const authStore = rootStore.authStore;
   const showIcon =
     (moderation?.flag === FLAGS.hidden && !hasPermission) ||
-    viewerPermission === PERMISSIONS.FOUNDER ||
     viewerPermission === PERMISSIONS.MODERATOR;
 
   return (

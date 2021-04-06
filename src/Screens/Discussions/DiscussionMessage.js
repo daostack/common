@@ -43,13 +43,8 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
-  const isModerator =
-    viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR;
+
+  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -72,11 +67,13 @@ const DiscussionMessage = ({
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
     const userPermission = authStore.getPermission(commonId, ownerInfo.id);
-    setPermission(userPermission);
+    if (userPermission) {
+      setPermission(userPermission);
+    }
   }, []);
 
   const flagView = (isModerator || isHidden) && isFlagged && (
-    <View style={{flexDirection: 'row', marginLeft: 30}}>
+    <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
       {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
@@ -99,7 +96,7 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || hasPermission) &&
+        (!isHidden || viewerPermission) &&
         isMember &&
         !isOwner &&
         openMessageOptions()
@@ -110,10 +107,10 @@ const DiscussionMessage = ({
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
-              elevation: 2,
+              alignItems: isHidden ? 'flex-start' : 'flex-end',
             }}>
             {flagView}
-            {(!isHidden || hasPermission) && (
+            {(!isHidden || viewerPermission) && (
               <View style={styles.textContainer}>
                 <HyperText
                   textStyle={{
@@ -157,7 +154,7 @@ const DiscussionMessage = ({
                   : colors.mainBlueOpacity,
               }}>
               <Hyperlink linkDefault={true} linkStyle={styles.hyperLinkStyle}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={styles.userTitleView}>
                   <Text
                     style={{
                       ...styles.ownerName,
@@ -171,7 +168,7 @@ const DiscussionMessage = ({
                   {flagView}
                 </View>
               </Hyperlink>
-              {(!isHidden || hasPermission) && (
+              {(!isHidden || viewerPermission) && (
                 <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{
@@ -261,11 +258,16 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
+    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',
   },
   textContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  userTitleView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

@@ -22,7 +22,7 @@ const Browser = ({
     <SafeAreaView flex={1}>
       <WebView
         onNavigationStateChange={onNavStateChange}
-        source={{uri: url}}
+        source={{uri: url?.startsWith('www') ? `http://${url}` : url}}
         style={{backgroundColor: colors.grey4}}
       />
     </SafeAreaView>
