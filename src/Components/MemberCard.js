@@ -24,9 +24,7 @@ const MemberCard = ({
   );
 
   const isModerator = useMemo(
-    () =>
-      viewerPermission === PERMISSIONS.FOUNDER ||
-      viewerPermission === PERMISSIONS.MODERATOR,
+    () => viewerPermission === PERMISSIONS.MODERATOR,
     [moderatorId],
   );
 
