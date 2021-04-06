@@ -12,6 +12,7 @@ import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 type SignInErrorWithCode = any;
 
@@ -103,6 +104,7 @@ class AuthStore {
     this.userInfo = newUserInfo;
     if (isUserChanged) {
       this.signedInUser = newUserInfo?.uid;
+      this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
 
@@ -111,10 +113,18 @@ class AuthStore {
    * @return the user permission of the common with commonId
    */
   getPermission = (commonId: string, userId: string): string => {
-    const currCommon = this.rootStore.commonStore.getCommonById(commonId);
-    const memberObj = currCommon.members.find((member) => member.userId === userId);
-    return currCommon.metadata.founderId === userId ? 'founder' : memberObj?.permission;
-  }
+    try {
+      const currCommon = this.rootStore.commonStore.getCommonById(commonId);
+      const memberObj = currCommon.members.find(
+        (member) => member.userId === userId,
+      );
+      if (currCommon.metadata.founderId === userId || memberObj?.permission) {
+        return PERMISSIONS.MODERATOR;
+      }
+    } catch (error) {
+      return '';
+    }
+  };
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;

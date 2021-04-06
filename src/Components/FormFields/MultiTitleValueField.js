@@ -22,6 +22,7 @@ const MultiTitleValueField = (props) => {
     multiline,
     addMultiFieldBtnName,
     maxLength,
+    maxLengthDescription,
     link = false,
     rule = false,
   } = props;
@@ -168,6 +169,7 @@ const MultiTitleValueField = (props) => {
               }
               autoCapitalize="none"
               autoCorrect={false}
+              maxLength={maxLengthDescription}
               multiline={multiline}
               validation={currItemValidation}
             />
@@ -199,6 +201,7 @@ MultiTitleValueField.propTypes = {
   multiline: bool,
   addMultiFieldBtnName: string,
   maxLength: number,
+  maxLengthDescription: number,
   label: string,
   title: string,
   maxCount: number,
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
   },
   removeBtn: {
     position: 'absolute',
-    top: 0,
+    top: 8,
     bottom: 0,
     right: 0,
     justifyContent: 'center',

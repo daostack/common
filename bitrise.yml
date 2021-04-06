@@ -215,7 +215,7 @@ workflows:
         title: Run yarn test
     - cocoapods-install@1:
         inputs:
-        - install_cocoapods_version: 1.9.3
+        - install_cocoapods_version: 1.10.1
         - verbose: 'false'
         - podfile_path: $source_root_path/ios/Podfile
     meta:
@@ -678,7 +678,7 @@ workflows:
         title: Run yarn test
     - cocoapods-install@1:
         inputs:
-        - install_cocoapods_version: 1.9.3
+        - install_cocoapods_version: 1.10.1
         - verbose: 'false'
         - podfile_path: $source_root_path/ios/Podfile
     meta:
