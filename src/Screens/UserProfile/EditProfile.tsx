@@ -1,4 +1,4 @@
-import React, {ReactElement, useState, useRef} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,7 +22,6 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import EditProfileFormStore from '~/FormStores/EditProfileFormStore';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
 import {latinOnly} from '~/Util/constants/validation';
@@ -75,8 +74,6 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     ),
   });
 
-  const [editProfileFormStore] = useState(new EditProfileFormStore());
-
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
 
@@ -113,13 +110,16 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     const values = (formikRef?.current ?? {values: {}})?.values;
     const {isFirstOpening, isSignedWithApple} = route.params;
 
-    if (
-      isSignedWithApple &&
-      isFirstOpening &&
-      (!editProfileFormStore.isFormValid() ||
-        !authStore.userInfo?.firstName ||
-        !authStore.userInfo?.lastName)
-    ) {
+    try {
+      validationSchema.validateSync(values);
+      if (
+        isSignedWithApple &&
+        isFirstOpening &&
+        (!authStore.userInfo?.firstName || !authStore.userInfo?.lastName)
+      ) {
+        return;
+      }
+    } catch (err) {
       return;
     }
 
