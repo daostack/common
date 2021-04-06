@@ -5,7 +5,6 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {FLAGS} from '~/Components/Moderation/constants';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -26,6 +25,10 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
   if (proposalNotificationData) {
     const {proposal, common} = proposalNotificationData;
 
+    if (proposal?.isModerationHidden) {
+      return null;
+    }
+
     notificationData = {
       missingData: false,
       description:
@@ -37,10 +40,7 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (
-    notificationData.missingData ||
-    proposalNotificationData?.moderation?.flag === FLAGS.hidden
-  ) {
+  if (notificationData.missingData) {
     return null;
   }
 

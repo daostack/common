@@ -23,9 +23,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   let eventType = item.eventType;
   const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
   if (proposal) {
-    const proposer = rootStore.userStore.getUserById(
-      proposal.proposerId,
-    );
+    const proposer = rootStore.userStore.getUserById(proposal.proposerId);
     const isJoin = proposal.type === PROPOSAL_TYPE.Join;
 
     if (isJoin) {
@@ -46,7 +44,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (notificationData.missingData || proposal?.isModerationHidden) {
     return null;
   }
 

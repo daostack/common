@@ -2,6 +2,7 @@ import {observable, computed} from 'mobx';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {BaseModel} from './BaseModel';
+import {FLAGS} from '~/Components/Moderation/constants';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
@@ -43,7 +44,7 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === 'hidden';
+    return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
   constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
