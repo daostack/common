@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import RNRestart from 'react-native-restart';
+import crashlytics from '@react-native-firebase/crashlytics';
 import {colors, font} from '~/Theme';
 
 const styles = StyleSheet.create({
@@ -63,6 +64,10 @@ export class ErrorBoundary extends React.Component<Props> {
 
   static getDerivedStateFromError() {
     return {hasError: true};
+  }
+
+  componentDidCatch(error: any) {
+    crashlytics().recordError(error);
   }
 
   render() {
