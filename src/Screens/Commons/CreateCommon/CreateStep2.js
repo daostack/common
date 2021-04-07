@@ -11,6 +11,7 @@ import moment from 'moment';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {isIsraelLocale} from '~/Util/locale';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -226,11 +227,19 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules(contributionIndex),
-            customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION[contributionIndex]} and at most $${parseFloat(
+            customErrorMessage: `The amount must be at least $${
+              MIN_CONTRIBUTION[contributionIndex]
+            } and at most $${parseFloat(
               MAX_CONTRIBUTION[contributionIndex],
             ).toLocaleString('en')}.`,
           }}
         />
+        {isIsraelLocale && (
+          <Text style={styles.info2}>
+            All contributions are made in U.S. dollars. The actual contribution
+            amount in ILS may be different than the amounts estimated above.
+          </Text>
+        )}
         <View style={{marginTop: 24}}>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.label}>Funds safety period</Text>

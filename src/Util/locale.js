@@ -3,10 +3,10 @@ import * as RNLocalize from 'react-native-localize';
 
 export const getLocale = () => RNLocalize.getCountry();
 
-export const isIsraelLocale = getLocale() === 'IL';
+export const isIsraelLocale = true;
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://api.exchangeratesapi.io/',
+  baseURL: 'https://api.ratesapi.io/api/',
 });
 
 export const getCurrentConversionRate = async () =>
