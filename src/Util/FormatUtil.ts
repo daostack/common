@@ -1,5 +1,16 @@
-export const unFormatNumber = (number: string) =>
-  number ? number.replace(',', '.') : '';
+export const unFormatNumber = (number: string): string => {
+  const lastCommaIndex = number.split('').lastIndexOf(',');
+  if (
+    number.includes(',') &&
+    !number.includes('.') &&
+    lastCommaIndex === number.length - 1
+  ) {
+    const integerSubstr = number.substring(0, lastCommaIndex);
+    const decimalSubstr = number.substring(lastCommaIndex + 1);
+    return `${integerSubstr}.${decimalSubstr}`;
+  }
+  return number ? number.replace(',', '') : '';
+};
 
 export const formatNumber = (number: string | number) => {
   /* The next line is making the whole formatting right, but it's not working for Android.
