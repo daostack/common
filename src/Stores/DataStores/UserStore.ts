@@ -27,12 +27,14 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     } catch (err) {
       fetchUserById(uid)
         .then((user: IFirebaseDoc<IUserEntity>) => {
-          runInAction(() => {
-            this.setData(
-              uid,
-              this.getEntityModel(this.firestoreDocToEntity(user)),
-            );
-          });
+          if (user.exists) {
+            runInAction(() => {
+              this.setData(
+                uid,
+                this.getEntityModel(this.firestoreDocToEntity(user)),
+              );
+            });
+          }
         })
         .catch(() => {
           showBackendError({
