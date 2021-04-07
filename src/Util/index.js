@@ -29,7 +29,7 @@ export const numberFormatter = (num) => {
     : // Three Zeroes for Thousands
     denom >= 1.0e4
     ? denom / 1.0e4 + 'K'
-    : Math.floor(denom);
+    : denom;
 };
 
 export function filterObjectByKeys(currObj, allowedKeys) {
