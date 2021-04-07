@@ -89,13 +89,15 @@ export default class ProposalStore extends BaseStore<
     } catch (errr) {
       fetchProposalById(id)
         .then((proposal: IFirebaseDoc<IProposalEntity>) => {
-          if (proposal.data()) {
+          if (proposal.exists) {
             runInAction(() => {
               this.setData(
                 id,
                 this.getEntityModel(this.firestoreDocToEntity(proposal)),
               );
             });
+          } else {
+            console.log('PROPOSAL WITHOUT DATA -> ', proposal);
           }
         })
         .catch(() => {
