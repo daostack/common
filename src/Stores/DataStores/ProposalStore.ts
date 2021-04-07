@@ -96,8 +96,6 @@ export default class ProposalStore extends BaseStore<
                 this.getEntityModel(this.firestoreDocToEntity(proposal)),
               );
             });
-          } else {
-            console.log('PROPOSAL WITHOUT DATA -> ', proposal);
           }
         })
         .catch(() => {
