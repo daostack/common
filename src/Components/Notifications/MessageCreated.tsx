@@ -60,7 +60,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (notificationData.missingData || message?.isModerationHidden) {
     return null;
   }
 

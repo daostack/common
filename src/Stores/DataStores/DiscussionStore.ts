@@ -9,6 +9,7 @@ import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion} from '../Models/Discussion';
 import {runInAction} from 'mobx';
+import {showBackendError} from '~/Util';
 
 export default class DiscussionStore extends BaseStore<
   Discussion,
@@ -24,16 +25,20 @@ export default class DiscussionStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      fetchDiscussionId(id).then(
-        (discussion: IFirebaseDoc<IDiscussionEntity>) => {
+      fetchDiscussionId(id)
+        .then((discussion: IFirebaseDoc<IDiscussionEntity>) => {
           runInAction(() => {
             this.setData(
               id,
               this.getEntityModel(this.firestoreDocToEntity(discussion)),
             );
           });
-        },
-      );
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
+        });
       return undefined;
     }
   };

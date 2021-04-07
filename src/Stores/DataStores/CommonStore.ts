@@ -11,6 +11,7 @@ import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
+import {isDaoMemberByUserId, showBackendError} from '~/Util';
 import {isDaoMemberByUserId} from '~/Util';
 import {runInAction} from 'mobx';
 
@@ -25,26 +26,38 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @computed
   get myCommons() {
-    return this.getDataArray.filter((common: Common) =>
-      this.rootStore.authStore.isDaoMember(common?.members),
-    );
+    try {
+      return this.getDataArray.filter((common: Common) =>
+        this.rootStore.authStore.isDaoMember(common?.members),
+      );
+    } catch (error) {
+      return [];
+    }
   }
 
   @computed
   get pendingCommons() {
-    return this.rootStore.proposalStore.myActiveMembershipRequests.map(
-      (proposal: Proposal) => this.getCommonById(proposal.commonId),
-    );
+    try {
+      return this.rootStore.proposalStore.myActiveMembershipRequests.map(
+        (proposal: Proposal) => this.getCommonById(proposal.commonId),
+      );
+    } catch (error) {
+      return [];
+    }
   }
 
   @computed
   get featuredCommons() {
-    return this.getDataArray.filter(
-      (common: Common) =>
-        !this.myCommons.includes(common) &&
-        !this.pendingCommons.includes(common) &&
-        common.register === DAO_REGISTERED,
-    );
+    try {
+      return this.getDataArray.filter(
+        (common: Common) =>
+          !this.myCommons.includes(common) &&
+          !this.pendingCommons.includes(common) &&
+          common.register === DAO_REGISTERED,
+      );
+    } catch (error) {
+      return [];
+    }
   }
 
   // Overriden methods
@@ -66,10 +79,18 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     }
   };
 
-  getUserCommons = (userId: string) =>
-    this.getDataArray.filter((common: Common) =>
-      isDaoMemberByUserId(common?.members, userId),
-    );
+  getUserCommons = (userId: string) => {
+    try {
+      return this.getDataArray.filter((common: Common) =>
+        isDaoMemberByUserId(common?.members, userId),
+      );
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+      });
+      return [];
+    }
+  };
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
@@ -83,8 +104,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
    */
   updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
-      const updateResponse = await updateCommon(updateCommonInfo);
-      return updateResponse;
+      return await updateCommon(updateCommonInfo);
     } catch (err) {
       throw err;
     }
