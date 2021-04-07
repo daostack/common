@@ -24,7 +24,7 @@ export const subscribeToUser = (
     },
   );
 
-export const getUserById = async (userId: string): Promise<IUserEntity> => {
+export const fetchUserById = async (userId: string): Promise<IUserEntity> => {
   if (!userId) {
     throw new Error(
       'User Id (userId) is required parameter, but it was not provided',

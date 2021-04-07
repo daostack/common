@@ -3,7 +3,7 @@ import {UserModel} from '../Models/UserModel';
 import BaseStore from './BaseStore';
 import {
   subscribeToAllUsers,
-  getUserById,
+  fetchUserById,
 } from '~/Services/ListServices/UserListService';
 import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
 import RootStore from '../RootStore';
@@ -21,7 +21,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     try {
       return this.getDataById(uid);
     } catch (err) {
-      getUserById(uid).then((user: IUserEntity) => {
+      fetchUserById(uid).then((user: IUserEntity) => {
         runInAction(() => {
           this.setData(uid, this.getEntityModel(user));
         });
