@@ -26,20 +26,33 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
           this.setData(uid, this.getEntityModel(user));
         });
       });
-      return undefined;
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+      });
+      return {} as UserModel;
     }
   };
 
   getCommonUsersByMembersArray = (
     members: Array<ICommonMember>,
-  ): Array<UserModel | undefined> =>
-    members.map((commonMember: ICommonMember) => {
-      const user = this.getUserById(commonMember.userId);
-      if (user) {
-        user.joinedAt = commonMember.joinedAt;
-        return user;
-      }
-    });
+  ): Array<UserModel | undefined> => {
+    try {
+      return members.map((commonMember: ICommonMember) => {
+        const user = this.getUserById(commonMember.userId);
+        if (user) {
+          user.joinedAt = commonMember.joinedAt;
+          return user;
+        }
+      });
+    } catch (error) {
+      setTimeout(() => {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        });
+      });
+      return [];
+    }
+  };
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>

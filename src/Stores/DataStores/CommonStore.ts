@@ -12,7 +12,6 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
-import {isDaoMemberByUserId} from '~/Util';
 import {runInAction} from 'mobx';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
