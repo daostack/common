@@ -5,7 +5,7 @@ import {
   updateCommon,
   fetchCommonById,
 } from '~/Services/ListServices/CommonListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
@@ -69,11 +69,22 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.getDataById(id);
     } catch (err) {
-      fetchCommonById(id).then((common: ICommonEntity) => {
-        runInAction(() => {
-          this.setData(id, this.getEntityModel(common));
+      fetchCommonById(id)
+        .then((common: IFirebaseDoc<ICommonEntity>) => {
+          if (common.exists) {
+            runInAction(() => {
+              this.setData(
+                id,
+                this.getEntityModel(this.firestoreDocToEntity(common)),
+              );
+            });
+          }
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
         });
-      });
       return undefined;
     }
   };

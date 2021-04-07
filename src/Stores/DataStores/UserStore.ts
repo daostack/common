@@ -5,7 +5,11 @@ import {
   subscribeToAllUsers,
   fetchUserById,
 } from '~/Services/ListServices/UserListService';
-import {FirestoreUnsubscribeFn, IFirebaseDocChange} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseDocChange,
+} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {showBackendError} from '~/Util';
@@ -21,14 +25,20 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     try {
       return this.getDataById(uid);
     } catch (err) {
-      fetchUserById(uid).then((user: IUserEntity) => {
-        runInAction(() => {
-          this.setData(uid, this.getEntityModel(user));
+      fetchUserById(uid)
+        .then((user: IFirebaseDoc<IUserEntity>) => {
+          runInAction(() => {
+            this.setData(
+              uid,
+              this.getEntityModel(this.firestoreDocToEntity(user)),
+            );
+          });
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
         });
-      });
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
       return {} as UserModel;
     }
   };

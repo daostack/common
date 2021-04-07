@@ -1,6 +1,10 @@
 import {UsersCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 
 export type userListLoadCallbackFn = (
   updatedUserList: IFirebaseSnapshot<IUserEntity>,
@@ -24,14 +28,15 @@ export const subscribeToUser = (
     },
   );
 
-export const fetchUserById = async (userId: string): Promise<IUserEntity> => {
+export const fetchUserById = async (
+  userId: string,
+): Promise<IFirebaseDoc<IUserEntity>> => {
   if (!userId) {
     throw new Error(
       'User Id (userId) is required parameter, but it was not provided',
     );
   }
-  const user = await UsersCollection.doc(userId).get();
-  return user.data() as IUserEntity;
+  return await UsersCollection.doc(userId).get();
 };
 
 // TODO: Move addUser and updateUser function in the clould functions project.
