@@ -55,10 +55,8 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   // Data consuming methods
   getCommonById = (id: string): Common | undefined => {
     try {
-      console.log('got here trying');
       return this.getDataById(id);
     } catch (err) {
-      console.log('got here', id);
       fetchCommonById(id).then((common: ICommonEntity) => {
         runInAction(() => {
           this.setData(id, this.getEntityModel(common));
