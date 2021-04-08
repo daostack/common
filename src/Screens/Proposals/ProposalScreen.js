@@ -919,6 +919,7 @@ const ProposalScreen = ({
                             source={require('~/Assets/ils.png')}
                             width={15}
                             height={15}
+                            style={{margin: 15}}
                           />
                         </Pressable>
                       </View>
@@ -1173,7 +1174,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     flex: 1,
-    right: 15,
+    right: 0,
   },
   votedByYouText: {
     ...text.buttonblue,
