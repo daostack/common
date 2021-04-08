@@ -108,6 +108,7 @@ const DiscussionMessage = ({
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
               alignItems: isHidden ? 'flex-start' : 'flex-end',
+              elevation: 2,
             }}>
             {flagView}
             {(!isHidden || viewerPermission) && (
@@ -258,7 +259,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
-    elevation: 2,
   },
   contentMember: {
     flexDirection: 'row',
