@@ -24,14 +24,18 @@ const propTypes = {
   error: PropTypes.instanceOf(Error),
 
   onClose: PropTypes.func,
+  navigation: PropTypes.any,
+  shouldGoBack: PropTypes.bool,
 };
 
 const BackendErrorSheetScreen: React.FC<
   PropTypes.InferProps<typeof propTypes>
-> = ({uiStore, ...props}) => {
+> = ({uiStore, shouldGoBack, ...props}) => {
   const onClose = (): void => {
     uiStore.bottomSheetStore.hideBottomSheet();
-
+    if (shouldGoBack && props.navigation?.current) {
+      props.navigation?.current?.goBack();
+    }
     typeof props.onClose === 'function' && onClose();
   };
 
@@ -144,6 +148,7 @@ BackendErrorSheetScreen.propTypes = propTypes;
 BackendErrorSheetScreen.defaultProps = {
   title: 'Something went wrong',
   buttonText: 'OK',
+  shouldGoBack: false,
 };
 
 export default inject('uiStore')(observer(BackendErrorSheetScreen));

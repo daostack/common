@@ -183,6 +183,8 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
+    borderBottomColor: colors.grey4,
+    borderBottomWidth: 2,
   },
   messageContainer: {
     marginTop: 5,

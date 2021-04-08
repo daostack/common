@@ -46,7 +46,7 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (notificationData.missingData || discussion?.isModerationHidden) {
     return null;
   }
 
