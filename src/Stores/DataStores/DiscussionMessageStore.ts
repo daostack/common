@@ -31,12 +31,14 @@ export default class DiscussionMessageStore extends BaseStore<
       // Temporary logic for fetching Discussion Message in case it's not in the store.
       fetchDiscussionMessageById(id)
         .then((discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
-          runInAction(() => {
-            this.setData(
-              id,
-              this.getEntityModel(this.firestoreDocToEntity(discussion)),
-            );
-          });
+          if (discussion.exists) {
+            runInAction(() => {
+              this.setData(
+                id,
+                this.getEntityModel(this.firestoreDocToEntity(discussion)),
+              );
+            });
+          }
         })
         .catch(() => {
           showBackendError({
