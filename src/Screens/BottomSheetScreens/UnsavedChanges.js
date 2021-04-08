@@ -17,7 +17,7 @@ const UnsavedChanges = ({
   onLeaveWithoutSaving,
 }) => {
   const liveWithoutSave = (e) => {
-    navigation.goBack();
+    navigation?.current?.goBack();
     if (onLeaveWithoutSaving) {
       onLeaveWithoutSaving();
     }
