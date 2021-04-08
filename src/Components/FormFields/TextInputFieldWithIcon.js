@@ -38,6 +38,7 @@ class TextInputFieldWithIcon extends React.Component {
       onFocus: false,
       dynamicWidth: 50,
       prevTextLength: 0,
+      isDecimal: false,
     };
 
     const {
@@ -176,6 +177,7 @@ class TextInputFieldWithIcon extends React.Component {
       validation,
       subLabel,
       textContentType,
+      maxLength,
       ...otherProps
     } = this.props;
 
@@ -267,6 +269,7 @@ class TextInputFieldWithIcon extends React.Component {
             ref={this.props.forwardRef}
             {...defaultMultilineProps}
             {...otherProps}
+            maxLength={this.state.isDecimal ? maxLength + 3 : maxLength}
             multiline={multiline}
             textContentType={textContentType}
             style={fieldStyle}
@@ -279,6 +282,18 @@ class TextInputFieldWithIcon extends React.Component {
             onKeyPress={({nativeEvent}) => {
               if (nativeEvent.key === 'Backspace') {
                 this.updateSize(-10);
+              }
+              if (nativeEvent.key === 'Backspace' && this.state.isDecimal) {
+                const inputValue = getValue();
+                this.setState({
+                  isDecimal: inputValue[inputValue.length - 1] !== '.',
+                });
+              }
+              if (nativeEvent.key === '.' || nativeEvent.key === ',') {
+                this.setState({
+                  isDecimal: true,
+                });
+                this.onChangeText(`${getValue()}.`);
               }
             }}
             value={getValue()}
@@ -384,6 +399,7 @@ TextInputFieldWithIcon.propTypes = {
   subLabel: string,
   forwardRef: object,
   viewStyle: object,
+  maxLength: number,
   uiStore: uiStorePropTypes.isRequired,
 };
 

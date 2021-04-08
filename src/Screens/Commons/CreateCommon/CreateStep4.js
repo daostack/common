@@ -85,7 +85,7 @@ const CreateStep4 = ({
       const formDataInit = {...form};
       const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
-      const contributionAmount = parseInt(formDataInit.minimum, 10) * 100;
+      const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
 
       const data = {
         ...formDataInit,
