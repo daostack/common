@@ -41,11 +41,6 @@ export function filterObjectByKeys(currObj, allowedKeys) {
     }, {});
 }
 
-export const calcIsFundingStage = (deadline) => {
-  const deadlineMoment = moment.unix(deadline);
-  return !moment().isAfter(deadlineMoment);
-};
-
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {

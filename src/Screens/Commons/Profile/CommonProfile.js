@@ -28,7 +28,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import ModerationService from '~/Services/ModerationService';
@@ -43,7 +43,6 @@ import {object, shape, func} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
@@ -135,7 +134,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
     false,
   );
-  const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -289,13 +287,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         isMember={isMember}
       />
-
-      {isMember && (
-        <ProposalActivationDate
-          activationDate={currCommon.fundingGoalDeadline}
-          bottomSheetStore={bottomSheetStore}
-        />
-      )}
     </View>
   );
 
@@ -960,7 +951,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
-                isFundingStage={isFundingStage}
                 commonProgressInfo={{
                   time: currCommon.fundingGoalDeadline,
                   activeProposals:
@@ -1015,7 +1005,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage &&
                 index === 1 && (
                   <BottomRightButton
                     iconName="create-proposal"

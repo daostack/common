@@ -53,7 +53,7 @@ const CreateStep4 = ({
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
-    ...fundingFormStore.getFormFieldsJson(),
+    ...fundingFormStore.getChangedFormFieldsJson(),
     ...agendaFormStore.getChangedFormFieldsJson(),
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
@@ -83,7 +83,6 @@ const CreateStep4 = ({
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
-      const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
       const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
 
@@ -94,7 +93,6 @@ const CreateStep4 = ({
         contributionAmount,
         contributionType: formDataInit.contribution,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
-        fundingGoalDeadline,
       };
       logger.log('calling createCommon(...)');
 
@@ -107,7 +105,6 @@ const CreateStep4 = ({
         description: data.description,
         contributionType: data.contributionType,
         contributionAmount: data.contributionAmount,
-        fundingGoalDeadline: data.fundingGoalDeadline,
         zeroContribution: data.zeroContribution,
       };
 
@@ -222,10 +219,8 @@ const CreateStep4 = ({
             <CreateStep4Indicators
               title="Safety period"
               currencySymbol={false}
-              value={moment.unix(form[CreateCommonForm.DEADLINE]).fromNow(true)}
-              date={moment
-                .unix(form[CreateCommonForm.DEADLINE])
-                .format('MMM DD, YYYY')}
+              value={moment().fromNow(true)}
+              date={moment().format('MMM DD, YYYY')}
             />
           </View>
         </View>

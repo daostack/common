@@ -5,7 +5,6 @@ import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import moment from 'moment';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -45,10 +44,6 @@ const CreateStep2 = ({
     `required|integer|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
-    fundingFormStore.registerFormField(CreateCommonForm.DEADLINE, 'required', {
-      value: moment().unix(),
-    });
-
     fundingFormStore.registerFormField(
       CreateCommonForm.ZERO_CONTRIBUTION,
       'required',
