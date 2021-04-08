@@ -13,7 +13,7 @@ import {object, func} from 'prop-types';
 
 const SortProposals = ({navigation, onContinueEditing}) => {
   const liveWithoutSave = (e) => {
-    navigation?.current?.goBack();
+    navigation?.current.goBack();
   };
 
   const continueEditing = (e) => {
