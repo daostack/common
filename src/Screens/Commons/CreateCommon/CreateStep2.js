@@ -149,7 +149,7 @@ const CreateStep2 = ({
               contribution (min. ${MIN_CONTRIBUTION})
             </React.Fragment>
           }
-          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
+          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
           infoLabel="Required"
           autoCapitalize="none"
           autoCorrect={false}
@@ -164,6 +164,12 @@ const CreateStep2 = ({
             ).toLocaleString('en')}.`,
           }}
         />
+        {isIsraelLocale && (
+          <Text style={styles.info2}>
+            All contributions are made in U.S. dollars. The actual contribution
+            amount in ILS may be different than the amounts estimated above.
+          </Text>
+        )}
         <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
           <View style={styles.zeroContributionView}>
             <View style={styles.checkMark}>
@@ -177,12 +183,6 @@ const CreateStep2 = ({
             </Text>
           </View>
         </Pressable>
-        {isIsraelLocale && (
-          <Text style={styles.info2}>
-            All contributions are made in U.S. dollars. The actual contribution
-            amount in ILS may be different than the amounts estimated above.
-          </Text>
-        )}
 
         {/* <TextInputFieldWithIcon
             iconName="dollar"
