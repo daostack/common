@@ -68,9 +68,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     isMember,
   }) => {
     const [viewerPermission, setViewerPermission] = React.useState('');
-    const isModerator =
-      viewerPermission === PERMISSIONS.FOUNDER ||
-      viewerPermission === PERMISSIONS.MODERATOR;
+    const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
       list = rootStore.proposalStore.getCommonProposals(

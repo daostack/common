@@ -10,6 +10,7 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import Icon from '~/Assets/iconfont/Icon';
+import {isIsraelLocale} from '~/Util/locale';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -176,6 +177,12 @@ const CreateStep2 = ({
             </Text>
           </View>
         </Pressable>
+        {isIsraelLocale && (
+          <Text style={styles.info2}>
+            All contributions are made in U.S. dollars. The actual contribution
+            amount in ILS may be different than the amounts estimated above.
+          </Text>
+        )}
 
         {/* <TextInputFieldWithIcon
             iconName="dollar"

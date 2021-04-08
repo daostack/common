@@ -41,7 +41,9 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
 
     if (objectData) {
       const common = rootStore.commonStore.getCommonById(objectData.commonId);
-      const messageOwner = rootStore.userStore.getUserById(messageReportedData.ownerId);
+      const messageOwner = rootStore.userStore.getUserById(
+        messageReportedData.ownerId,
+      );
       notificationData = {
         missingData: false,
         description: 'A comment was reported',
@@ -53,7 +55,7 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
   }
 
   //Skip in case of missiing data
-  if (notificationData.missingData) {
+  if (notificationData.missingData || messageReportedData?.isModerationHidden) {
     return null;
   }
 

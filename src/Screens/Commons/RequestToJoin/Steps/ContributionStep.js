@@ -13,6 +13,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {isIsraelLocale} from '~/Util/locale';
 
 const ContributionStep = ({
   navigation,
@@ -184,7 +185,6 @@ const ContributionStep = ({
             subtitle={minContributionMessage}
           />
         )}
-
         <View
           style={{
             backgroundColor: colors.grey4,
@@ -192,7 +192,6 @@ const ContributionStep = ({
             marginBottom: 40,
           }}
         />
-
         <AmountField
           isMonthly={isMonthly}
           navigation={navigation}
@@ -203,7 +202,14 @@ const ContributionStep = ({
           minFeeToJoin={metadata.minFeeToJoin / 100}
           zeroContribution={metadata.zeroContribution}
         />
-        {isMonthly && (
+
+        {isIsraelLocale && (
+          <Text style={styles.monthlyBottomMessage}>
+            All contributions are made in U.S. dollars. The actual contribution
+            amount in ILS may be different than the amounts estimated above.
+          </Text>
+        )}
+        {!isIsraelLocale && isMonthly && (
           <Text style={styles.monthlyBottomMessage}>
             You can cancel the recurring payment at any time
           </Text>

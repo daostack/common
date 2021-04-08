@@ -14,6 +14,7 @@ import {
   PROPOSAL_STAGES_HISTORY,
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
+import {showBackendError} from '~/Util';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -86,14 +87,22 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      fetchProposalById(id).then((proposal: IFirebaseDoc<IProposalEntity>) => {
-        runInAction(() => {
-          this.setData(
-            id,
-            this.getEntityModel(this.firestoreDocToEntity(proposal)),
-          );
+      fetchProposalById(id)
+        .then((proposal: IFirebaseDoc<IProposalEntity>) => {
+          if (proposal.exists) {
+            runInAction(() => {
+              this.setData(
+                id,
+                this.getEntityModel(this.firestoreDocToEntity(proposal)),
+              );
+            });
+          }
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
         });
-      });
       return undefined;
     }
   };
@@ -101,36 +110,52 @@ export default class ProposalStore extends BaseStore<
   getUserProposals = (
     userId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> =>
-    this.getDataArray
-      .filter((proposal: Proposal) => {
-        const isProposer = proposal?.proposerId === userId;
-        if (isProposer) {
-          return this._applyFilter(proposal, proposalFilter);
-        }
-        return false;
-      })
-      .sort(
-        (proposal: Proposal, prevProposal: Proposal) =>
-          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
-      );
+  ): Array<Proposal> => {
+    try {
+      return this.getDataArray
+        .filter((proposal: Proposal) => {
+          const isProposer = proposal?.proposerId === userId;
+          if (isProposer) {
+            return this._applyFilter(proposal, proposalFilter);
+          }
+          return false;
+        })
+        .sort(
+          (proposal: Proposal, prevProposal: Proposal) =>
+            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+        );
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+      });
+      return [];
+    }
+  };
 
   getCommonProposals = (
     commonId: string,
     proposalFilter: IProposalFilter,
-  ): Array<Proposal> =>
-    this.getDataArray
-      .filter((proposal: Proposal) => {
-        const isSameCommon = proposal?.commonId === commonId;
-        if (isSameCommon) {
-          return this._applyFilter(proposal, proposalFilter);
-        }
-        return false;
-      })
-      .sort(
-        (proposal: Proposal, prevProposal: Proposal) =>
-          prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
-      );
+  ): Array<Proposal> => {
+    try {
+      return this.getDataArray
+        .filter((proposal: Proposal) => {
+          const isSameCommon = proposal?.commonId === commonId;
+          if (isSameCommon) {
+            return this._applyFilter(proposal, proposalFilter);
+          }
+          return false;
+        })
+        .sort(
+          (proposal: Proposal, prevProposal: Proposal) =>
+            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+        );
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+      });
+      return [];
+    }
+  };
 
   //Actions
   subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>

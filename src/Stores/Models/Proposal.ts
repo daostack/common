@@ -19,6 +19,7 @@ import ImageSize from 'react-native-image-size';
 import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
+import {FLAGS} from '~/Components/Moderation/constants';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
@@ -150,7 +151,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === 'hidden';
+    return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
   constructor(newProposalInfo: IProposalEntity) {

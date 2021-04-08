@@ -13,6 +13,7 @@ import Logger from '~/Services/Logger';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {Discussion} from '../Models/Discussion';
 import {Proposal} from '../Models/Proposal';
+import {showBackendError} from '~/Util';
 
 export default class NotificationStore extends BaseStore<
   Notification,
@@ -23,16 +24,30 @@ export default class NotificationStore extends BaseStore<
   }
 
   // Data consuming methods
-  getNotificationById = (id: string): Notification | undefined =>
-    this.getDataById(id);
+  getNotificationById = (id: string): Notification | undefined => {
+    try {
+      return this.getDataById(id);
+    } catch (error) {
+      showBackendError({
+        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+      });
+      return;
+    }
+  };
 
-  getLoggedUserNotifications = (): Array<Notification> | undefined =>
-    this.getDataArray
-      ?.filter(() => true)
-      .sort(
-        (notification: Notification, prevNotification: Notification) =>
-          prevNotification.createdAt?.seconds - notification.createdAt?.seconds,
-      );
+  getLoggedUserNotifications = (): Array<Notification> | undefined => {
+    try {
+      return this.getDataArray
+        ?.filter(() => true)
+        .sort(
+          (notification: Notification, prevNotification: Notification) =>
+            prevNotification.createdAt?.seconds -
+            notification.createdAt?.seconds,
+        );
+    } catch (error) {
+      return [];
+    }
+  };
 
   @computed
   get hasNewNotifications() {
