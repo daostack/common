@@ -84,7 +84,7 @@ const CreateStep2 = ({
     setZeroContribution(state);
   };
 
-  const push = async () => {
+  const push = () => {
     if (fundingFormStore.isFormValid()) {
       navigation.navigate('CreateStep3', {formStores});
     }
