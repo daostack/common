@@ -203,15 +203,16 @@ const ContributionStep = ({
           zeroContribution={metadata.zeroContribution}
         />
 
+        {isMonthly && (
+          <Text style={styles.monthlyBottomMessage}>
+            You can cancel the recurring payment at any time
+          </Text>
+        )}
+
         {isIsraelLocale && (
           <Text style={styles.monthlyBottomMessage}>
             All contributions are made in U.S. dollars. The actual contribution
             amount in ILS may be different than the amounts estimated above.
-          </Text>
-        )}
-        {!isIsraelLocale && isMonthly && (
-          <Text style={styles.monthlyBottomMessage}>
-            You can cancel the recurring payment at any time
           </Text>
         )}
       </View>
