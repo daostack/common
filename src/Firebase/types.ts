@@ -9,6 +9,7 @@ export interface IFirebaseSnapshot<DocsType> {
 
 export interface IFirebaseDoc<Entity> {
   id: string;
+  exists: boolean;
   data: () => Entity;
 }
 

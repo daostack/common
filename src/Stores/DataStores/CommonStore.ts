@@ -3,14 +3,17 @@ import BaseStore from './BaseStore';
 import {
   subscribeToAllCommons,
   updateCommon,
+  fetchCommonById,
 } from '~/Services/ListServices/CommonListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
+import {runInAction} from 'mobx';
+
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
@@ -65,8 +68,24 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   getCommonById = (id: string): Common | undefined => {
     try {
       return this.getDataById(id);
-    } catch (error) {
-      return;
+    } catch (err) {
+      fetchCommonById(id)
+        .then((common: IFirebaseDoc<ICommonEntity>) => {
+          if (common.exists) {
+            runInAction(() => {
+              this.setData(
+                id,
+                this.getEntityModel(this.firestoreDocToEntity(common)),
+              );
+            });
+          }
+        })
+        .catch(() => {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
+        });
+      return undefined;
     }
   };
 

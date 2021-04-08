@@ -27,12 +27,14 @@ export default class DiscussionStore extends BaseStore<
       // Temporary logic for fetching Discussion in case it's not in the store.
       fetchDiscussionId(id)
         .then((discussion: IFirebaseDoc<IDiscussionEntity>) => {
-          runInAction(() => {
-            this.setData(
-              id,
-              this.getEntityModel(this.firestoreDocToEntity(discussion)),
-            );
-          });
+          if (discussion.exists) {
+            runInAction(() => {
+              this.setData(
+                id,
+                this.getEntityModel(this.firestoreDocToEntity(discussion)),
+              );
+            });
+          }
         })
         .catch(() => {
           showBackendError({
