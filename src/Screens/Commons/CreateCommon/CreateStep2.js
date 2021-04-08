@@ -58,7 +58,7 @@ const CreateStep2 = ({
   const [show, setShow] = useState(false);
 
   const minimumFieldRules = (currContribIndex) =>
-    `required|integer|min:${MIN_CONTRIBUTION[currContribIndex]}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+    `required|numeric|min:${MIN_CONTRIBUTION[currContribIndex]}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     fundingFormStore.registerFormField(
