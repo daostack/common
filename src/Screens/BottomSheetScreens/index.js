@@ -4,7 +4,6 @@ import {default as LoginSheetScreen} from './LoginSheetScreen';
 import {default as SortProposals} from './SortProposals';
 import {default as UnsavedChanges} from './UnsavedChanges';
 import {default as TransactionError} from './TransactionError';
-import {default as SafetyPeriodAbout} from './SafetyPeriodAbout';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
@@ -49,10 +48,6 @@ export const BOTTOM_SHEET_TEMPLATES = {
   UNSAVED_CHANGES: {
     topSnap: 500,
     content: UnsavedChanges,
-  },
-  SAFETY_PERIOD_ABOUT: {
-    topSnap: 550,
-    content: SafetyPeriodAbout,
   },
   PAYMENT_STATUS: {
     topSnap: 500,

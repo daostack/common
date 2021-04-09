@@ -200,6 +200,7 @@ const ContributionStep = ({
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
           minFeeToJoin={metadata.minFeeToJoin / 100}
+          zeroContribution={metadata.zeroContribution}
         />
 
         {isMonthly && (
