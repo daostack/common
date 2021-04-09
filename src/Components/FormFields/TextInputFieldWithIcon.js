@@ -114,9 +114,18 @@ class TextInputFieldWithIcon extends React.Component {
   onChangeText = (currText) => {
     const unformattedText = unFormatNumber(currText);
     const dotIndex = unformattedText.indexOf('.');
+
+    // Dot contains regExp
+    const regex = new RegExp(/\./g);
+    let match;
+    let matches = [];
+    while ((match = regex.exec(unformattedText)) !== null) {
+      matches.push(match[0]);
+    }
+
     // Checking for multiple dots. Checking for no more than 2 numbers after the dot
     if (
-      [...unformattedText.matchAll(/\./g)].length < 2 &&
+      matches.length < 2 &&
       ((dotIndex > 0 && unformattedText.length <= dotIndex + 3) || dotIndex < 0)
     ) {
       if (this.props.validation) {
