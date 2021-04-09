@@ -14,14 +14,12 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   viewerPermission,
 }) => {
   const reporterUserName =
-    viewerPermission === PERMISSIONS.FOUNDER ||
     viewerPermission === PERMISSIONS.MODERATOR
       ? ` by ${reporterName(reporter, currentUID)}`
       : '';
 
   if (
     moderation?.flag === MESSAGE_STATUSES.REPORTED &&
-    viewerPermission !== PERMISSIONS.FOUNDER &&
     viewerPermission !== PERMISSIONS.MODERATOR
   ) {
     return <></>;

@@ -34,6 +34,10 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
   if (proposalNotificationData) {
     const {proposal, user, common} = proposalNotificationData;
 
+    if (proposal?.isModerationHidden) {
+      return null;
+    }
+
     // Temporarry logic for fixing undefined value for amount inside Notification Item of type `New Proposal`.
     // We have that logic in Proposal.ts in a computed field called 'fundingFormatted' , but for some reasons
     // all the computed fields in Proposal model are undefined once we read it from mobx-persist.

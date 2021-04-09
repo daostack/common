@@ -21,9 +21,7 @@ const DiscussionList = ({
     commonId,
     auth()?.currentUser?.uid,
   );
-  const isModerator =
-    viewerPermission === PERMISSIONS.FOUNDER ||
-    viewerPermission === PERMISSIONS.MODERATOR;
+  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
     const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
