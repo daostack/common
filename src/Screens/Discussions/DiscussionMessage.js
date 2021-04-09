@@ -163,7 +163,7 @@ const DiscussionMessage = ({
                     }}>
                     {ownerInfo?.displayName}
                   </Text>
-                  {!isHidden && !isFlagged && (
+                  {!isHidden && (
                     <Text style={styles.permission}>{permission}</Text>
                   )}
                   {flagView}

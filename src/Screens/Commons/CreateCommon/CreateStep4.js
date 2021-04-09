@@ -69,7 +69,7 @@ const CreateStep4 = ({
     navigation.dispatch(navigate);
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = () => {
     const {name} = generalInfoFormStore.getChangedFormFieldsJson();
     const currCommonId = newCommonAddress.toLowerCase();
     const options = {
@@ -83,7 +83,6 @@ const CreateStep4 = ({
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
-      const fundingGoalDeadline = formDataInit[CreateCommonForm.DEADLINE];
 
       const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
 
@@ -94,7 +93,6 @@ const CreateStep4 = ({
         contributionAmount,
         contributionType: formDataInit.contribution,
         fundingGoal: parseInt(formDataInit.funding, 10) * 100,
-        fundingGoalDeadline,
       };
       logger.log('calling createCommon(...)');
 
@@ -103,11 +101,11 @@ const CreateStep4 = ({
         image: data.image,
         rules: data.rules,
         links: escapeUrl(data.links),
-        byline: data.byline,
-        description: data.description,
+        byline: data.byline || '',
+        description: data.description || '',
         contributionType: data.contributionType,
         contributionAmount: data.contributionAmount,
-        fundingGoalDeadline: data.fundingGoalDeadline,
+        zeroContribution: data.zeroContribution,
       };
 
       navigation.navigate({
@@ -221,10 +219,8 @@ const CreateStep4 = ({
             <CreateStep4Indicators
               title="Safety period"
               currencySymbol={false}
-              value={moment.unix(form[CreateCommonForm.DEADLINE]).fromNow(true)}
-              date={moment
-                .unix(form[CreateCommonForm.DEADLINE])
-                .format('MMM DD, YYYY')}
+              value={moment().fromNow(true)}
+              date={moment().format('MMM DD, YYYY')}
             />
           </View>
         </View>

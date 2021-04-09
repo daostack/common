@@ -200,11 +200,12 @@ const ContributionStep = ({
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
           minFeeToJoin={metadata.minFeeToJoin / 100}
+          zeroContribution={metadata.zeroContribution}
         />
 
         {isMonthly && (
           <Text style={styles.monthlyBottomMessage}>
-            You can cancel the recurring payment at any time
+            You can cancel the recurring payment at any time.
           </Text>
         )}
 
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
     ...text.regularText,
     textAlign: 'center',
     color: colors.slate,
+    marginBottom: 10,
   },
 });
 

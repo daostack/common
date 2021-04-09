@@ -1,25 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Pressable} from 'react-native';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import {colors, font, sizeL, sizeS} from '~/Theme';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
-import DatePicker from 'react-native-date-picker';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import Modal from 'react-native-modal';
-import moment from 'moment';
 import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import Icon from '~/Assets/iconfont/Icon';
 import {isIsraelLocale} from '~/Util/locale';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
-const MIN_CONTRIBUTION = ['0', '5'];
-const SAFETY_PERIOD_TAB_VALUES = [
-  moment().add('7', 'days').unix(),
-  moment().add('1', 'months').unix(),
-];
+const MIN_CONTRIBUTION = '5';
 
 const CreateStep2 = ({
   navigation,
@@ -28,19 +22,13 @@ const CreateStep2 = ({
   },
 }) => {
   const fundingFormStore = formStores.fundingFormStore;
+
   const getContributionValue = () =>
     fundingFormStore.getFormField(CreateCommonForm.CONTRIBUTION)?.value;
-  const getDeadlineValue = () =>
-    fundingFormStore.getFormField(CreateCommonForm.DEADLINE)?.value;
 
   const initialContributionIndex = getContributionValue()
     ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue())
     : 0;
-  const initialSegmentedIndex = getDeadlineValue()
-    ? getDeadlineValue().index
-    : 0;
-
-  const [segmentedIndex, setSegmentedIndex] = useState(initialSegmentedIndex);
 
   /**
    * contributionIndex === 0 => One-Time
@@ -50,28 +38,25 @@ const CreateStep2 = ({
     initialContributionIndex,
   );
 
-  const [pickDate, setPickDate] = useState(
-    initialSegmentedIndex === 2 && getDeadlineValue()?.value
-      ? moment.unix(getDeadlineValue()?.value).toDate()
-      : null,
-  );
-  const [show, setShow] = useState(false);
+  const [zeroContribution, setZeroContribution] = useState(false);
 
   const minimumFieldRules = (currContribIndex) =>
-    `required|numeric|min:${MIN_CONTRIBUTION[currContribIndex]}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+    `required|integer|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     fundingFormStore.registerFormField(
-      CreateCommonForm.DEADLINE,
+      CreateCommonForm.ZERO_CONTRIBUTION,
       'required',
-      getDeadlineValue(),
+      {
+        value: false,
+      },
     );
+
     fundingFormStore.registerFormField(
       CreateCommonForm.CONTRIBUTION,
       'required',
       getContributionValue(),
     );
-    onTabChange(initialSegmentedIndex, true); // pre-select 1 week at first render
     onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
 
@@ -88,40 +73,11 @@ const CreateStep2 = ({
     );
   };
 
-  const onDatePickerChange = (date) => {
-    const momentObj = moment(date || {});
-    const currDate = momentObj.unix();
-    fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
-      value: currDate,
-      index: 2,
+  const onCheckboxChecked = (state) => {
+    fundingFormStore.fieldChanged(CreateCommonForm.ZERO_CONTRIBUTION, {
+      value: state,
     });
-    setPickDate(momentObj.toDate());
-  };
-
-  const onTabChange = (index, isInitialCall) => {
-    if (index === 2) {
-      !isInitialCall && setShow(true);
-    } else {
-      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
-        value: SAFETY_PERIOD_TAB_VALUES[index],
-        index,
-      });
-      setShow(false);
-    }
-    setSegmentedIndex(index);
-  };
-
-  const onDone = () => {
-    if (pickDate) {
-      setShow(false);
-    } else {
-      fundingFormStore.fieldChanged(CreateCommonForm.DEADLINE, {
-        value: moment({}).unix(),
-        index: 2,
-      });
-      setPickDate(moment().toDate());
-      setShow(false);
-    }
+    setZeroContribution(state);
   };
 
   const push = () => {
@@ -129,35 +85,6 @@ const CreateStep2 = ({
       navigation.navigate('CreateStep3', {formStores});
     }
   };
-
-  const DatePickerModal = (
-    <Modal
-      visible={show}
-      transparent={true}
-      avoidKeyboard={true}
-      backdropOpacity={0.3}
-      onBackdropPress={() => setShow(false)}
-      style={styles.view}>
-      <View style={{backgroundColor: 'white', alignItems: 'center'}}>
-        <View style={styles.modalView}>
-          <TouchableOpacity onPress={onDone}>
-            <Text style={styles.done}>Done</Text>
-          </TouchableOpacity>
-        </View>
-        <DatePicker
-          testID="dateTimePicker"
-          timeZoneOffsetInMinutes={0}
-          date={pickDate ? pickDate : new Date()}
-          minimumDate={new Date()}
-          maximumDate={moment().add('100', 'days').toDate()}
-          is24Hour={true}
-          mode={'date'}
-          onDateChange={onDatePickerChange}
-          androidVariant="iosClone"
-        />
-      </View>
-    </Modal>
-  );
 
   return (
     <StepDotLayout
@@ -214,10 +141,10 @@ const CreateStep2 = ({
               <Text style={styles.boldText}>
                 {CONTRIBUTION_TAB_VALUES[contributionIndex]}
               </Text>{' '}
-              contribution (min. ${MIN_CONTRIBUTION[contributionIndex]})
+              contribution (min. ${MIN_CONTRIBUTION})
             </React.Fragment>
           }
-          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common."
+          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
           infoLabel="Required"
           autoCapitalize="none"
           autoCorrect={false}
@@ -227,9 +154,7 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules(contributionIndex),
-            customErrorMessage: `The amount must be at least $${
-              MIN_CONTRIBUTION[contributionIndex]
-            } and at most $${parseFloat(
+            customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION} and at most $${parseFloat(
               MAX_CONTRIBUTION[contributionIndex],
             ).toLocaleString('en')}.`,
           }}
@@ -240,35 +165,20 @@ const CreateStep2 = ({
             amount in ILS may be different than the amounts estimated above.
           </Text>
         )}
-        <View style={{marginTop: 24}}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.label}>Funds safety period</Text>
-            <Text style={[styles.infoLabel, {alignSelf: 'flex-end'}]}>
-              Required
+        <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
+          <View style={styles.zeroContributionView}>
+            <View style={styles.checkMark}>
+              <Icon
+                name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
+                size={24}
+              />
+            </View>
+            <Text style={styles.agreeText}>
+              Let users join the Common without a personal contribution
             </Text>
           </View>
-          <Text style={styles.info2}>
-            Set a period in which members will not be able to create proposals
-            and allocate the funds. This will allow more members to join and
-            participate in the decision-making process.
-          </Text>
+        </Pressable>
 
-          <SegmentedControlTab
-            tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
-            tabStyle={{borderColor: colors.grey4}}
-            activeTabStyle={{backgroundColor: colors.mainBlue}}
-            values={[
-              '1 week',
-              '1 month',
-              pickDate ? moment(pickDate).format('MMM DD, YYYY') : 'Custom',
-            ]}
-            tabTextStyle={styles.tabTextStyle}
-            borderRadius={8}
-            selectedIndex={segmentedIndex}
-            onTabPress={onTabChange}
-          />
-          {DatePickerModal}
-        </View>
         {/* <TextInputFieldWithIcon
             iconName="dollar"
             iconSize={12}
@@ -366,6 +276,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     position: 'relative',
     width: '100%',
+  },
+  zeroContributionView: {
+    flexDirection: 'row',
+    marginTop: 24,
+  },
+  checkMark: {
+    height: 24,
+    width: 24,
+    marginRight: 8,
+  },
+  agreeText: {
+    color: colors.slate,
+    ...font.primary.primary,
+    fontSize: 16,
+    lineHeight: 23,
+    flex: 1,
   },
 });
 
