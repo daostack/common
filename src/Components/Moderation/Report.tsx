@@ -117,6 +117,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
             label={hasPermission ? 'Moderator note' : 'Add note:'}
             placeholderText="This note is public and will be shown to all members."
             multiline={true}
+            infoLabel="Required"
             value={
               formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
                 ?.value
@@ -124,7 +125,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
             validation={{
               name: 'moderatorNote',
               formStore: formStore,
-              validateRule: 'string',
+              validateRule: 'string|required',
               displayName: 'moderator note',
             }}
           />
