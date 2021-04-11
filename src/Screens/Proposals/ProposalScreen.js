@@ -776,7 +776,8 @@ const ProposalScreen = ({
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
                         closingAt={
-                          proposalInfo?.createdAt.seconds +
+                          (proposalInfo?.moderation?.updatedAt.seconds ||
+                            proposalInfo?.createdAt.seconds) +
                           proposalInfo?.countdownPeriod
                         }
                         onPress={() => openDebtInsufficientModal()}
