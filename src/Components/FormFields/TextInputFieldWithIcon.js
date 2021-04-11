@@ -113,19 +113,35 @@ class TextInputFieldWithIcon extends React.Component {
 
   onChangeText = (currText) => {
     const unformattedText = unFormatNumber(currText);
-    if (this.props.validation) {
-      const {formStore, name, multiName} = this.props.validation;
-      formStore.fieldChanged(name, unformattedText, false, multiName);
+    const dotIndex = unformattedText.indexOf('.');
+
+    // Dot contains regExp
+    const regex = new RegExp(/\./g);
+    let match;
+    let matches = [];
+    while ((match = regex.exec(unformattedText)) !== null) {
+      matches.push(match[0]);
     }
-    this.props.onChangeText && this.props.onChangeText(unformattedText);
-    // only update size when text length is increasing
+
+    // Checking for multiple dots. Checking for no more than 2 numbers after the dot
     if (
-      this.state.prevTextLength < unformattedText.length &&
-      unformattedText.length > 3
+      matches.length < 2 &&
+      ((dotIndex > 0 && unformattedText.length <= dotIndex + 3) || dotIndex < 0)
     ) {
-      this.updateSize(10);
-    } else {
-      this.setState({prevTextLength: unformattedText.length});
+      if (this.props.validation) {
+        const {formStore, name, multiName} = this.props.validation;
+        formStore.fieldChanged(name, unformattedText, false, multiName);
+      }
+      this.props.onChangeText && this.props.onChangeText(unformattedText);
+      // only update size when text length is increasing
+      if (
+        this.state.prevTextLength < unformattedText.length &&
+        unformattedText.length > 3
+      ) {
+        this.updateSize(10);
+      } else {
+        this.setState({prevTextLength: unformattedText.length});
+      }
     }
   };
 
