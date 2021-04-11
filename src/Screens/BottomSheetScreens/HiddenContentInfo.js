@@ -2,11 +2,8 @@ import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import React from 'react';
 import {text, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
-import {string, array, object, bool} from 'prop-types';
-
-const Bold = ({boldText, style = {}}) => (
-  <Text style={{...styles.bold, ...style}}>{boldText}</Text>
-);
+import {Bold} from '~/Components/Text/Bold';
+import {string, array, bool} from 'prop-types';
 
 const getReasons = (reasonArr) => {
   if (reasonArr.length) {
@@ -70,11 +67,6 @@ HiddenContentInfo.propTypes = {
   isModerator: bool,
 };
 
-Bold.propTypes = {
-  boldText: string,
-  style: object,
-};
-
 const styles = StyleSheet.create({
   root: {
     backgroundColor: 'white',
@@ -101,9 +93,6 @@ const styles = StyleSheet.create({
     ...text.regularText,
     fontSize: 15,
     textAlign: 'center',
-  },
-  bold: {
-    fontWeight: 'bold',
   },
   divider: {
     width: '100%',
