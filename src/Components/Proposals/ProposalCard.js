@@ -126,7 +126,8 @@ const ProposalCard = ({
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
+            (proposalInfo?.moderation?.updatedAt.seconds ||
+              proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}
