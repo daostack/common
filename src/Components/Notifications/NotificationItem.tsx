@@ -128,7 +128,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           <Text style={styles.dateStyle}>
             {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
             {formatNotificationDate(
-              item.createdAt.toDate && item.createdAt.toDate(),
+              item.createdAt?.toDate && item.createdAt?.toDate(),
             )}
             {notificationData.common && (
               <Text>{`, ${notificationData.common.name}`}</Text>
