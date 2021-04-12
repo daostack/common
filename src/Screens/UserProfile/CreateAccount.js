@@ -11,14 +11,16 @@ import {
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
 import {layout, text, colors} from '~/Theme';
-import {observer} from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
+import {authStorePropTypes} from '~/Types/propTypes';
 import {bool, func} from 'prop-types';
 
-const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
+const CreateAccount = ({onSignedIn, hidePlaceholder, authStore}) => {
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
+      authStore.setSignedInUser(userInfo.user);
       onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
     }
   };
@@ -63,6 +65,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
 CreateAccount.propTypes = {
   onSignedIn: func,
   hidePlaceholder: bool,
+  authStore: authStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -102,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(CreateAccount);
+export default inject('authStore')(observer(CreateAccount));
