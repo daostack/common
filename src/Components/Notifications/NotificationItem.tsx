@@ -103,7 +103,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             <View style={styles.notReadDot} />
           )}
         </View>
-        <View>
+        <View style={styles.notificationContainer}>
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
             <Text>
@@ -148,6 +148,9 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+  notificationContainer: {
+    flex: 1,
+  },
   notReadDot: {
     width: 16,
     height: 16,
@@ -188,7 +191,6 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginTop: 5,
-    maxWidth: '90%',
   },
   nameStyle: {
     ...font.primary.bold,
