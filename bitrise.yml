@@ -1167,3 +1167,4 @@ app:
   - opts:
       is_expand: false
     APPCENTER_APP_ID_IOS: DAOstack/common-ios
+
