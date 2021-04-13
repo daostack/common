@@ -132,7 +132,7 @@ const CreateStep1 = ({
           validation={{
             name: CreateCommonForm.BYLINE,
             formStore: generalInfoFormStore,
-            validateRule: 'string|min:10',
+            validateRule: 'string',
             displayName: 'tagline',
           }}
         />
