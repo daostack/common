@@ -20,6 +20,13 @@ import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import _ from 'lodash';
+
+const emptyMetadata = {
+  [EditCommonConstants.BYLINE]: '',
+  [EditCommonConstants.DESCRIPTION]: '',
+};
+
 const metadataKeys = [
   EditCommonConstants.BYLINE,
   EditCommonConstants.DESCRIPTION,
@@ -111,7 +118,10 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   // get the actual changes; not just fields that were changed and then changed back to prev value
   // should be done with mobx reaction
   const getChanges = () => {
-    const changedFields = editCommonFormStore.getChangedFormFieldsJson();
+    const changedFields = _.isEmpty(changedFields)
+      ? {...emptyMetadata, ...editCommonFormStore.getFormFieldsJson()}
+      : editCommonFormStore.getChangedFormFieldsJson();
+
     return Object.keys(changedFields)
       .filter((key) => currCommon[key] !== changedFields[key])
       .reduce((obj, key) => {
