@@ -18,7 +18,7 @@ public class RNBridgePackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@Nonnull ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new WalletModule(reactContext));
+        // modules.add(new WalletModule(reactContext));
         return modules;
     }
 

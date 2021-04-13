@@ -53,7 +53,7 @@ end
 # -------------------------------------------------- #
 def native
   # Native Dependencies
-  pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
+  # pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
 #  pod 'IQKeyboardManagerSwift'
 end
