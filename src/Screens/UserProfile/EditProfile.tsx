@@ -45,7 +45,7 @@ type Props = AppRootStore &
   WithNavigation & {
     route: {
       params: {
-        isFirstOpening: boolean;
+        isCompleteAccount: boolean;
         isSignedWithApple: boolean;
       };
     };
@@ -56,16 +56,22 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
 
-  navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={async () => {
-          onFormClose();
-        }}>
-        <Icon name="left-arrow" size={32} />
-      </TouchableOpacity>
-    ),
-  });
+  if (route.params.isCompleteAccount) {
+    navigation.setOptions({
+      headerLeft: false,
+    });
+  } else {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={async () => {
+            onFormClose();
+          }}>
+          <Icon name="left-arrow" size={32} />
+        </TouchableOpacity>
+      ),
+    });
+  }
 
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
@@ -101,13 +107,13 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
 
   const onFormClose = () => {
     const values = (formikRef?.current ?? {values: {}})?.values;
-    const {isFirstOpening, isSignedWithApple} = route.params;
+    const {isCompleteAccount, isSignedWithApple} = route.params;
 
     try {
       validationSchema.validateSync(values);
       if (
         isSignedWithApple &&
-        isFirstOpening &&
+        isCompleteAccount &&
         (!authStore.userInfo?.firstName || !authStore.userInfo?.lastName)
       ) {
         return;
@@ -139,6 +145,10 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const closeBottomSheet = () => {
     bottomSheetStore.hideBottomSheet();
   };
+
+  const saveBtnStyle = route.params.isCompleteAccount
+    ? styles.bigSaveBtn
+    : layout.marginLeftS;
 
   return (
     <Formik
@@ -179,7 +189,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                       flexGrow: 1,
                       marginTop: 0,
                     }}>
-                    {route?.params?.isFirstOpening && (
+                    {route?.params?.isCompleteAccount && (
                       <View style={{marginBottom: 32}}>
                         <Text style={styles.title}>Complete your account</Text>
                         <Text style={styles.subtitleForm}>
@@ -230,7 +240,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                       onChangeText={handleChange('lastName')}
                     />
 
-                    {route.params.isFirstOpening && (
+                    {route.params.isCompleteAccount && (
                       <CountrySelectField
                         label="Country"
                         infoLabel="Required"
@@ -258,24 +268,28 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
               )}
             </ScrollView>
 
-            <View style={styles.containerRow}>
-              <TouchableOpacity
-                style={{
-                  ...styles.btns,
-                  ...layout.btnOutline,
-                  ...layout.marginRightS,
-                }}
-                onPress={onFormClose}>
-                <Text style={text.buttonblue}>
-                  {route.params.isFirstOpening ? 'Skip' : 'Cancel'}
-                </Text>
-              </TouchableOpacity>
-
+            <View
+              style={
+                route.params.isCompleteAccount
+                  ? styles.oneBtnContainer
+                  : styles.multiBtnContainer
+              }>
+              {!route.params.isCompleteAccount && (
+                <TouchableOpacity
+                  style={{
+                    ...styles.btns,
+                    ...layout.btnOutline,
+                    ...layout.marginRightS,
+                  }}
+                  onPress={onFormClose}>
+                  <Text style={text.buttonblue}>Cancel</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={{
                   ...styles.btns,
                   ...layout.btnPrimary,
-                  ...layout.marginLeftS,
+                  ...saveBtnStyle,
                 }}
                 onPress={handleSubmit}>
                 <Text style={text.buttoncenterwhite}>Save</Text>
@@ -292,7 +306,14 @@ const styles = StyleSheet.create({
   btns: {
     alignSelf: 'stretch',
   },
-  containerRow: {
+  bigSaveBtn: {
+    width: '100%',
+  },
+  oneBtnContainer: {
+    padding: 20,
+    backgroundColor: colors.white,
+  },
+  multiBtnContainer: {
     ...layout.content,
     ...layout.flexRow,
     justifyContent: 'space-between',
