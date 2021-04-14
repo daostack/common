@@ -20,12 +20,12 @@ import logger from '~/Services/Logger';
 import {number, string, shape, func, InferProps} from 'prop-types';
 
 const props = {
-  width: number,
+  width: number.isRequired,
   reviewFormStore: shape({
     registerFormField: func.isRequired,
     fieldChanged: func.isRequired,
     getFormField: func.isRequired,
-  }),
+  }).isRequired,
   commonName: string,
   commonByLine: string,
   currImage: string,
@@ -84,14 +84,14 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
           Toast.loading('Uploading...');
           StorageService.getInstance()
             .uploadImage(response.uri)
-            .then((url) => {
+            .then((url: string) => {
               Toast.hide();
               Toast.success('Done');
               console.log('url -> ', url);
               reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               onImageChanged && onImageChanged();
             })
-            .catch((error) => Toast.error(error));
+            .catch((error: Error) => Toast.error(error));
         }
       });
     };
@@ -149,9 +149,11 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
             onPress={() => changeIndex(-1)}>
             <Icon name="left-arrow" color="white" size={35} />
           </TouchableOpacity>
-          <View width={width - 100}>
+          <View style={[styles.namesContainer, {width: width - 100}]}>
             <Text style={styles.titleName}>{commonName}</Text>
-            <Text style={styles.byline}>{commonByLine}</Text>
+            {!!commonByLine && (
+              <Text style={styles.byline}>{commonByLine}</Text>
+            )}
           </View>
           <TouchableOpacity
             style={{
@@ -215,6 +217,9 @@ const styles = StyleSheet.create({
     right: 15,
     padding: 12,
     borderRadius: 14,
+  },
+  namesContainer: {
+    justifyContent: 'center',
   },
 });
 
