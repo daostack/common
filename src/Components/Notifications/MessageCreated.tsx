@@ -52,7 +52,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
         notificationData = {
           ...notificationData,
           header: ' on',
-          headerBold: ` "${objectData.title || objectData.description.title}"`,
+          headerBold: `${objectData.title || objectData.description.title}`,
           common,
         };
       }
