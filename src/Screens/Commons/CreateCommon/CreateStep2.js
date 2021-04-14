@@ -114,7 +114,7 @@ const CreateStep2 = ({
             marginBottom: 40,
           }}
         />
-        <Text style={styles.label}>{'Contribution'}</Text>
+        <Text style={styles.label}>{'Contribution type'}</Text>
         <SegmentedControlTab
           tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
           tabStyle={{borderColor: colors.grey4}}
@@ -144,7 +144,6 @@ const CreateStep2 = ({
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
-          infoLabel="Required"
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
