@@ -87,7 +87,6 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
             .then((url: string) => {
               Toast.hide();
               Toast.success('Done');
-              console.log('url -> ', url);
               reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
               onImageChanged && onImageChanged();
             })
