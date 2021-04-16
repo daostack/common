@@ -113,7 +113,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
                 </Text>
                 {notificationData.headerBold && (
                   <>
-                    <Text style={styles.whereStyle}>{` "`}</Text>
+                    <Text style={styles.whereStyle}>{' "'}</Text>
                     <Text style={styles.whereStyle}>
                       {notificationData.headerBold}
                     </Text>
@@ -121,7 +121,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
                 )}
               </Text>
               {notificationData.headerBold && (
-                <Text style={styles.whereStyle}>{`"`}</Text>
+                <Text style={styles.whereStyle}>{'"'}</Text>
               )}
             </View>
           </View>
