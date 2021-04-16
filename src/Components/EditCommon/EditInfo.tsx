@@ -18,7 +18,7 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
         editCommonFormStore.getFormField(EditCommonConstants.NAME)?.value ||
         common.name,
       label: 'Common name',
-      maxLength: 24,
+      maxLength: 49,
       validation: {
         name: EditCommonConstants.NAME,
         formStore: editCommonFormStore,
@@ -33,7 +33,7 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
       label: 'Tagline',
       numberOfLines: 3,
       multiline: true,
-      maxLength: 40,
+      maxLength: 89,
       validation: {
         name: EditCommonConstants.BYLINE,
         formStore: editCommonFormStore,
