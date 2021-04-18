@@ -24,6 +24,7 @@ import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
+import {Bold} from '~/Components/Text/Bold';
 
 import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -286,10 +287,25 @@ const CreateStep4 = ({
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
           ))}
+        {form.zeroContribution && (
+          <>
+            <View style={styles.sectionTitle}>
+              <Text style={styles.textTitle}>Minimum contribution</Text>
+            </View>
+            <Text style={styles.textContent}>
+              Members will be able to join the Common without a personal
+              contribution
+            </Text>
+          </>
+        )}
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Don't worry, you will be able to make changes to the Common info
-            after it is published.
+            To publish the Common, add a personal contribution.
+            <Bold
+              boldText=" Don't worry, you will be able to
+            make changes "
+            />
+            to the Common info after it is published.
           </Text>
         </View>
       </View>
@@ -402,9 +418,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: colors.lighterBlue,
     marginTop: sizeL,
-    height: 75,
-    width: '100%',
     justifyContent: 'center',
+    paddingHorizontal: 24,
   },
 });
 
