@@ -10,6 +10,7 @@ import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import Icon from '~/Assets/iconfont/Icon';
 import {isIsraelLocale} from '~/Util/locale';
+import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -137,10 +138,8 @@ const CreateStep2 = ({
           label={
             <React.Fragment>
               Minimum{' '}
-              <Text style={styles.boldText}>
-                {CONTRIBUTION_TAB_VALUES[contributionIndex]}
-              </Text>{' '}
-              contribution (min. ${MIN_CONTRIBUTION})
+              <Bold boldText={CONTRIBUTION_TAB_VALUES[contributionIndex]}/>
+              {' '}contribution
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
@@ -163,19 +162,21 @@ const CreateStep2 = ({
             amount in ILS may be different than the amounts estimated above.
           </Text>
         )}
-        <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
-          <View style={styles.zeroContributionView}>
-            <View style={styles.checkMark}>
-              <Icon
-                name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
-                size={24}
-              />
+        {contributionIndex === 0 && (
+          <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
+            <View style={styles.zeroContributionView}>
+              <View style={styles.checkMark}>
+                <Icon
+                  name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
+                  size={24}
+                />
+              </View>
+              <Text style={styles.agreeText}>
+                Let users join the Common without a personal contribution
+              </Text>
             </View>
-            <Text style={styles.agreeText}>
-              Let users join the Common without a personal contribution
-            </Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        )}
 
         {/* <TextInputFieldWithIcon
             iconName="dollar"
