@@ -1,0 +1,1 @@
+export const ABOUT_TRUNCATE_LENGTH = 492;
