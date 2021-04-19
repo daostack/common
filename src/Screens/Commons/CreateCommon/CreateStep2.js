@@ -50,7 +50,9 @@ const CreateStep2 = ({
     fundingFormStore.registerFormField(
       CreateCommonForm.ZERO_CONTRIBUTION,
       'required',
-      {value: false},
+      {
+        value: false,
+      },
     );
 
     fundingFormStore.registerFormField(
