@@ -63,7 +63,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     content: BackendErrorSheetScreen,
   },
   PAYMENT_ERROR: {
-    topSnap: 520,
+    topSnap: 530,
     content: PaymentErrorSheetScreen,
   },
   HIDDEN_CONTENT_INFO: {
