@@ -146,10 +146,9 @@ const ContributionStep = ({
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
-  const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
-    : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
+    ? `${contributeMessage} each month (${currCommon.minFeeToJoinFormatted}/mo min.)`
+    : `${contributeMessage} (${currCommon.minFeeToJoinFormatted} min.)`;
 
   return (
     <StepDotLayout
