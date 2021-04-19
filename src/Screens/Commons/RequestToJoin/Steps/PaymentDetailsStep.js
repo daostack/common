@@ -162,7 +162,6 @@ const PaymentDetailsStep = ({
         <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
         <TextInputField
           label="Credit card number"
-          autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'cc-number'}
           value={
             testCard
               ? '4007410000000006'
