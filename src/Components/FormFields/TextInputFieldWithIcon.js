@@ -194,6 +194,7 @@ class TextInputFieldWithIcon extends React.Component {
       subLabel,
       textContentType,
       maxLength,
+      disabledStyle,
       ...otherProps
     } = this.props;
 
@@ -269,7 +270,7 @@ class TextInputFieldWithIcon extends React.Component {
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
-          <Text style={styles.label}>{label}</Text>
+          <Text style={{...styles.label, ...disabledStyle}}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
         {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
@@ -288,7 +289,7 @@ class TextInputFieldWithIcon extends React.Component {
             maxLength={this.state.isDecimal ? maxLength + 3 : maxLength}
             multiline={multiline}
             textContentType={textContentType}
-            style={fieldStyle}
+            style={{...fieldStyle, ...disabledStyle}}
             placeholder={placeholderText}
             onChangeText={this.onChangeText}
             keyboardType={keyboardType}

@@ -41,7 +41,10 @@ const CreateStep2 = ({
 
   const [zeroContribution, setZeroContribution] = useState(false);
 
-  const minimumFieldRules = (currContribIndex) => `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+  const [disabledStyle, setDisabledStyle] = useState(colors.grey);
+
+  const minimumFieldRules = (currContribIndex) =>
+    `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     fundingFormStore.registerFormField(
@@ -59,6 +62,17 @@ const CreateStep2 = ({
     );
     onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
+
+  useEffect(() => {
+    if (zeroContribution) {
+      fundingFormStore.fieldChanged(CreateCommonForm.MINIMUM, {
+        value: 5,
+      });
+      setDisabledStyle(colors.grey3);
+    } else {
+      setDisabledStyle(colors.grey);
+    }
+  }, [zeroContribution]);
 
   const onContributionTabChange = (index, isInitialSelect = false) => {
     fundingFormStore.fieldChanged(
@@ -131,15 +145,17 @@ const CreateStep2 = ({
           value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
           iconName="dollar"
           iconSize={12}
+          editable={!zeroContribution}
           iconStyle={{paddingRight: 5}}
           iconEmptyColor={colors.grey3}
-          iconFillColor={colors.grey}
+          iconFillColor={disabledStyle}
           viewStyle={{alignSelf: 'stretch'}}
+          disabledStyle={{color: disabledStyle}}
           label={
             <React.Fragment>
               Minimum{' '}
-              <Bold boldText={CONTRIBUTION_TAB_VALUES[contributionIndex]}/>
-              {' '}contribution
+              <Bold boldText={CONTRIBUTION_TAB_VALUES[contributionIndex]} />{' '}
+              contribution
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
