@@ -126,7 +126,7 @@ export default class NotificationService {
                         data = {
                           ...data,
                           header: ' by',
-                          headerBold: ` "${user.firstName} ${user.lastName}"`,
+                          headerBold: `${user.firstName} ${user.lastName}`,
                         };
                       }
                       dataProperlyLoaded = true;
@@ -159,7 +159,7 @@ export default class NotificationService {
                           data = {
                             ...data,
                             header: ' on',
-                            headerBold: ` "${discussion.title}"`,
+                            headerBold: `${discussion.title}`,
                             commonName: common.name,
                             commonId: discussion.commonId,
                           };

@@ -39,7 +39,10 @@ const CreateStep2 = ({
     initialContributionIndex,
   );
 
-  const [zeroContribution, setZeroContribution] = useState(false);
+  const [zeroContribution, setZeroContribution] = useState(
+    fundingFormStore.getFormField(CreateCommonForm.ZERO_CONTRIBUTION)?.value
+      ?.value,
+  );
 
   const [disabledStyle, setDisabledStyle] = useState(colors.grey);
 

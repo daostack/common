@@ -38,7 +38,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
     if (objectData && user) {
       notificationData = {
         missingData: false,
-        descriptionBold: `${user.firstName} ${user.lastName}`,
+        descriptionBold: `${user.firstName} ${user.lastName}:`,
         description: ` ${message.text}`,
         ownerAvatar: user.photoURL,
         ...objectType,
@@ -52,7 +52,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
         notificationData = {
           ...notificationData,
           header: ' on',
-          headerBold: ` "${objectData.title || objectData.description.title}"`,
+          headerBold: `${objectData.title || objectData.description.title}`,
           common,
         };
       }
