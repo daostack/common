@@ -418,6 +418,7 @@ TextInputFieldWithIcon.propTypes = {
   viewStyle: object,
   maxLength: number,
   uiStore: uiStorePropTypes.isRequired,
+  disabledStyle: object,
 };
 
 const styles = StyleSheet.create({
