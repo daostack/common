@@ -19,7 +19,6 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {getErrorObject} from '~/Util';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {escapeUrl} from '~/Util';
@@ -165,6 +164,7 @@ const PaymentDetailsStep = ({
         <RequestStepHeaderTitle title="Payment Details" subtitle={subtitle} />
         <TextInputField
           label="Credit card number"
+          autofill={Platform.OS === 'ios' ? 'creditCardNumber' : 'cc-number'}
           value={
             testCard
               ? '4007410000000006'

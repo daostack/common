@@ -117,6 +117,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           label="Name on Card"
           value={testCard ? 'Thor Odinson' : getUserFullName()}
           autoCapitalize="words"
+          autofill={AUTOFILL[Platform.OS].name}
           validation={{
             name: BillingDetailsConstants.CardName,
             formStore: billingDetailsFormStore,
