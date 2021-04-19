@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   StyleProp,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
@@ -35,6 +35,14 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   commonInfo: {cover, logo, name, description},
   common,
 }) => {
+  const handleHeaderMenuOpen = useCallback(() => {
+    if (!onHeaderMenuOpen) {
+      return;
+    }
+
+    onHeaderMenuOpen();
+  }, [onHeaderMenuOpen]);
+
   const renderCoverInSafeArea = () => (
     <SafeAreaView>{renderCover()}</SafeAreaView>
   );
@@ -77,7 +85,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
             <Text style={styles.headerTitleWhite}>{name}</Text>
           </View>
           {navigation && (
-            <TouchableOpacity onPress={onHeaderMenuOpen || undefined}>
+            <TouchableOpacity onPress={handleHeaderMenuOpen}>
               <Icon
                 name="menu-horizontal"
                 size={30}
