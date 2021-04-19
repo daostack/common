@@ -30,10 +30,6 @@ const CreateStep2 = ({
     ? CONTRIBUTION_TAB_VALUES.indexOf(getContributionValue())
     : 0;
 
-  const zeroContributionValue =
-    fundingFormStore.getFormField(CreateCommonForm.ZERO_CONTRIBUTION)?.value
-      ?.value || false;
-
   /**
    * contributionIndex === 0 => One-Time
    * contributionIndex === 1 => Monthly
@@ -43,7 +39,8 @@ const CreateStep2 = ({
   );
 
   const [zeroContribution, setZeroContribution] = useState(
-    zeroContributionValue,
+    fundingFormStore.getFormField(CreateCommonForm.ZERO_CONTRIBUTION)?.value
+      ?.value,
   );
 
   const minimumFieldRules = (currContribIndex) =>
@@ -53,7 +50,7 @@ const CreateStep2 = ({
     fundingFormStore.registerFormField(
       CreateCommonForm.ZERO_CONTRIBUTION,
       'required',
-      {value: zeroContributionValue},
+      {value: false},
     );
 
     fundingFormStore.registerFormField(
