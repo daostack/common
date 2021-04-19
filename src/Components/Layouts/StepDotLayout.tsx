@@ -48,6 +48,7 @@ const props = {
   children: object,
   uiStore: uiStorePropTypes.isRequired,
   onContentSizeChange: func,
+  isRequestButtonSticky: bool,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -98,6 +99,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   layoutTitle,
   uiStore,
   onContentSizeChange,
+  isRequestButtonSticky = true,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -201,8 +203,9 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             dotInfo={currDotInfo}
           />
           {children}
+          {!isRequestButtonSticky && requestStepActionButton}
         </ScrollView>
-        {requestStepActionButton}
+        {isRequestButtonSticky && requestStepActionButton}
       </SafeAreaView>
       {appendedArea}
     </>
