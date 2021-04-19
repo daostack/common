@@ -43,7 +43,9 @@ const PaymentDetailsStep = ({
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
   const push = async () => {
-    if (paymentFormStore.isFormValid()) {
+    if (!billingDetailsFormStore.isFormValid()) {
+      navigation.pop();
+    } else if (paymentFormStore.isFormValid()) {
       try {
         const formData = {
           ...introduceYourselfFormStore.getFormFieldsJson(),
