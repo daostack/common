@@ -10,6 +10,7 @@ import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import Icon from '~/Assets/iconfont/Icon';
 import {isIsraelLocale} from '~/Util/locale';
+import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = ['3000', '500'];
@@ -43,6 +44,8 @@ const CreateStep2 = ({
       ?.value,
   );
 
+  const [disabledStyle, setDisabledStyle] = useState(colors.grey);
+
   const minimumFieldRules = (currContribIndex) =>
     `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
@@ -62,6 +65,17 @@ const CreateStep2 = ({
     );
     onContributionTabChange(initialContributionIndex, true); // pre-select
   }, []);
+
+  useEffect(() => {
+    if (zeroContribution) {
+      fundingFormStore.fieldChanged(CreateCommonForm.MINIMUM, {
+        value: 5,
+      });
+      setDisabledStyle(colors.grey3);
+    } else {
+      setDisabledStyle(colors.grey);
+    }
+  }, [zeroContribution]);
 
   const onContributionTabChange = (index, isInitialSelect = false) => {
     fundingFormStore.fieldChanged(
@@ -118,7 +132,7 @@ const CreateStep2 = ({
             marginBottom: 40,
           }}
         />
-        <Text style={styles.label}>{'Contribution'}</Text>
+        <Text style={styles.label}>{'Contribution type'}</Text>
         <SegmentedControlTab
           tabsContainerStyle={{marginTop: 16, marginBottom: 40, height: 44}}
           tabStyle={{borderColor: colors.grey4}}
@@ -134,21 +148,20 @@ const CreateStep2 = ({
           value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
           iconName="dollar"
           iconSize={12}
+          editable={!zeroContribution}
           iconStyle={{paddingRight: 5}}
           iconEmptyColor={colors.grey3}
-          iconFillColor={colors.grey}
+          iconFillColor={disabledStyle}
           viewStyle={{alignSelf: 'stretch'}}
+          disabledStyle={{color: disabledStyle}}
           label={
             <React.Fragment>
               Minimum{' '}
-              <Text style={styles.boldText}>
-                {CONTRIBUTION_TAB_VALUES[contributionIndex]}
-              </Text>{' '}
-              contribution (min. ${MIN_CONTRIBUTION})
+              <Bold boldText={CONTRIBUTION_TAB_VALUES[contributionIndex]} />{' '}
+              contribution
             </React.Fragment>
           }
           subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
-          infoLabel="Required"
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
@@ -168,19 +181,21 @@ const CreateStep2 = ({
             amount in ILS may be different than the amounts estimated above.
           </Text>
         )}
-        <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
-          <View style={styles.zeroContributionView}>
-            <View style={styles.checkMark}>
-              <Icon
-                name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
-                size={24}
-              />
+        {contributionIndex === 0 && (
+          <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
+            <View style={styles.zeroContributionView}>
+              <View style={styles.checkMark}>
+                <Icon
+                  name={zeroContribution ? 'checkIconSelected' : 'checkIcon'}
+                  size={24}
+                />
+              </View>
+              <Text style={styles.agreeText}>
+                Let users join the Common without a personal contribution
+              </Text>
             </View>
-            <Text style={styles.agreeText}>
-              Let users join the Common without a personal contribution
-            </Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        )}
 
         {/* <TextInputFieldWithIcon
             iconName="dollar"
