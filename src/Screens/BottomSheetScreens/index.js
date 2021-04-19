@@ -7,6 +7,7 @@ import {default as TransactionError} from './TransactionError';
 import {default as PaymentStatusScreen} from './PaymentStatusScreen';
 import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
+import {default as PaymentErrorSheetScreen} from '~/Screens/BottomSheetScreens/PaymentErrorSheetScreen';
 import {default as LoadingExpired} from './LoadingExpired';
 import {default as HiddenContentInfo} from './HiddenContentInfo';
 
@@ -60,6 +61,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   BACKEND_ERROR: {
     topSnap: 420,
     content: BackendErrorSheetScreen,
+  },
+  PAYMENT_ERROR: {
+    topSnap: 520,
+    content: PaymentErrorSheetScreen,
   },
   HIDDEN_CONTENT_INFO: {
     topSnap: 350,

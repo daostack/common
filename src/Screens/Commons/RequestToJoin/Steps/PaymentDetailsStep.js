@@ -19,6 +19,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {getErrorObject} from '~/Util';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {escapeUrl} from '~/Util';
@@ -103,12 +104,13 @@ const PaymentDetailsStep = ({
           navigation.pop();
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
-      } catch (e) {
+      } catch (error) {
         navigation.pop();
+        const errorObject = getErrorObject(error)?.data;
 
-        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
-          subTitle: "We couldn't create your proposal",
-          error: e,
+        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_ERROR, {
+          subTitle: `We couldn't process your contribution to ${currCommon.name}`,
+          error: errorObject.data?.userMessage || errorObject?.userMessage,
         });
       }
     }
