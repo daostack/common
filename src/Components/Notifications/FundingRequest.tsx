@@ -65,7 +65,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
       notificationData = {
         ...notificationData,
         header: ' by',
-        headerBold: ` "${user.firstName} ${user.lastName}"`,
+        headerBold: `${user.firstName} ${user.lastName}`,
       };
     }
   }

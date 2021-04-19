@@ -62,6 +62,9 @@ import {
 } from '~/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import {truncateString} from '~/Util/stringUtil';
+import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
@@ -345,7 +348,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 ...layout.marginTopS,
                 ...text.writingDirection(currCommon.metadata.description),
               }}>
-              {currCommon.metadata.description}
+              {truncateString(
+                currCommon.metadata.description,
+                ABOUT_TRUNCATE_LENGTH,
+              )}
             </Text>
           </View>
 

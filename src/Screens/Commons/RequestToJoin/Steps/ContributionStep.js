@@ -25,6 +25,7 @@ const ContributionStep = ({
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contributionType === 'monthly';
+  const zeroContribution = isMonthly ? false : metadata.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
@@ -146,10 +147,13 @@ const ContributionStep = ({
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
-  const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
+  const calcMinFeeToJoin = zeroContribution ? 0 : metadata.minFeeToJoin / 100;
+
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
-    : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
+    : `${contributeMessage} ${
+        calcMinFeeToJoin !== 0 ? `($${calcMinFeeToJoin} min.)` : ''
+      }`;
 
   return (
     <StepDotLayout
@@ -199,8 +203,8 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={metadata.minFeeToJoin / 100}
-          zeroContribution={metadata.zeroContribution}
+          minFeeToJoin={calcMinFeeToJoin}
+          zeroContribution={zeroContribution}
         />
 
         {isMonthly && (

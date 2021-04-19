@@ -38,7 +38,7 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
       if (common && common.name) {
         notificationData = {
           ...notificationData,
-          headerBold: ` "${discussion.title}"`,
+          headerBold: `${discussion.title}`,
           common,
         };
       }
