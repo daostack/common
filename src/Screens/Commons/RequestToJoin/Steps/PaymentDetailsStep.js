@@ -19,6 +19,7 @@ import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {getErrorObject} from '~/Util';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {escapeUrl} from '~/Util';
@@ -43,7 +44,9 @@ const PaymentDetailsStep = ({
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
   const push = async () => {
-    if (paymentFormStore.isFormValid()) {
+    if (!billingDetailsFormStore.isFormValid()) {
+      navigation.pop();
+    } else if (paymentFormStore.isFormValid()) {
       try {
         const formData = {
           ...introduceYourselfFormStore.getFormFieldsJson(),
