@@ -38,9 +38,13 @@ const CreateStep2 = ({
     initialContributionIndex,
   );
 
-  const [zeroContribution, setZeroContribution] = useState(false);
+  const [zeroContribution, setZeroContribution] = useState(
+    fundingFormStore.getFormField(CreateCommonForm.ZERO_CONTRIBUTION)?.value
+      ?.value,
+  );
 
-  const minimumFieldRules = (currContribIndex) => `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+  const minimumFieldRules = (currContribIndex) =>
+    `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
 
   useEffect(() => {
     fundingFormStore.registerFormField(
