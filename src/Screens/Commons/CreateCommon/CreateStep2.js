@@ -73,7 +73,7 @@ const CreateStep2 = ({
       });
       setDisabledStyle(colors.grey3);
     } else {
-      setDisabledStyle(colors.grey);
+      setDisabledStyle(colors.gray1);
     }
   }, [zeroContribution]);
 
