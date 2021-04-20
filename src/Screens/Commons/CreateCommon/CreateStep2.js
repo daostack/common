@@ -13,7 +13,7 @@ import {isIsraelLocale} from '~/Util/locale';
 import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
-const MAX_CONTRIBUTION = ['3000', '500'];
+const MAX_CONTRIBUTION = '500';
 const MIN_CONTRIBUTION = '5';
 
 const CreateStep2 = ({
@@ -46,8 +46,7 @@ const CreateStep2 = ({
 
   const [disabledStyle, setDisabledStyle] = useState(colors.grey);
 
-  const minimumFieldRules = (currContribIndex) =>
-    `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION[currContribIndex]}`;
+  const minimumFieldRules = `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION}`;
 
   useEffect(() => {
     fundingFormStore.registerFormField(
@@ -86,7 +85,7 @@ const CreateStep2 = ({
     fundingFormStore.updateFieldValidationRule(
       CreateCommonForm.MINIMUM,
       null,
-      minimumFieldRules(index),
+      minimumFieldRules,
     );
   };
 
@@ -169,9 +168,9 @@ const CreateStep2 = ({
           validation={{
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
-            validateRule: minimumFieldRules(contributionIndex),
+            validateRule: minimumFieldRules,
             customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION} and at most $${parseFloat(
-              MAX_CONTRIBUTION[contributionIndex],
+              MAX_CONTRIBUTION,
             ).toLocaleString('en')}.`,
           }}
         />
