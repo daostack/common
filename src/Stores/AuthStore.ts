@@ -155,15 +155,22 @@ class AuthStore {
               lastName: providerUserInfo.user.familyName,
             },
           };
-          AuthService.getInstance().createUser(userInfo);
+          const createdUser = await AuthService.getInstance().createUser(
+            userInfo,
+          );
+          this.updateSignedInUser(createdUser);
         } else {
-          updatedUser && this.setSignedInUser(new UserModel(updatedUser));
-          NotificationService.saveTokenToDatabase();
-          this.removeLoginInProgress(updatedUser?.uid);
-          this.setIsLoading(false);
+          this.updateSignedInUser(updatedUser);
         }
       },
     );
+  }
+
+  private updateSignedInUser(updatedUser: IUserEntity) {
+    updatedUser && this.setSignedInUser(new UserModel(updatedUser));
+    NotificationService.saveTokenToDatabase();
+    this.removeLoginInProgress(updatedUser?.uid);
+    this.setIsLoading(false);
   }
 }
 

@@ -150,7 +150,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     ? styles.bigSaveBtn
     : layout.marginLeftS;
 
-  return (
+  return authStore.userInfo ? (
     <Formik
       innerRef={formikRef}
       initialValues={
@@ -299,6 +299,8 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
         </>
       )}
     </Formik>
+  ) : (
+    <Loader />
   );
 };
 
