@@ -68,4 +68,9 @@ export class Common extends BaseModel<ICommonEntity> {
   get balanceFormatted(): string {
     return formatNumber(this.balance / 100).toString();
   }
+
+  @computed
+  get minFeeToJoinFormatted(): string {
+    return formatNumber(this.metadata.minFeeToJoin / 100).toString();
+  }
 }
