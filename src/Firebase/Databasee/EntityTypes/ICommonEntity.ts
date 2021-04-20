@@ -63,6 +63,11 @@ export interface ICommonRule {
    * The description of the rule
    */
   value: string;
+
+  /**
+   * The url of the rule
+   */
+  url: string;
 }
 
 export interface ICommonLink {
