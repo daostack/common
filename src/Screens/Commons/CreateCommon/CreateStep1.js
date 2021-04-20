@@ -108,7 +108,7 @@ const CreateStep1 = ({
           autoCapitalize="none"
           returnKeyType="next"
           autoCorrect={false}
-          maxLength={24}
+          maxLength={49}
           validation={{
             name: CreateCommonForm.NAME,
             formStore: generalInfoFormStore,
@@ -128,7 +128,7 @@ const CreateStep1 = ({
           placeholderText="What is the ultimate goal of the Common?"
           autoCapitalize="none"
           autoCorrect={false}
-          maxLength={40}
+          maxLength={89}
           validation={{
             name: CreateCommonForm.BYLINE,
             formStore: generalInfoFormStore,
