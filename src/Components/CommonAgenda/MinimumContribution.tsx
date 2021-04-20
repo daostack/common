@@ -1,18 +1,17 @@
 import React, {FC} from 'react';
-import {string, number} from 'prop-types';
+import {string} from 'prop-types';
 import {StyleSheet, View, Text} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 
 type Props = {
-  minFeeToJoin: number;
+  minFeeToJoin: string;
   contributionType: string;
 };
 
 const MinimumContribution: FC<Props> = ({minFeeToJoin, contributionType}) => (
   <View>
     <Text style={styles.text}>
-      {minFeeToJoin / 100}
-      {'$ '}
+      {`${minFeeToJoin}$ `}
       <Text style={[styles.text, styles.bold]}>{contributionType}</Text>{' '}
       contribution
     </Text>
@@ -20,7 +19,7 @@ const MinimumContribution: FC<Props> = ({minFeeToJoin, contributionType}) => (
 );
 
 MinimumContribution.propTypes = {
-  minFeeToJoin: number.isRequired,
+  minFeeToJoin: string.isRequired,
   contributionType: string.isRequired,
 };
 

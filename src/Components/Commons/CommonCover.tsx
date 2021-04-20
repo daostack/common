@@ -6,22 +6,25 @@ import {
   SafeAreaView,
   StyleProp,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
 import {object, bool, func, string, shape, InferProps} from 'prop-types';
 
 const props = {
-  navigation: object,
+  navigation: shape({
+    navigate: func.isRequired,
+    goBack: func.isRequired,
+  }),
   isMember: bool,
   onHeaderMenuOpen: func,
   commonInfo: shape({
-    cover: string,
-    logo: string,
-    name: string,
-    description: string,
-  }),
+    cover: string.isRequired,
+    logo: string.isRequired,
+    name: string.isRequired,
+    description: string.isRequired,
+  }).isRequired,
   common: object,
 };
 
@@ -32,6 +35,14 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   commonInfo: {cover, logo, name, description},
   common,
 }) => {
+  const handleHeaderMenuOpen = useCallback(() => {
+    if (!onHeaderMenuOpen) {
+      return;
+    }
+
+    onHeaderMenuOpen();
+  }, [onHeaderMenuOpen]);
+
   const renderCoverInSafeArea = () => (
     <SafeAreaView>{renderCover()}</SafeAreaView>
   );
@@ -74,7 +85,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
             <Text style={styles.headerTitleWhite}>{name}</Text>
           </View>
           {navigation && (
-            <TouchableOpacity onPress={onHeaderMenuOpen}>
+            <TouchableOpacity onPress={handleHeaderMenuOpen}>
               <Icon
                 name="menu-horizontal"
                 size={30}
@@ -99,9 +110,11 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
     </>
   );
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      common: common,
-    });
+    if (navigation) {
+      navigation.navigate('CommonAgenda', {
+        common: common,
+      });
+    }
   };
   return (
     <>
@@ -127,10 +140,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
   },
-  backgoundRoundedTopEdges: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
   headerContainerWrap: {
     ...layout.flexRow,
     width: '100%',
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'space-between',
     paddingBottom: 0,
-    paddingTop: 40,
+    paddingTop: 35,
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
@@ -171,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
     paddingBottom: 5,
   },
   headerViewAgenda: {

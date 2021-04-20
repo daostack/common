@@ -14,6 +14,8 @@ import {useIsFocused} from '@react-navigation/native';
 import {HyperText} from '~/Components/Text/HyperText';
 import Title from '~/Components/CommonAgenda/Title';
 import MinimumContribution from '~/Components/CommonAgenda/MinimumContribution';
+import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
+import CommonRules from '~/Components/CommonAgenda/CommonRules';
 
 const CommonAgenda = ({
   // This destructuring is bloody awful
@@ -80,49 +82,18 @@ const CommonAgenda = ({
             </View>
           )}
 
-          {common.rules?.length > 0 && (
-            <React.Fragment>
-              <View style={styles.sectionDividerContent}>
-                <View style={styles.sectionDivider} />
-              </View>
+          <CommonRules
+            onEdit={() => onEdit('rules')}
+            canEdit={canEdit}
+            rules={common.rules}
+          />
 
-              <View style={styles.sectionContainer}>
-                <Title
-                  title="Rules of conduct"
-                  onPress={() => onEdit('rules')}
-                  canEdit={canEdit}
-                />
-
-                {common.rules.map((rule, i) => (
-                  <View key={i} style={{width: '100%'}}>
-                    <HyperText
-                      textStyle={{
-                        ...styles.ruleTitle,
-                        ...text.writingDirection(rule.title),
-                      }}>
-                      {rule.title}
-                    </HyperText>
-                    <HyperText
-                      textStyle={{
-                        ...styles.ruleDescription,
-                        ...text.writingDirection(rule.value || rule.url),
-                      }}>
-                      {rule.value || rule.url}
-                    </HyperText>
-                  </View>
-                ))}
-              </View>
-            </React.Fragment>
-          )}
-
-          <View style={styles.sectionDividerContent}>
-            <View style={styles.sectionDivider} />
-          </View>
+          <SectionDivider />
 
           <View style={styles.sectionContainer}>
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
-              minFeeToJoin={common.metadata.minFeeToJoin}
+              minFeeToJoin={common.minFeeToJoinFormatted}
               contributionType={common.metadata.contributionType}
             />
           </View>
@@ -189,27 +160,6 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(2),
     ...layout.marginTopS,
-    color: colors.black,
-  },
-  ruleTitle: {
-    ...text.blackText,
-    ...layout.marginTopM,
-    color: colors.black,
-  },
-  sectionDividerContent: {
-    paddingHorizontal: 20,
-  },
-  sectionDivider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: colors.grey4,
-    ...layout.paddingLeftL,
-    ...layout.paddingRightL,
-  },
-  ruleDescription: {
-    ...layout.marginTopS,
-    ...font.primary.regular,
-    ...font.fontSize(2),
     color: colors.black,
   },
   sectionContainer: {
