@@ -35,7 +35,7 @@ const CommonsList = ({navigation, rootStore}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
-  const [isLoading, setLoading ] = useState(true);
+  const [isLoading, setLoading] = useState(true);
   const handleLoader = () => {
     setLoading(false);
   };
@@ -196,12 +196,12 @@ const CommonsList = ({navigation, rootStore}) => {
             }
           />
         ) : (
-          <LoadingPlaceholder/>
+          <LoadingPlaceholder />
         )}
 
         <BottomRightButton onPress={onAddCommon} />
       </SafeAreaView>
-      {isLoading && <Loader isBigger isFullScreen navigation={navigation}/>}
+      {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
     </>
   );
 };

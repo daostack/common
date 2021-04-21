@@ -108,7 +108,7 @@ const CreateStep1 = ({
           autoCapitalize="none"
           returnKeyType="next"
           autoCorrect={false}
-          maxLength={24}
+          maxLength={49}
           validation={{
             name: CreateCommonForm.NAME,
             formStore: generalInfoFormStore,
@@ -122,18 +122,17 @@ const CreateStep1 = ({
           }
           viewStyle={{alignSelf: 'stretch'}}
           label="Tagline"
-          infoLabel="Required"
           numberOfLines={3}
           // returnKeyType="next"
           multiline={true}
           placeholderText="What is the ultimate goal of the Common?"
           autoCapitalize="none"
           autoCorrect={false}
-          maxLength={40}
+          maxLength={89}
           validation={{
             name: CreateCommonForm.BYLINE,
             formStore: generalInfoFormStore,
-            validateRule: 'required|min:10',
+            validateRule: 'string',
             displayName: 'tagline',
           }}
         />
@@ -143,7 +142,6 @@ const CreateStep1 = ({
               ?.value
           }
           label="About"
-          infoLabel="Required"
           numberOfLines={5}
           multiline={true}
           returnKeyType="next"
@@ -153,7 +151,7 @@ const CreateStep1 = ({
           validation={{
             name: CreateCommonForm.DESCRIPTION,
             formStore: generalInfoFormStore,
-            validateRule: 'required|string',
+            validateRule: 'string',
             displayName: 'about',
           }}
         />

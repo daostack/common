@@ -29,7 +29,7 @@ export const numberFormatter = (num) => {
     : // Three Zeroes for Thousands
     denom >= 1.0e4
     ? denom / 1.0e4 + 'K'
-    : Math.floor(denom);
+    : denom;
 };
 
 export function filterObjectByKeys(currObj, allowedKeys) {
@@ -40,11 +40,6 @@ export function filterObjectByKeys(currObj, allowedKeys) {
       return obj;
     }, {});
 }
-
-export const calcIsFundingStage = (deadline) => {
-  const deadlineMoment = moment.unix(deadline);
-  return !moment().isAfter(deadlineMoment);
-};
 
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
@@ -66,11 +61,25 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
 
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
-export const showLoadingExpirationPopUp = (bottomSheetStore, errorMessage, navigation) => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRED, {
-      errorMessage,
-      navigation,
-    });
+export const showLoadingExpirationPopUp = (
+  bottomSheetStore,
+  errorMessage,
+  navigation,
+) => {
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRED, {
+    errorMessage,
+    navigation,
+  });
+};
+
+// This function requires the bottomSheetStore as a variable as you can't
+// access the mobx store outside of a react component
+export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+    subTitle:
+      subTitle || 'This took longer than expected, please try again later',
+    shouldGoBack: true,
+  });
 };
 
 export const getErrorObject = (axiosError) => {

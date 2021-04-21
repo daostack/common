@@ -28,7 +28,7 @@ import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
-import {calcIsFundingStage, LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import ModerationService from '~/Services/ModerationService';
@@ -43,7 +43,6 @@ import {object, shape, func} from 'prop-types';
 import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import ProposalActivationDate from '~/Components/Proposals/ProposalActivationDate';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
@@ -63,6 +62,9 @@ import {
 } from '~/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import {truncateString} from '~/Util/stringUtil';
+import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
@@ -135,7 +137,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
     false,
   );
-  const isFundingStage = calcIsFundingStage(currCommon?.fundingGoalDeadline);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -289,13 +290,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         isMember={isMember}
       />
-
-      {isMember && (
-        <ProposalActivationDate
-          activationDate={currCommon.fundingGoalDeadline}
-          bottomSheetStore={bottomSheetStore}
-        />
-      )}
     </View>
   );
 
@@ -354,7 +348,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 ...layout.marginTopS,
                 ...text.writingDirection(currCommon.metadata.description),
               }}>
-              {currCommon.metadata.description}
+              {truncateString(
+                currCommon.metadata.description,
+                ABOUT_TRUNCATE_LENGTH,
+              )}
             </Text>
           </View>
 
@@ -792,7 +789,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.metadata.minFeeToJoin / 100}
+        ${currCommon.minFeeToJoinFormatted}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
@@ -960,7 +957,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
-                isFundingStage={isFundingStage}
                 commonProgressInfo={{
                   time: currCommon.fundingGoalDeadline,
                   activeProposals:
@@ -1015,7 +1011,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   bottom={50}
                 />
               ) : (
-                !isFundingStage &&
                 index === 1 && (
                   <BottomRightButton
                     iconName="create-proposal"

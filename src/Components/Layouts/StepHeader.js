@@ -14,7 +14,8 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
       index = index - 1;
     }
 
-    return (index * (1 / dotsCount)).toFixed(2);
+    // adding 0.1 for the dot width
+    return (index * (1 / dotsCount) + 0.1).toFixed(2);
   };
 
   const ovalStyle = (index) => {
@@ -53,7 +54,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
       }}>
       <Progress.Bar
         progress={getDotProgress(currentIndex)}
-        width={width - 48 - 60}
+        width={width - 50 - 60}
         color={colors.mainBlue}
         borderWidth={0}
         unfilledColor={colors.grey4}

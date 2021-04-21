@@ -18,7 +18,8 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
         editCommonFormStore.getFormField(EditCommonConstants.NAME)?.value ||
         common.name,
       label: 'Common name',
-      maxLength: 24,
+      maxLength: 49,
+      infoLabel: 'Required',
       validation: {
         name: EditCommonConstants.NAME,
         formStore: editCommonFormStore,
@@ -33,11 +34,11 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
       label: 'Tagline',
       numberOfLines: 3,
       multiline: true,
-      maxLength: 40,
+      maxLength: 89,
       validation: {
         name: EditCommonConstants.BYLINE,
         formStore: editCommonFormStore,
-        validateRule: 'required|min:10',
+        validateRule: 'string',
         displayName: 'tagline',
       },
     },
@@ -51,7 +52,7 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
       validation: {
         name: EditCommonConstants.DESCRIPTION,
         formStore: editCommonFormStore,
-        validateRule: 'required|string',
+        validateRule: 'string',
         displayName: 'about',
       },
     },
@@ -76,7 +77,6 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
         <TextInputField
           key={i}
           viewStyle={{alignSelf: 'stretch'}}
-          infoLabel="Required"
           placeholderText=""
           returnKeyType="next"
           onChangeText={() => isValidChange()}

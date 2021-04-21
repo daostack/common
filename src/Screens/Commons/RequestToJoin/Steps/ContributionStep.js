@@ -13,6 +13,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {isIsraelLocale} from '~/Util/locale';
 
 const ContributionStep = ({
   navigation,
@@ -24,6 +25,7 @@ const ContributionStep = ({
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contributionType === 'monthly';
+  const zeroContribution = isMonthly ? false : metadata.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
@@ -145,10 +147,12 @@ const ContributionStep = ({
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
-  const calcMinFeeToJoin = metadata.minFeeToJoin / 100;
+  const calcMinFeeToJoin = zeroContribution ? 0 : currCommon.minFeeToJoinFormatted;
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
-    : `${contributeMessage} ($${calcMinFeeToJoin} min.)`;
+    : `${contributeMessage} ${
+        calcMinFeeToJoin !== 0 ? `($${calcMinFeeToJoin} min.)` : ''
+      }`;
 
   return (
     <StepDotLayout
@@ -184,7 +188,6 @@ const ContributionStep = ({
             subtitle={minContributionMessage}
           />
         )}
-
         <View
           style={{
             backgroundColor: colors.grey4,
@@ -192,7 +195,6 @@ const ContributionStep = ({
             marginBottom: 40,
           }}
         />
-
         <AmountField
           isMonthly={isMonthly}
           navigation={navigation}
@@ -200,11 +202,20 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={metadata.minFeeToJoin / 100}
+          minFeeToJoin={calcMinFeeToJoin}
+          zeroContribution={zeroContribution}
         />
+
         {isMonthly && (
           <Text style={styles.monthlyBottomMessage}>
-            You can cancel the recurring payment at any time
+            You can cancel the recurring payment at any time.
+          </Text>
+        )}
+
+        {isIsraelLocale && (
+          <Text style={styles.monthlyBottomMessage}>
+            All contributions are made in U.S. dollars. The actual contribution
+            amount in ILS may be different than the amounts estimated above.
           </Text>
         )}
       </View>
@@ -237,6 +248,7 @@ const styles = StyleSheet.create({
     ...text.regularText,
     textAlign: 'center',
     color: colors.slate,
+    marginBottom: 10,
   },
 });
 

@@ -1,5 +1,5 @@
 export enum PERMISSIONS {
-  MODERATOR = 'moderator',
+  MODERATOR = 'Moderator',
   FOUNDER = 'founder',
 }
 
