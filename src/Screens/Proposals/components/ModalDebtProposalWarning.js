@@ -1,4 +1,4 @@
-import {func, string} from 'prop-types';
+import {func, number} from 'prop-types';
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
@@ -23,7 +23,7 @@ If the Common balance is lower than $${amount}, the proposal `}
 
 ModalDebtProposalWarning.propTypes = {
   onPressClose: func,
-  amount: string,
+  amount: number,
 };
 
 const styles = StyleSheet.create({

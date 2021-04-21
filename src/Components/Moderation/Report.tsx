@@ -34,7 +34,7 @@ const reportProps = {
     isFormValid: func.isRequired,
   }).isRequired,
   onReportContent: func,
-  hasPermission: bool,
+  hasPermission: string,
 };
 
 const Report: React.FC<InferProps<typeof reportProps>> = ({

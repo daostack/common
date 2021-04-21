@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {colors, font, layout, text} from '~/Theme';
-import {bool, func, array} from 'prop-types';
+import {string, func, array} from 'prop-types';
 import Title from '~/Components/CommonAgenda/Title';
 import {HyperText} from '~/Components/Text/HyperText';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 CommonRules.propTypes = {
   rules: array.isRequired,
   onEdit: func.isRequired,
-  canEdit: bool.isRequired,
+  canEdit: string.isRequired,
 };
 
 export default CommonRules;

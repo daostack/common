@@ -38,7 +38,7 @@ UserInfoChecker.propTypes = {
   navigation: shape({
     current: shape({
       dispatch: func.isRequired,
-    }).isRequired,
+    }),
   }).isRequired,
   // @ts-ignore
   authStore: authStorePropTypes.isRequired,

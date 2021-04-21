@@ -16,6 +16,7 @@ import {
   string,
   shape,
   InferProps,
+  oneOfType,
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
@@ -42,7 +43,7 @@ const props = {
   onScrollEndDrag: func,
 
   prependedArea: object,
-  appendedArea: object,
+  appendedArea: oneOfType([bool, object]),
   requestStepActionButton: object,
   layoutTitle: object,
   children: object,
