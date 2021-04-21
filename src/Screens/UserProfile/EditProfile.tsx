@@ -14,7 +14,7 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import ImageField from '~/Components/FormikForm/ImageField';
 import {CountrySelectField} from '~/Components/FormikForm/CountrySelectField';
 import {layout, text, font, colors} from '~/Theme';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -153,14 +153,15 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   return (
     <Formik
       innerRef={formikRef}
+      enableReinitialize={true}
       initialValues={
         {
-          photoURL: authStore.userInfo.photoURL,
-          firstName: authStore.userInfo.firstName,
-          lastName: authStore.userInfo.lastName,
-          country: authStore.userInfo.country,
-          email: authStore.userInfo.email,
-          intro: authStore.userInfo.intro,
+          photoURL: authStore.userInfo?.photoURL,
+          firstName: authStore.userInfo?.firstName,
+          lastName: authStore.userInfo?.lastName,
+          country: authStore.userInfo?.country,
+          email: authStore.userInfo?.email,
+          intro: authStore.userInfo?.intro,
         } as Values
       }
       validationSchema={validationSchema}
@@ -181,91 +182,96 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
               contentInsetAdjustmentBehavior="automatic"
               keyboardShouldPersistTaps="always"
               style={styles.scrollView}>
-              {authStore.userInfo ? (
-                <View style={styles.body}>
-                  <View
-                    style={{
-                      alignSelf: 'stretch',
-                      flexGrow: 1,
-                      marginTop: 0,
-                    }}>
-                    {route?.params?.isCompleteAccount && (
-                      <View style={{marginBottom: 32}}>
-                        <Text style={styles.title}>Complete your account</Text>
-                        <Text style={styles.subtitleForm}>
-                          Help the community to get to know you better
+              <View style={styles.body}>
+                <View
+                  style={{
+                    alignSelf: 'stretch',
+                    flexGrow: 1,
+                    marginTop: 0,
+                  }}>
+                  {route?.params?.isCompleteAccount && (
+                    <View style={{marginBottom: 32}}>
+                      <Text style={styles.title}>Complete your account</Text>
+                      <Text style={styles.subtitleForm}>
+                        Help the community to get to know you better
+                      </Text>
+                    </View>
+                  )}
+
+                  {authStore.userInfo ? (
+                    <>
+                      <ImageField
+                        isAvatar={true}
+                        value={values.photoURL}
+                        allowsEditing={true}
+                        title={'Select new avatar'}
+                        onChangeImage={handleChange('photoURL')}
+                        name="photoURL"
+                      />
+
+                      <View style={styles.emailContainer}>
+                        <Text style={text.ashleyjquimbacom}>
+                          {values.email}
                         </Text>
                       </View>
-                    )}
-                    <ImageField
-                      isAvatar={true}
-                      value={values.photoURL}
-                      allowsEditing={true}
-                      title={'Select new avatar'}
-                      onChangeImage={handleChange('photoURL')}
-                      name="photoURL"
-                    />
 
-                    <View style={styles.emailContainer}>
-                      <Text style={text.ashleyjquimbacom}>{values.email}</Text>
-                    </View>
-
-                    <TextInputField
-                      errorMessage={
-                        errors && touched.firstName && errors.firstName
-                      }
-                      value={values.firstName}
-                      viewStyle={{alignSelf: 'stretch'}}
-                      label="First name"
-                      infoLabel="Required"
-                      placeholderText="First name"
-                      onBlur={handleBlur('firstName')}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      onChangeText={handleChange('firstName')}
-                    />
-
-                    <TextInputField
-                      errorMessage={
-                        errors && touched.lastName && errors.lastName
-                      }
-                      value={values.lastName}
-                      viewStyle={{alignSelf: 'stretch'}}
-                      label="Last name"
-                      infoLabel="Required"
-                      placeholderText="Last name"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      onBlur={handleBlur('lastName')}
-                      onChangeText={handleChange('lastName')}
-                    />
-
-                    {route.params.isCompleteAccount && (
-                      <CountrySelectField
-                        label="Country"
+                      <TextInputField
+                        errorMessage={
+                          errors && touched.firstName && errors.firstName
+                        }
+                        value={values.firstName}
+                        viewStyle={{alignSelf: 'stretch'}}
+                        label="First name"
                         infoLabel="Required"
-                        value={values.country}
-                        onBlur={handleBlur('country')}
-                        onChange={handleChange('country')}
+                        placeholderText="First name"
+                        onBlur={handleBlur('firstName')}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onChangeText={handleChange('firstName')}
                       />
-                    )}
 
-                    <TextInputField
-                      errorMessage={errors && touched.intro && errors.intro}
-                      label="Intro"
-                      placeholderText="What are you most passionate about, really good at, or love"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      multiline={true}
-                      onBlur={handleBlur('lastName')}
-                      value={values.intro}
-                      onChangeText={handleChange('intro')}
-                    />
-                  </View>
+                      <TextInputField
+                        errorMessage={
+                          errors && touched.lastName && errors.lastName
+                        }
+                        value={values.lastName}
+                        viewStyle={{alignSelf: 'stretch'}}
+                        label="Last name"
+                        infoLabel="Required"
+                        placeholderText="Last name"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onBlur={handleBlur('lastName')}
+                        onChangeText={handleChange('lastName')}
+                      />
+
+                      {route.params.isCompleteAccount && (
+                        <CountrySelectField
+                          label="Country"
+                          infoLabel="Required"
+                          value={values.country}
+                          onBlur={handleBlur('country')}
+                          onChange={handleChange('country')}
+                        />
+                      )}
+
+                      <TextInputField
+                        errorMessage={errors && touched.intro && errors.intro}
+                        label="Intro"
+                        placeholderText="What are you most passionate about, really good at, or love"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        multiline={true}
+                        onBlur={handleBlur('lastName')}
+                        value={values.intro}
+                        onChangeText={handleChange('intro')}
+                      />
+                    </>
+                  ) : (
+                    <Loader />
+                  )}
                 </View>
-              ) : (
-                <Loader />
-              )}
+              </View>
             </ScrollView>
 
             <View
@@ -354,4 +360,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(EditProfile);
+export default inject('rootStore')(observer(EditProfile));
