@@ -216,7 +216,7 @@ EditCommon.propTypes = {
   rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
-      currCommon: bool,
+      currCommon: object,
       title: string,
     }),
   }),

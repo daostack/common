@@ -9,7 +9,7 @@ import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 type Props = {
   onEdit: () => void;
-  canEdit: boolean;
+  canEdit: string;
   rules: ICommonRule[];
 };
 
