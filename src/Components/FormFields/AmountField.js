@@ -24,6 +24,16 @@ const AmountField = ({
   const textInputRef = useRef();
   const multiplications = zeroContribution ? [0, 1, 2.5] : [1, 2.5, 5];
 
+  const errorMessage =
+    minFeeToJoin > 0
+      ? `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`
+      : 'The amount must be 0, or at least $5 and at most $2500.';
+
+  const amountValidation =
+    minFeeToJoin > 0
+      ? `min:${minFeeToJoin.toString()}`
+      : 'regex:/^(0)|[5-9]|[1-9][0-9]|[1-9][0-9][0-9]$';
+
   // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
     minFeeToJoin > 0
@@ -89,8 +99,8 @@ const AmountField = ({
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: `required|numeric|min:${minFeeToJoin.toString()}|max:2500`,
-          customErrorMessage: `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`,
+          validateRule: ['required', 'numeric', amountValidation, 'max:2500'],
+          customErrorMessage: errorMessage,
         }}
       />
     </View>
