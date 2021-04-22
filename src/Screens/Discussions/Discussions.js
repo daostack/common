@@ -342,32 +342,37 @@ const Discussions = ({
       );
     }
     bottomSheetStore.hideBottomSheet();
-    switch (actionType) {
-      case ACTIONS.show:
-        Toast.loading('Loading...');
-        await ModerationService.getInstance().show(
-          messageId,
-          commonId,
-          TITLES.discussionMessage,
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      case ACTIONS.hide:
-        Toast.loading('Loading...');
-        await ModerationService.getInstance().hide(
-          messageId,
-          TITLES.discussionMessage,
-          commonId,
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      default:
-        setShowModerationModal(true);
-        break;
+    try {
+      switch (actionType) {
+        case ACTIONS.show:
+          Toast.loading('Loading...');
+          await ModerationService.getInstance().show(
+            messageId,
+            commonId,
+            TITLES.discussionMessage,
+          );
+          Toast.hide();
+          Toast.success('Done');
+          setShowModerationSuccessModal(true);
+          break;
+        case ACTIONS.hide:
+          Toast.loading('Loading...');
+          await ModerationService.getInstance().hide(
+            messageId,
+            TITLES.discussionMessage,
+            commonId,
+          );
+          Toast.hide();
+          Toast.success('Done');
+          setShowModerationSuccessModal(true);
+          break;
+        default:
+          setShowModerationModal(true);
+          break;
+      }
+    } catch (error) {
+      Toast.hide();
+      Toast.error('Error');
     }
   };
 

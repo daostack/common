@@ -62,10 +62,16 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
   });
 
   const {currCommon, title} = route.params;
+
+  // deep copy the common data into newCommon so
+  // if we fail to update, the local store will not be updated
+  const newCommon = {...currCommon};
+  newCommon.rules = [...currCommon.rules];
+
   const [editCommonFormStore] = useState(new EditCommonFormStore());
   const [valid, setValid] = useState(false);
   const isRule = title === 'Edit Rules';
-  var [newRules, setNewRules] = useState(currCommon?.rules || []);
+  var [newRules, setNewRules] = useState(newCommon?.rules || []);
 
   const formSave = async () => {
     if (valid) {
@@ -73,25 +79,25 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
       const changedFields =
         title === 'Edit Rules' ? {rules: newRules} : getChanges();
       mergeChanges(changedFields); // shallow copy though
-      onFormSubmitEnd(currCommon);
+      onFormSubmitEnd(newCommon);
     }
   };
 
   const mergeChanges = (changedFields) => {
     Object.keys(changedFields).forEach((key) => {
       if (typeof changedFields[key] === 'object') {
-        currCommon[key] = Array.isArray(changedFields[key])
+        newCommon[key] = Array.isArray(changedFields[key])
           ? changedFields[key]
-          : {...currCommon[key], ...changedFields[key]};
+          : {...newCommon[key], ...changedFields[key]};
       } else {
-        currCommon[key] = changedFields[key];
+        newCommon[key] = changedFields[key];
       }
     });
   };
 
   const onFormSubmitEnd = async (updatedCommon) => {
     try {
-      commonStore.updateCommonInfo(updatedCommon);
+      await commonStore.updateCommonInfo(updatedCommon);
       Toast.done('Your Common is updated');
     } catch (err) {
       Toast.error('Could not update your Common');
@@ -123,7 +129,7 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
       : editCommonFormStore.getChangedFormFieldsJson();
 
     return Object.keys(changedFields)
-      .filter((key) => currCommon[key] !== changedFields[key])
+      .filter((key) => newCommon[key] !== changedFields[key])
       .reduce((obj, key) => {
         if (metadataKeys.includes(key)) {
           obj.metadata = {...obj.metadata, ...{[key]: changedFields[key]}};
@@ -174,14 +180,14 @@ const EditCommon: React.FC<InferProps<typeof EditCommon.propTypes>> = ({
             isRule ? (
               <EditRules
                 isValidChange={(change) => isValidChange(change)}
-                common={currCommon}
+                common={newCommon}
                 editCommonFormStore={editCommonFormStore}
               />
             ) : (
               <EditInfo
                 isValidChange={() => isValidChange()}
                 formSave={() => formSave()}
-                common={currCommon}
+                common={newCommon}
                 editCommonFormStore={editCommonFormStore}
               />
             )
@@ -216,7 +222,7 @@ EditCommon.propTypes = {
   rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
-      currCommon: bool,
+      currCommon: object,
       title: string,
     }),
   }),
