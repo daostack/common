@@ -2,6 +2,7 @@ import FormStore from '../FormStore';
 import {
   paymentDetailsRules,
   billingDetailsRules,
+  customAmountRules,
 } from '~/FormStores/ValidationRules';
 
 export class PaymentFormStore extends FormStore {
@@ -23,5 +24,10 @@ export class BillingDetailsFormStore extends FormStore {
   }
 }
 
-export class PersonalContributionFormStore extends FormStore {}
+export class PersonalContributionFormStore extends FormStore {
+  constructor() {
+    super();
+    this.registerValidationRule(customAmountRules.validateCustomAmount);
+  }
+}
 export class IntroduceYourselfFormStore extends FormStore {}
