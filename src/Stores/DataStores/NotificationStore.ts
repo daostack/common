@@ -37,13 +37,18 @@ export default class NotificationStore extends BaseStore<
 
   getLoggedUserNotifications = (): Array<Notification> | undefined => {
     try {
-      return this.getDataArray
+      const notif = this.getDataArray
         ?.filter(() => true)
         .sort(
           (notification: Notification, prevNotification: Notification) =>
             prevNotification.createdAt?.seconds -
             notification.createdAt?.seconds,
         );
+
+      // console.log(this.getDataArray);
+
+      console.log(notif);
+      return notif;
     } catch (error) {
       return [];
     }
@@ -117,6 +122,7 @@ export default class NotificationStore extends BaseStore<
       eventType: EventTypeState.welcomeNotification,
     } as INotificationEntity;
 
+    console.log('GET ENTITITY addWelcomeNotification', welcomeNotification);
     this.setData(
       EventTypeState.welcomeNotification,
       this.getEntityModel(welcomeNotification),
@@ -144,7 +150,12 @@ export default class NotificationStore extends BaseStore<
         defaultNotificationItemState;
     }
 
-    return new Notification(entity, notificationItemState);
+    const newNotif = new Notification(entity, notificationItemState);
+
+    console.log('GET ENTITITY', entity);
+    console.log('GET ENTITITY 2', newNotif);
+
+    return newNotif;
   }
 
   getProposalNotificationData(

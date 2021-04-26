@@ -36,6 +36,9 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
+  // console.log(notificationData);
+  // console.log(item);
+
   const navigateToDetail = () => {
     let navigate;
 
@@ -76,6 +79,14 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       );
     }
   };
+
+  console.log('GET ENTITITY ITEM', item);
+
+  console.log(
+    'GET ENTITITY notificationItemState',
+    item.notificationItemState?.opened,
+  );
+  console.log('GET ENTITITY notificationItemState', item.createdAt);
 
   return (
     <TouchableOpacity
