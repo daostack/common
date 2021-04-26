@@ -462,40 +462,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
+    const resp = await ModerationService.getInstance().onModerate(
+      actionType,
+      itemId,
+      commonId,
+      itemType.toLowerCase(),
+    );
 
-    try {
-      switch (actionType) {
-        case 'Show':
-          Toast.loading('Loading...');
-          await ModerationService.getInstance().show(
-            itemId,
-            commonId,
-            itemType.toLowerCase(),
-          );
-          Toast.hide();
-          Toast.success('Done');
-          setShowModerationSuccessModal(true);
-          break;
-        case 'Hide':
-          Toast.loading('Hiding content...');
-          await ModerationService.getInstance().hide(
-            itemId,
-            itemType.toLowerCase(),
-            commonId,
-          );
-          Toast.hide();
-          Toast.success('Done');
-          setShowModerationSuccessModal(true);
-          break;
-        default:
-          // reporting
-          setShowModerationModal(true);
-          break;
-      }
-    } catch (error) {
-      Toast.hide();
-      Toast.error('Error');
-    }
+    resp === ACTIONS.report
+      ? setShowModerationModal(true)
+      : resp && setShowModerationSuccessModal(true);
   };
 
   const membershipRequestType = (itemTitle) =>
