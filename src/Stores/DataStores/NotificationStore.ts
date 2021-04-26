@@ -35,7 +35,8 @@ export default class NotificationStore extends BaseStore<
     }
   };
 
-  getLoggedUserNotifications = (): Array<Notification> | undefined => {
+  @computed
+  get loggedUserNotifications(): Array<Notification> | undefined {
     try {
       const notif = this.getDataArray
         ?.filter(() => true)
@@ -52,12 +53,12 @@ export default class NotificationStore extends BaseStore<
     } catch (error) {
       return [];
     }
-  };
+  }
 
   @computed
   get hasNewNotifications() {
     return (
-      (this.getLoggedUserNotifications()?.filter(
+      (this.loggedUserNotifications?.filter(
         (notification: Notification) =>
           notification.notificationItemState?.seen === false,
       )?.length || 0) > 0
@@ -85,7 +86,7 @@ export default class NotificationStore extends BaseStore<
 
   @action
   removeSeenStateForNewNotifications = () => {
-    const newNotificationsList = this.getLoggedUserNotifications()?.filter(
+    const newNotificationsList = this.loggedUserNotifications?.filter(
       (notification: Notification) =>
         notification.notificationItemState?.seen === false,
     );

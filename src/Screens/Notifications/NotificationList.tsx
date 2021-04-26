@@ -32,7 +32,8 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
-  const notificationList: Array<Notification> = notificationStore.getLoggedUserNotifications();
+  const notificationList: Array<Notification> =
+    notificationStore.loggedUserNotifications;
 
   console.log('GET ENTITITY UILIST', notificationList);
 
