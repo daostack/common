@@ -32,4 +32,10 @@ export interface IModerationEntity extends IBaseEntity {
    * The time of the moderation
    */
   updatedAt: firebase.firestore.Timestamp;
+
+  /**
+   * For when proposal was hidden and then shown during quiet ending period,
+   * we want to restart the countdown from the beginning of he quiet ending period
+   */
+  countdownStart: firebase.firestore.Timestamp;
 }

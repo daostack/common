@@ -1,15 +1,16 @@
 import {observable} from 'mobx';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
+import {firebase} from '~/Firebase';
 
 export class BaseModel<IEntity extends IBaseEntity> implements IBaseEntity {
   @observable
   id: string;
 
   @observable
-  createdAt: Date;
+  createdAt: firebase.firestore.Timestamp;
 
   @observable
-  updatedAt: Date;
+  updatedAt: firebase.firestore.Timestamp;
 
   constructor(entity: IEntity) {
     this.id = entity.id;

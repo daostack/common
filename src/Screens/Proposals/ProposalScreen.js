@@ -775,11 +775,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={
-                          (proposalInfo?.moderation?.updatedAt.seconds ||
-                            proposalInfo?.createdAt.seconds) +
-                          proposalInfo?.countdownPeriod
-                        }
+                        closingAt={proposalInfo?.countdown}
                         onPress={() => openDebtInsufficientModal()}
                         hasPermission={hasPermission}
                         viewerPermission={viewerPermission}
@@ -813,10 +809,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={
-                          proposalInfo?.createdAt.seconds +
-                          proposalInfo?.countdownPeriod
-                        }
+                        closingAt={proposalInfo?.countdown}
                         hasPermission={hasPermission}
                         authInfo={authStore.userInfo}
                         viewerPermission={viewerPermission}
