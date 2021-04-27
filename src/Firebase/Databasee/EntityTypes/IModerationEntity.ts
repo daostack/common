@@ -38,4 +38,17 @@ export interface IModerationEntity extends IBaseEntity {
    * we want to restart the countdown from the beginning of he quiet ending period
    */
   countdownStart: firebase.firestore.Timestamp;
+
+  /**
+   * New countdown period calculated by time already passed from the
+   * actual countdown and the time proposal was creating
+   * We do that when proposal is hiding, in order to freeze the countdown
+   */
+  countdownPeriod?: number;
+
+  /**
+   * A countdown using quiet ending period,
+   * in case proposal was un-hidden during quiet ending period
+   */
+  quietEnding?: number;
 }

@@ -157,9 +157,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get countdown() {
     return (
-      this.moderation?.countdownStart ||
-      (this.moderation?.updatedAt.seconds || this.createdAt.seconds) +
-        this?.countdownPeriod
+      this.moderation?.quietEnding ||
+      this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
+      this.createdAt.seconds + this?.countdownPeriod
     );
   }
 
