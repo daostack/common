@@ -106,14 +106,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
             data={notificationList.slice()}
             renderItem={renderNotificationItem}
             initialNumToRender={8}
-            ItemSeparatorComponent={() => (
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: colors.grey4,
-                }}
-              />
-            )}
           />
         ) : (
           <Loader isBigger />

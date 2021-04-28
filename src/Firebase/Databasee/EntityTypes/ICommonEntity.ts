@@ -27,12 +27,6 @@ export interface ICommonEntity extends IBaseEntity {
   raised: number;
 
   /**
-   *  The timestamp after witch you are able to
-   *  create funding proposals
-   */
-  fundingGoalDeadline: number;
-
-  /**
    * List of all users, that are members of this common
    */
   members: ICommonMember[];
@@ -69,6 +63,11 @@ export interface ICommonRule {
    * The description of the rule
    */
   value: string;
+
+  /**
+   * The url of the rule
+   */
+  url: string;
 }
 
 export interface ICommonLink {

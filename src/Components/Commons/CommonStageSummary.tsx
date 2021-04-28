@@ -75,14 +75,17 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       }}>
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
-      {subtitle && isIsraelLocale && (
-        <View style={styles.subtitleContainer}>
-          <Text style={styles.subtitleText}>{subtitle}</Text>
-          <Pressable onPress={() => setModalVisible(!modalVisible)}>
-            <Icon name="questionMark" size={14} color={colors.grey2} />
-          </Pressable>
-        </View>
-      )}
+      {subtitle &&
+        isIsraelLocale &&
+        !isCommonCard &&
+        subtitle !== convertAmountToIls(0, uiStore.conversionRate) && (
+          <View style={styles.subtitleContainer}>
+            <Text style={styles.subtitleText}>{subtitle}</Text>
+            <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Icon name="questionMark" size={14} color={colors.grey2} />
+            </Pressable>
+          </View>
+        )}
     </View>
   );
   return (
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     width: '100%',
     paddingTop: 20,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   headerTitle: {
     ...text.h3Black,

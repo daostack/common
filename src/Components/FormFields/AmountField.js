@@ -5,6 +5,7 @@ import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
 import {number, func, object, bool} from 'prop-types';
+import {customAmountRules} from '~/FormStores/ValidationRules';
 
 const AmountField = ({
   formStore,
@@ -13,6 +14,7 @@ const AmountField = ({
   onAmountSelected,
   minFeeToJoin,
   isMonthly,
+  zeroContribution,
 }) => {
   const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
     ?.value;
@@ -21,15 +23,17 @@ const AmountField = ({
     currFieldValue ? currFieldValue.index : -1,
   );
   const textInputRef = useRef();
+  const multiplications = zeroContribution ? [0, 1, 2.5] : [1, 2.5, 5];
 
+  const errorMessage =
+    minFeeToJoin > 0
+      ? `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`
+      : 'The amount must be 0, or at least $5 and at most $2500.';
+
+  // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
     minFeeToJoin > 0
-      ? [
-          1 * minFeeToJoin,
-          2.5 * minFeeToJoin,
-          5 * minFeeToJoin,
-          1 * minFeeToJoin,
-        ]
+      ? [...multiplications.map((m) => m * minFeeToJoin), 1 * minFeeToJoin]
       : [0, 5, 10, 10];
 
   const onAmountPress = (isCustom, amount, id) => {
@@ -91,8 +95,13 @@ const AmountField = ({
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
-          validateRule: `required|numeric|min:${minFeeToJoin.toString()}|max:2500`,
-          customErrorMessage: `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`,
+          validateRule: [
+            'required',
+            'numeric',
+            `${customAmountRules.AMOUNT_RULES.MIN_FEE_TO_JOIN_RULE}:${minFeeToJoin}`,
+            'max:2500',
+          ],
+          customErrorMessage: errorMessage,
         }}
       />
     </View>
@@ -106,6 +115,7 @@ AmountField.propTypes = {
   onAmountSelected: func,
   minFeeToJoin: number,
   isMonthly: bool,
+  zeroContribution: bool,
 };
 
 const styles = StyleSheet.create({

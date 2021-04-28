@@ -3,7 +3,7 @@ import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 import {axiosCommonClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
-import {IFirebaseSnapshot} from '~/Firebase/types';
+import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonListLoadCallbackFn = (
   updatedCommonList: IFirebaseSnapshot<ICommonEntity>,
@@ -33,12 +33,11 @@ export const updateCommon = async (updateCommonInfo: Partial<ICommonEntity>) =>
 
 export const fetchCommonById = async (
   commonId: string,
-): Promise<ICommonEntity> => {
+): Promise<IFirebaseDoc<ICommonEntity>> => {
   if (!commonId) {
     throw new Error(
       'Common Id (commonId) is required parameter, but it was not provided',
     );
   }
-  const common = await CommonsCollection.doc(commonId).get();
-  return common.data() as ICommonEntity;
+  return await CommonsCollection.doc(commonId).get();
 };

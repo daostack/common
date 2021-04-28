@@ -7,30 +7,15 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
 } from 'react-native';
 import {object, shape, number, array, string, func, bool} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
-import Icon from '~/Assets/iconfont/Icon';
 import {HyperText} from '~/Components/Text/HyperText';
-
-const Title = ({title, onPress, canEdit}) => (
-  <View style={styles.titleContainer}>
-    <Text style={styles.titleText}>{title}</Text>
-    {canEdit && (
-      <TouchableOpacity style={styles.editText} onPress={() => onPress()}>
-        <Icon
-          style={{marginTop: 2}}
-          size={16}
-          name="edit-16"
-          color={colors.black}
-        />
-        <Text style={{...text.h3Black, marginLeft: 5}}>Edit</Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
+import Title from '~/Components/CommonAgenda/Title';
+import MinimumContribution from '~/Components/CommonAgenda/MinimumContribution';
+import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
+import CommonRules from '~/Components/CommonAgenda/CommonRules';
 
 const CommonAgenda = ({
   // This destructuring is bloody awful
@@ -73,7 +58,7 @@ const CommonAgenda = ({
                 width: '100%',
                 ...text.writingDirection(common.metadata.description),
               }}>
-                {common.metadata.description}
+              {common.metadata.description}
             </HyperText>
           </View>
 
@@ -97,40 +82,21 @@ const CommonAgenda = ({
             </View>
           )}
 
-          {common.rules?.length > 0 && (
-            <React.Fragment>
-              <View style={styles.sectionDividerContent}>
-                <View style={styles.sectionDivider} />
-              </View>
+          <CommonRules
+            onEdit={() => onEdit('rules')}
+            canEdit={canEdit}
+            rules={common.rules}
+          />
 
-              <View style={styles.sectionContainer}>
-                <Title
-                  title="Rules of conduct"
-                  onPress={() => onEdit('rules')}
-                  canEdit={canEdit}
-                />
+          <SectionDivider />
 
-                {common.rules.map((rule, i) => (
-                  <View key={i} style={{width: '100%'}}>
-                    <HyperText
-                      textStyle={{
-                        ...styles.ruleTitle,
-                        ...text.writingDirection(rule.title),
-                      }}>
-                      {rule.title}
-                    </HyperText>
-                    <HyperText
-                      textStyle={{
-                        ...styles.ruleDescription,
-                        ...text.writingDirection(rule.value || rule.url),
-                      }}>
-                      {rule.value || rule.url}
-                    </HyperText>
-                  </View>
-                ))}
-              </View>
-            </React.Fragment>
-          )}
+          <View style={styles.sectionContainer}>
+            <Title title="Minimum Contribution" canEdit={false} />
+            <MinimumContribution
+              minFeeToJoin={common.minFeeToJoinFormatted}
+              contributionType={common.metadata.contributionType}
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -171,6 +137,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  image: {
+    width: 170,
+    height: 170,
+  },
   linkText: {
     ...layout.marginTopS,
     ...font.primary.regular,
@@ -192,45 +162,9 @@ const styles = StyleSheet.create({
     ...layout.marginTopS,
     color: colors.black,
   },
-  ruleTitle: {
-    ...text.blackText,
-    ...layout.marginTopM,
-    color: colors.black,
-  },
-  sectionDividerContent: {
-    paddingHorizontal: 20,
-  },
-  sectionDivider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: colors.grey4,
-    ...layout.paddingLeftL,
-    ...layout.paddingRightL,
-  },
-  ruleDescription: {
-    ...layout.marginTopS,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-    color: colors.black,
-  },
   sectionContainer: {
     ...layout.content,
     alignItems: 'flex-start',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  titleText: {
-    ...text.h2Black,
-    paddingVertical: 7,
-  },
-  editText: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 7,
   },
 });
 
