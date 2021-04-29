@@ -16,7 +16,7 @@ export const monthShortNames = [
 ];
 
 export const formatNotificationDate = (date) => {
-  let dateFormatted;
+  let dateFormatted = '';
   if (date) {
     if (moment(date).isAfter(moment().subtract(1, 'd'))) {
       dateFormatted = moment(date).fromNow();
