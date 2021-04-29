@@ -28,6 +28,7 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
       const common = rootStore.commonStore.getCommonById(discussion.commonId);
 
       notificationData = {
+        createdAt: item.createdAt,
         missingData: false,
         description: 'A post was reported',
         ownerAvatar: reporter.photoURL,

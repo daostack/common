@@ -45,10 +45,6 @@ export default class NotificationStore extends BaseStore<
             prevNotification.createdAt?.seconds -
             notification.createdAt?.seconds,
         );
-
-      // console.log(this.getDataArray);
-
-      console.log(notif);
       return notif;
     } catch (error) {
       return [];
@@ -123,7 +119,6 @@ export default class NotificationStore extends BaseStore<
       eventType: EventTypeState.welcomeNotification,
     } as INotificationEntity;
 
-    console.log('GET ENTITITY addWelcomeNotification', welcomeNotification);
     this.setData(
       EventTypeState.welcomeNotification,
       this.getEntityModel(welcomeNotification),
@@ -152,10 +147,6 @@ export default class NotificationStore extends BaseStore<
     }
 
     const newNotif = new Notification(entity, notificationItemState);
-
-    console.log('GET ENTITITY', entity);
-    console.log('GET ENTITITY 2', newNotif);
-
     return newNotif;
   }
 

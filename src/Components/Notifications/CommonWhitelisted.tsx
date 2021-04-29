@@ -43,9 +43,6 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
     return null;
   }
 
-  console.log(notificationData);
-  console.log(item);
-
   return (
     <NotificationItem
       item={item}

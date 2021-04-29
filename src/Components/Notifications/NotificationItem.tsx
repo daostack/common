@@ -36,9 +36,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
-  // console.log(notificationData);
-  // console.log(item);
-
   const navigateToDetail = () => {
     let navigate;
 
@@ -79,14 +76,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       );
     }
   };
-
-  console.log('GET ENTITITY ITEM', item);
-
-  console.log(
-    'GET ENTITITY notificationItemState',
-    item.notificationItemState?.opened,
-  );
-  console.log('GET ENTITITY notificationItemState', item.createdAt);
 
   return (
     <TouchableOpacity
@@ -150,9 +139,11 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           </View>
           <Text style={styles.dateStyle}>
             {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
-            {formatNotificationDate(
-              item.createdAt.toDate && item.createdAt.toDate(),
-            )}
+            {notificationData.createdAt &&
+              formatNotificationDate(
+                notificationData.createdAt.toDate &&
+                  notificationData.createdAt.toDate(),
+              )}
             {notificationData.common && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}

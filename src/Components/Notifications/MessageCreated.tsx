@@ -38,6 +38,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
     if (objectData && user) {
       notificationData = {
         missingData: false,
+        createdAt: item.createdAt,
         descriptionBold: `${user.firstName} ${user.lastName}:`,
         description: ` ${message.text}`,
         ownerAvatar: user.photoURL,

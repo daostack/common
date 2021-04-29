@@ -24,8 +24,11 @@ const WelcomeNotification: React.FC<InferProps<typeof props>> = ({
       'https://firebasestorage.googleapis.com/v0/b/common-staging-50741.appspot.com/o/public_img%2FappLogo.png?alt=media&token=41fec685-b6fb-4b56-813a-fd3e8756787a',
   };
 
+  const itemNotification = item as Notification;
+
   console.log(notificationData);
   console.log(item);
+  console.log(itemNotification);
 
   return (
     <NotificationItem

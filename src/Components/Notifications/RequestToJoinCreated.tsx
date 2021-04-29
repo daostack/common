@@ -30,6 +30,7 @@ const RequestToJoinCreated: React.FC<InferProps<typeof props>> = ({
     }
 
     notificationData = {
+      createdAt: item.createdAt,
       missingData: false,
       description:
         ' Your Common has new pending members, view their requests and vote',
