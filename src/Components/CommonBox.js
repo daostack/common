@@ -33,7 +33,6 @@ const CommonBox = ({
       isMember={false}
       commonInfo={{
         cover: common.image,
-        logo: common.logo,
         name: common.name,
         description: common.metadata?.byline,
       }}
@@ -61,7 +60,6 @@ const CommonBox = ({
 CommonBox.propTypes = {
   common: shape({
     image: string,
-    logo: string,
     name: string,
     metadata: object,
     fundingGoalDeadline: number,
