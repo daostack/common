@@ -7,8 +7,7 @@ export const validateCustomAmount = {
   validateFunc: (value: string, requirement: string) => {
     const minFeeToJoin = Number(requirement);
     const enteredAmount = Number(value);
-    const isMinFee = enteredAmount >= 5;
-    return minFeeToJoin > 0 ? isMinFee : enteredAmount === 0 || isMinFee;
+    return minFeeToJoin === 0 ? (enteredAmount >= 5 || enteredAmount === 0) : enteredAmount >= minFeeToJoin;
   },
   errorMessage: 'Custom amount is invalid',
 };
