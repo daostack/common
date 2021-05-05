@@ -13,7 +13,7 @@ const props = {
   isReported: bool,
   moderation: object,
   reporter: object,
-  hasPermission: bool,
+  hasPermission: string,
   rootStore: rootStorePropTypes.isRequired,
   viewerPermission: string,
 };
