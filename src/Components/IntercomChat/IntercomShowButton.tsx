@@ -1,6 +1,7 @@
 import React, {FC, useCallback} from 'react';
 import Intercom from 'react-native-intercom';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import Icon from '~/Assets/iconfont/Icon';
 
 const IntercomShowButton: FC = () => {
   const handlePress = useCallback(() => {
@@ -8,18 +9,19 @@ const IntercomShowButton: FC = () => {
   }, []);
 
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <View style={styles.button} />
+    <TouchableOpacity style={styles.button} onPress={handlePress}>
+      <Icon name={'lifebuoy-32'} size={32} color={'#333333'} />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    width: 20,
-    height: 20,
+    width: 28,
+    height: 28,
     marginRight: 10,
-    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
