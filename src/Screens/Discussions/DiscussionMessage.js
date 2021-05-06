@@ -199,7 +199,7 @@ DiscussionMessage.propTypes = {
     createTime: object,
   }),
   showCurrentUserAvatar: bool,
-  hasPermission: bool,
+  hasPermission: string,
   rootStore: rootStorePropTypes,
   commonId: string,
   openMessageOptions: func,

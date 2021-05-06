@@ -6,7 +6,7 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
 import Animated, {Easing} from 'react-native-reanimated';
 import {bool, object} from 'prop-types';
-import {uiStorePropType} from '~/Types/propTypes';
+import {uiStorePropTypes} from '~/Types/propTypes';
 
 const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
   let ref = useRef();
@@ -98,7 +98,7 @@ const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
 };
 
 BottomSheetContainer.propTypes = {
-  uiStore: uiStorePropType,
+  uiStore: uiStorePropTypes,
   withoutHeader: bool,
   navigation: object,
 };

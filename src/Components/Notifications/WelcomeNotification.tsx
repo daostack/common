@@ -1,14 +1,12 @@
 import React from 'react';
 import {InferProps, object} from 'prop-types';
 import {observer} from 'mobx-react';
-import {rootStorePropTypes} from '~/Types/propTypes';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
   navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
 };
 
 const WelcomeNotification: React.FC<InferProps<typeof props>> = ({
