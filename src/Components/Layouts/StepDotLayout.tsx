@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Animated,
   StyleSheet,
+  View,
 } from 'react-native';
 import {inject} from 'mobx-react';
 import {
@@ -25,6 +26,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import StepDotHeader from './StepDotHeader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 // import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
@@ -157,18 +159,21 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             </TouchableOpacity>
           }
           rightButton={
-            <TouchableOpacity
-              style={styles.navBtn}
-              onPress={() => {
-                closeDialog();
-              }}>
-              <Icon
-                name="close"
-                size={18}
-                style={{marginRight: 20}}
-                color="black"
-              />
-            </TouchableOpacity>
+            <View style={styles.rightButtonsContainer}>
+              <IntercomShowButton />
+              <TouchableOpacity
+                style={styles.navBtn}
+                onPress={() => {
+                  closeDialog();
+                }}>
+                <Icon
+                  name="close"
+                  size={18}
+                  style={{marginRight: 20}}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </View>
           }
         />
         <StepDotHeader
@@ -218,6 +223,10 @@ StepDotLayout.propTypes = props;
 const styles = StyleSheet.create({
   navBtn: {
     justifyContent: 'center',
+  },
+  rightButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
