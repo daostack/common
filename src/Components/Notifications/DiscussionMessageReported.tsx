@@ -45,6 +45,7 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
         messageReportedData.ownerId,
       );
       notificationData = {
+        createdAt: item.createdAt,
         missingData: false,
         description: 'A comment was reported',
         ownerAvatar: messageOwner.photoURL,
