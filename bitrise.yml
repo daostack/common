@@ -3,14 +3,14 @@ format_version: '8'
 default_step_lib_source: 'https://github.com/bitrise-io/bitrise-steplib.git'
 project_type: react-native
 trigger_map:
-- push_branch: master
-  workflow: codepush
-- push_branch: staging
-  workflow: codepush-staging
-- push_branch: '*'
-  workflow: primary
-- pull_request_source_branch: '*'
-  workflow: primary
+  - push_branch: master
+    workflow: codepush
+  - push_branch: staging
+    workflow: codepush-staging
+  - push_branch: '*'
+    workflow: primary
+  - pull_request_source_branch: '*'
+    workflow: primary
 workflows:
   deploy:
     description: >
@@ -120,287 +120,287 @@ workflows:
       The next change in your repository that matches any of your trigger map
       event will start **deploy** workflow.
     steps:
-    - git-tag@1:
-        inputs:
-        - tag_message: Auto deploy
-        - tag: $APP_VERSION.$BITRISE_BUILD_NUMBER
-    - install-missing-android-tools@2:
-        inputs:
-        - gradlew_path: $PROJECT_LOCATION/gradlew
-    - change-android-versioncode-and-versionname@1:
-        inputs:
-        - build_gradle_path: $BITRISE_SOURCE_DIR/android/app/build.gradle
-        - new_version_name: $APP_VERSION
-    - android-build@0:
-        inputs:
-        - variant: ProductionRelease
-        - build_type: aab
-        - project_location: $PROJECT_LOCATION
-    - sign-apk@1:
-        inputs:
-        - android_app: $BITRISE_AAB_PATH
-    - google-play-deploy@3:
-        inputs:
-        - service_account_json_key_path: $BITRISEIO_github_actions_play_store_key_json_URL
-        - user_fraction: ''
-        - track: beta
-        - package_name: com.daostack.common
-    - set-xcode-build-number@1:
-        inputs:
-        - build_short_version_string: $APP_VERSION
-        - plist_path: $BITRISE_PROJECT_PATH/../common/Support/Info.plist
-    - set-xcode-build-number@1:
-        inputs:
-        - plist_path: $BITRISE_PROJECT_PATH/../common-notification-service-ext/Info.plist
-        - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
-        inputs:
-        - distribution_type: app-store
-        - generate_profiles: 'yes'
-        - team_id: 66CXPKJ7ZA
-    - xcode-archive@2:
-        inputs:
-        - project_path: $BITRISE_PROJECT_PATH
-        - scheme: $BITRISE_SCHEME
-        - export_method: $BITRISE_EXPORT_METHOD
-        - team_id: 66CXPKJ7ZA
-        - configuration: Release
-    - deploy-to-itunesconnect-application-loader@0:
-        inputs:
-        - itunescon_user: $AppleID
-        - password: $AplleIDpassword
-        - app_password: $AppleIDspecificAppPassword
-    - deploy-to-bitrise-io@1: {}
+      - git-tag@1:
+          inputs:
+            - tag_message: Auto deploy
+            - tag: $APP_VERSION.$BITRISE_BUILD_NUMBER
+      - install-missing-android-tools@2:
+          inputs:
+            - gradlew_path: $PROJECT_LOCATION/gradlew
+      - change-android-versioncode-and-versionname@1:
+          inputs:
+            - build_gradle_path: $BITRISE_SOURCE_DIR/android/app/build.gradle
+            - new_version_name: $APP_VERSION
+      - android-build@0:
+          inputs:
+            - variant: ProductionRelease
+            - build_type: aab
+            - project_location: $PROJECT_LOCATION
+      - sign-apk@1:
+          inputs:
+            - android_app: $BITRISE_AAB_PATH
+      - google-play-deploy@3:
+          inputs:
+            - service_account_json_key_path: $BITRISEIO_github_actions_play_store_key_json_URL
+            - user_fraction: ''
+            - track: beta
+            - package_name: com.daostack.common
+      - set-xcode-build-number@1:
+          inputs:
+            - build_short_version_string: $APP_VERSION
+            - plist_path: $BITRISE_PROJECT_PATH/../common/Support/Info.plist
+      - set-xcode-build-number@1:
+          inputs:
+            - plist_path: $BITRISE_PROJECT_PATH/../common-notification-service-ext/Info.plist
+            - build_short_version_string: $APP_VERSION
+      - ios-auto-provision@1:
+          inputs:
+            - distribution_type: app-store
+            - generate_profiles: 'yes'
+            - team_id: 66CXPKJ7ZA
+      - xcode-archive@2:
+          inputs:
+            - project_path: $BITRISE_PROJECT_PATH
+            - scheme: $BITRISE_SCHEME
+            - export_method: $BITRISE_EXPORT_METHOD
+            - team_id: 66CXPKJ7ZA
+            - configuration: Release
+      - deploy-to-itunesconnect-application-loader@0:
+          inputs:
+            - itunescon_user: $AppleID
+            - password: $AplleIDpassword
+            - app_password: $AppleIDspecificAppPassword
+      - deploy-to-bitrise-io@1: {}
     before_run:
-    - setup
+      - setup
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   primary:
     steps:
-    - android-build@0:
-        inputs:
-        - build_type: aab
-        - variant: ProductionRelease
-        - arguments: ''
-        - project_location: $BITRISE_SOURCE_DIR/android
-    - deploy-to-bitrise-io@1: {}
+      - android-build@0:
+          inputs:
+            - build_type: aab
+            - variant: ProductionRelease
+            - arguments: ''
+            - project_location: $BITRISE_SOURCE_DIR/android
+      - deploy-to-bitrise-io@1: {}
     before_run:
-    - setup
+      - setup
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   setup:
     steps:
-    - activate-ssh-key@4:
-        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-    - git-clone@4: {}
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
-        - source: $BITRISEIO_google_services_json_URL
-        title: Download - google services
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
-        - source: $BITRISEIO_GoogleService_Info_plist_URL
-        title: Download - GoogleService-Info.plist
-    - yarn@0:
-        inputs:
-        - command: install
-        title: Run yarn install
-    - yarn@0:
-        inputs:
-        - command: test
-        title: Run yarn test
-    - cocoapods-install@1:
-        inputs:
-        - install_cocoapods_version: 1.10.1
-        - verbose: 'false'
-        - podfile_path: $source_root_path/ios/Podfile
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      - git-clone@4: {}
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
+            - source: $BITRISEIO_google_services_json_URL
+          title: Download - google services
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
+            - source: $BITRISEIO_GoogleService_Info_plist_URL
+          title: Download - GoogleService-Info.plist
+      - yarn@0:
+          inputs:
+            - command: install
+          title: Run yarn install
+      - yarn@0:
+          inputs:
+            - command: test
+          title: Run yarn test
+      - cocoapods-install@1:
+          inputs:
+            - install_cocoapods_version: 1.10.1
+            - verbose: 'false'
+            - podfile_path: $source_root_path/ios/Podfile
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   codepush:
     steps:
-    - script@1:
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            # fail if any commands fails
-            set -e
-            # debug log
-            set -x
+      - script@1:
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # debug log
+                set -x
 
-            # That's old logic which we used but bitrise started failing. Leaving as refference. 
-            # cd node_modules/hermes-engine/osx-bin 
-            # mv hermesc hermes
-            # cd ../../..
+                # That's old logic which we used but bitrise started failing. Leaving as refference. 
+                # cd node_modules/hermes-engine/osx-bin 
+                # mv hermesc hermes
+                # cd ../../..
 
-            # or run a script from your repository, like:
-            # bash ./path/to/script.sh
-            # not just bash, e.g.:
-            # ruby ./path/to/script.rb
-    - appcenter-codepush-release-react-native@0:
-        inputs:
-        - api_token: $APPCENTER_CODEPUSH_ANDROID_API
-        - deployment: Production
-        - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
-        - app_id: $APPCENTER_APP_ID_ANDROID
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
+                # or run a script from your repository, like:
+                # bash ./path/to/script.sh
+                # not just bash, e.g.:
+                # ruby ./path/to/script.rb
+      - appcenter-codepush-release-react-native@0:
+          inputs:
+            - api_token: $APPCENTER_CODEPUSH_ANDROID_API
+            - deployment: Production
+            - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
+            - app_id: $APPCENTER_APP_ID_ANDROID
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
 
-            # fail if any commands fails
+                # fail if any commands fails
 
-            set -e
+                set -e
 
-            # debug log
+                # debug log
 
-            set -x
-
-
-            # write your script here
-
-            LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
-            "$(curl -X GET
-            "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Production"
-            -H "accept: application/json" -H "X-API-Token:
-            $APPCENTER_CODEPUSH_ANDROID_API")")"
+                set -x
 
 
-            envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
+                # write your script here
+
+                LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
+                "$(curl -X GET
+                "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Production"
+                -H "accept: application/json" -H "X-API-Token:
+                $APPCENTER_CODEPUSH_ANDROID_API")")"
 
 
-            # or run a script from your repository, like:
-
-            # bash ./path/to/script.sh
-
-            # not just bash, e.g.:
-
-            # ruby ./path/to/script.rb
-    - git-tag@1:
-        inputs:
-        - tag: >-
-            Android-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
-        - tag_message: Auto codepush
-    - appcenter-codepush-release-react-native@0:
-        inputs:
-        - api_token: $APPCENTER_CODEPUSH_IOS_API
-        - deployment: Production
-        - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
-        - app_id: $APPCENTER_APP_ID_IOS
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
-
-            # fail if any commands fails
-
-            set -e
-
-            # debug log
-
-            set -x
+                envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
 
 
-            # write your script here
+                # or run a script from your repository, like:
 
-            LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
-            "$(curl -X GET
-            "https://api.appcenter.ms/v0.1/apps/DAOstack/common-ios/deployments/Production"
-            -H "accept: application/json" -H "X-API-Token:
-            $APPCENTER_CODEPUSH_IOS_API")")"
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+      - git-tag@1:
+          inputs:
+            - tag: >-
+                Android-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+            - tag_message: Auto codepush
+      - appcenter-codepush-release-react-native@0:
+          inputs:
+            - api_token: $APPCENTER_CODEPUSH_IOS_API
+            - deployment: Production
+            - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
+            - app_id: $APPCENTER_APP_ID_IOS
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+
+                set -e
+
+                # debug log
+
+                set -x
 
 
-            envman add --key IOS_CODEPUSH_LABEL --value $LABEL
+                # write your script here
+
+                LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
+                "$(curl -X GET
+                "https://api.appcenter.ms/v0.1/apps/DAOstack/common-ios/deployments/Production"
+                -H "accept: application/json" -H "X-API-Token:
+                $APPCENTER_CODEPUSH_IOS_API")")"
 
 
-            # or run a script from your repository, like:
+                envman add --key IOS_CODEPUSH_LABEL --value $LABEL
 
-            # bash ./path/to/script.sh
 
-            # not just bash, e.g.:
+                # or run a script from your repository, like:
 
-            # ruby ./path/to/script.rb
-    - git-tag@1:
-        inputs:
-        - tag: >-
-            iOS-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$IOS_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
-        - tag_message: Auto codepush
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+      - git-tag@1:
+          inputs:
+            - tag: >-
+                iOS-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$IOS_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+            - tag_message: Auto codepush
     before_run:
-    - setup
+      - setup
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   codepush-test:
     steps:
-    - activate-ssh-key@4:
-        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-    - git-clone@4: {}
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
-        - source: $BITRISEIO_google_services_json_URL
-        title: Download - google services
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
-        - source: $BITRISEIO_GoogleService_Info_plist_URL
-        title: Download - GoogleService-Info.plist
-    - yarn@0:
-        inputs:
-        - command: install
-        title: Run yarn install
-    - yarn@0:
-        inputs:
-        - command: test
-        title: Run yarn test
-    - appcenter-codepush-release-react-native@0:
-        inputs:
-        - api_token: $APPCENTER_CODEPUSH_ANDROID_API
-        - deployment: Production
-        - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
-        - app_id: $APPCENTER_APP_ID_ANDROID
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      - git-clone@4: {}
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
+            - source: $BITRISEIO_google_services_json_URL
+          title: Download - google services
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
+            - source: $BITRISEIO_GoogleService_Info_plist_URL
+          title: Download - GoogleService-Info.plist
+      - yarn@0:
+          inputs:
+            - command: install
+          title: Run yarn install
+      - yarn@0:
+          inputs:
+            - command: test
+          title: Run yarn test
+      - appcenter-codepush-release-react-native@0:
+          inputs:
+            - api_token: $APPCENTER_CODEPUSH_ANDROID_API
+            - deployment: Production
+            - options: '-t $CODEPUSH_TARGET_VERSION_PRODUCTION --mandatory'
+            - app_id: $APPCENTER_APP_ID_ANDROID
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
 
-            # fail if any commands fails
+                # fail if any commands fails
 
-            set -e
+                set -e
 
-            # debug log
+                # debug log
 
-            set -x
-
-
-            # write your script here
-
-            LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
-            "$(curl -X GET
-            "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Production"
-            -H "accept: application/json" -H "X-API-Token:
-            $APPCENTER_CODEPUSH_ANDROID_API")")"
+                set -x
 
 
-            envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
+                # write your script here
+
+                LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
+                "$(curl -X GET
+                "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Production"
+                -H "accept: application/json" -H "X-API-Token:
+                $APPCENTER_CODEPUSH_ANDROID_API")")"
 
 
-            # or run a script from your repository, like:
+                envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
 
-            # bash ./path/to/script.sh
 
-            # not just bash, e.g.:
+                # or run a script from your repository, like:
 
-            # ruby ./path/to/script.rb
-    - git-tag@1:
-        inputs:
-        - tag_message: Auto codepush
-        - tag: >-
-            Android-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+      - git-tag@1:
+          inputs:
+            - tag_message: Auto codepush
+            - tag: >-
+                Android-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
@@ -512,333 +512,333 @@ workflows:
       The next change in your repository that matches any of your trigger map
       event will start **deploy** workflow.
     steps:
-    - git-tag@1:
-        inputs:
-        - tag_message: Auto deploy staging
-        - tag: Staging-$APP_VERSION.$BITRISE_BUILD_NUMBER
-    - install-missing-android-tools@2:
-        inputs:
-        - gradlew_path: $PROJECT_LOCATION/gradlew
-    - change-android-versioncode-and-versionname@1:
-        inputs:
-        - build_gradle_path: $BITRISE_SOURCE_DIR/android/app/build.gradle
-        - new_version_name: $APP_VERSION
-    - android-build@0:
-        inputs:
-        - variant: Stagingrelease
-        - build_type: aab
-        - project_location: $PROJECT_LOCATION
-    - sign-apk@1:
-        inputs:
-        - android_app: $BITRISE_AAB_PATH
-    - google-play-deploy@3:
-        inputs:
-        - service_account_json_key_path: $BITRISEIO_github_actions_play_store_key_json_URL
-        - user_fraction: ''
-        - package_name: com.daostack.common.staging
-    - set-xcode-build-number@1:
-        inputs:
-        - build_short_version_string: $APP_VERSION
-        - plist_path: $BITRISE_PROJECT_PATH/../common-dev-Info.plist
-    - set-xcode-build-number@1:
-        inputs:
-        - plist_path: >-
-            $BITRISE_PROJECT_PATH/../common-notification-service-ext
-            copy-Info.plist
-        - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
-        inputs:
-        - team_id: 66CXPKJ7ZA
-        - generate_profiles: 'yes'
-        - distribution_type: app-store
-    - xcode-archive@2:
-        inputs:
-        - project_path: $BITRISE_PROJECT_PATH
-        - scheme: $BITRISE_SCHEME
-        - export_method: $BITRISE_EXPORT_METHOD
-        - team_id: 66CXPKJ7ZA
-        - icloud_container_environment: iCloud.common-cloud
-        - configuration: ''
-    - deploy-to-itunesconnect-application-loader@0:
-        inputs:
-        - itunescon_user: $AppleID
-        - password: $AplleIDpassword
-        - app_password: $AppleIDspecificAppPassword
-    - deploy-to-bitrise-io@1: {}
+      - git-tag@1:
+          inputs:
+            - tag_message: Auto deploy staging
+            - tag: Staging-$APP_VERSION.$BITRISE_BUILD_NUMBER
+      - install-missing-android-tools@2:
+          inputs:
+            - gradlew_path: $PROJECT_LOCATION/gradlew
+      - change-android-versioncode-and-versionname@1:
+          inputs:
+            - build_gradle_path: $BITRISE_SOURCE_DIR/android/app/build.gradle
+            - new_version_name: $APP_VERSION
+      - android-build@0:
+          inputs:
+            - variant: Stagingrelease
+            - build_type: aab
+            - project_location: $PROJECT_LOCATION
+      - sign-apk@1:
+          inputs:
+            - android_app: $BITRISE_AAB_PATH
+      - google-play-deploy@3:
+          inputs:
+            - service_account_json_key_path: $BITRISEIO_github_actions_play_store_key_json_URL
+            - user_fraction: ''
+            - package_name: com.daostack.common.staging
+      - set-xcode-build-number@1:
+          inputs:
+            - build_short_version_string: $APP_VERSION
+            - plist_path: $BITRISE_PROJECT_PATH/../common-dev-Info.plist
+      - set-xcode-build-number@1:
+          inputs:
+            - plist_path: >-
+                $BITRISE_PROJECT_PATH/../common-notification-service-ext
+                copy-Info.plist
+            - build_short_version_string: $APP_VERSION
+      - ios-auto-provision@1:
+          inputs:
+            - team_id: 66CXPKJ7ZA
+            - generate_profiles: 'yes'
+            - distribution_type: app-store
+      - xcode-archive@2:
+          inputs:
+            - project_path: $BITRISE_PROJECT_PATH
+            - scheme: $BITRISE_SCHEME
+            - export_method: $BITRISE_EXPORT_METHOD
+            - team_id: 66CXPKJ7ZA
+            - icloud_container_environment: iCloud.common-cloud
+            - configuration: ''
+      - deploy-to-itunesconnect-application-loader@0:
+          inputs:
+            - itunescon_user: $AppleID
+            - password: $AplleIDpassword
+            - app_password: $AppleIDspecificAppPassword
+      - deploy-to-bitrise-io@1: {}
     before_run:
-    - setup-staging
+      - setup-staging
     envs:
-    - opts:
-        is_expand: false
-      APP_VERSION: '1.9.6'
-    - opts:
-        is_expand: false
-      ENV: staging
-    - opts:
-        is_expand: false
-      ARC_VERSION: 0.1.1-rc.21
-    - opts:
-        is_expand: false
-      GRAPH_VERSION: v8_10_exp_kovan
-    - opts:
-        is_expand: false
-      graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
-    - opts:
-        is_expand: false
-      graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
-    - opts:
-        is_expand: false
-      ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
-    - opts:
-        is_expand: false
-      web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
-    - opts:
-        is_expand: false
-      relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
-    - opts:
-        is_expand: false
-      cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
-    - opts:
-        is_expand: false
-      web3NetworkId: '42'
-    - opts:
-        is_expand: false
-      COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
-    - opts:
-        is_expand: false
-      firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
-    - opts:
-        is_expand: false
-      BITRISE_SCHEME: common-stg
+      - opts:
+          is_expand: false
+        APP_VERSION: '1.9.7'
+      - opts:
+          is_expand: false
+        ENV: staging
+      - opts:
+          is_expand: false
+        ARC_VERSION: 0.1.1-rc.21
+      - opts:
+          is_expand: false
+        GRAPH_VERSION: v8_10_exp_kovan
+      - opts:
+          is_expand: false
+        graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
+      - opts:
+          is_expand: false
+        web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
+      - opts:
+          is_expand: false
+        relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
+      - opts:
+          is_expand: false
+        cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
+      - opts:
+          is_expand: false
+        web3NetworkId: '42'
+      - opts:
+          is_expand: false
+        COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
+      - opts:
+          is_expand: false
+        firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
+      - opts:
+          is_expand: false
+        BITRISE_SCHEME: common-stg
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   setup-staging:
     steps:
-    - activate-ssh-key@4:
-        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-    - git-clone@4: {}
-    - file-downloader@1:
-        inputs:
-        - destination: $BITRISE_SOURCE_DIR/firebase-config.zip
-        - source: $BITRISEIO_google_services_all_URL
-        title: Download - all google services
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      - git-clone@4: {}
+      - file-downloader@1:
+          inputs:
+            - destination: $BITRISE_SOURCE_DIR/firebase-config.zip
+            - source: $BITRISEIO_google_services_all_URL
+          title: Download - all google services
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
 
-            # fail if any commands fails
+                # fail if any commands fails
 
-            set -e
+                set -e
 
-            # debug log
+                # debug log
 
-            set -x
-
-
-            # write your script here
-
-            unzip firebase-config.zip
+                set -x
 
 
-            # Android
+                # write your script here
 
-            mv firebase-config/production/google-services.json
-            $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
-
-            mv firebase-config/staging/google-services.json
-            $BITRISE_SOURCE_DIR/android/app/src/staging/google-services.json
+                unzip firebase-config.zip
 
 
-            # iOS
+                # Android
 
-            mv firebase-config/production/GoogleService-Info.plist
-            $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
+                mv firebase-config/production/google-services.json
+                $BITRISE_SOURCE_DIR/android/app/src/production/google-services.json
 
-            mv firebase-config/staging/GoogleService-Info.plist
-            $BITRISE_SOURCE_DIR/ios/firebase/staging/GoogleService-Info.plist
+                mv firebase-config/staging/google-services.json
+                $BITRISE_SOURCE_DIR/android/app/src/staging/google-services.json
 
 
-            # or run a script from your repository, like:
+                # iOS
 
-            # bash ./path/to/script.sh
+                mv firebase-config/production/GoogleService-Info.plist
+                $BITRISE_SOURCE_DIR/ios/firebase/production/GoogleService-Info.plist
 
-            # not just bash, e.g.:
+                mv firebase-config/staging/GoogleService-Info.plist
+                $BITRISE_SOURCE_DIR/ios/firebase/staging/GoogleService-Info.plist
 
-            # ruby ./path/to/script.rb
-        title: Set up Firebase config
-    - yarn@0:
-        inputs:
-        - command: install
-        title: Run yarn install
-    - yarn@0:
-        inputs:
-        - command: test
-        title: Run yarn test
-    - cocoapods-install@1:
-        inputs:
-        - install_cocoapods_version: 1.10.1
-        - verbose: 'false'
-        - podfile_path: $source_root_path/ios/Podfile
+
+                # or run a script from your repository, like:
+
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+          title: Set up Firebase config
+      - yarn@0:
+          inputs:
+            - command: install
+          title: Run yarn install
+      - yarn@0:
+          inputs:
+            - command: test
+          title: Run yarn test
+      - cocoapods-install@1:
+          inputs:
+            - install_cocoapods_version: 1.10.1
+            - verbose: 'false'
+            - podfile_path: $source_root_path/ios/Podfile
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
   codepush-staging:
     steps:
-    - script@1:
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            # fail if any commands fails
-            set -e
-            # debug log
-            set -x
+      - script@1:
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # debug log
+                set -x
 
-            # That's old logic which we used but bitrise started failing. Leaving as refference. 
-            # cd node_modules/hermes-engine/osx-bin 
-            # mv hermesc hermes
-            # cd ../../..
+                # That's old logic which we used but bitrise started failing. Leaving as refference. 
+                # cd node_modules/hermes-engine/osx-bin 
+                # mv hermesc hermes
+                # cd ../../..
 
-            # or run a script from your repository, like:
-            # bash ./path/to/script.sh
-            # not just bash, e.g.:
-            # ruby ./path/to/script.rb
-    - appcenter-codepush-release-react-native@0:
-        inputs:
-        - api_token: $APPCENTER_CODEPUSH_ANDROID_API
-        - options: >-
-            -t $CODEPUSH_TARGET_VERSION_STAGING --mandatory
-            --disable-duplicate-release-error
-        - app_id: $APPCENTER_APP_ID_ANDROID
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
+                # or run a script from your repository, like:
+                # bash ./path/to/script.sh
+                # not just bash, e.g.:
+                # ruby ./path/to/script.rb
+      - appcenter-codepush-release-react-native@0:
+          inputs:
+            - api_token: $APPCENTER_CODEPUSH_ANDROID_API
+            - options: >-
+                -t $CODEPUSH_TARGET_VERSION_STAGING --mandatory
+                --disable-duplicate-release-error
+            - app_id: $APPCENTER_APP_ID_ANDROID
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
 
-            # fail if any commands fails
+                # fail if any commands fails
 
-            set -e
+                set -e
 
-            # debug log
+                # debug log
 
-            set -x
-
-
-            # write your script here
-
-            LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
-            "$(curl -X GET
-            "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Staging"
-            -H "accept: application/json" -H "X-API-Token:
-            $APPCENTER_CODEPUSH_ANDROID_API")")"
+                set -x
 
 
-            envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
+                # write your script here
+
+                LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
+                "$(curl -X GET
+                "https://api.appcenter.ms/v0.1/apps/DAOstack/common-android/deployments/Staging"
+                -H "accept: application/json" -H "X-API-Token:
+                $APPCENTER_CODEPUSH_ANDROID_API")")"
 
 
-            appcenter -v
+                envman add --key ANDROID_CODEPUSH_LABEL --value $LABEL
 
 
-            # or run a script from your repository, like:
-
-            # bash ./path/to/script.sh
-
-            # not just bash, e.g.:
-
-            # ruby ./path/to/script.rb
-    - git-tag@1:
-        inputs:
-        - tag: >-
-            Android-STG-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
-        - tag_message: Auto codepush staging
-    - appcenter-codepush-release-react-native@0:
-        inputs:
-        - api_token: $APPCENTER_CODEPUSH_IOS_API
-        - options: >-
-            -t $CODEPUSH_TARGET_VERSION_STAGING --mandatory
-            --disable-duplicate-release-error
-        - app_id: $APPCENTER_APP_ID_IOS
-    - script@1:
-        inputs:
-        - content: >-
-            #!/usr/bin/env bash
-
-            # fail if any commands fails
-
-            set -e
-
-            # debug log
-
-            set -x
+                appcenter -v
 
 
-            # write your script here
+                # or run a script from your repository, like:
 
-            LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
-            "$(curl -X GET
-            "https://api.appcenter.ms/v0.1/apps/DAOstack/common-ios/deployments/Staging"
-            -H "accept: application/json" -H "X-API-Token:
-            $APPCENTER_CODEPUSH_IOS_API")")"
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+      - git-tag@1:
+          inputs:
+            - tag: >-
+                Android-STG-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$ANDROID_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+            - tag_message: Auto codepush staging
+      - appcenter-codepush-release-react-native@0:
+          inputs:
+            - api_token: $APPCENTER_CODEPUSH_IOS_API
+            - options: >-
+                -t $CODEPUSH_TARGET_VERSION_STAGING --mandatory
+                --disable-duplicate-release-error
+            - app_id: $APPCENTER_APP_ID_IOS
+      - script@1:
+          inputs:
+            - content: >-
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+
+                set -e
+
+                # debug log
+
+                set -x
 
 
-            envman add --key IOS_CODEPUSH_LABEL --value $LABEL
+                # write your script here
+
+                LABEL="$(node -pe 'JSON.parse(process.argv[1]).latest_release.label'
+                "$(curl -X GET
+                "https://api.appcenter.ms/v0.1/apps/DAOstack/common-ios/deployments/Staging"
+                -H "accept: application/json" -H "X-API-Token:
+                $APPCENTER_CODEPUSH_IOS_API")")"
 
 
-            # or run a script from your repository, like:
+                envman add --key IOS_CODEPUSH_LABEL --value $LABEL
 
-            # bash ./path/to/script.sh
 
-            # not just bash, e.g.:
+                # or run a script from your repository, like:
 
-            # ruby ./path/to/script.rb
-    - git-tag@1:
-        inputs:
-        - tag: >-
-            iOS-STG-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$IOS_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
-        - tag_message: Auto codepush staging
+                # bash ./path/to/script.sh
+
+                # not just bash, e.g.:
+
+                # ruby ./path/to/script.rb
+      - git-tag@1:
+          inputs:
+            - tag: >-
+                iOS-STG-CP-$CODEPUSH_TARGET_VERSION_PRODUCTION.$IOS_CODEPUSH_LABEL-build-$BITRISE_BUILD_NUMBER
+            - tag_message: Auto codepush staging
     before_run:
-    - setup-staging
+      - setup-staging
     envs:
-    - ENV: staging
-      opts:
-        is_expand: false
-    - opts:
-        is_expand: false
-      ARC_VERSION: 0.1.1-rc.21
-    - opts:
-        is_expand: false
-      GRAPH_VERSION: v8_10_exp_kovan
-    - opts:
-        is_expand: false
-      graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
-    - opts:
-        is_expand: false
-      graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
-    - opts:
-        is_expand: false
-      ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
-    - opts:
-        is_expand: false
-      web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
-    - opts:
-        is_expand: false
-      relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
-    - opts:
-        is_expand: false
-      cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
-    - opts:
-        is_expand: false
-      web3NetworkId: '42'
-    - opts:
-        is_expand: false
-      COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
-    - opts:
-        is_expand: false
-      firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
-    - opts:
-        is_expand: false
-      BITRISE_SCHEME: common-stg
+      - ENV: staging
+        opts:
+          is_expand: false
+      - opts:
+          is_expand: false
+        ARC_VERSION: 0.1.1-rc.21
+      - opts:
+          is_expand: false
+        GRAPH_VERSION: v8_10_exp_kovan
+      - opts:
+          is_expand: false
+        graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
+      - opts:
+          is_expand: false
+        web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
+      - opts:
+          is_expand: false
+        relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
+      - opts:
+          is_expand: false
+        cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
+      - opts:
+          is_expand: false
+        web3NetworkId: '42'
+      - opts:
+          is_expand: false
+        COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
+      - opts:
+          is_expand: false
+        firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
+      - opts:
+          is_expand: false
+        BITRISE_SCHEME: common-stg
     meta:
       bitrise.io:
         stack: osx-xcode-12.2.x
@@ -950,54 +950,119 @@ workflows:
       The next change in your repository that matches any of your trigger map
       event will start **deploy** workflow.
     steps:
-    - git-tag@1:
-        inputs:
-        - tag_message: Auto deploy staging
-        - tag: Staging-$APP_VERSION.$BITRISE_BUILD_NUMBER
-    - set-xcode-build-number@1:
-        inputs:
-        - build_short_version_string: $APP_VERSION
-        - plist_path: $BITRISE_PROJECT_PATH/../common-dev-Info.plist
-    - set-xcode-build-number@1:
-        inputs:
-        - plist_path: >-
-            $BITRISE_PROJECT_PATH/../common-notification-service-ext
-            copy-Info.plist
-        - build_short_version_string: $APP_VERSION
-    - ios-auto-provision@1:
-        inputs:
-        - team_id: 66CXPKJ7ZA
-        - generate_profiles: 'yes'
-        - distribution_type: app-store
-    - xcode-archive@2:
-        inputs:
-        - project_path: $BITRISE_PROJECT_PATH
-        - scheme: $BITRISE_SCHEME
-        - export_method: $BITRISE_EXPORT_METHOD
-        - team_id: 66CXPKJ7ZA
-        - icloud_container_environment: iCloud.common-cloud
-        - configuration: ''
-    - deploy-to-itunesconnect-application-loader@0:
-        inputs:
-        - itunescon_user: $AppleID
-        - password: $AplleIDpassword
-        - app_password: $AppleIDspecificAppPassword
-    - deploy-to-bitrise-io@1: {}
+      - git-tag@1:
+          inputs:
+            - tag_message: Auto deploy staging
+            - tag: Staging-$APP_VERSION.$BITRISE_BUILD_NUMBER
+      - set-xcode-build-number@1:
+          inputs:
+            - build_short_version_string: $APP_VERSION
+            - plist_path: $BITRISE_PROJECT_PATH/../common-dev-Info.plist
+      - set-xcode-build-number@1:
+          inputs:
+            - plist_path: >-
+                $BITRISE_PROJECT_PATH/../common-notification-service-ext
+                copy-Info.plist
+            - build_short_version_string: $APP_VERSION
+      - ios-auto-provision@1:
+          inputs:
+            - team_id: 66CXPKJ7ZA
+            - generate_profiles: 'yes'
+            - distribution_type: app-store
+      - xcode-archive@2:
+          inputs:
+            - project_path: $BITRISE_PROJECT_PATH
+            - scheme: $BITRISE_SCHEME
+            - export_method: $BITRISE_EXPORT_METHOD
+            - team_id: 66CXPKJ7ZA
+            - icloud_container_environment: iCloud.common-cloud
+            - configuration: ''
+      - deploy-to-itunesconnect-application-loader@0:
+          inputs:
+            - itunescon_user: $AppleID
+            - password: $AplleIDpassword
+            - app_password: $AppleIDspecificAppPassword
+      - deploy-to-bitrise-io@1: {}
     before_run:
-    - setup-staging
+      - setup-staging
     envs:
+      - opts:
+          is_expand: false
+        APP_VERSION: '1.9.7'
+      - opts:
+          is_expand: false
+        ENV: staging
+      - opts:
+          is_expand: false
+        ARC_VERSION: 0.1.1-rc.21
+      - opts:
+          is_expand: false
+        GRAPH_VERSION: v8_10_exp_kovan
+      - opts:
+          is_expand: false
+        graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
+      - opts:
+          is_expand: false
+        ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
+      - opts:
+          is_expand: false
+        web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
+      - opts:
+          is_expand: false
+        relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
+      - opts:
+          is_expand: false
+        cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
+      - opts:
+          is_expand: false
+        web3NetworkId: '42'
+      - opts:
+          is_expand: false
+        COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
+      - opts:
+          is_expand: false
+        firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
+      - opts:
+          is_expand: false
+        BITRISE_SCHEME: common-stg
+    meta:
+      bitrise.io:
+        stack: osx-xcode-12.2.x
+app:
+  envs:
     - opts:
         is_expand: false
-      APP_VERSION: '1.9.6'
+      PROJECT_LOCATION: android
     - opts:
         is_expand: false
-      ENV: staging
+      MODULE: app
+    - opts:
+        is_expand: false
+      VARIANT: ''
+    - opts:
+        is_expand: false
+      BITRISE_PROJECT_PATH: ios/common.xcworkspace
+    - opts:
+        is_expand: false
+      BITRISE_SCHEME: common
+    - opts:
+        is_expand: false
+      BITRISE_EXPORT_METHOD: development
+    - opts:
+        is_expand: false
+      APP_VERSION: '1.9.7'
+    - opts:
+        is_expand: false
+      ENV: production
     - opts:
         is_expand: false
       ARC_VERSION: 0.1.1-rc.21
     - opts:
         is_expand: false
-      GRAPH_VERSION: v8_10_exp_kovan
+      GRAPH_VERSION: v8_2_exp_xdai
     - opts:
         is_expand: false
       graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
@@ -1009,96 +1074,31 @@ workflows:
       ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
     - opts:
         is_expand: false
-      web3ProviderUrl: 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc'
+      web3ProviderUrl: 'https://dai.poa.network'
     - opts:
         is_expand: false
       relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
     - opts:
         is_expand: false
-      cloudFunctionURL: 'https://us-central1-common-staging-50741.cloudfunctions.net'
+      cloudFunctionURL: 'https://us-central1-common-daostack.cloudfunctions.net/'
     - opts:
         is_expand: false
-      web3NetworkId: '42'
+      web3NetworkId: '100'
     - opts:
         is_expand: false
-      COMMONTOKENADDRESS: '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01'
+      COMMONTOKENADDRESS: '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e'
     - opts:
         is_expand: false
-      firebaseWebClientId: 78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com
+      firebaseWebClientId: 854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com
     - opts:
         is_expand: false
-      BITRISE_SCHEME: common-stg
-    meta:
-      bitrise.io:
-        stack: osx-xcode-12.2.x
-app:
-  envs:
-  - opts:
-      is_expand: false
-    PROJECT_LOCATION: android
-  - opts:
-      is_expand: false
-    MODULE: app
-  - opts:
-      is_expand: false
-    VARIANT: ''
-  - opts:
-      is_expand: false
-    BITRISE_PROJECT_PATH: ios/common.xcworkspace
-  - opts:
-      is_expand: false
-    BITRISE_SCHEME: common
-  - opts:
-      is_expand: false
-    BITRISE_EXPORT_METHOD: development
-  - opts:
-      is_expand: false
-    APP_VERSION: '1.9.6'
-  - opts:
-      is_expand: false
-    ENV: production
-  - opts:
-      is_expand: false
-    ARC_VERSION: 0.1.1-rc.21
-  - opts:
-      is_expand: false
-    GRAPH_VERSION: v8_2_exp_xdai
-  - opts:
-      is_expand: false
-    graphHttpLink: 'https://api.thegraph.com/subgraphs/name/daostack/'
-  - opts:
-      is_expand: false
-    graphwsLink: 'wss://api.thegraph.com/subgraphs/name/daostack/'
-  - opts:
-      is_expand: false
-    ipfsLink: 'https://api.thegraph.com/ipfs-daostack/api/v0'
-  - opts:
-      is_expand: false
-    web3ProviderUrl: 'https://dai.poa.network'
-  - opts:
-      is_expand: false
-    relayerUrl: 'https://us-central1-common-daostack.cloudfunctions.net/relayer/'
-  - opts:
-      is_expand: false
-    cloudFunctionURL: 'https://us-central1-common-daostack.cloudfunctions.net/'
-  - opts:
-      is_expand: false
-    web3NetworkId: '100'
-  - opts:
-      is_expand: false
-    COMMONTOKENADDRESS: '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e'
-  - opts:
-      is_expand: false
-    firebaseWebClientId: 854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com
-  - opts:
-      is_expand: false
-    CODEPUSH_TARGET_VERSION_PRODUCTION: '>=1.9.4'
-  - opts:
-      is_expand: false
-    CODEPUSH_TARGET_VERSION_STAGING: '>=1.9.4'
-  - opts:
-      is_expand: false
-    APPCENTER_APP_ID_ANDROID: DAOstack/common-android
-  - opts:
-      is_expand: false
-    APPCENTER_APP_ID_IOS: DAOstack/common-ios
+      CODEPUSH_TARGET_VERSION_PRODUCTION: '>=1.9.4'
+    - opts:
+        is_expand: false
+      CODEPUSH_TARGET_VERSION_STAGING: '>=1.9.4'
+    - opts:
+        is_expand: false
+      APPCENTER_APP_ID_ANDROID: DAOstack/common-android
+    - opts:
+        is_expand: false
+      APPCENTER_APP_ID_IOS: DAOstack/common-ios
