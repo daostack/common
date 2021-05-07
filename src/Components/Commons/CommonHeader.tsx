@@ -12,6 +12,7 @@ import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import {object, shape, string, bool, func, InferProps} from 'prop-types';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   navigation: object,
@@ -38,7 +39,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
   onEdit,
 }) => {
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       screenTitle: name,
       common: common,
       canEdit,

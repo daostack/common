@@ -5,48 +5,73 @@ import {func, object, shape, array, InferProps} from 'prop-types';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {RULES} from '~/Components/Forms/EditCommonForm';
 
-const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
-  isValidChange,
-  common,
-  editCommonFormStore,
-}) => (
-  <View style={styles.body}>
-    <Text style={styles.subtitle}>Define your rules of conduct</Text>
+import {object, string as yupString} from 'yup';
+import {FormikProps} from 'formik';
 
-    <View style={styles.divider} />
+export const validationSchema = object({
+  image: yupString().required(),
+  name: yupString().required().label('The first name'),
+  tagLine: yupString().required().label('The last name'),
+  about: yupString(),
+});
 
-    <Text style={styles.title}>Rules of conduct</Text>
-    <Text
-      style={{
-        ...font.primary.regular,
-        ...font.fontSize(2),
-        ...font.lineHeight(2),
-        color: colors.grey3,
-      }}>
-      Use rules to set the tone for your Common's discussions. (No advertising
-      and spam, accepted language, etc.)
-    </Text>
+export interface Values {
+  image: string;
+  name: string;
+  tagLine: string;
+  about: string;
+}
 
-    <MultiTitleValueField
-      rule
-      allowsEditing={true}
-      title="Rule title"
-      placeholderValueText="Rule description"
-      multiline={true}
-      addMultiFieldBtnName="Add Rule"
-      onChangeText={(value) => isValidChange(value)}
-      currRules={common.rules}
-      validation={{
-        name: RULES,
-        formStore: editCommonFormStore,
-        validateRule: {
-          value: 'string|required',
-          title: 'string|max:80|required',
-        },
-      }}
-    />
-  </View>
-);
+const EditRules = (formik: {
+  formikProps: FormikProps<Values>;
+}): ReactElement => {
+  const {
+    touched,
+    errors,
+    values,
+    handleChange,
+    handleBlur,
+  } = formik.formikProps;
+
+  return (
+    <View style={styles.body}>
+      <Text style={styles.subtitle}>Define your rules of conduct</Text>
+
+      <View style={styles.divider} />
+
+      <Text style={styles.title}>Rules of conduct</Text>
+      <Text
+        style={{
+          ...font.primary.regular,
+          ...font.fontSize(2),
+          ...font.lineHeight(2),
+          color: colors.grey3,
+        }}>
+        Use rules to set the tone for your Common's discussions. (No advertising
+        and spam, accepted language, etc.)
+      </Text>
+
+      <MultiTitleValueField
+        rule
+        allowsEditing={true}
+        title="Rule title"
+        placeholderValueText="Rule description"
+        multiline={true}
+        addMultiFieldBtnName="Add Rule"
+        onChangeText={(value) => isValidChange(value)}
+        currRules={common.rules}
+        validation={{
+          name: RULES,
+          formStore: editCommonFormStore,
+          validateRule: {
+            value: 'string|required',
+            title: 'string|max:80|required',
+          },
+        }}
+      />
+    </View>
+  );
+};
 
 EditRules.propTypes = {
   common: shape({

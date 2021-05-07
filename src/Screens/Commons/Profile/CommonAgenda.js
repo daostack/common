@@ -17,6 +17,11 @@ import MinimumContribution from '~/Components/CommonAgenda/MinimumContribution';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
 import CommonRules from '~/Components/CommonAgenda/CommonRules';
 
+export const editType = {
+  info: 'info',
+  rules: 'rules',
+};
+
 const CommonAgenda = ({
   // This destructuring is bloody awful
   navigation,
@@ -48,7 +53,7 @@ const CommonAgenda = ({
           <View style={styles.sectionContainer}>
             <Title
               title="About"
-              onPress={() => onEdit('info')}
+              onPress={() => onEdit(editType.info)}
               canEdit={canEdit}
             />
             <HyperText
@@ -83,7 +88,7 @@ const CommonAgenda = ({
           )}
 
           <CommonRules
-            onEdit={() => onEdit('rules')}
+            onEdit={() => onEdit(editType.rules)}
             canEdit={canEdit}
             rules={common.rules}
           />

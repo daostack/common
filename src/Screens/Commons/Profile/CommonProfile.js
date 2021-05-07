@@ -64,6 +64,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -330,7 +331,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       screenTitle: currCommon.name,
       common: currCommon,
     });
@@ -447,9 +448,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    type === 'info'
-      ? navigateTo('Edit info and cover photo')
-      : navigateTo('Edit Rules');
+    navigateTo(type);
   };
 
   /**
@@ -557,10 +556,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const getType = (title) =>
     title === TITLES.proposals ? TITLES.proposalText : title;
 
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
       currCommon: currCommon,
-      title: screenTitle,
+      type: type,
     });
   };
 

@@ -11,6 +11,7 @@ import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
 import {object, bool, func, string, shape, InferProps} from 'prop-types';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   navigation: shape({
@@ -111,7 +112,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   );
   const openAgendaScreen = () => {
     if (navigation) {
-      navigation.navigate('CommonAgenda', {
+      navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
         common: common,
       });
     }

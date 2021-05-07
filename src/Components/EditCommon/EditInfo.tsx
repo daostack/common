@@ -1,62 +1,34 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import {text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
-import {shape, func, InferProps, string} from 'prop-types';
-import CommonImage from '~/Components/Commons/CommonImage';
-import TextInputField from '~/Components/FormFields/TextInputField';
-import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
+import CommonImage from '~/Components/FormikForm/CommonImage';
+import TextInputField from '~/Components/FormikForm/TextInputField';
 const {width} = Dimensions.get('window');
+import {object, string as yupString} from 'yup';
+import {FormikProps} from 'formik';
 
-const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
-  isValidChange,
-  common,
-  editCommonFormStore,
-}) => {
-  const textInputAttributes = [
-    {
-      value:
-        editCommonFormStore.getFormField(EditCommonConstants.NAME)?.value ||
-        common.name,
-      label: 'Common name',
-      maxLength: 49,
-      infoLabel: 'Required',
-      validation: {
-        name: EditCommonConstants.NAME,
-        formStore: editCommonFormStore,
-        validateRule: 'required',
-        displayName: 'common name',
-      },
-    },
-    {
-      value:
-        editCommonFormStore.getFormField(EditCommonConstants.BYLINE)?.value ||
-        common?.metadata.byline,
-      label: 'Tagline',
-      numberOfLines: 3,
-      multiline: true,
-      maxLength: 89,
-      validation: {
-        name: EditCommonConstants.BYLINE,
-        formStore: editCommonFormStore,
-        validateRule: 'string',
-        displayName: 'tagline',
-      },
-    },
-    {
-      value:
-        editCommonFormStore.getFormField(EditCommonConstants.DESCRIPTION)
-          ?.value || common?.metadata.description,
-      label: 'About',
-      numberOfLines: 5,
-      multiline: true,
-      validation: {
-        name: EditCommonConstants.DESCRIPTION,
-        formStore: editCommonFormStore,
-        validateRule: 'string',
-        displayName: 'about',
-      },
-    },
-  ];
+export const validationSchema = object({
+  image: yupString().required(),
+  name: yupString().required().label('The first name'),
+  tagLine: yupString().required().label('The last name'),
+  about: yupString(),
+});
+
+export interface Values {
+  image: string;
+  name: string;
+  tagLine: string;
+  about: string;
+}
+
+const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
+  const {
+    touched,
+    errors,
+    values,
+    handleChange,
+    handleBlur,
+  } = formik.formikProps;
 
   return (
     <View style={styles.body}>
@@ -64,42 +36,55 @@ const EditInfo: React.FC<InferProps<typeof EditInfo.propTypes>> = ({
         Describe your cause and let the community learn more about your plans
         and goals
       </Text>
+
       <CommonImage
         width={width}
-        reviewFormStore={editCommonFormStore}
-        commonName={common.name}
-        commonByLine={common?.metadata.byline}
-        currImage={common.image}
-        onImageChanged={() => isValidChange()}
+        commonName={values?.name}
+        commonByLine={values?.tagLine}
+        currImage={values?.image}
+        onImageChanged={handleChange('image')}
       />
 
-      {textInputAttributes.map((attributes, i) => (
-        <TextInputField
-          key={i}
-          viewStyle={{alignSelf: 'stretch'}}
-          placeholderText=""
-          returnKeyType="next"
-          onChangeText={() => isValidChange()}
-          autoCorrect={false}
-          {...attributes}
-        />
-      ))}
+      <TextInputField
+        errorMessage={errors && touched?.name && errors?.name}
+        value={values?.name}
+        viewStyle={{alignSelf: 'stretch'}}
+        label="Name"
+        infoLabel="Required"
+        placeholderText="Name"
+        onBlur={handleBlur('name')}
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={handleChange('name')}
+      />
+
+      <TextInputField
+        errorMessage={errors && touched.tagLine && errors.tagLine}
+        value={values?.tagLine}
+        viewStyle={{alignSelf: 'stretch'}}
+        label="Tag line"
+        infoLabel="Required"
+        placeholderText="Tag line"
+        onBlur={handleBlur('tagLine')}
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={handleChange('tagLine')}
+      />
+
+      <TextInputField
+        errorMessage={errors && touched.about && errors.about}
+        value={values?.about}
+        viewStyle={{alignSelf: 'stretch'}}
+        label="First name"
+        infoLabel="Required"
+        placeholderText="First name"
+        onBlur={handleBlur('firstName')}
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={handleChange('firstName')}
+      />
     </View>
   );
-};
-
-EditInfo.propTypes = {
-  isValidChange: func,
-  common: shape({
-    name: string,
-    metadata: shape({
-      byline: string,
-      description: string,
-    }),
-  }),
-  editCommonFormStore: shape({
-    getFormField: func,
-  }),
 };
 
 const styles = StyleSheet.create({

@@ -70,6 +70,7 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -365,7 +366,7 @@ const App = ({rootStore, navigation}) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="CommonAgenda"
+            name={NAVIGATION_SCREENS.COMMON_AGENDA}
             component={CommonAgenda}
             options={({route}) => ({
               title: route.params.screenTitle,
