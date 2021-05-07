@@ -2,12 +2,12 @@ import React, {FC} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, text} from '~/Theme';
-import {bool, func, string} from 'prop-types';
+import {func, string, oneOfType, bool} from 'prop-types';
 
 type Props = {
   title: string;
   onPress?: () => void;
-  canEdit: boolean;
+  canEdit: string;
 };
 
 const Title: FC<Props> = ({title, onPress, canEdit}) => {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 Title.propTypes = {
   title: string.isRequired,
   onPress: func,
-  canEdit: bool.isRequired,
+  canEdit: oneOfType([string, bool]) ,
 };
 
 export default Title;

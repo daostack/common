@@ -30,8 +30,7 @@ const MemberCard = ({
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt =
-        proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod;
+      const closingAt = proposalInfo?.countdown;
       const remainingSeconds = closingAt - moment().unix();
 
       return (

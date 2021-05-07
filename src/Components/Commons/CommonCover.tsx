@@ -4,10 +4,9 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  StyleProp,
 } from 'react-native';
 import React, {useCallback} from 'react';
-import FastImage, {ImageStyle} from 'react-native-fast-image';
+import FastImage from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
 import {object, bool, func, string, shape, InferProps} from 'prop-types';
@@ -21,7 +20,6 @@ const props = {
   onHeaderMenuOpen: func,
   commonInfo: shape({
     cover: string.isRequired,
-    logo: string.isRequired,
     name: string.isRequired,
     description: string.isRequired,
   }).isRequired,
@@ -32,7 +30,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   navigation,
   isMember,
   onHeaderMenuOpen,
-  commonInfo: {cover, logo, name, description},
+  commonInfo: {cover, name, description},
   common,
 }) => {
   const handleHeaderMenuOpen = useCallback(() => {
@@ -74,14 +72,6 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
               ...layout.content,
               ...{padding: 0},
             }}>
-            {logo && (
-              <FastImage
-                style={styles.logoImage as StyleProp<ImageStyle>}
-                source={{
-                  uri: logo,
-                }}
-              />
-            )}
             <Text style={styles.headerTitleWhite}>{name}</Text>
           </View>
           {navigation && (
@@ -156,14 +146,6 @@ const styles = StyleSheet.create({
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
-  },
-  logoImage: {
-    ...layout.marginBottomM,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: colors.white,
   },
   headerTitleWhite: {
     ...font.fontSize(4),
