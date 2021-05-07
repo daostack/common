@@ -1,6 +1,8 @@
 import axios from 'axios';
 import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
+import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Toast from '~/Util/Toast.js';
 
 export default class ModerationService {
   static serviceInstance = null;
@@ -74,4 +76,30 @@ export default class ModerationService {
         },
       },
     );
+
+  onModerate = async (actionType, itemId, commonId, itemType) => {
+    try {
+      switch (actionType) {
+        case ACTIONS.show:
+          Toast.loading('Loading...');
+          await this.show(itemId, commonId, itemType);
+          Toast.hide();
+          Toast.success('Done');
+          return true;
+        case ACTIONS.hide:
+          Toast.loading('Hiding content...');
+          await this.hide(itemId, itemType, commonId);
+          Toast.hide();
+          Toast.success('Done');
+          return true;
+        default:
+          // reporting
+          return ACTIONS.report;
+      }
+    } catch (error) {
+      Toast.hide();
+      Toast.error(`Could not ${actionType.toLowerCase()} content`);
+      return false;
+    }
+  };
 }
