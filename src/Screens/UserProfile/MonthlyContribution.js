@@ -10,6 +10,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
+import {Bold} from '~/Components/Text/Bold';
 import {
   ACTIVE,
   CANCELED_BY_PAYMENT,
@@ -37,6 +38,8 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
     );
   };
 
+  console.log('subscription', subscription)
+
   const onJoinClick = () => {
     navigation.navigate({
       name: 'CommonProfile',
@@ -62,7 +65,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
+      <View style={{...styles.row, borderBottomWidth: 0}}>
         <Text>Status</Text>
 
         {subscription ? (
@@ -77,6 +80,11 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
             </Placeholder>
           </View>
         )}
+      </View>
+      <View style={styles.circleMessageBox}>
+        <Text style={styles.circleText}>
+          Reason payment has failed from Circle
+        </Text>
       </View>
 
       <View style={styles.row}>
@@ -146,6 +154,19 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         </View>
       )}
 
+      <View
+        style={{
+          ...styles.circleMessageBox,
+          backgroundColor: colors.redLightish,
+          marginTop: 20,
+        }}>
+        <Text style={{...styles.circleText, color: colors.error}}>
+          We couldn't charge your card and collect your monthly contribution.
+          {'\n\n'}
+          <Bold boldText="Please update your payment details before {exp date} to remain a member" />
+        </Text>
+      </View>
+
       {subscription && (
         <React.Fragment>
           {[ACTIVE, PAYMENT_FAILED].some(
@@ -211,6 +232,20 @@ const styles = {
     marginTop: 'auto',
     marginBottom: 30,
     color: colors.black,
+  },
+  circleMessageBox: {
+    width: Dimensions.get('window').width * 0.9,
+    paddingVertical: 25,
+    backgroundColor: colors.blueGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+  },
+  circleText: {
+    alignSelf: 'center',
+    color: colors.greyText,
+    fontSize: 15,
+    textAlign: 'center',
   },
 };
 
