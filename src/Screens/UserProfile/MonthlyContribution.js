@@ -5,7 +5,7 @@ import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
-import {colors} from '../../Theme';
+import {colors, font} from '../../Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
@@ -21,9 +21,13 @@ import {
 } from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {getPaymentById} from '~/Services/PaymentsService';
 
 const MonthlyContribution = ({navigation, route, uiStore}) => {
   const [subscription, setSubscription] = React.useState(null);
+  const [payment, setPayment] = React.useState(null);
+  const [expDate, setExpDate] = React.useState(null);
+  const [isExpired, setIsExpired] = React.useState(false);
 
   const onCancelClick = () => {
     uiStore.bottomSheetStore.showBottomSheet(
@@ -37,8 +41,6 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
       },
     );
   };
-
-  console.log('subscription', subscription)
 
   const onJoinClick = () => {
     navigation.navigate({
@@ -63,6 +65,32 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
     })();
   }, [route.params?.subscription?.id]);
 
+  React.useEffect(() => {
+    (async () => {
+      const lastPaymentIndex = subscription?.paymentFailures?.length - 1;
+      const lastPayment = await getPaymentById(
+        subscription?.paymentFailures[lastPaymentIndex].paymentId,
+      );
+
+      if (subscription?.paymentFailures) {
+        setExpDate(getExpDate());
+      }
+
+      setPayment(lastPayment);
+    })();
+  }, [subscription]);
+
+  const getExpDate = () => {
+    const fourteenDays = 1209600;
+    const expirationDate = subscription?.dueDate.toDate();
+    expirationDate?.setSeconds(expirationDate?.getSeconds() + fourteenDays);
+
+    const now = new Date();
+    setIsExpired(now < expDate && subscription?.status === PAYMENT_FAILED);
+
+    return formatDate(expirationDate);
+  };
+
   return (
     <View style={styles.container}>
       <View style={{...styles.row, borderBottomWidth: 0}}>
@@ -81,11 +109,13 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
           </View>
         )}
       </View>
-      <View style={styles.circleMessageBox}>
-        <Text style={styles.circleText}>
-          Reason payment has failed from Circle
-        </Text>
-      </View>
+      {payment?.failure?.errorDescription && (
+        <View style={styles.circleMessageBox}>
+          <Text style={styles.circleText}>
+            {payment?.failure?.errorDescription}
+          </Text>
+        </View>
+      )}
 
       <View style={styles.row}>
         <Text>
@@ -144,28 +174,26 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         )}
       </View>
 
-      {subscription && subscription.status === CANCELED_BY_PAYMENT && (
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText}>
-            We couldn't charge your credit card and collect your monthly
-            contribution. You are no longer a member of the Common, but you can
-            always request to join again!
+      {expDate && (
+        <View
+          style={{
+            ...styles.circleMessageBox,
+            backgroundColor: colors.redLightish,
+            marginTop: 20,
+          }}>
+          <Text style={{...styles.circleText, color: colors.error}}>
+            We couldn't charge your card and collect your monthly contribution.
+            {'\n\n'}
+            {!isExpired && !subscription.revoked ? (
+              <Bold
+                boldText={`Please update your payment details before ${expDate} to remain a member`}
+              />
+            ) : (
+              'You are no longer a member of the Common,\nbut you can always request to join again!'
+            )}
           </Text>
         </View>
       )}
-
-      <View
-        style={{
-          ...styles.circleMessageBox,
-          backgroundColor: colors.redLightish,
-          marginTop: 20,
-        }}>
-        <Text style={{...styles.circleText, color: colors.error}}>
-          We couldn't charge your card and collect your monthly contribution.
-          {'\n\n'}
-          <Bold boldText="Please update your payment details before {exp date} to remain a member" />
-        </Text>
-      </View>
 
       {subscription && (
         <React.Fragment>
@@ -181,9 +209,14 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
             (status) => status === subscription.status,
           ) &&
             subscription.dueDate.toDate() < new Date() &&
+            !isExpired &&
             subscription.revoked && (
-              <TouchableOpacity style={styles.button} onPress={onJoinClick}>
-                <Text style={styles.stayText}>Request to join again</Text>
+              <TouchableOpacity
+                style={{...styles.button, backgroundColor: colors.mainBlue}}
+                onPress={onJoinClick}>
+                <Text style={{...styles.buttonText, color: colors.white}}>
+                  Request to join again
+                </Text>
               </TouchableOpacity>
             )}
         </React.Fragment>
@@ -227,11 +260,13 @@ const styles = {
     ...layout.btnOutline,
     width: Dimensions.get('window').width * 0.9,
     textAlign: 'center',
-    maxHeight: 48,
+    maxHeight: 54,
     alignSelf: 'center',
-    marginTop: 'auto',
-    marginBottom: 30,
-    color: colors.black,
+    marginTop: 20,
+  },
+  buttonText: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
   },
   circleMessageBox: {
     width: Dimensions.get('window').width * 0.9,
