@@ -194,7 +194,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
             <TouchableOpacity
               style={{...styles.button, ...styles.cancelButton}}
               onPress={onCancelClick}>
-              <Text style={styles.stayText}>Cancel monthly payment</Text>
+              <Text style={styles.buttonText}>Cancel monthly payment</Text>
             </TouchableOpacity>
           )}
 
