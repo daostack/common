@@ -18,13 +18,17 @@ import {
   cancelSubscription,
   getSubscription,
   PAYMENT_FAILED,
+  expirationPeriod,
 } from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
 import {getPaymentById} from '~/Services/PaymentsService';
+import _ from 'lodash';
 
 const MonthlyContribution = ({navigation, route, uiStore}) => {
-  const [subscription, setSubscription] = React.useState(null);
+  const [subscription, setSubscription] = React.useState(
+    route.params?.subscription,
+  );
   const [payment, setPayment] = React.useState(null);
   const [expDate, setExpDate] = React.useState(null);
   const [isExpired, setIsExpired] = React.useState(false);
@@ -59,34 +63,38 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
 
   React.useEffect(() => {
     (async () => {
-      await getSubscription(route.params?.subscription?.id, (snap) => {
-        setSubscription(snap?.data());
-      });
+      if (subscription?.paymentFailures) {
+        //@question will the last payment be the last element in the array?
+        setPayment(
+          await getPaymentById(
+            _.last(subscription?.paymentFailures)?.paymentId,
+          ),
+        );
+      }
     })();
-  }, [route.params?.subscription?.id]);
+    setExpDate(getExpDate());
+  }, []);
 
   React.useEffect(() => {
-    (async () => {
-      const lastPaymentIndex = subscription?.paymentFailures?.length - 1;
-      const lastPayment = await getPaymentById(
-        subscription?.paymentFailures[lastPaymentIndex].paymentId,
-      );
-
-      if (subscription?.paymentFailures) {
-        setExpDate(getExpDate());
-      }
-
-      setPayment(lastPayment);
-    })();
-  }, [subscription]);
+    if (!subscription) {
+      (async () => {
+        await getSubscription(route.params?.subscription?.id, (snap) => {
+          setSubscription(snap?.data());
+        });
+      })();
+    }
+  }, [route.params?.subscription?.id]);
 
   const getExpDate = () => {
-    const fourteenDays = 1209600;
     const expirationDate = subscription?.dueDate.toDate();
-    expirationDate?.setSeconds(expirationDate?.getSeconds() + fourteenDays);
+    if (subscription?.paymentFailures) {
+      expirationDate?.setSeconds(
+        expirationDate?.getSeconds() + expirationPeriod,
+      );
+    }
 
     const now = new Date();
-    setIsExpired(now < expDate && subscription?.status === PAYMENT_FAILED);
+    setIsExpired(subscription ? expirationDate < now : true);
 
     return formatDate(expirationDate);
   };
@@ -109,18 +117,17 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
           </View>
         )}
       </View>
-      {payment?.failure?.errorDescription && (
+      {subscription.paymentFailures && (
         <View style={styles.circleMessageBox}>
           <Text style={styles.circleText}>
-            {payment?.failure?.errorDescription}
+            {payment?.failure?.errorDescription || 'Loading...'}
           </Text>
         </View>
       )}
 
       <View style={styles.row}>
         <Text>
-          {subscription?.status === CANCELED_BY_USER &&
-          subscription?.dueDate.toDate() > new Date()
+          {subscription?.status === CANCELED_BY_USER && isExpired
             ? 'Cancels on'
             : subscription?.status === ACTIVE
             ? 'Next payment'
@@ -129,13 +136,12 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
 
         {subscription ? (
           <Text>
-            {(subscription.status === CANCELED_BY_USER &&
-              subscription?.dueDate.toDate() < new Date()) ||
-            subscription.status === CANCELED_BY_PAYMENT
+            {(subscription?.status === CANCELED_BY_USER && isExpired) ||
+            subscription?.status === CANCELED_BY_PAYMENT
               ? formatDate(subscription.lastChargedAt.toDate())
-              : subscription.dueDate.toDate() < new Date()
+              : isExpired
               ? 'In the following days'
-              : formatDate(subscription.dueDate.toDate())}
+              : formatDate(subscription?.dueDate.toDate())}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -150,7 +156,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         <Text>Amount</Text>
 
         {subscription ? (
-          <Text>{formatCurrency(subscription.amount)}</Text>
+          <Text>{formatCurrency(subscription?.amount)}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -164,7 +170,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         <Text>Subscribed at</Text>
 
         {subscription ? (
-          <Text>{formatDate(subscription.createdAt.toDate())}</Text>
+          <Text>{formatDate(subscription?.createdAt.toDate())}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -174,7 +180,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         )}
       </View>
 
-      {expDate && (
+      {subscription?.paymentFailures && (
         <View
           style={{
             ...styles.circleMessageBox,
@@ -182,11 +188,12 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
             marginTop: 20,
           }}>
           <Text style={{...styles.circleText, color: colors.error}}>
-            We couldn't charge your card and collect your monthly contribution.
+            We couldn't charge your card and collect{'\n'}your monthly
+            contribution.
             {'\n\n'}
-            {!isExpired && !subscription.revoked ? (
+            {!isExpired && !subscription?.revoked ? (
               <Bold
-                boldText={`Please update your payment details before ${expDate} to remain a member`}
+                boldText={`Please update your payment details before\n${expDate} to remain a member.`}
               />
             ) : (
               'You are no longer a member of the Common,\nbut you can always request to join again!'
@@ -198,19 +205,20 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
       {subscription && (
         <React.Fragment>
           {[ACTIVE, PAYMENT_FAILED].some(
-            (status) => status === subscription.status,
+            (status) => status === subscription?.status,
           ) && (
-            <TouchableOpacity style={styles.button} onPress={onCancelClick}>
+            <TouchableOpacity
+              style={{...styles.button, ...styles.cancelButton}}
+              onPress={onCancelClick}>
               <Text style={styles.stayText}>Cancel monthly payment</Text>
             </TouchableOpacity>
           )}
 
           {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some(
-            (status) => status === subscription.status,
+            (status) => status === subscription?.status,
           ) &&
-            subscription.dueDate.toDate() < new Date() &&
-            !isExpired &&
-            subscription.revoked && (
+            isExpired &&
+            subscription?.revoked && (
               <TouchableOpacity
                 style={{...styles.button, backgroundColor: colors.mainBlue}}
                 onPress={onJoinClick}>
@@ -263,6 +271,10 @@ const styles = {
     maxHeight: 54,
     alignSelf: 'center',
     marginTop: 20,
+  },
+  cancelButton: {
+    marginTop: 'auto',
+    marginBottom: 30,
   },
   buttonText: {
     ...font.primary.regular,
