@@ -10,7 +10,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
-import {Bold} from '~/Components/Text/Bold';
+import {PaymentFailureMessageBox} from '../../Components/Subscriptions/PaymentFailureMessageBox';
 import {
   ACTIVE,
   CANCELED_BY_PAYMENT,
@@ -93,9 +93,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
       );
     }
 
-    const now = new Date();
-    setIsExpired(subscription ? expirationDate < now : true);
-
+    setIsExpired(expirationDate < new Date());
     return formatDate(expirationDate);
   };
 
@@ -181,25 +179,11 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
       </View>
 
       {subscription?.paymentFailures && (
-        <View
-          style={{
-            ...styles.circleMessageBox,
-            backgroundColor: colors.redLightish,
-            marginTop: 20,
-          }}>
-          <Text style={{...styles.circleText, color: colors.error}}>
-            We couldn't charge your card and collect{'\n'}your monthly
-            contribution.
-            {'\n\n'}
-            {!isExpired && !subscription?.revoked ? (
-              <Bold
-                boldText={`Please update your payment details before\n${expDate} to remain a member.`}
-              />
-            ) : (
-              'You are no longer a member of the Common,\nbut you can always request to join again!'
-            )}
-          </Text>
-        </View>
+        <PaymentFailureMessageBox
+          subscription={subscription}
+          isExpired={isExpired}
+          expDate={expDate}
+        />
       )}
 
       {subscription && (
