@@ -33,6 +33,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
       const common = rootStore.commonStore.getCommonById(proposal.commonId);
 
       notificationData = {
+        createdAt: item.createdAt,
         missingData: false,
         description: `A ${
           isJoin ? 'membership request' : 'proposal'

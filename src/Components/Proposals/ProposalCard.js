@@ -53,7 +53,10 @@ const ProposalCard = ({
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
     proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
-  const hasPermission = authStore.getPermission(proposalInfo.commonId, authStore?.userInfo?.uid);
+  const hasPermission = authStore.getPermission(
+    proposalInfo.commonId,
+    authStore?.userInfo?.uid,
+  );
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
@@ -126,7 +129,8 @@ const ProposalCard = ({
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            proposalInfo?.createdAt.seconds + proposalInfo?.countdownPeriod
+            (proposalInfo?.moderation?.updatedAt.seconds ||
+              proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}
