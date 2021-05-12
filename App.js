@@ -608,6 +608,7 @@ const App = ({rootStore, navigation}) => {
             options={{
               title: 'Monthly Contributions',
               headerBackTitleVisible: false,
+              headerRight: () => <IntercomShowButton />,
             }}
             name="MonthlyContributionsList"
             component={MonthlyContributionsList}
