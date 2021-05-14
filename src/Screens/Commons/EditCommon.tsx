@@ -163,11 +163,6 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
             <StatusBar barStyle="dark-content" />
 
             <SafeAreaView style={styles.container}>
-              <View>
-                {/* {formikProps.errors?.keys().map((key: string) => {
-                <Text>{formikProps.errors[key]}</Text>;
-              })} */}
-              </View>
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>

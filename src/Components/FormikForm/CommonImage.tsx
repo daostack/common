@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import {
   Image,
   Text,
@@ -7,30 +7,14 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
-import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors, font} from '~/Theme';
 import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
 import {handlePermission} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
-//import {number, string, shape, func, InferProps} from 'prop-types';
-
-// const props = {
-//   width: number.isRequired,
-//   reviewFormStore: shape({
-//     registerFormField: func.isRequired,
-//     fieldChanged: func.isRequired,
-//     getFormField: func.isRequired,
-//   }).isRequired,
-//   commonName: string,
-//   commonByLine: string,
-//   currImage: string,
-//   onImageChanged: func,
-// };
 
 type Props = {
   width: number;
@@ -48,26 +32,6 @@ const CommonImage = ({
   onImageChanged,
 }: Props): ReactElement => {
   const [templateIndex, setTemplateIndex] = useState(1);
-
-  // //set default value for Image field
-  // useEffect(() => {
-  //   reviewFormStore.registerFormField(
-  //     CreateCommonForm.IMAGE,
-  //     'required',
-  //     currImage,
-  //   );
-  //   let currCommonImage = reviewFormStore?.getFormField(
-  //     CreateCommonForm.IMAGE,
-  //   )?.value;
-  //   // Set random image as default in case no value provided
-  //   if (!currCommonImage) {
-  //     currCommonImage =
-  //       currImage ||
-  //       getImageUrl(1 + Math.floor(Math.random() * Math.floor(7)));
-  //   }
-  //   !currImage &&
-  //     reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, currCommonImage);
-  // }, []);
 
   const getImageUrl = (index: number) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
