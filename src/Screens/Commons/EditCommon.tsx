@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef, useState} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,32 +11,28 @@ import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
-import Loader from '~/Components/Loader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
-import {bool, object, shape, InferProps, string, func} from 'prop-types';
-import {EditCommonFormStore} from '~/FormStores/EditCommonFormStore';
-import * as EditCommonConstants from '~/Components/Forms/EditCommonForm';
+import {object, shape, InferProps, string, func} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import _, {values} from 'lodash';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {ICommonEntity, ICommonMetadata} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
-import {object as yupObject, string as yupString} from 'yup';
 import {Formik, FormikProps} from 'formik';
 import {
   Values as EditInfoValues,
   validationSchema as editInfoValidation,
 } from '~/Components/EditCommon/EditInfo';
+import {
+  Values as EditRulesValues,
+  validationSchema as editRulesValidation,
+} from '~/Components/EditCommon/EditRules';
 import {editType} from './Profile/CommonAgenda';
+import Loader from '~/Components/Loader';
 
-interface Values {
-  image: string;
-  name: string;
-  tagLine: string;
-  about: string;
-}
+
+type EditFormValues =  EditInfoValues | EditRulesValues;
 
 const props = {
   rootStore: rootStorePropTypes.isRequired,
@@ -55,16 +51,6 @@ const props = {
   }).isRequired,
 };
 
-const emptyMetadata = {
-  [EditCommonConstants.BYLINE]: '',
-  [EditCommonConstants.DESCRIPTION]: '',
-};
-
-const metadataKeys = [
-  EditCommonConstants.BYLINE,
-  EditCommonConstants.DESCRIPTION,
-];
-
 const EditCommon: React.FC<InferProps<typeof props>> = ({
   rootStore,
   route,
@@ -73,7 +59,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const currCommon: ICommonEntity = route.params.currCommon as ICommonEntity;
+  const currCommon: ICommonEntity = commonStore.getCommonById(route.params.currCommon.id) as ICommonEntity;
   const type: string = route.params.type;
   const formikRef = useRef();
 
@@ -97,30 +83,34 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     ),
   });
 
-  const [editCommonFormStore] = useState(new EditCommonFormStore());
-  //const [valid, setValid] = useState(false);
-  //const isRule = title === 'Edit Rules';
-  var [newRules, setNewRules] = useState(currCommon?.rules || []);
+  const formSave = async (formValues: EditFormValues) => {
+    let commonUpdate = {};
 
-  const formSave = async (values: EditInfoValues) => {
-    Toast.loading('Updating your Common...');
-    // const changedFields =
-    //   title === 'Edit Rules' ? {rules: newRules} : getChanges();
-    // mergeChanges(changedFields); // shallow copy though
-    onFormSubmitEnd(values);
+    if (type === editType.info) {
+      const infoValues = formValues as EditInfoValues;
+      const updatedMetadata = {
+        ...currCommon.metadata,
+        byline: infoValues.tagLine,
+        description: infoValues.about,
+      } as ICommonMetadata;
+
+      commonUpdate = {
+        ...currCommon,
+        name: infoValues.name,
+        image: infoValues.image,
+        metadata: updatedMetadata,
+      } as Partial<ICommonEntity>;
+
+    } else {
+      const rulesValues = formValues as EditInfoValues;
+      commonUpdate = {
+        ...currCommon,
+        ...rulesValues,
+      } as Partial<ICommonEntity>;
+    }
+
+    onFormSubmitEnd(commonUpdate);
   };
-
-  // const mergeChanges = (changedFields: Array<string>) => {
-  //   Object.keys(changedFields).forEach((key) => {
-  //     if (typeof changedFields[key] === 'object') {
-  //       currCommon[key] = Array.isArray(changedFields[key])
-  //         ? changedFields[key]
-  //         : {...currCommon[key], ...changedFields[key]};
-  //     } else {
-  //       currCommon[key] = changedFields[key];
-  //     }
-  //   });
-  // };
 
   const onFormSubmitEnd = async (updatedCommon: Partial<ICommonEntity>) => {
     try {
@@ -133,7 +123,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   };
 
   const onFormClose = () => {
-    if (editCommonFormStore.isFormChanged()) {
+    if (formikRef?.current?.dirty) {
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
         onContinueEditing: closeBottomSheet,
@@ -148,71 +138,25 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  // get the actual changes; not just fields that were changed and then changed back to prev value
-  // should be done with mobx reaction
-  // const getChanges = (): Object => {
-
-  // const changedFields = _.isEmpty(changedFields)
-  //   ? {...emptyMetadata, ...editCommonFormStore.getFormFieldsJson()}
-  //   : editCommonFormStore.getChangedFormFieldsJson();
-
-  // return Object.keys(changedFields)
-  //   .filter((key) => currCommon[key] !== changedFields[key])
-  //   .reduce((obj, key) => {
-  //     if (metadataKeys.includes(key)) {
-  //       obj.metadata = {...obj.metadata, ...{[key]: changedFields[key]}};
-  //     } else {
-  //       obj[key] = changedFields[key];
-  //     }
-  //     return obj;
-  //   }, {});
-  // };
-
-  // /**
-  //  * This function is handling matching the rule we changes
-  //  * with the correct index of that rule in the common.rules array
-  //  * @param  index      - the index of the rule in common.rules array
-  //  * @return newRules   - an object with the new rules
-  //  */
-  // const getRuleChanges = (index = 0) => {
-  //   const {rules} = editCommonFormStore.getChangedFormFieldsJson();
-  //   if (!rules) {
-  //     newRules.splice(index, 1);
-  //   } else {
-  //     const rule = {title: '', value: ''};
-  //     Object.keys(rules).map((key) => {
-  //       const i = index < key ? index : +key;
-  //       rule.title = rules[i]?.title || newRules[index]?.title;
-  //       rule.value = rules[i]?.value || newRules[index]?.value;
-  //       newRules[index] = rule;
-  //     });
-  //   }
-  //   setNewRules(newRules);
-  // };
-
-  // const isValidChange = (ruleIndex = null) => {
-  //   const isValid = editCommonFormStore.isFormValid();
-  //   isValid && isRule && getRuleChanges(ruleIndex);
-  //   setValid(isValid);
-  // };
+  const initialValues: EditInfoValues | EditRulesValues  = type === editType.info ? ({
+    image: currCommon?.image,
+    name: currCommon?.name,
+    tagLine: currCommon?.metadata?.byline,
+    about: currCommon?.metadata?.description,
+  } as EditInfoValues) : ({
+    rules: currCommon.rules,
+  } as EditRulesValues);
 
   return (
     <Formik
       innerRef={formikRef}
       enableReinitialize={true}
-      initialValues={
-        {
-          image: currCommon?.image,
-          name: currCommon?.name,
-          tagLine: currCommon?.metadata?.byline,
-          about: currCommon?.metadata?.description,
-        } as Values
-      }
-      validationSchema={editInfoValidation}
+      initialValues={initialValues}
+      validationSchema={type === editType.info ? editInfoValidation : editRulesValidation}
       onSubmit={formSave}>
-      {(formikProps: FormikProps<Values>): ReactElement => {
-        console.log('formikProps.errors -> ', formikProps.errors);
-        console.log('formikProps.isValid -> ', formikProps.isValid);
+      {(formikProps: FormikProps<EditInfoValues | EditRulesValues>): ReactElement => {
+
+        const {handleSubmit} = formikProps;
 
         return (
           <>
@@ -227,11 +171,17 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-                {type === editType.info ? (
-                  <EditInfo formikProps={formikProps} />
-                ) : (
-                  <EditRules formikProps={formikProps} />
+
+                {authStore.userInfo ? (
+                    type === editType.info ? (
+                      <EditInfo formikProps={formikProps} />
+                    ) : (
+                      <EditRules formikProps={formikProps} />
+                    )
+                  ) : (
+                    <Loader />
                 )}
+
               </ScrollView>
 
               <View style={{marginBottom: 20}}>
@@ -243,7 +193,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
                       : colors.paleblue,
                   }}
                   disabled={!formikProps.isValid}
-                  onPress={formSave}>
+                  onPress={handleSubmit}>
                   <Text
                     style={{
                       ...styles.buttonText,

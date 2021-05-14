@@ -332,8 +332,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
-      screenTitle: currCommon.name,
-      common: currCommon,
+      commonId: currCommon.id,
     });
   };
 

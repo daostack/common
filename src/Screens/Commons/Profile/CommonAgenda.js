@@ -8,6 +8,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import {inject, observer} from 'mobx-react';
 import {object, shape, number, array, string, func, bool} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
@@ -16,6 +17,7 @@ import Title from '~/Components/CommonAgenda/Title';
 import MinimumContribution from '~/Components/CommonAgenda/MinimumContribution';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
 import CommonRules from '~/Components/CommonAgenda/CommonRules';
+import {commonStorePropTypes} from '~/Types/propTypes';
 
 export const editType = {
   info: 'info',
@@ -23,14 +25,19 @@ export const editType = {
 };
 
 const CommonAgenda = ({
-  // This destructuring is bloody awful
+  commonStore,
   navigation,
   route: {
-    params: {common, canEdit, onEdit},
+    params: {commonId, canEdit, onEdit},
   },
 }) => {
+  const common = commonStore.getCommonById(commonId);
   const isFocused = useIsFocused();
   useEffect(() => {}, [isFocused]);
+
+  navigation.setOptions({
+    title: common.name,
+  });
 
   return (
     <>
@@ -109,6 +116,7 @@ const CommonAgenda = ({
 };
 
 CommonAgenda.propTypes = {
+  commonStore: commonStorePropTypes.isRequired,
   navigation: object,
   route: shape({
     params: shape({
@@ -173,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonAgenda;
+export default inject('commonStore')(observer(CommonAgenda));

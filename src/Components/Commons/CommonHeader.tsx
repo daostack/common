@@ -24,7 +24,9 @@ const props = {
     description: string,
     byline: string,
   }),
-  common: object,
+  common: shape({
+    id: string.isRequired,
+  }).isRequired,
   canEdit: bool,
   onEdit: func,
 };
@@ -40,8 +42,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
 }) => {
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
-      screenTitle: name,
-      common: common,
+      commonId: common.id,
       canEdit,
       onEdit,
     });

@@ -62,9 +62,9 @@ const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
         errorMessage={errors && touched.tagLine && errors.tagLine}
         value={values?.tagLine}
         viewStyle={{alignSelf: 'stretch'}}
-        label="Tag line"
+        label="Tagline"
         infoLabel="Required"
-        placeholderText="Tag line"
+        placeholderText="Tagline"
         onBlur={handleBlur('tagLine')}
         autoCapitalize="none"
         autoCorrect={false}
@@ -75,13 +75,13 @@ const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
         errorMessage={errors && touched.about && errors.about}
         value={values?.about}
         viewStyle={{alignSelf: 'stretch'}}
-        label="First name"
+        label="About"
         infoLabel="Required"
-        placeholderText="First name"
-        onBlur={handleBlur('firstName')}
+        placeholderText="About"
+        onBlur={handleBlur('about')}
         autoCapitalize="none"
         autoCorrect={false}
-        onChangeText={handleChange('firstName')}
+        onChangeText={handleChange('about')}
       />
     </View>
   );

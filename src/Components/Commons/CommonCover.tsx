@@ -10,7 +10,7 @@ import React, {useCallback} from 'react';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
-import {object, bool, func, string, shape, InferProps} from 'prop-types';
+import {bool, func, string, shape, InferProps} from 'prop-types';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
@@ -26,7 +26,9 @@ const props = {
     name: string.isRequired,
     description: string.isRequired,
   }).isRequired,
-  common: object,
+  common: shape({
+    id: string.isRequired,
+  }).isRequired,
 };
 
 const CommonCover: React.FC<InferProps<typeof props>> = ({
@@ -113,7 +115,7 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   const openAgendaScreen = () => {
     if (navigation) {
       navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
-        common: common,
+        commonId: common.id,
       });
     }
   };
