@@ -3,7 +3,7 @@ import {StyleSheet, View, Text} from 'react-native';
 import {colors, text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
 import MultiTitleValueField from '~/Components/FormikForm/MultiTitleValueField';
 
-import {object, string, array, } from 'yup';
+import {object, string, array} from 'yup';
 import {FormikProps} from 'formik';
 import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
