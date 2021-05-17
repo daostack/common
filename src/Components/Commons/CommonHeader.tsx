@@ -23,7 +23,7 @@ const props = {
     name: string.isRequired,
     description: string,
     byline: string,
-  }),
+  }).isRequired,
   common: shape({
     id: string.isRequired,
   }).isRequired,

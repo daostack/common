@@ -71,6 +71,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import Intercom from 'react-native-intercom';
+import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -143,6 +145,15 @@ const App = ({rootStore, navigation}) => {
           unsubscribeLoggedUserNotificationsBatch(),
       );
     };
+  }, [authStore.userInfo?.uid]);
+
+  // Initialize Intercom chat
+  useEffect(() => {
+    if (authStore.userInfo?.uid) {
+      Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
+    } else {
+      Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
+    }
   }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
@@ -588,6 +599,7 @@ const App = ({rootStore, navigation}) => {
               title: route?.params.screenTitle,
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
+              headerRight: () => <IntercomShowButton />,
             })}
             name="FundingProposal"
             component={FundingProposal}

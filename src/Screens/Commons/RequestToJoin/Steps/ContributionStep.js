@@ -147,7 +147,9 @@ const ContributionStep = ({
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
-  const calcMinFeeToJoin = zeroContribution ? 0 : currCommon.minFeeToJoinFormatted;
+  const calcMinFeeToJoin = zeroContribution
+    ? 0
+    : +currCommon.minFeeToJoinFormatted;
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
     : `${contributeMessage} ${

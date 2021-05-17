@@ -16,9 +16,7 @@ const PDFViewer = ({route: {params: uri, hideIndex = false}}) => {
     <SafeAreaView flex={1}>
       <View style={styles.container}>
         <Pdf
-          source={{
-            uri: uri,
-          }}
+          source={uri}
           onLoadComplete={(numberOfPages, filePath) => {
             setPages(numberOfPages);
           }}

@@ -9,7 +9,7 @@ import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {object, func, bool} from 'prop-types';
+import {object, func, string} from 'prop-types';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
@@ -103,7 +103,7 @@ CommonProfileOptions.propTypes = {
   bottomSheetStore: object,
   moderatorOptions: object,
   onAction: func,
-  hasPermission: bool,
+  hasPermission: string,
 };
 
 const styles = StyleSheet.create({

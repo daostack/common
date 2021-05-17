@@ -9,6 +9,8 @@ export const CANCELED_BY_USER = 'CanceledByUser';
 export const PAYMENT_FAILED = 'PaymentFailed';
 export const ACTIVE = 'Active';
 
+export const expirationPeriod = 1209600; // 14 days in seconds
+
 export const cancelSubscription = async (subscriptionId) => {
   await axios.post(
     `${subscriptionsUrl()}/cancel?subscriptionId=${subscriptionId}`,

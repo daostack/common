@@ -26,6 +26,7 @@ const CommonMemberAdded: React.FC<InferProps<typeof props>> = ({
     const {proposal, user, common} = proposalNotificationData;
 
     notificationData = {
+      createdAt: item.createdAt,
       missingData: false,
       description: ' Congrats! You are now a member!',
       ownerAvatar: user.photoURL,

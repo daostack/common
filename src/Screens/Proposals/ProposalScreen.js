@@ -690,8 +690,8 @@ const ProposalScreen = ({
             setModalConversionVisible(!modalConversionVisible)
           }
           showAmount={true}
-          amount={Number(amount * conversionRate).toFixed(2)}
-          funds={Number(getAvailableFunds() * conversionRate).toFixed(2)}
+          amount={+(amount * conversionRate).toFixed(2)}
+          funds={+(getAvailableFunds() * conversionRate).toFixed(2)}
         />
       </Modal>
       <SafeAreaView
@@ -775,10 +775,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={
-                          proposalInfo?.createdAt.seconds +
-                          proposalInfo?.countdownPeriod
-                        }
+                        closingAt={proposalInfo?.countdown}
                         onPress={() => openDebtInsufficientModal()}
                         hasPermission={hasPermission}
                         viewerPermission={viewerPermission}
@@ -812,10 +809,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={
-                          proposalInfo?.createdAt.seconds +
-                          proposalInfo?.countdownPeriod
-                        }
+                        closingAt={proposalInfo?.countdown}
                         hasPermission={hasPermission}
                         authInfo={authStore.userInfo}
                         viewerPermission={viewerPermission}
