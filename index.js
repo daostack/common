@@ -10,6 +10,7 @@ import stores from './src/Stores';
 import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
+import {ApolloProvider} from '~/Providers/apolloProvider';
 
 LogBox.ignoreAllLogs(true);
 
@@ -17,7 +18,9 @@ const MobX = () => (
   <Update>
     {() => (
       <Provider {...stores}>
-        <App/>
+        <ApolloProvider>
+          <App />
+        </ApolloProvider>
       </Provider>
     )}
   </Update>

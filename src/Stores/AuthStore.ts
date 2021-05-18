@@ -145,9 +145,10 @@ class AuthStore {
         const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
         if (isNewUser) {
-          const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
-            user.providerData[0].providerId,
-          );
+          const providerUserInfo =
+            await AuthService.getInstance().getCurrentLoggedUser(
+              user.providerData[0].providerId,
+            );
           const userInfo = {
             ...user._user,
             ...{
