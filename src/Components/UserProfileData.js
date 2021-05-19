@@ -231,6 +231,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         <ProposalsList
           navigation={navigation}
           isSwiper={true}
+          showMax={showMaxData}
           userInfo={{
             id: user.uid,
           }}
@@ -279,6 +280,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         <ProposalsList
           navigation={navigation}
           isSwiper={true}
+          showMax={showMaxData}
           userInfo={{
             id: user.uid,
           }}
