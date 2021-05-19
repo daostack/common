@@ -103,15 +103,27 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
             <View style={styles.notReadDot} />
           )}
         </View>
-        <View>
+        <View style={styles.notificationContainer}>
           <View style={styles.headerContainer}>
             <NotificationBadge type={item.eventType} />
-            <Text>
-              <Text style={styles.prefixStyle}>{notificationData.header}</Text>
-              <Text style={styles.whereStyle}>
-                {notificationData.headerBold}
+            <View style={styles.headerTitle}>
+              <Text numberOfLines={1}>
+                <Text style={styles.prefixStyle}>
+                  {notificationData.header}
+                </Text>
+                {notificationData.headerBold && (
+                  <>
+                    <Text style={styles.whereStyle}>{' "'}</Text>
+                    <Text style={styles.whereStyle}>
+                      {notificationData.headerBold}
+                    </Text>
+                  </>
+                )}
               </Text>
-            </Text>
+              {notificationData.headerBold && (
+                <Text style={styles.whereStyle}>{'"'}</Text>
+              )}
+            </View>
           </View>
           <View style={styles.messageContainer}>
             <Text
@@ -127,9 +139,11 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           </View>
           <Text style={styles.dateStyle}>
             {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
-            {formatNotificationDate(
-              item.createdAt.toDate && item.createdAt.toDate(),
-            )}
+            {notificationData.createdAt &&
+              formatNotificationDate(
+                notificationData.createdAt.toDate &&
+                  notificationData.createdAt.toDate(),
+              )}
             {notificationData.common && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}
@@ -148,6 +162,9 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+  notificationContainer: {
+    flex: 1,
+  },
   notReadDot: {
     width: 16,
     height: 16,
@@ -161,6 +178,11 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+  },
+  headerTitle: {
+    flex: 1,
+    flexDirection: 'row',
   },
   prefixStyle: {
     ...font.primary.regular,
@@ -188,7 +210,6 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     marginTop: 5,
-    maxWidth: '90%',
   },
   nameStyle: {
     ...font.primary.bold,

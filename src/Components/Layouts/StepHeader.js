@@ -3,7 +3,7 @@ import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
-import {bool, number, object} from 'prop-types';
+import {bool, number, array} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
@@ -14,7 +14,8 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
       index = index - 1;
     }
 
-    return (index * (1 / dotsCount)).toFixed(2);
+    // adding 0.1 for the dot width
+    return +(index * (1 / dotsCount) + 0.1).toFixed(2);
   };
 
   const ovalStyle = (index) => {
@@ -53,7 +54,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
       }}>
       <Progress.Bar
         progress={getDotProgress(currentIndex)}
-        width={width - 48 - 60}
+        width={width - 50 - 60}
         color={colors.mainBlue}
         borderWidth={0}
         unfilledColor={colors.grey4}
@@ -69,7 +70,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
           return null;
         } else {
           return (
-            <View style={ovalStyle(dotIndex)}>
+            <View key={dotIndex} style={ovalStyle(dotIndex)}>
               <Icon
                 name={
                   currentIndex <= dotIndex ? currDotInfo.dotIconName : 'check'
@@ -86,7 +87,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
 };
 
 StepHeader.propTypes = {
-  dotInfo: object,
+  dotInfo: array,
   currentIndex: number,
   skipFirstDot: bool,
 };

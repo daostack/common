@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Animated,
   StyleSheet,
+  View,
 } from 'react-native';
 import {inject} from 'mobx-react';
 import {
@@ -16,6 +17,7 @@ import {
   string,
   shape,
   InferProps,
+  oneOfType,
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
@@ -24,6 +26,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import StepDotHeader from './StepDotHeader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 // import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
 
@@ -42,12 +45,13 @@ const props = {
   onScrollEndDrag: func,
 
   prependedArea: object,
-  appendedArea: object,
+  appendedArea: oneOfType([bool, object]),
   requestStepActionButton: object,
   layoutTitle: object,
   children: object,
   uiStore: uiStorePropTypes.isRequired,
   onContentSizeChange: func,
+  isRequestButtonSticky: bool,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -98,6 +102,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   layoutTitle,
   uiStore,
   onContentSizeChange,
+  isRequestButtonSticky = true,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -154,18 +159,21 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             </TouchableOpacity>
           }
           rightButton={
-            <TouchableOpacity
-              style={styles.navBtn}
-              onPress={() => {
-                closeDialog();
-              }}>
-              <Icon
-                name="close"
-                size={18}
-                style={{marginRight: 20}}
-                color="black"
-              />
-            </TouchableOpacity>
+            <View style={styles.rightButtonsContainer}>
+              <IntercomShowButton />
+              <TouchableOpacity
+                style={styles.navBtn}
+                onPress={() => {
+                  closeDialog();
+                }}>
+                <Icon
+                  name="close"
+                  size={18}
+                  style={{marginRight: 20}}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </View>
           }
         />
         <StepDotHeader
@@ -201,8 +209,9 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             dotInfo={currDotInfo}
           />
           {children}
+          {!isRequestButtonSticky && requestStepActionButton}
         </ScrollView>
-        {requestStepActionButton}
+        {isRequestButtonSticky && requestStepActionButton}
       </SafeAreaView>
       {appendedArea}
     </>
@@ -214,6 +223,10 @@ StepDotLayout.propTypes = props;
 const styles = StyleSheet.create({
   navBtn: {
     justifyContent: 'center',
+  },
+  rightButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

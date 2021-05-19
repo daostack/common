@@ -1,5 +1,5 @@
 import React from 'react';
-import {func, string, bool, InferProps} from 'prop-types';
+import {func, string, bool, InferProps, object} from 'prop-types';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import Report from './Report';
 
@@ -29,9 +29,9 @@ const moderationModalProps = {
   title: string,
   visible: bool,
   setShowModerationModal: func,
-  moderationFormStore: func,
+  moderationFormStore: object,
   onReportContent: func,
-  hasPermission: bool,
+  hasPermission: string,
 };
 
 ModerationModal.propTypes = moderationModalProps;

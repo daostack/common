@@ -62,6 +62,9 @@ import {
 } from '~/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import {truncateString} from '~/Util/stringUtil';
+import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
@@ -345,7 +348,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 ...layout.marginTopS,
                 ...text.writingDirection(currCommon.metadata.description),
               }}>
-              {currCommon.metadata.description}
+              {truncateString(
+                currCommon.metadata.description,
+                ABOUT_TRUNCATE_LENGTH,
+              )}
             </Text>
           </View>
 
@@ -456,35 +462,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
+    const resp = await ModerationService.getInstance().onModerate(
+      actionType,
+      itemId,
+      commonId,
+      itemType.toLowerCase(),
+    );
 
-    switch (actionType) {
-      case 'Show':
-        Toast.loading('Loading...');
-        await ModerationService.getInstance().show(
-          itemId,
-          commonId,
-          itemType.toLowerCase(),
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      case 'Hide':
-        Toast.loading('Hiding content...');
-        await ModerationService.getInstance().hide(
-          itemId,
-          itemType.toLowerCase(),
-          commonId,
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      default:
-        // reporting
-        setShowModerationModal(true);
-        break;
-    }
+    resp === ACTIONS.report
+      ? setShowModerationModal(true)
+      : resp && setShowModerationSuccessModal(true);
   };
 
   const membershipRequestType = (itemTitle) =>
@@ -783,7 +770,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.metadata.minFeeToJoin / 100}
+        ${currCommon.minFeeToJoinFormatted}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>

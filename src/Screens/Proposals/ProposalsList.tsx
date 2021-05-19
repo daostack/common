@@ -46,8 +46,8 @@ const props = {
   }),
   showMax: number,
   isSwiper: bool,
-  openCommonOptions: func.isRequired,
-  showHiddenNote: func.isRequired,
+  openCommonOptions: func,
+  showHiddenNote: func,
   isMember: bool,
 
   // Injected

@@ -24,7 +24,7 @@ const props = {
     byline: string,
   }),
   common: object,
-  canEdit: bool,
+  canEdit: string,
   onEdit: func,
 };
 

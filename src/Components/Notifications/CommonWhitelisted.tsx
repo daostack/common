@@ -30,6 +30,7 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
         descriptionBold: `"${common.name}"`,
         description: ' - You might want to check it out.',
         ownerAvatar: common.image,
+        createdAt: item.createdAt,
         common,
       };
     }

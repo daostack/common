@@ -24,8 +24,10 @@ import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
+import {Bold} from '~/Components/Text/Bold';
+import Icon from '~/Assets/iconfont/Icon';
 
-import {colors, font, text, layout, sizeM, sizeL} from '~/Theme';
+import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
@@ -148,6 +150,7 @@ const CreateStep4 = ({
       stepDotHeaderTitle="Final touches and review"
       navTitle="Final touches and review"
       currentIndex={4}
+      isRequestButtonSticky={false}
       prependedArea={
         <Modal
           isVisible={Boolean(newCommonAddress)}
@@ -180,6 +183,7 @@ const CreateStep4 = ({
           title="Publish Common"
           formStore={agendaFormStore}
           onPress={() => forgeCommon()}
+          isSticky={false}
         />
       }>
       <View
@@ -248,20 +252,21 @@ const CreateStep4 = ({
           </View>
           {form[CreateCommonForm.LINKS]?.length &&
             form[CreateCommonForm.LINKS].map((x) => (
-              <View key={`key_${CreateCommonForm.LINKS}_${x.title}`}>
+              <View
+                key={`key_${CreateCommonForm.LINKS}_${x.title}`}
+                style={styles.iconStyle}>
+                <Icon
+                  name="link"
+                  size={16}
+                  style={{textAlign: 'right', alignSelf: 'flex-end'}}
+                />
                 <Text
                   onPress={() => {
                     navigation.navigate('Browser', {
                       url: x.value,
                     });
                   }}
-                  style={{
-                    display: 'flex',
-                    flexFlow: 'row',
-                    alignContent: 'center',
-                    ...styles.linkText,
-                    ...styles.textContent,
-                  }}>
+                  style={{...styles.linkText, flex: 'row'}}>
                   {x.title}
                 </Text>
               </View>
@@ -286,10 +291,29 @@ const CreateStep4 = ({
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
           ))}
+        <>
+          <View style={styles.sectionTitle}>
+            <Text style={styles.textTitle}>Minimum contribution</Text>
+          </View>
+          <Text style={styles.textContent}>
+            ${form[CreateCommonForm.MINIMUM]}{' '}
+            <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} /> contribution
+          </Text>
+          {form.zeroContribution && (
+            <Text style={styles.textContent}>
+              Members will be able to join the Common without a personal
+              contribution
+            </Text>
+          )}
+        </>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Don't worry, you will be able to make changes to the Common info
-            after it is published.
+            To publish the Common, add a personal contribution.
+            <Bold
+              boldText=" Don't worry, you will be able to
+            make changes "
+            />
+            to the Common info after it is published.
           </Text>
         </View>
       </View>
@@ -345,7 +369,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     marginTop: 0,
     paddingHorizontal: 24,
-    // marginBottom: 15,
+    marginBottom: 15,
   },
   uploadLogo: {
     alignSelf: 'flex-end',
@@ -361,6 +385,9 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.black,
     textDecorationLine: 'underline',
+    display: 'flex',
+    alignContent: 'center',
+    paddingLeft: 10,
   },
   formImageFielAddIcon: {
     justifyContent: 'center',
@@ -401,10 +428,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 14,
     backgroundColor: colors.lighterBlue,
-    marginTop: sizeL,
-    height: 75,
-    width: '100%',
+    marginTop: sizeXL,
     justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  iconStyle: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    marginLeft: 20,
+    alignContent: 'flex-start',
   },
 });
 

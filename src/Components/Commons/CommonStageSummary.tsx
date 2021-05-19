@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     width: '100%',
     paddingTop: 20,
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   headerTitle: {
     ...text.h3Black,
