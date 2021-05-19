@@ -147,13 +147,10 @@ const ContributionStep = ({
   };
 
   const contributeMessage = 'Select the amount you would like to contribute';
-  const calcMinFeeToJoin = zeroContribution
-    ? 0
-    : +currCommon.minFeeToJoinFormatted;
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month ($${calcMinFeeToJoin}/mo min.)`
+    ? `${contributeMessage} each month ($${currCommon.minFeeToJoinFormatted}/mo min.)`
     : `${contributeMessage} ${
-        calcMinFeeToJoin !== 0 ? `($${calcMinFeeToJoin} min.)` : ''
+        currCommon.minFeeToJoinFormatted !== 0 ? `($${currCommon.minFeeToJoinFormatted} min.)` : ''
       }`;
 
   return (
@@ -204,7 +201,7 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={calcMinFeeToJoin}
+          minFeeToJoin={currCommon.minFeeToJoinFormatted}
           zeroContribution={zeroContribution}
         />
 
