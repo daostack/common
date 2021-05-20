@@ -30,6 +30,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {useCreateCommonMutation} from '~/Graphql';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -52,6 +53,8 @@ const CreateStep4 = ({
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
   const reviewFormStore = formStores.reviewFormStore;
+
+  const [createCommon] = useCreateCommonMutation();
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -101,13 +104,10 @@ const CreateStep4 = ({
       const formattedData = {
         name: data.name,
         image: data.image,
-        rules: data.rules,
-        links: escapeUrl(data.links),
+        rules: [], // TODO: Change Link component to new fields { title, url } data.rules,
+        links: [], //escapeUrl(data.links),
         byline: data.byline || '',
         description: data.description || '',
-        contributionType: data.contributionType,
-        contributionAmount: data.contributionAmount,
-        zeroContribution: data.zeroContribution,
       };
 
       navigation.navigate({
@@ -118,9 +118,22 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
-        formattedData,
-      );
+      await createCommon({
+        variables: {
+          common: {
+            ...formattedData,
+            fundingMinimumAmount: data.contributionAmount,
+            fundingType: 'OneTime', // TODO: change funding types
+          },
+        },
+      });
+
+      const createCommonResponse = await DaoService.getInstance().createCommon({
+        ...formattedData,
+        zeroContribution: data.zeroContribution,
+        contributionType: data.contributionType,
+        contributionAmount: data.contributionAmount,
+      });
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);

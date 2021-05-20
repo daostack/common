@@ -224,8 +224,8 @@ export type User = {
 };
 
 export enum CommonContributionType {
-  OneTime = 'oneTime',
-  Monthly = 'monthly',
+  OneTime = 'OneTime',
+  Monthly = 'Monthly',
 }
 
 export type CommonMetadata = {
@@ -283,6 +283,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates new user in the settings */
   createUser: User;
+  createCommon: Common;
 };
 
 export type GetCommonsDataQuery = {__typename?: 'Query'} & {
@@ -658,7 +659,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 export const CreateUserDocument = gql`
-  mutation createUser($user: CreateUserInput!) {
+  mutation CreateUser($user: CreateUserInput!) {
     createUser(input: $user) {
       id
     }
@@ -675,4 +676,48 @@ export function useCreateUserMutation(
     CreateUserDocument,
     baseOptions,
   );
+}
+
+export type CreateCommonInput = {
+  name: Scalars['String'];
+  fundingMinimumAmount: Scalars['Int'];
+  fundingType: Maybe<CommonContributionType>;
+  image: Scalars['String'];
+  description: Scalars['String'];
+  action: Scalars['String'];
+  byline: Scalars['String'];
+  links: Array<Link>;
+  rules: Array<Link>;
+};
+
+export type CreateCommonMutation = {__typename?: 'Mutation'} & Pick<
+  Mutation,
+  'createCommon'
+>;
+
+export type CreateCommonMutationVariables = Exact<{
+  common: CreateCommonInput;
+}>;
+
+export const CreateCommonDocument = gql`
+  mutation CreateCommon($common: CreateCommonInput!) {
+    createCommon(input: $common) {
+      id
+      name
+      links
+      rules
+    }
+  }
+`;
+
+export function useCreateCommonMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCommonMutation,
+    CreateCommonMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    CreateCommonMutation,
+    CreateCommonMutationVariables
+  >(CreateCommonDocument, baseOptions);
 }

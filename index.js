@@ -11,6 +11,7 @@ import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
 import {ApolloProvider} from '~/Providers/apolloProvider';
+import {AuthContextProvider} from '~/Context/AuthContext';
 
 LogBox.ignoreAllLogs(true);
 
@@ -18,9 +19,11 @@ const MobX = () => (
   <Update>
     {() => (
       <Provider {...stores}>
-        <ApolloProvider>
-          <App />
-        </ApolloProvider>
+        <AuthContextProvider>
+          <ApolloProvider>
+            <App />
+          </ApolloProvider>
+        </AuthContextProvider>
       </Provider>
     )}
   </Update>

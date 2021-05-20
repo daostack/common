@@ -14,11 +14,30 @@ import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
+import {useCreateUserMutation} from '~/Graphql';
 import {bool, func} from 'prop-types';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
+  const [createUser] = useCreateUserMutation();
+
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
+      if (userInfo.additionalUserInfo.isNewUser) {
+        const profile = userInfo.additionalUserInfo?.profile;
+        const userPhotoUrl =
+          profile?.picture ||
+          `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${profile?.email}&rounded=true`;
+        await createUser({
+          variables: {
+            user: {
+              firstName: profile.given_name,
+              lastName: profile.family_name,
+              email: profile.email,
+              photo: userPhotoUrl,
+            },
+          },
+        });
+      }
       onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
     }
   };
