@@ -7,7 +7,6 @@ import {
   View,
   Linking,
   Alert,
-  Platform,
 } from 'react-native';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
@@ -103,24 +102,6 @@ const UserProfile = ({authStore, navigation, route}) => {
     />
   );
 
-  const handleOpenUrl = (url) => {
-    if (Platform.OS === 'ios') {
-      Linking.openURL(url);
-      return;
-    }
-
-    if (navigation) {
-      const navigate = CommonActions.navigate({
-        name: 'PDFViewer',
-        params: {
-          uri: url,
-        },
-      });
-
-      navigation.dispatch(navigate);
-    }
-  };
-
   const currUserId = route.params?.userId || authStore.userInfo?.uid;
 
   const renderScreen = () => (
@@ -144,11 +125,11 @@ const UserProfile = ({authStore, navigation, route}) => {
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn
-                  onPress={() => handleOpenUrl('https://common.io/tos')}
+                  onPress={() => Linking.openURL('https://common.io/tos')}
                   title="Terms of use"
                 />
                 <AccordionBtn
-                  onPress={() => handleOpenUrl('https://common.io/privacy')}
+                  onPress={() => Linking.openURL('https://common.io/privacy')}
                   title="Privacy Policy"
                 />
                 <AccordionBtn

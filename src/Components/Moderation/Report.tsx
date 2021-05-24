@@ -125,7 +125,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
               formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
                 ?.value
             }
-            onChangeText={(noteText: string) =>  isValidNote(noteText)}
+            onChangeText={(noteText: string) => isValidNote(noteText)}
             validation={{
               name: 'moderatorNote',
               formStore: formStore,
