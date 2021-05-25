@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -82,6 +82,24 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       );
     }
 
+    const handleOpenCommonOptions = useCallback(
+      (item) => {
+        if (openCommonOptions) {
+          openCommonOptions(item);
+        }
+      },
+      [openCommonOptions],
+    );
+
+    const handleShowHiddenNote = useCallback(
+      (args) => {
+        if (showHiddenNote) {
+          showHiddenNote(args);
+        }
+      },
+      [showHiddenNote],
+    );
+
     React.useEffect(() => {
       if (commonInfo) {
         const permission = rootStore.authStore.getPermission(
@@ -102,9 +120,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
-            openCommonOptions={() => openCommonOptions(item)}
+            openCommonOptions={() => handleOpenCommonOptions(item)}
             hiddenProposalNote={() =>
-              showHiddenNote({hiddenItem: item, isModerator})
+              handleShowHiddenNote({hiddenItem: item, isModerator})
             }
             isMember={isMember}
             viewerPermission={viewerPermission}
@@ -117,9 +135,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
               })
             }
             style={{...styles.commonBox}}>
-            <Text style={text.buttonblue}>
+            <Text style={styles.viewMoreText}>
               {`View all ${list.length} ${
-                item.isJoinRequest ? 'Requests' : 'Proposals'
+                item.isJoinRequest ? 'Membership requests' : 'Proposals'
               }`}
             </Text>
           </TouchableOpacity>
@@ -131,9 +149,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
-          openCommonOptions={() => openCommonOptions(item)}
+          openCommonOptions={() => handleOpenCommonOptions(item)}
           hiddenProposalNote={() =>
-            showHiddenNote({hiddenItem: item, isModerator})
+            handleShowHiddenNote({hiddenItem: item, isModerator})
           }
           isMember={isMember}
           viewerPermission={viewerPermission}
@@ -222,14 +240,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginHorizontal: 12,
   },
-
   textNoProposals: {
     ...font.primary.regular,
     ...font.fontSize(2),
     ...text.centered,
     ...layout.marginTopS,
   },
-
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -267,6 +283,13 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 1,
     elevation: 6,
+  },
+  viewMoreText: {
+    ...font.primary.bold,
+    fontSize: 16,
+    lineHeight: 22,
+    letterSpacing: 0,
+    color: colors.black,
   },
 });
 

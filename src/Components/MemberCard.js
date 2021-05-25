@@ -6,7 +6,7 @@ import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
-import {LAUNCHED_STATES} from '~/Services/ProposalService';
+import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
@@ -46,6 +46,7 @@ const MemberCard = ({
             {/* Hide the time if the proposal is expired or new */}
             {remainingSeconds > 0 &&
               !LAUNCHED_STATES.includes(proposalInfo?.state) &&
+              !COUNTDOWN_STATES.includes(proposalInfo?.state) &&
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
               (remainingSeconds > 24 * 60 * 60 ? (

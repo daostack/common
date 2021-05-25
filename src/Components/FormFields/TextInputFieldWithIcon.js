@@ -194,7 +194,8 @@ class TextInputFieldWithIcon extends React.Component {
       subLabel,
       textContentType,
       maxLength,
-      disabledStyle,
+      disabledLabelStyle,
+      disabledBackgroundStyle,
       ...otherProps
     } = this.props;
 
@@ -270,11 +271,11 @@ class TextInputFieldWithIcon extends React.Component {
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
-          <Text style={{...styles.label, ...disabledStyle}}>{label}</Text>
+          <Text style={{...styles.label, ...disabledLabelStyle}}>{label}</Text>
           <Text style={styles.infoLabel}>{infoLabel}</Text>
         </View>
         {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
-        <View style={styleTextfield}>
+        <View style={{...styleTextfield, ...disabledBackgroundStyle}}>
           <View style={iconStyle}>
             <Icon
               name={iconName}
@@ -289,7 +290,7 @@ class TextInputFieldWithIcon extends React.Component {
             maxLength={this.state.isDecimal ? maxLength + 3 : maxLength}
             multiline={multiline}
             textContentType={textContentType}
-            style={{...fieldStyle, ...disabledStyle}}
+            style={{...fieldStyle, ...disabledLabelStyle}}
             placeholder={placeholderText}
             onChangeText={this.onChangeText}
             keyboardType={keyboardType}
@@ -418,7 +419,8 @@ TextInputFieldWithIcon.propTypes = {
   viewStyle: object,
   maxLength: number,
   uiStore: uiStorePropTypes.isRequired,
-  disabledStyle: object,
+  disabledLabelStyle: object,
+  disabledBackgroundStyle: object,
 };
 
 const styles = StyleSheet.create({
