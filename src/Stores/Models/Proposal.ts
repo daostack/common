@@ -44,9 +44,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   countdownPeriod: number;
 
   @observable
-  quietEndingPeriod: number;
-
-  @observable
   votesFor: number;
 
   @observable
@@ -157,7 +154,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get countdown() {
     return (
-      this.moderation?.quietEnding ||
       this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
       this.createdAt.seconds + this?.countdownPeriod
     );
@@ -174,7 +170,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.countdownPeriod = newProposalInfo.countdownPeriod;
-    this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
