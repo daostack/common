@@ -283,6 +283,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates new user in the settings */
   createUser: User;
+  updateUser: User;
   createCommon: Common;
 };
 
@@ -646,7 +647,6 @@ export type CreateUserInput = {
   email: Scalars['String'];
   photo: Scalars['String'];
   country: Scalars['String'];
-  intro?: Scalars['String'];
 };
 
 export type CreateUserMutation = {__typename?: 'Mutation'} & Pick<
@@ -674,6 +674,44 @@ export function useCreateUserMutation(
 ) {
   return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(
     CreateUserDocument,
+    baseOptions,
+  );
+}
+
+export type UpdateUserInput = {
+  id?: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  photo: Scalars['String'];
+  country: Scalars['String'];
+  intro?: Scalars['String'];
+};
+
+export type UpdateUserMutation = {__typename?: 'Mutation'} & Pick<
+  Mutation,
+  'createUser'
+>;
+
+export type UpdateUserMutationVariables = Exact<{
+  user: UpdateUserInput;
+}>;
+
+export const UpdateUserDocument = gql`
+  mutation UpdateUser($user: UpdateUserInput!) {
+    updateUser(input: $user) {
+      id
+    }
+  }
+`;
+
+export function useUpdateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >,
+) {
+  return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(
+    UpdateUserDocument,
     baseOptions,
   );
 }

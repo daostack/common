@@ -16,6 +16,8 @@ import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {useCreateUserMutation} from '~/Graphql';
 import {bool, func} from 'prop-types';
+import logger from '~/Services/Logger';
+import {UNKNOWN_COUNTRY} from '~/Util/countries';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
   const [createUser] = useCreateUserMutation();
@@ -27,16 +29,21 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
         const userPhotoUrl =
           profile?.picture ||
           `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${profile?.email}&rounded=true`;
-        await createUser({
-          variables: {
-            user: {
-              firstName: profile.given_name,
-              lastName: profile.family_name,
-              email: profile.email,
-              photo: userPhotoUrl,
+        try {
+          await createUser({
+            variables: {
+              user: {
+                firstName: profile.given_name,
+                lastName: profile.family_name,
+                email: profile.email,
+                photo: userPhotoUrl,
+                country: UNKNOWN_COUNTRY,
+              },
             },
-          },
-        });
+          });
+        } catch (error) {
+          logger.log('Error -> ', error);
+        }
       }
       onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
     }
