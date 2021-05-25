@@ -35,6 +35,10 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
+import ImagePicker from 'react-native-image-picker';
+import {handlePermission} from '~/Util/Permissions';
+import StorageService from '~/Services/StorageService';
+import logger from '~/Services/Logger';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -391,6 +395,37 @@ const Discussions = ({
     );
   }
 
+  const addImage = async () => {
+      const options = {
+        title: 'Select profile image',
+        quality: 0.7,
+        allowsEditing: false,
+      };
+      ImagePicker.showImagePicker(options, async (response) => {
+        if (response.didCancel) {
+          logger.log('User cancelled image picker');
+        } else if (response.error) {
+          // only for ios because android handles this
+          Platform.OS === 'ios' && (await handlePermission());
+          Toast.error(response.error);
+          logger.log('ImagePicker Error: ', response.error);
+        } else {
+          console.log('response', response.uri);
+          //Toast.loading('Uploading...');
+          /*StorageService.getInstance()
+            .uploadImage(response.uri)
+            .then((url) => {
+              console.log('url', url)
+              Toast.hide();
+              Toast.success('Done');
+              //reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+              //onImageChanged && onImageChanged();
+            })
+            .catch((error) => Toast.error(error));*/
+        }
+      });
+    };
+
   const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
   return (
@@ -438,14 +473,13 @@ const Discussions = ({
               ...styles.inputContainer,
               height: Math.max(100, inputHeight + 50),
             }}>
-            {/* should be added in better discussion batch 3
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => addImage()}
               style={{
                 justifyContent: 'center',
               }}>
               <Icon name="add-24" size={30} color={colors.mainBlue} />
-            </TouchableOpacity>*/}
+            </TouchableOpacity>
             <TextInput
               ref={inputRef}
               editable={true}
