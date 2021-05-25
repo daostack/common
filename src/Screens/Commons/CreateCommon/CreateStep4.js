@@ -102,6 +102,7 @@ const CreateStep4 = ({
       logger.log('calling createCommon(...)');
 
       const formattedData = {
+        //founderId: data.founderId,
         name: data.name,
         image: data.image,
         rules: [], // TODO: Change Link component to new fields { title, url } data.rules,
@@ -117,6 +118,8 @@ const CreateStep4 = ({
           message: 'This might take a couple of minutes.',
         },
       });
+
+      console.log("Create Common formattedData -> ", formattedData);
 
       await createCommon({
         variables: {

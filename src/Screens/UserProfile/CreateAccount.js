@@ -21,8 +21,8 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
   const [createUser] = useCreateUserMutation();
 
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
-    if (onSignedIn) {
-      if (userInfo.additionalUserInfo.isNewUser) {
+    //if (onSignedIn) {
+    //  if (userInfo.additionalUserInfo.isNewUser) {
         const profile = userInfo.additionalUserInfo?.profile;
         const userPhotoUrl =
           profile?.picture ||
@@ -37,9 +37,9 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
             },
           },
         });
-      }
-      onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
-    }
+      //}
+      //onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
+    //}
   };
 
   const isIos = Platform.OS === 'ios';
