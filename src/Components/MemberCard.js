@@ -1,19 +1,16 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useMemo} from 'react';
 import {observer, inject} from 'mobx-react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import {monthShortNames} from '~/Util/DateUtil';
+import {monthShortNames, getFreezeTime} from '~/Util/DateUtil';
 import moment from 'moment';
 import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {FLAGS} from './Moderation/constants';
-
-const dateFormat = 'dddd, h:mm';
-const timeFormat = 'hh:mm:ss';
 
 const MemberCard = ({
   userInfo,
@@ -27,38 +24,15 @@ const MemberCard = ({
     userInfo.id,
   );
 
-  //const [until, setUntil] = useState(proposalInfo?.moderation?.countdownPeriod);
-
-  console.log('proposalInfo', proposalInfo?.moderation?.flag !== 'hidden');
   const isModerator = useMemo(
     () => viewerPermission === PERMISSIONS.MODERATOR,
     [moderatorId],
   );
 
-  /*useEffect(() => {
-    setUntil(proposalInfo?.moderation?.countdownPeriod);
-  }, [proposalInfo?.moderation?.countdownPeriod]);*/
-
-  const getFreezeTime = (until) => {
-    console.log('until', until,  'until % 60', until % 60)
-    const [seconds, minutes, hours, days] = [
-      until % 60,
-      parseInt(until / 60, 10) % 60,
-      parseInt(until / (60 * 60), 10) % 24,
-      parseInt(until / (60 * 60 * 24), 10),
-    ];
-    return `${days}:${hours}:${minutes}:${seconds}`;
-  };
-
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt =
-        proposalInfo?.moderation?.countdownPeriod || proposalInfo?.countdown;
-      const remainingSeconds = !proposalInfo?.moderation?.countdownPeriod
-        ? closingAt - moment().unix()
-        : closingAt;
-     if (proposalInfo?.id === '9dd95dcf-8a3d-4432-9eb3-1d7736edb908')
-       console.log('getFreezeTime', getFreezeTime(remainingSeconds), 'closingAt', closingAt, 'remainingSeconds', remainingSeconds )
+      const closingAt = proposalInfo?.countdown;
+      const remainingSeconds = closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
@@ -71,13 +45,8 @@ const MemberCard = ({
             )}
 
             {proposalInfo?.moderation?.flag === FLAGS.hidden && (
-              <Text style={{...text.runningblack, width: '100%'}}>
-                {getFreezeTime(remainingSeconds)}
-                {/*moment
-                  .unix(remainingSeconds)
-                  .format(
-                    remainingSeconds > 24 * 60 * 60 ? dateFormat : timeFormat,
-                  )*/}
+              <Text style={{width: '100%', ...text.smallGreyText}}>
+                {getFreezeTime(proposalInfo?.moderation?.countdownPeriod)}
               </Text>
             )}
 
@@ -90,7 +59,7 @@ const MemberCard = ({
               // if it is less show countdown till it
               (remainingSeconds > 24 * 60 * 60 ? (
                 <Text style={{...text.runningblack, width: '100%'}}>
-                  {moment.unix(closingAt).format(dateFormat)}
+                  {moment.unix(closingAt).format('dddd, h:mm')}
                 </Text>
               ) : (
                 <CountDown
