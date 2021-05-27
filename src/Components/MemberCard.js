@@ -110,13 +110,7 @@ const MemberCard = ({
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
       <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          alignContent: 'flex-start',
-          flex: 1.9,
-          flexWrap: 'wrap',
-        }}>
+        style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
@@ -187,6 +181,13 @@ const styles = StyleSheet.create({
   expDate: {
     ...text.runningblack,
     width: '100%',
+  },
+  memberCard: {
+    ...layout.content,
+    ...layout.flexStart,
+    alignContent: 'flex-start',
+    flex: 1.9,
+    flexWrap: 'wrap',
   },
 });
 
