@@ -154,6 +154,15 @@ export class Proposal extends BaseModel<IProposalEntity> {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
+  @computed
+  get countdown() {
+    return (
+      this.moderation?.quietEnding ||
+      this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
+      this.createdAt.seconds + this?.countdownPeriod
+    );
+  }
+
   constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;

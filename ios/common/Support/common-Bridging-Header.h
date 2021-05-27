@@ -9,3 +9,4 @@
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
 #import <React/RCTConvert.h>
+#import <Intercom/intercom.h>

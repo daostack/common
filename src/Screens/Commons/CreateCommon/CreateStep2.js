@@ -152,7 +152,8 @@ const CreateStep2 = ({
           iconEmptyColor={colors.grey3}
           iconFillColor={disabledStyle}
           viewStyle={{alignSelf: 'stretch'}}
-          disabledStyle={{color: disabledStyle}}
+          disabledLabelStyle={{color: disabledStyle}}
+          disabledBackgroundStyle={{backgroundColor: zeroContribution ? colors.grey5 : colors.white}}
           label={
             <React.Fragment>
               Minimum{' '}

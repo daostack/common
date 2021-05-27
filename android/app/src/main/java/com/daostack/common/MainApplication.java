@@ -21,6 +21,8 @@ import com.microsoft.codepush.react.CodePush;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import io.intercom.android.sdk.Intercom;
+
 public class MainApplication extends Application implements ReactApplication {
 
     private static Context context;
@@ -42,7 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
             packages.add(new RNBridgePackage());
-            
+
           return packages;
         }
 
@@ -63,6 +65,9 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
       super.onCreate();
+
+      Intercom.initialize(this, "android_sdk-e744189b3d163130a5c8e9e849fb4b9867d70148", "o71kz0sy");
+
       SoLoader.init(this, /* native exopackage */ false);
       initializeFlipper(this); // Remove this line if you don't want Flipper enabled
       context = getApplicationContext();

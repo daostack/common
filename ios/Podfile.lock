@@ -403,6 +403,7 @@ PODS:
   - GTMSessionFetcher/Core (1.5.0)
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
+  - Intercom (8.1.1)
   - IQKeyboardManager (4.0.13)
   - JWT (3.0.0-beta.12):
     - Base64 (~> 1.1.2)
@@ -617,6 +618,9 @@ PODS:
     - React
   - react-native-image-picker (2.3.1):
     - React
+  - react-native-intercom (19.0.0):
+    - Intercom (~> 8.1.0)
+    - React
   - react-native-netinfo (5.9.9):
     - React-Core
   - react-native-pdf (6.2.2):
@@ -803,6 +807,7 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fast-openpgp (from `../node_modules/react-native-fast-openpgp`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-intercom (from `../node_modules/react-native-intercom`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-restart (from `../node_modules/react-native-restart`)
@@ -875,6 +880,7 @@ SPEC REPOS:
     - gRPC-Core
     - GTMAppAuth
     - GTMSessionFetcher
+    - Intercom
     - IQKeyboardManager
     - JWT
     - KeychainAccess
@@ -939,6 +945,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fast-openpgp"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-intercom:
+    :path: "../node_modules/react-native-intercom"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-pdf:
@@ -1064,6 +1072,7 @@ SPEC CHECKSUMS:
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  Intercom: d9c8ad77472baa29bb0ef6101e46ff175d4d3473
   IQKeyboardManager: 8eab4d8111418414619d1df8e4779ce5d0f8d7e2
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
@@ -1091,6 +1100,7 @@ SPEC CHECKSUMS:
   react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
   react-native-fast-openpgp: 143b3dde8e6f520e5cb0b12fa54550d06e85406e
   react-native-image-picker: 6a850c41f57f0848d918c2a77aedd7aa272ffa30
+  react-native-intercom: 14c42a5663f7810c8019abec29d0684238e15100
   react-native-netinfo: 0212ce8604e88edf686f1481b925b17a42a52449
   react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979

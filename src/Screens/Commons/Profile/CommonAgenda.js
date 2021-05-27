@@ -8,7 +8,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import {object, shape, number, array, string, func, bool} from 'prop-types';
+import {object, shape, number, array, string, func} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
 import {HyperText} from '~/Components/Text/HyperText';
@@ -94,7 +94,7 @@ const CommonAgenda = ({
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
               minFeeToJoin={common.minFeeToJoinFormatted}
-              contributionType={common.metadata.contributionType}
+              contributionType={common.metadata.contributionType || 'one-time'}
             />
           </View>
         </ScrollView>
@@ -123,7 +123,7 @@ CommonAgenda.propTypes = {
 Title.propTypes = {
   title: string,
   onPress: func,
-  canEdit: bool,
+  canEdit: string,
 };
 
 const styles = StyleSheet.create({

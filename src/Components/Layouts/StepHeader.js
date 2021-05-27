@@ -3,7 +3,7 @@ import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
-import {bool, number, object} from 'prop-types';
+import {bool, number, array} from 'prop-types';
 const {width} = Dimensions.get('window');
 
 const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
@@ -15,7 +15,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
     }
 
     // adding 0.1 for the dot width
-    return (index * (1 / dotsCount) + 0.1).toFixed(2);
+    return +(index * (1 / dotsCount) + 0.1).toFixed(2);
   };
 
   const ovalStyle = (index) => {
@@ -70,7 +70,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
           return null;
         } else {
           return (
-            <View style={ovalStyle(dotIndex)}>
+            <View key={dotIndex} style={ovalStyle(dotIndex)}>
               <Icon
                 name={
                   currentIndex <= dotIndex ? currDotInfo.dotIconName : 'check'
@@ -87,7 +87,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
 };
 
 StepHeader.propTypes = {
-  dotInfo: object,
+  dotInfo: array,
   currentIndex: number,
   skipFirstDot: bool,
 };

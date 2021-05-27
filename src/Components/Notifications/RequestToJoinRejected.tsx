@@ -30,6 +30,7 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
     }
 
     notificationData = {
+      createdAt: item.createdAt,
       missingData: false,
       description:
         "Don't give up, there are plenty of other Commons you can join.",

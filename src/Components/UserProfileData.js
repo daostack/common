@@ -20,6 +20,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
   const userInfo = rootStore.authStore.userInfo;
@@ -136,6 +137,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
     <React.Fragment>
       {isOwnProfile && (
         <View style={styles.screenNav}>
+          <IntercomShowButton />
           <TouchableOpacity onPress={() => navigateToEditProfile(false)}>
             <Icon name="edit" size={26} />
           </TouchableOpacity>
@@ -229,6 +231,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         <ProposalsList
           navigation={navigation}
           isSwiper={true}
+          showMax={showMaxData}
           userInfo={{
             id: user.uid,
           }}
@@ -277,6 +280,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         <ProposalsList
           navigation={navigation}
           isSwiper={true}
+          showMax={showMaxData}
           userInfo={{
             id: user.uid,
           }}

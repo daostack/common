@@ -342,33 +342,17 @@ const Discussions = ({
       );
     }
     bottomSheetStore.hideBottomSheet();
-    switch (actionType) {
-      case ACTIONS.show:
-        Toast.loading('Loading...');
-        await ModerationService.getInstance().show(
-          messageId,
-          commonId,
-          TITLES.discussionMessage,
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      case ACTIONS.hide:
-        Toast.loading('Loading...');
-        await ModerationService.getInstance().hide(
-          messageId,
-          TITLES.discussionMessage,
-          commonId,
-        );
-        Toast.hide();
-        Toast.success('Done');
-        setShowModerationSuccessModal(true);
-        break;
-      default:
-        setShowModerationModal(true);
-        break;
-    }
+
+    const resp = await ModerationService.getInstance().onModerate(
+      actionType,
+      messageId,
+      commonId,
+      TITLES.discussionMessage,
+    );
+
+    resp === ACTIONS.report
+      ? setShowModerationModal(true)
+      : resp && setShowModerationSuccessModal(true);
   };
 
   const openMessageOptions = (message, itemType) => {
@@ -448,7 +432,6 @@ const Discussions = ({
             flex: 1,
             color: '#fbfdff',
           }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           keyboardVerticalOffset={0}>
           <View
             style={{

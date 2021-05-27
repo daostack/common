@@ -51,6 +51,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
     const fundingFormatted = proposalFunding / 100;
 
     notificationData = {
+      createdAt: item.createdAt,
       missingData: false,
       descriptionBold: `"${
         (proposal.description as IFundingRequestDescription).title

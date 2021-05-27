@@ -12,6 +12,7 @@ import Firebase
 import FirebaseCore
 import GoogleSignIn
 import CodePush
+import Intercom
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -58,6 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
+        
+        Intercom.setApiKey("ios_sdk-1ed48ae97775f533e547ef3f0f0d124f5576f94d", forAppId:"o71kz0sy")
         
         return true
     }

@@ -26,6 +26,7 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
     if (discussion && user) {
       notificationData = {
         missingData: false,
+        createdAt: item.createdAt,
         descriptionBold: ` by ${user.firstName} ${user.lastName}`,
         ownerAvatar: user.photoURL,
         discussion: discussion,
