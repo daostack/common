@@ -6,6 +6,9 @@ import {
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
+import { CreateFundingProposalDocument, CreateFundingProposalInput, CreateJoinProposalDocument, CreateJoinProposalInput } from '~/Graphql/Proposal';
+import ApolloClient from '~/Services/util/ApolloClient';
+import { getErrorObject, getGQLErrorObject } from '~/Util';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -116,3 +119,47 @@ export const fetchProposalById = async (
   }
   return await ProposalsCollection.doc(proposalId).get();
 };
+
+export const createFundingProposal = async (formData: CreateFundingProposalInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateFundingProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+    });
+  } catch (err) {
+    console.log('CREATE FUNDING PROPOSAL ERROR -> ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateJoinProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    console.log('CREATE FUNDING PROPOSAL ERROR -> ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+
+
+// async createRequestToJoin(formData) {
+//   try {
+//     return await this.axiosClient.post(this.endpoints.createJoin, formData, {
+//       headers: {
+//         Authorization: await auth().currentUser.getIdToken(true),
+//       },
+//     });
+//   } catch (err) {
+//     console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
+//     throw err;
+//   }
+// }

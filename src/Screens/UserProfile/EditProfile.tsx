@@ -24,6 +24,8 @@ import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
+import {useUpdateUserMutation} from '~/Graphql';
+import {UNKNOWN_COUNTRY} from '~/Util/countries';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -55,6 +57,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
+  const [updateUser] = useUpdateUserMutation();
 
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
@@ -77,6 +80,19 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     onFormSubmitStart();
 
     try {
+      await updateUser({
+        variables: {
+          user: {
+            id: authStore.userInfo.uid,
+            firstName: values.firstName,
+            lastName: values.lastName,
+            photo: values.photoURL,
+            country: values.country || UNKNOWN_COUNTRY,
+            intro: values.intro,
+          },
+        },
+      });
+
       await AuthService.getInstance().updateUserData(
         {
           firstName: values.firstName,

@@ -283,7 +283,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates new user in the settings */
   createUser: User;
+  updateUser: User;
   createCommon: Common;
+  createJoinProposal: Proposal;
+  createFundingProposal: Proposal;
 };
 
 export type GetCommonsDataQuery = {__typename?: 'Query'} & {
@@ -646,7 +649,6 @@ export type CreateUserInput = {
   email: Scalars['String'];
   photo: Scalars['String'];
   country: Scalars['String'];
-  intro?: Scalars['String'];
 };
 
 export type CreateUserMutation = {__typename?: 'Mutation'} & Pick<
@@ -674,6 +676,44 @@ export function useCreateUserMutation(
 ) {
   return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(
     CreateUserDocument,
+    baseOptions,
+  );
+}
+
+export type UpdateUserInput = {
+  id?: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  photo: Scalars['String'];
+  country: Scalars['String'];
+  intro?: Scalars['String'];
+};
+
+export type UpdateUserMutation = {__typename?: 'Mutation'} & Pick<
+  Mutation,
+  'createUser'
+>;
+
+export type UpdateUserMutationVariables = Exact<{
+  user: UpdateUserInput;
+}>;
+
+export const UpdateUserDocument = gql`
+  mutation UpdateUser($user: UpdateUserInput!) {
+    updateUser(input: $user) {
+      id
+    }
+  }
+`;
+
+export function useUpdateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateUserMutation,
+    UpdateUserMutationVariables
+  >,
+) {
+  return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(
+    UpdateUserDocument,
     baseOptions,
   );
 }
@@ -721,3 +761,20 @@ export function useCreateCommonMutation(
     CreateCommonMutationVariables
   >(CreateCommonDocument, baseOptions);
 }
+
+/** Multi fields inputs */
+
+export type LinkInput = {
+  /** The display title of the link */
+  title: Scalars['String'];
+  /** The actual link part of the link */
+  url: Scalars['String'];
+};
+
+export type FileInput = {
+  value: Scalars['String'];
+};
+
+export type ImageInput = {
+  value: Scalars['String'];
+};

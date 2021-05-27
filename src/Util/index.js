@@ -44,8 +44,14 @@ export function filterObjectByKeys(currObj, allowedKeys) {
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {
+  console.log("showErrorPopUp -> ", arg);
+
+  console.log("arg instanceof Error -> ", arg instanceof Error);
+
   if (arg instanceof Error) {
-    const errorObj = getErrorObject(arg);
+    const errorObj = getGQLErrorObject(arg);
+
+    console.log("errorObj -> ", errorObj);
 
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,
@@ -82,7 +88,35 @@ export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
   });
 };
 
+export const getGQLErrorObject = (gqlError) => {
+  console.log("gqlError -> ", gqlError);
+  console.log("graphQLErrors -> ", gqlError.graphQLErrors);
+  try {
+    if ( gqlError.graphQLErrors.lenth > 0 ) {
+      const errorObj = gqlError.graphQLErrors[0];
+      return {
+        errorMessage: errorObj.message,
+        errorId: errorObj.extensions.errorId,
+        errorObj: errorObj.extensions.exception ,
+      };
+    } else {
+      throw Error(gqlError);
+    }
+
+  } catch (e) {
+    logger.error('Something went wrong trying to parse the error object', e);
+    logger.error('Error object: ', gqlError);
+
+    return {
+      errorMessage: 'Something bad happened',
+      errorId: 'Cannot retrieve the ID of the error',
+      errorCode: 500,
+    };
+  }
+};
+
 export const getErrorObject = (axiosError) => {
+  console.log("RRRRRRRR");
   try {
     return axiosError.response.data;
   } catch (e) {
