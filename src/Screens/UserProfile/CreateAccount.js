@@ -15,9 +15,12 @@ import GSignInButton from '~/Components/Auth/GSignInButton';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {colors, layout, text} from '~/Theme';
+import {bool, func} from 'prop-types';
 import {UNKNOWN_COUNTRY} from '~/Util/countries';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
+  const [createUser] = useCreateUserMutation();
+
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
       if (userInfo.additionalUserInfo.isNewUser) {

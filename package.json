@@ -26,6 +26,7 @@
     "codepush:android:release:production": "code-push release-react DAOstack/common-android android -m -d Production"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.18",
     "@invertase/react-native-apple-authentication": "^1.1.2",
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/blur": "^3.6.0",
@@ -45,6 +46,7 @@
     "@react-navigation/bottom-tabs": "^5.1.1",
     "@react-navigation/native": "^5.0.9",
     "@react-navigation/stack": "^5.1.1",
+    "apollo-link-context": "^1.0.20",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "bn.js": "^5.1.1",
@@ -52,6 +54,7 @@
     "compare-versions": "^3.6.0",
     "computed-async-mobx": "^6.1.0",
     "formik": "^2.2.6",
+    "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "hermes-engine": "0.5.2-rc1",
     "lodash": "^4.17.15",

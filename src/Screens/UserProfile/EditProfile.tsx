@@ -56,6 +56,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
+  const [updateUser] = useUpdateUserMutation();
 
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
