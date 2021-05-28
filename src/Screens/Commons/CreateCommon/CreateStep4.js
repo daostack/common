@@ -119,8 +119,6 @@ const CreateStep4 = ({
         },
       });
 
-      console.log("Create Common formattedData -> ", formattedData);
-
       await createCommon({
         variables: {
           common: {

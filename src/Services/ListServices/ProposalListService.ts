@@ -149,18 +149,3 @@ export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
     throw err;
   }
 };
-
-
-
-// async createRequestToJoin(formData) {
-//   try {
-//     return await this.axiosClient.post(this.endpoints.createJoin, formData, {
-//       headers: {
-//         Authorization: await auth().currentUser.getIdToken(true),
-//       },
-//     });
-//   } catch (err) {
-//     console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
-//     throw err;
-//   }
-// }
