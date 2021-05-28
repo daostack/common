@@ -1,4 +1,5 @@
 import {create} from 'mobx-persist';
+import {ApolloClient, NormalizedCacheObject} from '@apollo/client';
 import UserStore from './DataStores/UserStore';
 import CommonStore from './DataStores/CommonStore';
 import AuthStore from './AuthStore';
@@ -8,6 +9,7 @@ import DiscussionStore from './DataStores/DiscussionStore';
 import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import UIStore from './UIStore';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -23,6 +25,7 @@ export default class RootStore {
   discussionMessageStore: DiscussionMessageStore;
   notificationStore: NotificationStore;
   uiStore: UIStore;
+  apollo: ApolloClient<NormalizedCacheObject>;
 
   constructor() {
     this.authStore = new AuthStore(this);
@@ -33,6 +36,7 @@ export default class RootStore {
     this.discussionMessageStore = new DiscussionMessageStore(this);
     this.notificationStore = new NotificationStore(this);
     this.uiStore = new UIStore(this);
+    this.apollo = apollo;
 
     Promise.all([
       hydrate('authStore', this.authStore),
