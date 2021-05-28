@@ -11,6 +11,7 @@ import {isDaoMemberByUserId} from '~/Util';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {UserModel} from './Models/UserModel';
 import RootStore from './RootStore';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 type SignInErrorWithCode = any;
 
@@ -99,9 +100,10 @@ class AuthStore {
   @action
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
-    this.userInfo = newUserInfo;
+    const userModel = new UserModel(newUserInfo);
+    this.userInfo = userModel;
     if (isUserChanged) {
-      this.signedInUser = newUserInfo?.uid;
+      this.signedInUser = userModel?.uid;
       this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
@@ -137,11 +139,11 @@ class AuthStore {
   // Private functions
   async _processUser() {
     try {
-      const {data} = await this.rootStore.apollo.query({
+      const {data} = await apollo.query({
         query: LoadUserContextDocument,
       });
       if (data?.user) {
-        this.setSignedInUser(new UserModel(data?.user));
+        this.setSignedInUser(data?.user);
         NotificationService.saveTokenToDatabase();
         this.removeLoginInProgress(data?.user?.uid);
         this.setIsLoading(false);

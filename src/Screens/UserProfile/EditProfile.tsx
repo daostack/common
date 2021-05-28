@@ -56,7 +56,6 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
-  const [updateUser] = useUpdateUserMutation();
 
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
@@ -79,7 +78,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     onFormSubmitStart();
 
     try {
-      await AuthService.getInstance().updateUserData({
+      const user = await AuthService.getInstance().updateUserData({
         id: authStore.userInfo.uid,
         firstName: values.firstName,
         lastName: values.lastName,
@@ -87,6 +86,8 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
         country: values.country || UNKNOWN_COUNTRY,
         intro: values.intro,
       });
+
+      authStore.setSignedInUser(user);
     } catch (err) {
       logger.log('Error -> ', err);
       throw err;

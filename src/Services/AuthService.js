@@ -131,14 +131,14 @@ export default class AuthService {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(user);
 
-    const {data} = apollo.mutate({
+    const {data} = await apollo.mutate({
       mutation: UpdateUserDocument,
       variables: {
         user,
       },
     });
 
-    return data?.user;
+    return data?.updateUser;
   }
 
   async _applePerformRequest() {

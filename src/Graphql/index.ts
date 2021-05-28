@@ -707,7 +707,14 @@ export type UpdateUserMutationVariables = Exact<{
 export const UpdateUserDocument = gql`
   mutation UpdateUser($user: UpdateUserInput!) {
     updateUser(input: $user) {
-      id
+      uid: id
+      firstName
+      lastName
+      email
+      photoURL: photo
+      country
+      intro
+      joinedAt: createdAt
     }
   }
 `;

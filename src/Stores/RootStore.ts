@@ -9,7 +9,6 @@ import DiscussionStore from './DataStores/DiscussionStore';
 import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import UIStore from './UIStore';
-import {apollo} from '~/Util/helpers/apolloHelper';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -36,7 +35,6 @@ export default class RootStore {
     this.discussionMessageStore = new DiscussionMessageStore(this);
     this.notificationStore = new NotificationStore(this);
     this.uiStore = new UIStore(this);
-    this.apollo = apollo;
 
     Promise.all([
       hydrate('authStore', this.authStore),
