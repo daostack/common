@@ -44,14 +44,8 @@ export function filterObjectByKeys(currObj, allowedKeys) {
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {
-  console.log("showErrorPopUp -> ", arg);
-
-  console.log("arg instanceof Error -> ", arg instanceof Error);
-
   if (arg instanceof Error) {
     const errorObj = getGQLErrorObject(arg);
-
-    console.log("errorObj -> ", errorObj);
 
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,
@@ -89,14 +83,12 @@ export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
 };
 
 export const getGQLErrorObject = (gqlError) => {
-  console.log("gqlError -> ", gqlError);
-  console.log("graphQLErrors -> ", gqlError.graphQLErrors);
   try {
-    if ( gqlError.graphQLErrors.lenth > 0 ) {
+    if ( gqlError.graphQLErrors.length > 0 ) {
       const errorObj = gqlError.graphQLErrors[0];
       return {
         errorMessage: errorObj.message,
-        errorId: errorObj.extensions.errorId,
+        errorId: errorObj.extensions.exception.errorId,
         errorObj: errorObj.extensions.exception ,
       };
     } else {
@@ -116,7 +108,6 @@ export const getGQLErrorObject = (gqlError) => {
 };
 
 export const getErrorObject = (axiosError) => {
-  console.log("RRRRRRRR");
   try {
     return axiosError.response.data;
   } catch (e) {

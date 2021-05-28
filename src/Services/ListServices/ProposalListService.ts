@@ -9,6 +9,7 @@ import {
 import { CreateFundingProposalDocument, CreateFundingProposalInput, CreateJoinProposalDocument, CreateJoinProposalInput } from '~/Graphql/Proposal';
 import ApolloClient from '~/Services/util/ApolloClient';
 import { getErrorObject, getGQLErrorObject } from '~/Util';
+import logger from '~/Services/Logger';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -129,7 +130,7 @@ export const createFundingProposal = async (formData: CreateFundingProposalInput
       },
     });
   } catch (err) {
-    console.log('CREATE FUNDING PROPOSAL ERROR -> ', getGQLErrorObject(err));
+    logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
     throw err;
   }
 };
@@ -144,7 +145,7 @@ export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
       errorPolicy: 'none',
     });
   } catch (err) {
-    console.log('CREATE FUNDING PROPOSAL ERROR -> ', getGQLErrorObject(err));
+    logger.log('Error while trying to create a new Join Proposal: ', getGQLErrorObject(err));
     throw err;
   }
 };

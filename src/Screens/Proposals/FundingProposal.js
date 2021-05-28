@@ -48,11 +48,11 @@ const FundingProposal = ({
         const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          amount: 1000,//formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
+          amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
-          commonId: '0eb58192-0ec8-4c22-95ee-c0d535f51a37',
+          commonId: commonId,
         };
 
         navigation.navigate({
@@ -62,47 +62,27 @@ const FundingProposal = ({
           },
         });
 
-        console.log("data -> ", data);
-
         const createFundingProposalResponse = await createFundingProposal(
           data,
         );
 
-        console.log("Creating Funding request with data: ", data);
+        const proposalId = createFundingProposalResponse.id;
 
-        // const createFundingProposalResponse = await createFundingProposal({
-        //   variables: {
-        //     proposal: data,
-        //   },
-        // });
+        navigation.pop();
 
-        console.log("createFundingProposalResponse -> ", createFundingProposalResponse);
+        Toast.done('Your proposal was created!');
 
-        if (createFundingProposalResponse.status === 200) {
-          const proposalId = createFundingProposalResponse.data.id;
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+            createdProposalId: proposalId,
+          },
+        });
+        navigation.dispatch(navigate);
 
-          navigation.pop();
-
-          Toast.done('Your proposal was created!');
-
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
-            params: {
-              showRequestSentModal: true,
-              createdProposalId: proposalId,
-            },
-          });
-          navigation.dispatch(navigate);
-        } else {
-          navigation.pop();
-          showErrorPopUp(
-            uiStore.bottomSheetStore,
-            createFundingProposalResponse,
-          );
-        }
       } catch (error) {
         navigation.pop();
-        console.log("ERRRRRROR -> ", error);
         showErrorPopUp(uiStore.bottomSheetStore, error);
       }
     }

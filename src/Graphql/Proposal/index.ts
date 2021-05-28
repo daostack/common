@@ -67,6 +67,7 @@ export type CreateFundingProposalVariables = Exact<{
 export const CreateJoinProposalDocument = gql`
   mutation CreateJoinProposal($proposal: CreateJoinProposalInput!) {
     createJoinProposal(input: $proposal) {
+      id
       title
       commonId
       description
@@ -80,6 +81,7 @@ export const CreateJoinProposalDocument = gql`
 export const CreateFundingProposalDocument = gql`
     mutation CreateFundingProposal($proposal: CreateFundingProposalInput!) {
     createFundingProposal(input: $proposal) {
+      id
       title
       commonId
       description
