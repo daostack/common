@@ -16,10 +16,14 @@ export default class UIStore {
     this.rootStore = rootStore;
     this.bottomSheetStore = new BottomSheetStore();
     this.appLoaderStore = new AppLoaderStore();
-    getCurrentConversionRate().then((result) => {
-      runInAction(() => {
-        this.conversionRate = result.data.rates.ILS;
+    getCurrentConversionRate()
+      .then((result) => {
+        runInAction(() => {
+          this.conversionRate = result.data.rates.ILS;
+        });
+      })
+      .catch((error) => {
+        console.log('ILS Conversion Error', error);
       });
-    });
   }
 }

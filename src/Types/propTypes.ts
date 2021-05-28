@@ -28,6 +28,7 @@ export const authStorePropTypes = shape({
   setIsLoading: func.isRequired,
   setSignedInUser: func.isRequired,
   isDaoMember: func.isRequired,
+  getPermission: func.isRequired,
 });
 
 export const userStorePropTypes = shape({

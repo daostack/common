@@ -71,6 +71,9 @@ export class Common extends BaseModel<ICommonEntity> {
 
   @computed
   get minFeeToJoinFormatted(): string {
-    return formatNumber(this.metadata.minFeeToJoin / 100).toString();
+    const minValue = this.metadata.zeroContribution
+    ? 0
+    : +this.metadata.minFeeToJoin;
+    return formatNumber(minValue / 100).toString();
   }
 }
