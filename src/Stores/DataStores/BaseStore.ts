@@ -22,7 +22,7 @@ import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
   IEntityModel,
-  IEntity extends IBaseEntity
+  IEntity extends IBaseEntity,
 > {
   @persist('map')
   @observable

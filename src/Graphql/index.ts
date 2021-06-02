@@ -1,5 +1,6 @@
 import {gql} from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
 export type Scalars = {
@@ -76,15 +77,15 @@ export type Discussion = BaseEntity & {
 };
 
 export enum ProposalType {
-  FundingRequest = 'fundingRequest',
-  Join = 'join',
+  FundingRequest = 'FundingRequest',
+  JoinRequest = 'JoinRequest',
 }
 
 export enum ProposalState {
-  PassedInsufficientBalance = 'passedInsufficientBalance',
-  Countdown = 'countdown',
-  Passed = 'passed',
-  Failed = 'failed',
+  Countdown = 'Countdown',
+  Finalizing = 'Finalizing',
+  Rejected = 'Rejected',
+  Accepted = 'Accepted',
 }
 
 export enum ProposalVoteOutcome {
@@ -502,27 +503,24 @@ export type GetCommonByIdQueryVariables = Exact<{
   where: CommonWhereUniqueInput;
 }>;
 
-export const GetCommonById = gql`
+export const GetCommonByIdDocument = gql`
   query getCommon($where: CommonWhereUniqueInput!) {
     common(where: $where) {
       id
-      description
-      links
-      image
       name
-      byline
+      image
       balance
-      fundingMinimumAmount
-      fundingType
       raised
       members {
         id
-        user {
-          firstName
-          lastName
-          displayName
-        }
+        joinedAt: createdAt
       }
+      rules
+      links
+      action
+      byline
+      description
+      whitelisted
     }
   }
 `;
@@ -879,6 +877,104 @@ export const GetUserInfoDocument = gql`
         displayName
         photo
       }
+    }
+  }
+`;
+
+export const GetUserPendingCommonsDocument = gql`
+  query PendingCommons {
+    user {
+      proposals(where: {state: ${ProposalState.Countdown}, type: ${ProposalType.JoinRequest}}) {
+        common {
+          id
+          name
+          image
+          balance
+          raised
+          members {
+            userId
+            joinedAt: createdAt
+            roles
+            user {
+              id
+            }
+          }
+          rules
+          links
+          register: whitelisted
+          action
+          byline
+          description
+          contributionType: fundingType
+          minFeeToJoin: fundingMinimumAmount
+        }
+      }
+    }
+  }
+`;
+
+export const GetUserCommonsDocument = gql`
+  query MyCommons {
+    user {
+      commons {
+        id
+        name
+        image
+        balance
+        raised
+        members {
+          userId
+          joinedAt: createdAt
+          roles
+          user {
+            id
+          }
+        }
+        rules
+        links
+        register: whitelisted
+        action
+        byline
+        description
+        contributionType: fundingType
+        minFeeToJoin: fundingMinimumAmount
+      }
+    }
+  }
+`;
+
+export type CommonsWhereInput = {
+  ids: Array<string>;
+  page: number;
+};
+
+export const GetCommonsDocument = gql`
+  query AllCommons(
+    $where: [String!]
+    $paginate: PaginateInput! = {take: 10, skip: 0}
+  ) {
+    commons(where: {id: {notIn: $where}}, paginate: $paginate) {
+      id
+      name
+      image
+      balance
+      raised
+      members {
+        userId
+        joinedAt: createdAt
+        roles
+        user {
+          id
+        }
+      }
+      rules
+      links
+      register: whitelisted
+      action
+      byline
+      description
+      contributionType: fundingType
+      minFeeToJoin: fundingMinimumAmount
     }
   }
 `;

@@ -1,5 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {firebase} from '~/Firebase';
+import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 
 export interface ICommonEntity extends IBaseEntity {
   /**
@@ -51,6 +52,29 @@ export interface ICommonEntity extends IBaseEntity {
    * The whitelisting status of the common
    */
   register: CommonRegister;
+
+  // TODO: Change this interface to graphql approach
+  action: string;
+  byline: string;
+  description: string;
+
+  /**
+   * The id of the user, who created the common
+   */
+  founderId: string;
+
+  /**
+   * The minimum amount in cents, required
+   * to join the common
+   */
+  minFeeToJoin: number;
+
+  /**
+   * Whether the user should be charged every
+   * month, that they are member of the common,
+   * or only when they join
+   */
+  contributionType: ContributionType;
 }
 
 export interface ICommonRule {
@@ -119,4 +143,5 @@ export type CommonRegister = 'na' | 'registered';
 export interface ICommonMember {
   userId: string;
   joinedAt?: firebase.firestore.Timestamp;
+  roles: Array<PERMISSIONS_GRAPHQL>;
 }

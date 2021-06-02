@@ -1,18 +1,21 @@
-import {computed, observable} from 'mobx';
-import BaseStore from './BaseStore';
+import {computed, observable, runInAction} from 'mobx';
+import {fromPromise, IPromiseBasedObservable} from 'mobx-utils';
+import {DAO_REGISTERED} from '~/Firebase/Databasee';
+import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
+  fetchCommonById,
   subscribeToAllCommons,
   updateCommon,
-  fetchCommonById,
+  fetchUserCommons,
+  fetchUserPendingCommons,
 } from '~/Services/ListServices/CommonListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
-import RootStore from '../RootStore';
-import {Common} from '../Models/Common';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {DAO_REGISTERED} from '~/Firebase/Databasee';
-import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
-import {runInAction} from 'mobx';
+import {Common} from '../Models/Common';
+import {Proposal} from '../Models/Proposal';
+import RootStore from '../RootStore';
+import BaseStore from './BaseStore';
+import {UpdateCommonInfoInput} from '~/Graphql';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
@@ -24,11 +27,28 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   }
 
   @computed
-  get myCommons() {
+  get myObservableCommons() {
     try {
-      return this.getDataArray.filter((common: Common) =>
-        this.rootStore.authStore.isDaoMember(common?.members),
-      );
+      return fromPromise((async () => await fetchUserCommons())());
+    } catch (error) {
+      return [];
+    }
+  }
+
+  @computed get myCommons() {
+    return (this.myObservableCommons as IPromiseBasedObservable<Common[]>).case(
+      {
+        pending: () => [],
+        rejected: () => [],
+        fulfilled: (value) => value,
+      },
+    );
+  }
+
+  @computed
+  get pendingObservableCommons() {
+    try {
+      return fromPromise((async () => await fetchUserPendingCommons())());
     } catch (error) {
       return [];
     }
@@ -36,13 +56,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @computed
   get pendingCommons() {
-    try {
-      return this.rootStore.proposalStore.myActiveMembershipRequests.map(
-        (proposal: Proposal) => this.getCommonById(proposal.commonId),
-      );
-    } catch (error) {
-      return [];
-    }
+    return (
+      this.pendingObservableCommons as IPromiseBasedObservable<Common[]>
+    ).case({
+      pending: () => [],
+      rejected: () => [],
+      fulfilled: (value) => value,
+    });
   }
 
   @computed
@@ -70,13 +90,10 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
       return this.getDataById(id);
     } catch (err) {
       fetchCommonById(id)
-        .then((common: IFirebaseDoc<ICommonEntity>) => {
-          if (common.exists) {
+        .then((common: Common) => {
+          if (common.id) {
             runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(common)),
-              );
+              this.setData(id, common);
             });
           }
         })
@@ -85,7 +102,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           });
         });
-      return undefined;
     }
   };
 
@@ -106,13 +122,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
     subscribeToAllCommons(this.updateStoreData);
 
-  /**
-   * This function is updating the common in the firebase with the new changes
-   * @param  updateCommonInfo - a common object with new changes
-   * @param  changedBy        - the user who is responsible for the change
-   * @return                  - response returned from the updateCommon call
-   */
-  updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
+  updateCommonInfo = async (updateCommonInfo: UpdateCommonInfoInput) => {
     try {
       return await updateCommon(updateCommonInfo);
     } catch (err) {

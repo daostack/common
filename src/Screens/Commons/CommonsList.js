@@ -25,6 +25,11 @@ import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
+import {
+  fetchUserPendingCommons,
+  fetchUserCommons,
+  fetchCommons,
+} from '~/Services/ListServices/CommonListService';
 
 const TIMEOUT = 1500;
 
@@ -39,30 +44,71 @@ const CommonsList = ({navigation, rootStore}) => {
   const handleLoader = () => {
     setLoading(false);
   };
+  const [featuredDaosGroup, setFeaturedDaosGroup] = useState({data: []});
+  const [myDaosGroup, setMyDaosGroup] = useState({data: []});
+  const [pendingDaosGroup, setPendingDaosGroup] = useState({data: []});
+  const [filterIds, setFilterIds] = useState([]);
+  const [page, setPage] = useState(0);
 
   useTimeoutFn(handleLoader, TIMEOUT);
 
-  const myDaosGroup = {
-    title: groupTitle('My Commons', commonStore.myCommons.length),
-    data: commonStore.myCommons,
+  const initialLoad = async () => {
+    const [pendingCommons, myCommons] = await Promise.all([
+      fetchUserPendingCommons(),
+      fetchUserCommons(),
+    ]);
+    const ids = [...pendingCommons, ...myCommons].map(({id}) => id);
+    const featuredCommons = await fetchCommons({ids});
+    const myDaos = {
+      title: groupTitle('My Commons', myCommons.length),
+      data: myCommons,
+    };
+
+    const pendingDaos = {
+      title: groupTitle('Pending', pendingCommons.length),
+      data: pendingCommons,
+    };
+
+    const featuredDaos = {
+      title: 'Featured',
+      data: featuredCommons,
+    };
+    setFilterIds(ids);
+    setMyDaosGroup(myDaos);
+    setPendingDaosGroup(pendingDaos);
+    setFeaturedDaosGroup(featuredDaos);
+    setPage(0);
+    return myDaos;
   };
-  const pendingDaosGroup = {
-    title: groupTitle('Pending', commonStore.pendingCommons.length),
-    data: commonStore.pendingCommons,
-  };
-  const featuredDaosGroup = {
-    title: 'Featured',
-    data: commonStore.featuredCommons,
-  };
+
+  React.useEffect(async () => {
+    setLoading(true);
+    await initialLoad();
+    setLoading(false);
+  }, []);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    // TODO: Implement logic for refresh or leave it as it is now - faky
-    // DaoService.getInstance().getDaoList(loadDaosList);
+    await initialLoad();
     setRefreshing(false);
   }, [refreshing]);
+
+  const onEndReached = async () => {
+    if (myDaosGroup.title && pendingDaosGroup.title) {
+      const featuredCommons = await fetchCommons({
+        ids: filterIds,
+        page: page + 1,
+      });
+      const featuredDaos = {
+        title: 'Featured',
+        data: [...featuredDaosGroup.data, ...featuredCommons],
+      };
+      setFeaturedDaosGroup({...featuredDaos});
+      setPage(page + 1);
+    }
+  };
 
   const onAddCommon = () => {
     if (authStore.signedInUser) {
@@ -191,6 +237,8 @@ const CommonsList = ({navigation, rootStore}) => {
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
             initialNumToRender={4}
+            onEndReachedThreshold={400}
+            onEndReached={onEndReached}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
