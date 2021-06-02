@@ -1,6 +1,6 @@
 import {StackActionType} from '@react-navigation/native';
 
-interface NavigationProps {
+export interface NavigationProps {
   dispatch: (arg: StackActionType) => void;
   pop: () => void;
   goBack: () => void;

@@ -182,6 +182,8 @@ const ProposalScreen = ({
     isMember &&
     !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
+  const canViewVotes = proposalInfo && isMember;
+
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
       navigation.setParams({
@@ -636,6 +638,16 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
+  const handleShowAllVotes = () => {
+    if (proposalInfo.votesCount > 0 && canViewVotes) {
+      navigation.navigate('ProposalVotes', {
+        proposalId: proposalId,
+        commonId: commonId,
+        screenTitle: proposalInfo?.description?.title || 'Unknown title',
+      });
+    }
+  };
+
   return (
     <React.Fragment>
       <ModerationModal
@@ -952,13 +964,16 @@ const ProposalScreen = ({
                       </Text>
                     </View>
 
-                    <Text style={text.smallBlackText}>
-                      {!proposalInfo.votesCount
-                        ? 'No votes yet'
-                        : `${proposalInfo.votesCount} ${
-                            proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                          }`}
-                    </Text>
+                    <TouchableOpacity onPress={handleShowAllVotes}>
+                      <Text style={text.smallBlackText}>
+                        {!proposalInfo.votesCount
+                          ? 'No votes yet'
+                          : `${proposalInfo.votesCount} ${
+                              proposalInfo.votesCount > 1 ? 'votes' : 'vote'
+                            }`}
+                        {canViewVotes ? ' >' : ''}
+                      </Text>
+                    </TouchableOpacity>
 
                     <View
                       style={{

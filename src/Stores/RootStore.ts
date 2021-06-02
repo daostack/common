@@ -8,6 +8,7 @@ import DiscussionStore from './DataStores/DiscussionStore';
 import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import UIStore from './UIStore';
+import VoteStore from '~/Stores/DataStores/VoteStore';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -23,6 +24,7 @@ export default class RootStore {
   discussionMessageStore: DiscussionMessageStore;
   notificationStore: NotificationStore;
   uiStore: UIStore;
+  voteStore: VoteStore;
 
   constructor() {
     this.authStore = new AuthStore(this);
@@ -33,6 +35,7 @@ export default class RootStore {
     this.discussionMessageStore = new DiscussionMessageStore(this);
     this.notificationStore = new NotificationStore(this);
     this.uiStore = new UIStore(this);
+    this.voteStore = new VoteStore(this);
 
     Promise.all([
       hydrate('authStore', this.authStore),

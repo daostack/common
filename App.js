@@ -72,6 +72,7 @@ import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import ProposalVotes from '~/Screens/Proposals/ProposalVotes';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -588,6 +589,14 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="CommonMembers"
             component={CommonMembers}
+            options={({route}) => ({
+              title: route?.params.screenTitle,
+              headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="ProposalVotes"
+            component={ProposalVotes}
             options={({route}) => ({
               title: route?.params.screenTitle,
               headerBackTitleVisible: false,

@@ -6,6 +6,8 @@ import {
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
+import {VotesCollection} from '~/Firebase/Databasee/Collections/VotesCollection';
+import {IVoteEntity} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -115,4 +117,16 @@ export const fetchProposalById = async (
     );
   }
   return await ProposalsCollection.doc(proposalId).get();
+};
+
+export const fetchProposalVoteById = async (
+  voteId: string,
+): Promise<IFirebaseDoc<IVoteEntity>> => {
+  if (!voteId) {
+    throw new Error(
+      'Vote Id (voteId) is required parameter, but it was not provided',
+    );
+  }
+
+  return await VotesCollection.doc(voteId).get();
 };
