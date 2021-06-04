@@ -512,15 +512,21 @@ export const GetCommonByIdDocument = gql`
       balance
       raised
       members {
-        id
+        userId
         joinedAt: createdAt
+        roles
+        user {
+          id
+        }
       }
       rules
       links
+      register: whitelisted
       action
       byline
       description
-      whitelisted
+      contributionType: fundingType
+      minFeeToJoin: fundingMinimumAmount
     }
   }
 `;

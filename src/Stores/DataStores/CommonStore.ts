@@ -1,6 +1,4 @@
-import {computed, observable, runInAction} from 'mobx';
-import {fromPromise, IPromiseBasedObservable} from 'mobx-utils';
-import {DAO_REGISTERED} from '~/Firebase/Databasee';
+import {computed, observable, ObservableMap, action} from 'mobx';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
@@ -9,10 +7,10 @@ import {
   updateCommon,
   fetchUserCommons,
   fetchUserPendingCommons,
+  fetchCommons,
 } from '~/Services/ListServices/CommonListService';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
 import {Common} from '../Models/Common';
-import {Proposal} from '../Models/Proposal';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
 import {UpdateCommonInfoInput} from '~/Graphql';
@@ -21,89 +19,150 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
 
+  @observable
+  private myCommons: ObservableMap<string, Common> = observable.map({});
+
+  @observable
+  private pendingCommons: ObservableMap<string, Common> = observable.map({});
+
+  @observable
+  private featuredCommons: ObservableMap<string, Common> = observable.map({});
+
   constructor(rootStore: RootStore) {
     super(rootStore);
     this.isLoading = false;
   }
 
-  @computed
-  get myObservableCommons() {
-    try {
-      return fromPromise((async () => await fetchUserCommons())());
-    } catch (error) {
-      return [];
-    }
-  }
-
-  @computed get myCommons() {
-    return (this.myObservableCommons as IPromiseBasedObservable<Common[]>).case(
-      {
-        pending: () => [],
-        rejected: () => [],
-        fulfilled: (value) => value,
-      },
-    );
-  }
-
-  @computed
-  get pendingObservableCommons() {
-    try {
-      return fromPromise((async () => await fetchUserPendingCommons())());
-    } catch (error) {
-      return [];
-    }
-  }
-
-  @computed
-  get pendingCommons() {
-    return (
-      this.pendingObservableCommons as IPromiseBasedObservable<Common[]>
-    ).case({
-      pending: () => [],
-      rejected: () => [],
-      fulfilled: (value) => value,
+  @action
+  loadMyCommons = async (): Promise<void> => {
+    const commons = await fetchUserCommons();
+    const myCommonsMap = new Map<string, Common>();
+    commons.forEach((item) => {
+      myCommonsMap.set(item.id, item);
     });
-  }
+    this.myCommons = observable.map(myCommonsMap);
+  };
 
   @computed
-  get featuredCommons() {
-    try {
-      return this.getDataArray.filter(
-        (common: Common) =>
-          !this.myCommons.includes(common) &&
-          !this.pendingCommons.includes(common) &&
-          common.register === DAO_REGISTERED,
-      );
-    } catch (error) {
-      return [];
-    }
+  get myCommonsValues() {
+    return Array.from(this.myCommons.values());
   }
+
+  @action
+  loadPendingCommons = async (): Promise<void> => {
+    const commons = await fetchUserPendingCommons();
+    const pendingCommonsMap = new Map<string, Common>();
+    commons.forEach((item) => {
+      pendingCommonsMap.set(item.id, item);
+    });
+    this.pendingCommons = observable.map(pendingCommonsMap);
+  };
+
+  @computed
+  get pendingCommonsValues() {
+    return Array.from(this.pendingCommons.values());
+  }
+
+  @action
+  loadFeaturedCommons = async (page: number = 0): Promise<void> => {
+    const [myCommons, pendingCommons] = await Promise.all([
+      fetchUserCommons(),
+      fetchUserPendingCommons(),
+    ]);
+    const ids = [...myCommons, ...pendingCommons].map(
+      (item: Common) => item.id,
+    );
+    const commons = await fetchCommons({ids: [], page});
+
+    const featuredCommonsMap = new Map<string, Common>();
+    commons.forEach((item) => {
+      featuredCommonsMap.set(item.id, item);
+    });
+    let i = 0;
+    console.log(
+      '----------------',
+      this.featuredCommons.keys(),
+      featuredCommonsMap.keys(),
+      commons,
+    );
+    this.featuredCommons.forEach((value, key) => {
+      i++;
+      console.log(
+        'featuredCommonsMap.has(key)',
+        this.featuredCommons.has(key),
+        key,
+        i,
+      );
+      if (!this.featuredCommons.has(key)) {
+        console.log('key', key, 'value', value);
+        featuredCommonsMap.set(key, value);
+      }
+    });
+    this.featuredCommons = observable.map(featuredCommonsMap);
+  };
+
+  @computed
+  get featuredCommonsValues() {
+    return Array.from(this.featuredCommons.values());
+  }
+
+  // @computed
+  // get myObservableCommons() {
+  //   try {
+  //     return fromPromise((async () => await fetchUserCommons())());
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // }
+
+  // @computed get myCommons() {
+  //   return (this.myObservableCommons as IPromiseBasedObservable<Common[]>).case(
+  //     {
+  //       pending: () => [],
+  //       rejected: () => [],
+  //       fulfilled: (value) => value,
+  //     },
+  //   );
+  // }
+
+  // @computed
+  // get pendingObservableCommons() {
+  //   try {
+  //     return fromPromise((async () => await fetchUserPendingCommons())());
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // }
+
+  // @computed
+  // get pendingCommons() {
+  //   return (
+  //     this.pendingObservableCommons as IPromiseBasedObservable<Common[]>
+  //   ).case({
+  //     pending: () => [],
+  //     rejected: () => [],
+  //     fulfilled: (value) => value,
+  //   });
+  // }
+
+  // @computed
+  // get featuredCommons() {
+  //   try {
+  //     return this.getDataArray.filter(
+  //       (common: Common) =>
+  //         !this.myCommons.includes(common) &&
+  //         !this.pendingCommons.includes(common) &&
+  //         common.register === DAO_REGISTERED,
+  //     );
+  //   } catch (error) {
+  //     return [];
+  //   }
+  // }
 
   // Overriden methods
   getEntityModel(entity: ICommonEntity): Common {
     return new Common(entity);
   }
-
-  // Data consuming methods
-  getCommonById = (id: string): Common | undefined => {
-    try {
-      return this.getDataById(id);
-    } catch (err) {
-      fetchCommonById(id)
-        .then((common: Common) => {
-          if (common.id) {
-            runInAction(() => {
-              this.setData(id, common);
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
-        });
-    }
-  };
 
   getUserCommons = (userId: string) => {
     try {

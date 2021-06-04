@@ -40,7 +40,7 @@ export const fetchCommonById = async (commonId: string): Promise<Common> => {
       },
     },
   });
-  return data.common;
+  return new Common(data.common);
 };
 
 export const fetchUserPendingCommons = async (): Promise<Common[]> => {

@@ -44,41 +44,30 @@ const CommonsList = ({navigation, rootStore}) => {
   const handleLoader = () => {
     setLoading(false);
   };
-  const [featuredDaosGroup, setFeaturedDaosGroup] = useState({data: []});
-  const [myDaosGroup, setMyDaosGroup] = useState({data: []});
-  const [pendingDaosGroup, setPendingDaosGroup] = useState({data: []});
-  const [filterIds, setFilterIds] = useState([]);
   const [page, setPage] = useState(0);
 
   useTimeoutFn(handleLoader, TIMEOUT);
 
   const initialLoad = async () => {
-    const [pendingCommons, myCommons] = await Promise.all([
-      fetchUserPendingCommons(),
-      fetchUserCommons(),
-    ]);
-    const ids = [...pendingCommons, ...myCommons].map(({id}) => id);
-    const featuredCommons = await fetchCommons({ids});
-    const myDaos = {
-      title: groupTitle('My Commons', myCommons.length),
-      data: myCommons,
-    };
-
-    const pendingDaos = {
-      title: groupTitle('Pending', pendingCommons.length),
-      data: pendingCommons,
-    };
-
-    const featuredDaos = {
-      title: 'Featured',
-      data: featuredCommons,
-    };
-    setFilterIds(ids);
-    setMyDaosGroup(myDaos);
-    setPendingDaosGroup(pendingDaos);
-    setFeaturedDaosGroup(featuredDaos);
+    commonStore.loadMyCommons();
+    commonStore.loadPendingCommons();
+    commonStore.loadFeaturedCommons();
     setPage(0);
-    return myDaos;
+  };
+
+  const myCommonsGroup = {
+    title: groupTitle('My Commons', commonStore.myCommons?.size),
+    data: commonStore.myCommonsValues,
+  };
+
+  const pendingCommonsGroup = {
+    title: groupTitle('Pending', commonStore.pendingCommons?.size),
+    data: commonStore.pendingCommonsValues,
+  };
+
+  const featuredCommonsGroup = {
+    title: 'Featured',
+    data: commonStore.featuredCommonsValues,
   };
 
   React.useEffect(async () => {
@@ -96,16 +85,8 @@ const CommonsList = ({navigation, rootStore}) => {
   }, [refreshing]);
 
   const onEndReached = async () => {
-    if (myDaosGroup.title && pendingDaosGroup.title) {
-      const featuredCommons = await fetchCommons({
-        ids: filterIds,
-        page: page + 1,
-      });
-      const featuredDaos = {
-        title: 'Featured',
-        data: [...featuredDaosGroup.data, ...featuredCommons],
-      };
-      setFeaturedDaosGroup({...featuredDaos});
+    if (myCommonsGroup.title && pendingCommonsGroup.title) {
+      commonStore.loadFeaturedCommons(page + 1);
       setPage(page + 1);
     }
   };
@@ -214,12 +195,12 @@ const CommonsList = ({navigation, rootStore}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {featuredDaosGroup.data.length > 0 || !commonStore.isLoading ? (
+        {featuredCommonsGroup.data.length > 0 || !commonStore.isLoading ? (
           <SectionList
             sections={
               authStore.signedInUser
-                ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
-                : [featuredDaosGroup]
+                ? [myCommonsGroup, pendingCommonsGroup, featuredCommonsGroup]
+                : [featuredCommonsGroup]
             }
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
