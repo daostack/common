@@ -72,29 +72,14 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     const ids = [...myCommons, ...pendingCommons].map(
       (item: Common) => item.id,
     );
-    const commons = await fetchCommons({ids: [], page});
+    const commons = await fetchCommons({ids, page});
 
     const featuredCommonsMap = new Map<string, Common>();
     commons.forEach((item) => {
       featuredCommonsMap.set(item.id, item);
     });
-    let i = 0;
-    console.log(
-      '----------------',
-      this.featuredCommons.keys(),
-      featuredCommonsMap.keys(),
-      commons,
-    );
     this.featuredCommons.forEach((value, key) => {
-      i++;
-      console.log(
-        'featuredCommonsMap.has(key)',
-        this.featuredCommons.has(key),
-        key,
-        i,
-      );
-      if (!this.featuredCommons.has(key)) {
-        console.log('key', key, 'value', value);
+      if (!featuredCommonsMap.has(key)) {
         featuredCommonsMap.set(key, value);
       }
     });
@@ -105,59 +90,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   get featuredCommonsValues() {
     return Array.from(this.featuredCommons.values());
   }
-
-  // @computed
-  // get myObservableCommons() {
-  //   try {
-  //     return fromPromise((async () => await fetchUserCommons())());
-  //   } catch (error) {
-  //     return [];
-  //   }
-  // }
-
-  // @computed get myCommons() {
-  //   return (this.myObservableCommons as IPromiseBasedObservable<Common[]>).case(
-  //     {
-  //       pending: () => [],
-  //       rejected: () => [],
-  //       fulfilled: (value) => value,
-  //     },
-  //   );
-  // }
-
-  // @computed
-  // get pendingObservableCommons() {
-  //   try {
-  //     return fromPromise((async () => await fetchUserPendingCommons())());
-  //   } catch (error) {
-  //     return [];
-  //   }
-  // }
-
-  // @computed
-  // get pendingCommons() {
-  //   return (
-  //     this.pendingObservableCommons as IPromiseBasedObservable<Common[]>
-  //   ).case({
-  //     pending: () => [],
-  //     rejected: () => [],
-  //     fulfilled: (value) => value,
-  //   });
-  // }
-
-  // @computed
-  // get featuredCommons() {
-  //   try {
-  //     return this.getDataArray.filter(
-  //       (common: Common) =>
-  //         !this.myCommons.includes(common) &&
-  //         !this.pendingCommons.includes(common) &&
-  //         common.register === DAO_REGISTERED,
-  //     );
-  //   } catch (error) {
-  //     return [];
-  //   }
-  // }
 
   // Overriden methods
   getEntityModel(entity: ICommonEntity): Common {
