@@ -44,7 +44,7 @@ export interface IModerationEntity extends IBaseEntity {
    * actual countdown and the time proposal was creating
    * We do that when proposal is hiding, in order to freeze the countdown
    */
-  countdownPeriod?: number;
+   expiresAt?: number;
 
   /**
    * A countdown using quiet ending period,

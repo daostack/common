@@ -24,7 +24,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
 
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
-      if (userInfo.additionalUserInfo.isNewUser) {
+     if (userInfo.additionalUserInfo.isNewUser) {
         const profile = userInfo.additionalUserInfo?.profile;
         const userPhotoUrl =
           profile?.picture ||

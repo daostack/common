@@ -21,6 +21,9 @@ class AuthStore {
   @observable
   userInfo: UserModel | null = null;
 
+  @observable
+  userToken: string | null = null;
+
   @persist
   @observable
   signedInUser: string | null = null;
@@ -42,7 +45,18 @@ class AuthStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
+    auth().onIdTokenChanged(this.onIdTokenChanged);
   }
+
+  onIdTokenChanged = (user: any) => {
+    if (user) {
+      user.getIdToken().then( (token : string) => {
+        this.setUserToken(token);
+      });
+    } else {
+      this.setUserToken(null);
+    }
+  };
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
   onAuthStateChanged = (user: any) => {
@@ -76,6 +90,11 @@ class AuthStore {
       logger.log(error);
       throw error;
     }
+  };
+
+  @action
+  setUserToken = (token: string | null) => {
+    this.userToken = token;
   };
 
   @action

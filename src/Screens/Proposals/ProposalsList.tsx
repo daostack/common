@@ -23,6 +23,7 @@ import {
 } from '~/Stores/DataStores/ProposalStore';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import { PROPOSAL_STAGE } from '~/Config';
 
 const {width, height} = Dimensions.get('window');
 
@@ -71,10 +72,17 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
-      list = rootStore.proposalStore.getCommonProposals(
-        commonInfo.id,
-        proposalFilter,
-      );
+
+      if (proposalFilter.stage === PROPOSAL_STAGE.History) {
+        list = rootStore.proposalStore.getCommonHistoryProposals;
+      } else {
+        list = rootStore.proposalStore.getCommonActiveProposals;
+      }
+
+      // list = rootStore.proposalStore.getCommonProposals(
+      //   commonInfo.id,
+      //   proposalFilter,
+      // );
     } else if (userInfo) {
       list = rootStore.proposalStore.getUserProposals(
         userInfo.id,
