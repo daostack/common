@@ -1,15 +1,31 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
+
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
-import { CreateFundingProposalDocument, CreateFundingProposalInput, CreateJoinProposalDocument, CreateJoinProposalInput } from '~/Graphql/Proposal';
+
+import {
+  CreateFundingProposalDocument,
+  CreateFundingProposalInput,
+  CreateJoinProposalDocument,
+  CreateJoinProposalInput,
+  finalizeProposalDocument,
+  getProposalsDocument,
+  onProposalChangeDocument,
+  proposalsStateFilterQueryPart,
+  ProposalState,
+  ProposalType,
+  ProposalWhereInput,
+} from '~/Graphql/Proposal';
+
 import ApolloClient from '~/Services/util/ApolloClient';
-import { getErrorObject, getGQLErrorObject } from '~/Util';
+import {getErrorObject, getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
+import { Proposal } from '~/Stores/Models/Proposal';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -121,6 +137,8 @@ export const fetchProposalById = async (
   return await ProposalsCollection.doc(proposalId).get();
 };
 
+
+// Create Proposals
 export const createFundingProposal = async (formData: CreateFundingProposalInput) => {
   try {
     return await ApolloClient.getInstance().mutate({
@@ -149,3 +167,90 @@ export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
     throw err;
   }
 };
+
+// Proposal actions
+export const finalizeProposal = async (proposalId: string) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: finalizeProposalDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to listen for proposal change: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+// Proposal subscription
+export const onProposalChange = (proposalId: string) => {
+  try {
+    return ApolloClient.getInstance().subscribe({
+      query: onProposalChangeDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to listen for proposal change: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+// Fetch proposals
+const getProposals = async (proposalsWhere: ProposalWhereInput) => {
+
+  console.log("PROPOSAL WHERE -> ", proposalsWhere);
+  try {
+    return await ApolloClient.getInstance().query({
+      query: getProposalsDocument,
+      variables: {
+        where: proposalsWhere,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const getCommonActiveProposals = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.COUNTDOWN]),
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryProposals = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.ACCEPTED, ProposalState.FINALIZING, ProposalState.REJECTED]),
+  });
+  return data.proposals;
+};
+
+export const getCommonActiveReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.COUNTDOWN]),
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.ACCEPTED, ProposalState.FINALIZING, ProposalState.REJECTED]),
+  });
+  return data.proposals;
+};
+
+
+
+

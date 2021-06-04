@@ -41,7 +41,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   state: string;
 
   @observable
-  countdownPeriod: number;
+  expiresAt: number;
 
   @observable
   quietEndingPeriod: number;
@@ -62,7 +62,11 @@ export class Proposal extends BaseModel<IProposalEntity> {
   join: IProposalJoin | undefined;
 
   @observable
-  description: IFundingRequestDescription | IJoinReqDescription;
+  title: string;
+
+  @observable
+  description: string;
+  //description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
   moderation?: IModerationEntity;
@@ -126,7 +130,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   @computed
-  get funding() {
+  get fundingAmount() {
     if (this.type === PROPOSAL_TYPE.Join) {
       return (this as IJoinRequestProposal).join.funding;
     } else {
@@ -136,7 +140,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get fundingFormatted() {
-    return this.funding / 100;
+    return this.fundingAmount / 100;
   }
 
   @computed
@@ -158,8 +162,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   get countdown() {
     return (
       this.moderation?.quietEnding ||
-      this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
-      this.createdAt.seconds + this?.countdownPeriod
+      this?.expiresAt
     );
   }
 
@@ -173,11 +176,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
-    this.countdownPeriod = newProposalInfo.countdownPeriod;
+    this.expiresAt = newProposalInfo.expiresAt;
     this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;

@@ -38,7 +38,7 @@ const MemberCard = ({
           <View style={{alignItems: 'flex-end'}}>
             {proposalInfo.funding > 0 && (
               <Text style={text.h2Black}>
-                {`$${proposalInfo.funding / 100}`}
+                {`$${proposalInfo.fundingAmount / 100}`}
                 {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}

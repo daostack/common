@@ -2,6 +2,7 @@
 import {gql} from '@apollo/client';
 import * as Apollo from '@apollo/client';
 import {CommonContributionType, Exact, FileInput, ImageInput, LinkInput, Maybe, Mutation, Scalars} from '~/Graphql';
+import {COUNTDOWN_STATES} from '~/Services/ProposalService';
 
 export type ProposalFunding = {
     __typename?: 'ProposalFunding';
@@ -35,6 +36,30 @@ export type CreateFundingProposalInput = CreateProposalInput & {
     funding: ProposalFunding;
 };
 
+export enum ProposalState {
+  ACCEPTED = 'Accepted',
+  COUNTDOWN = 'Countdown',
+  FINALIZING = 'Finalizing',
+  REJECTED = 'Rejected',
+}
+
+export enum ProposalType {
+  FUNDING_REQUEST = 'FundingRequest',
+  JOIN_REQUEST = 'JoinRequest',
+}
+
+export type ProposalWhereInput = {
+    id?: Scalars['String'];
+    type?: ProposalType
+    state?: ProposalState
+    commonId?: Scalars['String'];
+    commonMemberId?: Scalars['String'];
+    userId?: Scalars['String'];
+    title?: Scalars['String'];
+    description?: Scalars['String'];
+    AND?: Array<ProposalWhereInput>;
+    OR?: Array<ProposalWhereInput>;
+};
 
 export type CreateFundingProposalMutation = {__typename?: 'Mutation'} & Pick<
   Mutation,
@@ -61,8 +86,6 @@ export type CreateJoinProposalVariables = Exact<{
 export type CreateFundingProposalVariables = Exact<{
     proposal: CreateFundingProposalInput;
 }>;
-
-
 
 export const CreateJoinProposalDocument = gql`
   mutation CreateJoinProposal($proposal: CreateJoinProposalInput!) {
@@ -95,26 +118,47 @@ export const CreateFundingProposalDocument = gql`
   }
 `;
 
-export function useCreateFundingProposalMutation(
-    baseOptions?: Apollo.MutationHookOptions<
-      CreateFundingProposalMutation,
-      CreateFundingProposalVariables
-    >,
-  ) {
-    return Apollo.useMutation<
-    CreateFundingProposalMutation,
-    CreateFundingProposalVariables
-    >(CreateFundingProposalDocument, baseOptions);
-}
+export const onProposalChangeDocument = gql`
+  subscription ($proposalId: ID!){
+    onProposalChange(proposalId: $proposalId) {
+      title
+      commonId
+      description
+      links
+      files
+      images
+      funding {
+          amount
+      }
+    }
+  }
+`;
 
-export function useCreateJoinProposalMutation(
-    baseOptions?: Apollo.MutationHookOptions<
-      CreateJoinProposalMutation,
-      CreateJoinProposalVariables
-    >,
-  ) {
-    return Apollo.useMutation<
-    CreateJoinProposalMutation,
-    CreateJoinProposalVariables
-    >(CreateJoinProposalDocument, baseOptions);
-}
+export const finalizeProposalDocument = gql`
+  mutation ($proposalId: ID!){
+    finalizeProposal(proposalId: $proposalId)
+  }
+`;
+
+export const proposalsStateFilterQueryPart = (states: Array<ProposalState>): Array<ProposalWhereInput> => states.map((currState) => ({state: currState}));
+
+export const getProposalsDocument = gql`
+  query ($where: ProposalWhereInput!){
+    proposals( where: $where) {
+      id
+      title
+      type
+      commonId
+      description
+      links
+      files
+      images
+      funding {
+          amount
+      }
+      createdAt
+      expiresAt
+    }
+  }
+`;
+

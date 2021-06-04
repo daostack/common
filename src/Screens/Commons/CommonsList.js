@@ -26,6 +26,9 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
 
+import {finalizeProposal} from '~/Services/ListServices/ProposalListService';
+
+
 const TIMEOUT = 1500;
 
 const groupTitle = (title, arrLength) =>
@@ -65,6 +68,13 @@ const CommonsList = ({navigation, rootStore}) => {
   }, [refreshing]);
 
   const onAddCommon = () => {
+
+    finalizeProposal("a2ef47ef-1376-4e68-b8a3-3b303accffb6").then((result ) => {
+      console.log("finalizeProposalResult -> ", result);
+    });
+
+
+    /*
     if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
@@ -74,7 +84,7 @@ const CommonsList = ({navigation, rootStore}) => {
           message: 'Connect your account to join this Common',
         },
       );
-    }
+    }*/
   };
 
   const header = () => (

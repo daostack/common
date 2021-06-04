@@ -48,11 +48,16 @@ const ProposalCard = ({
   const commonStore = rootStore.commonStore;
   const authStore = rootStore.authStore;
 
+  console.log("------------------------------- -> ", proposalId);
   const proposalInfo = proposalStore.getProposalById(proposalId);
+
+  
+  console.log("proposalInfo -> ", proposalInfo);
+
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
-  const isVisible =
-    proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const isVisible = true;
+    //proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
   const hasPermission = authStore.getPermission(
     proposalInfo.commonId,
     authStore?.userInfo?.uid,
@@ -117,6 +122,8 @@ const ProposalCard = ({
     proposalInfo.moderation?.reporter &&
     userStore.getUserById(proposalInfo.moderation?.reporter);
 
+  console.log("PROPOSAL INFO TITLE -> ", proposalInfo.title);
+
   return proposalInfo ? (
     <Animated.View
       style={[
@@ -129,8 +136,10 @@ const ProposalCard = ({
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            (proposalInfo?.moderation?.updatedAt.seconds ||
-              proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
+            (
+              //TODO: set once it's added to backend
+              //proposalInfo?.moderation?.updatedAt.seconds ||
+              proposalInfo?.expiresAt.seconds)
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}
@@ -144,7 +153,7 @@ const ProposalCard = ({
             <View style={styles.titleContainer}>
               <Text style={styles.title}>
                 {isFundingRequest &&
-                  (proposalInfo?.description?.title || 'Unknown title')}
+                  (proposalInfo?.title || 'Unknown title')}
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
                 isMember &&

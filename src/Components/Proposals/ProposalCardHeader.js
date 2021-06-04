@@ -15,7 +15,6 @@ import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
 const TITLES = {
   APPROVED: 'Approved',
   REJECTED: 'Rejected',
-  NEW: 'New',
   COUNTDOWN: 'Countdown',
   PAYMENT_FAILED: 'Payment Failed',
   PAYMENT_PENDING: 'Pending Payment',

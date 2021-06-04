@@ -52,7 +52,7 @@ const FundingProposal = ({
           links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
-          commonId: commonId,
+          commonId: '0eb58192-0ec8-4c22-95ee-c0d535f51a37',
         };
 
         navigation.navigate({

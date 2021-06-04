@@ -28,6 +28,16 @@ interface IBaseProposalEntity extends IBaseEntity {
   proposerId: string;
 
   /**
+   * The proposal title
+   */
+  title: string;
+
+  /**
+   * The proposal description text
+   */
+   description: string;
+
+  /**
    * The common for witch the
    * proposal was created
    */
@@ -62,7 +72,7 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The countdown period in seconds relative to the creation date
    */
-  countdownPeriod: number;
+   expiresAt: number;
 
   /**
    * This is the period at the end of the voting in which if
@@ -191,7 +201,7 @@ export interface IFundingRequestProposal extends IBaseProposalEntity {
   /**
    * Object with some description of the proposal
    */
-  description: TypeFundingRequestDescription;
+  //description: TypeFundingRequestDescription;
 
   fundingRequest: IProposalFundingRequest;
 }
@@ -231,7 +241,7 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
   /**
    * Object with some description of the proposal
    */
-  description: IJoinReqDescription;
+  //description: IJoinReqDescription;
 
   /**
    * The current state of the payment for the proposal
