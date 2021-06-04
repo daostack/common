@@ -36,31 +36,23 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @action
   loadMyCommons = async (): Promise<void> => {
     const commons = await fetchUserCommons();
-    const myCommonsMap = new Map<string, Common>();
-    commons.forEach((item) => {
-      myCommonsMap.set(item.id, item);
-    });
-    this.myCommons = observable.map(myCommonsMap);
+    this.myCommons = observable.map(this.toEntityModelArr(commons));
   };
 
   @computed
   get myCommonsValues() {
-    return Array.from(this.myCommons.values());
+    return this.toDataArray(this.myCommons);
   }
 
   @action
   loadPendingCommons = async (): Promise<void> => {
     const commons = await fetchUserPendingCommons();
-    const pendingCommonsMap = new Map<string, Common>();
-    commons.forEach((item) => {
-      pendingCommonsMap.set(item.id, item);
-    });
-    this.pendingCommons = observable.map(pendingCommonsMap);
+    this.pendingCommons = observable.map(this.toEntityModelArr(commons));
   };
 
   @computed
   get pendingCommonsValues() {
-    return Array.from(this.pendingCommons.values());
+    return this.toDataArray(this.pendingCommons);
   }
 
   @action
@@ -70,7 +62,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
       fetchUserPendingCommons(),
     ]);
     const ids = [...myCommons, ...pendingCommons].map(
-      (item: Common) => item.id,
+      (item: ICommonEntity) => item.id,
     );
     const commons = await fetchCommons({ids, page});
 
@@ -88,7 +80,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @computed
   get featuredCommonsValues() {
-    return Array.from(this.featuredCommons.values());
+    return this.toDataArray(this.featuredCommons);
   }
 
   // Overriden methods
