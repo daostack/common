@@ -8,8 +8,10 @@ import {
   GetUserCommonsDocument,
   GetUserPendingCommonsDocument,
   UpdateCommonInfoDocument,
+  CreateCommonDocument,
   UpdateCommonInfoInput,
-} from '~/Graphql';
+  CreateCommonInput,
+} from '~/Graphql/Common';
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {Common} from '../../Stores/Models/Common';
 
@@ -85,4 +87,15 @@ export const updateCommon = async (
   });
 
   return data.common as Common;
+};
+
+export const createCommon = async (
+  common: CreateCommonInput,
+): Promise<Common> => {
+  const {data} = await apollo.mutate({
+    mutation: CreateCommonDocument,
+    variables: {common},
+  });
+
+  return data.createCommon as Common;
 };

@@ -53,28 +53,28 @@ export interface ICommonEntity extends IBaseEntity {
    */
   register: CommonRegister;
 
-  // TODO: Change this interface to graphql approach
-  action: string;
-  byline: string;
-  description: string;
+  // // TODO: Change this interface to graphql approach
+  // action: string;
+  // byline: string;
+  // description: string;
 
-  /**
-   * The id of the user, who created the common
-   */
-  founderId: string;
+  // /**
+  //  * The id of the user, who created the common
+  //  */
+  // founderId: string;
 
-  /**
-   * The minimum amount in cents, required
-   * to join the common
-   */
-  minFeeToJoin: number;
+  // /**
+  //  * The minimum amount in cents, required
+  //  * to join the common
+  //  */
+  // minFeeToJoin: number;
 
-  /**
-   * Whether the user should be charged every
-   * month, that they are member of the common,
-   * or only when they join
-   */
-  contributionType: ContributionType;
+  // /**
+  //  * Whether the user should be charged every
+  //  * month, that they are member of the common,
+  //  * or only when they join
+  //  */
+  // contributionType: ContributionType;
 }
 
 export interface ICommonRule {
