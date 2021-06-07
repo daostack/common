@@ -24,9 +24,10 @@ const DiscussionList = ({
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
-    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
-      list.map((discussion) => discussion.id),
-    );
+    const unsubscribeFromDiscussionMessages =
+      rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
+        list?.map((discussion) => discussion.id),
+      );
     return () => {
       unsubscribeFromDiscussionMessages &&
         unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>

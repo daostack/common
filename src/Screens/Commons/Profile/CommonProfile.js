@@ -89,9 +89,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -134,9 +133,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -148,9 +146,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -165,12 +162,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-      currCommon.id,
-    );
-    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-      currCommon.id,
-    );
+    const unsubscribeFromCommonProposals =
+      proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonDiscussions =
+      discussionStore.subscribeToCommonDiscussions(currCommon.id);
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -194,28 +189,29 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-        commonId,
-        authStore.userInfo?.uid,
-        (data) => {
-          setPendingProposalsData({...data});
+      unsubscribe =
+        await ProposalService.getInstance().subscribeToPendingProposalsData(
+          commonId,
+          authStore.userInfo?.uid,
+          (data) => {
+            setPendingProposalsData({...data});
 
-          if (!isMember) {
-            if (data) {
-              if (data.usersPendingProposal) {
-                animateNextStateRender();
-                setShowPending(true);
+            if (!isMember) {
+              if (data) {
+                if (data.usersPendingProposal) {
+                  animateNextStateRender();
+                  setShowPending(true);
 
-                animateNextStateRender();
-                setShowRequestToJoin(false);
-              } else {
-                animateNextStateRender();
-                setShowRequestToJoin(true);
+                  animateNextStateRender();
+                  setShowRequestToJoin(false);
+                } else {
+                  animateNextStateRender();
+                  setShowRequestToJoin(true);
+                }
               }
             }
-          }
-        },
-      );
+          },
+        );
     };
 
     getPendingProposalsData();
@@ -230,9 +226,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
-          pendingProposalsData.usersPendingProposal.id,
-        );
+        const count =
+          await ProposalService.getInstance().getProposalDiscussionsCount(
+            pendingProposalsData.usersPendingProposal.id,
+          );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
         }
@@ -349,7 +346,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 ...text.writingDirection(currCommon.metadata.description),
               }}>
               {truncateString(
-                currCommon.metadata.description,
+                currCommon.metadata.description ?? '',
                 ABOUT_TRUNCATE_LENGTH,
               )}
             </Text>
@@ -817,7 +814,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         action={action}
       />
-      {currCommon ? (
+      {currCommon.metadata?.founderId ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
             onPress={() => navigation.pop()}
