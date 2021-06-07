@@ -25,11 +25,6 @@ import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
-import {
-  fetchUserPendingCommons,
-  fetchUserCommons,
-  fetchCommons,
-} from '~/Services/ListServices/CommonListService';
 
 const TIMEOUT = 1500;
 
