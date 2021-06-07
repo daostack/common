@@ -83,6 +83,14 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     return this.toDataArray(this.featuredCommons);
   }
 
+  getCommonById(id: string) {
+    return this.getDataByIdAndCollections(id, [
+      this.featuredCommons,
+      this.pendingCommons,
+      this.myCommons,
+    ]);
+  }
+
   // Overriden methods
   getEntityModel(entity: ICommonEntity): Common {
     return new Common(entity);

@@ -43,14 +43,14 @@ export const fetchCommonById = async (commonId: string): Promise<Common> => {
   return new Common(data.common);
 };
 
-export const fetchUserPendingCommons = async (): Promise<Common[]> => {
+export const fetchUserPendingCommons = async (): Promise<ICommonEntity[]> => {
   const {data} = await apollo.query({
     query: GetUserPendingCommonsDocument,
   });
 
   return data.user?.proposals?.map(({common}: any) => new Common(common)) ?? [];
 };
-export const fetchUserCommons = async (): Promise<Common[]> => {
+export const fetchUserCommons = async (): Promise<ICommonEntity[]> => {
   const {data} = await apollo.query({
     query: GetUserCommonsDocument,
   });
