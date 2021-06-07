@@ -2,7 +2,6 @@ import {computed, observable, ObservableMap, action} from 'mobx';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
-  fetchCommonById,
   subscribeToAllCommons,
   updateCommon,
   fetchUserCommons,
@@ -95,19 +94,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   getEntityModel(entity: ICommonEntity): Common {
     return new Common(entity);
   }
-
-  getUserCommons = (userId: string) => {
-    try {
-      return this.getDataArray.filter((common: Common) =>
-        isDaoMemberByUserId(common?.members, userId),
-      );
-    } catch (error) {
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
-      return [];
-    }
-  };
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
