@@ -221,25 +221,6 @@ export type Rule = {
   description: Scalars['String'];
 };
 
-/** The common type */
-export type Common = {
-  __typename?: 'Common';
-  /** The unique identifier of the common */
-  id: Scalars['ID'];
-  /** The date, at which the common was created */
-  createdAt?: Maybe<Scalars['Date']>;
-  /** The date, at which the common was last updated */
-  updatedAt?: Maybe<Scalars['Date']>;
-  /** The display name of the common */
-  name: Scalars['String'];
-  /** The currently available funds of the common */
-  balance: Scalars['Int'];
-  /** The total amount of money, raised by the common */
-  raised: Scalars['Int'];
-  byline: Scalars['String'];
-  description: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   /** Creates new user in the settings */
@@ -441,42 +422,6 @@ export function useUpdateUserMutation(
     UpdateUserDocument,
     baseOptions,
   );
-}
-
-export type CreateDiscussionInput = {
-  topic: Scalars['String'];
-  description: Scalars['String'];
-  commonId: Scalars['String'];
-  proposalId?: Scalars['String'];
-};
-
-export type CreateDiscussionMutation = {__typename?: 'Mutation'} & Pick<
-  Mutation,
-  'createDiscussion'
->;
-
-export type CreateDiscussionMutationVariables = Exact<{
-  discussion: CreateDiscussionInput;
-}>;
-
-export const CreateDiscussionDocument = gql`
-  mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
-    createDiscussion(input: $discussion) {
-      id
-    }
-  }
-`;
-
-export function useCreateDiscussionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateDiscussionMutation,
-    CreateDiscussionMutationVariables
-  >,
-) {
-  return Apollo.useMutation<
-    CreateDiscussionMutation,
-    CreateDiscussionMutationVariables
-  >(CreateDiscussionDocument, baseOptions);
 }
 
 export type CreateDiscussionInput = {
