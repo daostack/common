@@ -114,7 +114,6 @@ export default class AuthService {
     }
   }
 
-  // Firebase
   async createUser(user) {
     const {data} = apollo.mutate({
       mutation: CreateUserDocument,
@@ -126,7 +125,6 @@ export default class AuthService {
     return data?.user;
   }
 
-  // Firebase
   async updateUserData(user) {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(user);

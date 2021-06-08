@@ -3,15 +3,24 @@ import {
   HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
+  split,
 } from '@apollo/client';
 import {setContext} from 'apollo-link-context';
 import {auth} from '~/Firebase';
+import {WebSocketLink} from '@apollo/client/link/ws';
+import {getMainDefinition} from '@apollo/client/utilities';
+import {setContext} from 'apollo-link-context';
+import {auth} from '~/Firebase';
 
-const APOLLO_URL = 'http://localhost:4000/graphql'; // TODO: Move to env
+enum QUERY_TYPE {
+  SUBSCRIPTION = 'subscription',
+  OPERATION_DEFINITION = 'OperationDefinition',
+}
+const APOLLO_URL = 'localhost:4000'; // TODO: Move to env
 
-export const createApolloClient = (uri?: string, token?: string) => {
+export const createApolloClient = (gqlUri: string, token?: string) => {
   const baseLink = new HttpLink({
-    uri: uri || APOLLO_URL,
+    uri: `http://${APOLLO_URL}/graphql`,
   });
 
   const withToken = setContext(async () => {
@@ -23,11 +32,36 @@ export const createApolloClient = (uri?: string, token?: string) => {
     };
   });
 
+  const httpLink = withToken.concat(baseLink as any) as any;
+
+  const wsLink = new WebSocketLink({
+    uri: `ws://${gqlUri}/graphql`,
+    options: {
+      reconnect: true,
+      // connectionParams: {
+      //   authToken: authToken,
+      // },
+    },
+  });
+
+  const splitLink = split(
+    ({query}) => {
+      const definition = getMainDefinition(query);
+      return (
+        definition.kind === QUERY_TYPE.OPERATION_DEFINITION &&
+        definition.operation === QUERY_TYPE.SUBSCRIPTION
+      );
+    },
+    wsLink,
+    httpLink,
+  );
+
   return new ApolloClient({
-    ssrMode: typeof window === 'undefined',
+    // ssrMode: typeof window === 'undefined',
     cache: new InMemoryCache(),
-    link: withToken.concat(baseLink as any) as any,
+    link: splitLink,
   });
 };
 
-export const apollo: ApolloClient<NormalizedCacheObject> = createApolloClient();
+export const apollo: ApolloClient<NormalizedCacheObject> =
+  createApolloClient(APOLLO_URL);

@@ -38,7 +38,6 @@ export const userStorePropTypes = shape({
 
 export const commonStorePropTypes = shape({
   subscribeToAllCommons: func.isRequired,
-  getUserCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
 });
