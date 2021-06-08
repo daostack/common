@@ -45,7 +45,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   state: string;
 
   @observable
-  expiresAt: number;
+  expiresAt: Date;
 
   @observable
   quietEndingPeriod: number;
@@ -176,15 +176,15 @@ export class Proposal extends BaseModel<IProposalEntity> {
   constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
-    this.createdAt = newProposalInfo.createdAt;
-    this.updatedAt = newProposalInfo.updatedAt;
+    this.createdAt = new Date(newProposalInfo.createdAt);
+    this.updatedAt = new Date(newProposalInfo.updatedAt);
     this.userId = newProposalInfo.userId;
     this.user = newProposalInfo.user;
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
-    this.expiresAt = newProposalInfo.expiresAt;
+    this.expiresAt = new Date(newProposalInfo.expiresAt);
     this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;

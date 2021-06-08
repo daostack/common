@@ -1,16 +1,17 @@
 import {observable} from 'mobx';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 import {firebase} from '~/Firebase';
+import { DatePickerAndroid } from 'react-native';
 
 export class BaseModel<IEntity extends IBaseEntity> implements IBaseEntity {
   @observable
   id: string;
 
   @observable
-  createdAt: firebase.firestore.Timestamp;
+  createdAt: TimeStamp;
 
   @observable
-  updatedAt: firebase.firestore.Timestamp;
+  updatedAt: Date;
 
   constructor(entity: IEntity) {
     this.id = entity.id;

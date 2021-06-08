@@ -30,7 +30,7 @@ const MemberCard = ({
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt = proposalInfo?.countdown;
+      const closingAt = proposalInfo?.expiresAt.getTime() / 1000;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
@@ -90,6 +90,8 @@ const MemberCard = ({
     }
   };
 
+  console.log("proposalInfo.createdAt -> ", proposalInfo.createdAt.getTime());
+
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
@@ -107,7 +109,7 @@ const MemberCard = ({
         </Text>
         {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
-            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+            {moment.unix(proposalInfo.createdAt.getTime() / 1000).fromNow()}
           </Text>
         )}
       </View>

@@ -147,7 +147,11 @@ export const getProposalsDocument = gql`
     proposals( where: $where) {
       id
       userId
-      user
+      user {
+        id
+        firstName
+        lastName
+      }
       title
       type
       state

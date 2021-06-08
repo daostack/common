@@ -48,11 +48,7 @@ const ProposalCard = ({
   const commonStore = rootStore.commonStore;
   const authStore = rootStore.authStore;
 
-  console.log("------------------------------- -> ", proposalId);
   const proposalInfo = proposalStore.getProposalById(proposalId);
-
-  
-  console.log("proposalInfo -> ", proposalInfo);
 
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
@@ -139,7 +135,7 @@ const ProposalCard = ({
             (
               //TODO: set once it's added to backend
               //proposalInfo?.moderation?.updatedAt.seconds ||
-              proposalInfo?.expiresAt.seconds)
+              proposalInfo?.expiresAt?.getTime() / 1000)
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}

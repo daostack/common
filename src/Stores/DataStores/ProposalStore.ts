@@ -183,7 +183,7 @@ export default class ProposalStore extends BaseStore<
         })
         .sort(
           (proposal: Proposal, prevProposal: Proposal) =>
-            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+            (prevProposal.createdAt?.getTime() - proposal.createdAt?.getTime()) / 1000,
         );
     } catch (error) {
       showBackendError({

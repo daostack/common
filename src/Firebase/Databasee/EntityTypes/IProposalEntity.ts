@@ -78,7 +78,7 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The countdown period in seconds relative to the creation date
    */
-   expiresAt: number;
+   expiresAt: Date;
 
   /**
    * This is the period at the end of the voting in which if
