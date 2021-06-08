@@ -20,13 +20,17 @@ import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
+import { UserModel } from './UserModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   id: string;
 
   @observable
-  proposerId: string;
+  userId: string;
+
+  @observable
+  user: UserModel;
 
   @observable
   commonId: string;
@@ -174,7 +178,8 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.id = newProposalInfo.id;
     this.createdAt = newProposalInfo.createdAt;
     this.updatedAt = newProposalInfo.updatedAt;
-    this.proposerId = newProposalInfo.proposerId;
+    this.userId = newProposalInfo.userId;
+    this.user = newProposalInfo.user;
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;

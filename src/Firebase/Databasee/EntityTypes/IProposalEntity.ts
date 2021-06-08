@@ -2,6 +2,7 @@ import {IBaseEntity} from './IBaseEntity';
 import {ContributionType} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
+import { UserModel } from '~/Stores/Models/UserModel';
 
 export type FundingRequestState =
   | 'countdown'
@@ -25,7 +26,12 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The id of the user, who created the proposal
    */
-  proposerId: string;
+  userId: string;
+
+  /**
+   * The user object, who created the proposal
+   */
+  user: UserModel;
 
   /**
    * The proposal title

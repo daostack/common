@@ -63,7 +63,7 @@ const ProposalCard = ({
     authStore?.userInfo?.uid,
   );
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.userId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -162,7 +162,7 @@ const ProposalCard = ({
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
-              userInfo={userStore.getUserById(proposalInfo.proposerId)}
+              userInfo={userStore.getUserById(proposalInfo.userId)}
               proposalInfo={proposalInfo}
               commonId={proposalInfo.commonId}
               isPending={false}

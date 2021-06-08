@@ -170,7 +170,7 @@ const ProposalScreen = ({
     ? commonStore.getCommonById(proposalInfo.commonId)
     : null;
   const proposedUser = proposalInfo
-    ? userStore.getUserById(proposalInfo.proposerId)
+    ? proposalInfo.user
     : null;
 
   const showDebtInfo =

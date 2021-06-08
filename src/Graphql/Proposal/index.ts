@@ -146,6 +146,8 @@ export const getProposalsDocument = gql`
   query ($where: ProposalWhereInput!){
     proposals( where: $where) {
       id
+      userId
+      user
       title
       type
       state
@@ -159,7 +161,11 @@ export const getProposalsDocument = gql`
       }
       createdAt
       expiresAt
+      votes {
+        voterId
+      }
     }
   }
 `;
+
 

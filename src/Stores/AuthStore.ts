@@ -148,7 +148,7 @@ class AuthStore {
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
   isProposer = (proposal: IProposalEntity) =>
-    this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
+    this.userInfo ? this.userInfo.uid === proposal.userId : false;
 
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
