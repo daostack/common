@@ -1,4 +1,5 @@
 import {create} from 'mobx-persist';
+import {ApolloClient, NormalizedCacheObject} from '@apollo/client';
 import UserStore from './DataStores/UserStore';
 import CommonStore from './DataStores/CommonStore';
 import AuthStore from './AuthStore';
@@ -23,6 +24,7 @@ export default class RootStore {
   discussionMessageStore: DiscussionMessageStore;
   notificationStore: NotificationStore;
   uiStore: UIStore;
+  apollo: ApolloClient<NormalizedCacheObject>;
 
   constructor() {
     this.authStore = new AuthStore(this);

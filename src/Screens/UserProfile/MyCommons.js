@@ -48,7 +48,7 @@ const MyCommons = ({navigation, commonStore}) => {
   const MyCommonsList = () => (
     <View style={{flex: 1, padding: 20}}>
       <FlatList
-        data={commonStore.myCommons}
+        data={commonStore.myCommonsValues}
         renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
       />
     </View>

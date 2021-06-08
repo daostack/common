@@ -17,7 +17,7 @@ import { IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot } from '~/Firebase/
 
 export default abstract class BaseStore<
   IEntityModel,
-  IEntity extends IBaseEntity
+  IEntity extends IBaseEntity,
 > {
   @persist('map')
   @observable

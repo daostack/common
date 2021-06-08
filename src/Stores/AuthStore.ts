@@ -1,18 +1,17 @@
-import {observable, action} from 'mobx';
-import {isDaoMemberByUserId} from '~/Util';
-import logger from '~/Services/Logger';
-import AuthService from '~/Services/AuthService';
-import NotificationService from '~/Services/NotificationService';
+import {action, observable} from 'mobx';
+import {persist} from 'mobx-persist';
 import {auth} from '~/Firebase';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {subscribeToUser} from '~/Services/ListServices/UserListService';
-import {UserModel} from './Models/UserModel';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
-import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {persist} from 'mobx-persist';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {LoadUserContextDocument} from '~/Graphql';
+import {default as logger, default as Logger} from '~/Services/Logger';
+import NotificationService from '~/Services/NotificationService';
+import {isDaoMemberByUserId} from '~/Util';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {UserModel} from './Models/UserModel';
+import RootStore from './RootStore';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 type SignInErrorWithCode = any;
 
@@ -77,7 +76,7 @@ class AuthStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
 
-          this._processUser(user);
+          this._processUser();
         } else {
           // We need to delete the notification store on logout
           // as we are keeping there only logged in user notifications.
@@ -120,9 +119,10 @@ class AuthStore {
   @action
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
-    this.userInfo = newUserInfo;
+    const userModel = new UserModel(newUserInfo);
+    this.userInfo = userModel;
     if (isUserChanged) {
-      this.signedInUser = newUserInfo?.uid;
+      this.signedInUser = userModel?.uid;
       this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
@@ -156,34 +156,20 @@ class AuthStore {
   isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
-  async _processUser(user: any) {
-    this.unsubscribeFromUser && this.unsubscribeFromUser();
-    this.unsubscribeFromUser = subscribeToUser(
-      user?.uid,
-      async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
-        const updatedUser = updatedUserDoc.data();
-        const isNewUser = !updatedUser;
-        if (isNewUser) {
-          const providerUserInfo =
-            await AuthService.getInstance().getCurrentLoggedUser(
-              user.providerData[0].providerId,
-            );
-          const userInfo = {
-            ...user._user,
-            ...{
-              firstName: providerUserInfo.user.givenName,
-              lastName: providerUserInfo.user.familyName,
-            },
-          };
-          AuthService.getInstance().createUser(userInfo);
-        } else {
-          updatedUser && this.setSignedInUser(new UserModel(updatedUser));
-          NotificationService.saveTokenToDatabase();
-          this.removeLoginInProgress(updatedUser?.uid);
-          this.setIsLoading(false);
-        }
-      },
-    );
+  async _processUser() {
+    try {
+      const {data} = await apollo.query({
+        query: LoadUserContextDocument,
+      });
+      if (data?.user) {
+        this.setSignedInUser(data?.user);
+        NotificationService.saveTokenToDatabase();
+        this.removeLoginInProgress(data?.user?.uid);
+        this.setIsLoading(false);
+      }
+    } catch (error) {
+      Logger.error('_processUser ~>', error);
+    }
   }
 }
 

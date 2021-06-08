@@ -1,27 +1,22 @@
+import {observer} from 'mobx-react';
+import {bool, func} from 'prop-types';
 import React from 'react';
-
 import {
-  StyleSheet,
-  View,
   Image,
+  Linking,
+  Platform,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Platform,
-  Linking,
+  View,
 } from 'react-native';
-import GSignInButton from '~/Components/Auth/GSignInButton';
-import {layout, text, colors} from '~/Theme';
-import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
+import GSignInButton from '~/Components/Auth/GSignInButton';
 import AuthService from '~/Services/AuthService';
-import {useCreateUserMutation} from '~/Graphql';
-import {bool, func} from 'prop-types';
 import logger from '~/Services/Logger';
-import {UNKNOWN_COUNTRY} from '~/Util/countries';
+import {colors, layout, text} from '~/Theme';
 
 const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
-  const [createUser] = useCreateUserMutation();
-
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
      if (userInfo.additionalUserInfo.isNewUser) {
@@ -30,16 +25,11 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
           profile?.picture ||
           `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${profile?.email}&rounded=true`;
         try {
-          await createUser({
-            variables: {
-              user: {
-                firstName: profile.given_name,
-                lastName: profile.family_name,
-                email: profile.email,
-                photo: userPhotoUrl,
-                country: UNKNOWN_COUNTRY,
-              },
-            },
+          await AuthService.getInstance().createUser({
+            firstName: profile.given_name,
+            lastName: profile.family_name,
+            email: profile.email,
+            photo: userPhotoUrl,
           });
         } catch (error) {
           logger.log('Error -> ', error);

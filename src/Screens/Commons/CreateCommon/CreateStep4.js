@@ -20,17 +20,16 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
+import {createCommon} from '~/Services/ListServices/CommonListService';
 
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {useCreateCommonMutation} from '~/Graphql';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -53,8 +52,6 @@ const CreateStep4 = ({
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
   const reviewFormStore = formStores.reviewFormStore;
-
-  const [createCommon] = useCreateCommonMutation();
 
   const form = {
     ...generalInfoFormStore.getChangedFormFieldsJson(),
@@ -119,31 +116,20 @@ const CreateStep4 = ({
         },
       });
 
-      await createCommon({
-        variables: {
-          common: {
-            ...formattedData,
-            fundingMinimumAmount: data.contributionAmount,
-            fundingType: 'OneTime', // TODO: change funding types
-          },
-        },
-      });
-
-      const createCommonResponse = await DaoService.getInstance().createCommon({
+      const createCommonResponse = await createCommon({
         ...formattedData,
-        zeroContribution: data.zeroContribution,
-        contributionType: data.contributionType,
-        contributionAmount: data.contributionAmount,
+        fundingMinimumAmount: data.contributionAmount,
+        fundingType: 'OneTime', // TODO: change funding types
       });
 
       if (createCommonResponse.status === 200) {
-        setNewCommonAddress(createCommonResponse.data.id);
+        setNewCommonAddress(createCommonResponse.id);
       } else {
         //navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
-      return {commonAddress: createCommonResponse.data.id};
+      return {commonAddress: createCommonResponse.id};
     } catch (e) {
       //navigation.pop();
       console.log('error -> ', e);
