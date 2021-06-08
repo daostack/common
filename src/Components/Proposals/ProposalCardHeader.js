@@ -2,7 +2,6 @@ import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors, sizeXS, sizeS, font, sizeM} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer, inject} from 'mobx-react';
@@ -11,6 +10,9 @@ import {FLAGS} from '~/Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
+
+import {ProposalState} from '~/Graphql/Proposal';
+
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -26,7 +28,9 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     opacity: 1,
   };
 
-  if (state === PROPOSAL_STAGE.passed) {
+  console.log("CalcStatus state -> ", state, paymentStatus);
+
+  if (state === ProposalState.ACCEPTED) {
     if (paymentStatus === 'confirmed') {
       status.text = TITLES.APPROVED;
       status.lightColor = colors.lightGreen;
@@ -53,13 +57,8 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
       status.darkColor = colors.lightishGreen;
       status.icon = 'approved';
     }
-  } else if (state === PROPOSAL_STAGE.failed) {
+  } else if (state === ProposalState.REJECTED) {
     status.text = TITLES.REJECTED;
-    status.lightColor = colors.redLightish;
-    status.darkColor = colors.error;
-    status.icon = 'declined';
-  } else if (state === PROPOSAL_STAGE.passedInsufficientBalance) {
-    status.text = TITLES.INSUFFICIENT_BALANCE;
     status.lightColor = colors.redLightish;
     status.darkColor = colors.error;
     status.icon = 'declined';

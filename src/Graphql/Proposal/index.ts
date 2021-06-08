@@ -148,6 +148,7 @@ export const getProposalsDocument = gql`
       id
       title
       type
+      state
       commonId
       description
       links

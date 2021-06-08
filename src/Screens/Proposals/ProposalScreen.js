@@ -27,7 +27,6 @@ import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -57,9 +56,20 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {ProposalState} from '~/Graphql/Proposal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+
+const PROPOSAL_STAGES_ACTIVE = [ProposalState.COUNTDOWN];
+
+const PROPOSAL_STAGES_HISTORY = [
+  ProposalState.ACCEPTED,
+  ProposalState.REJECTED,
+];
+
+const LAUNCHED_STATES = [PROPOSAL_STAGE.passed];
+const COUNTDOWN_STATES = [PROPOSAL_STAGE.failed];
 
 const ProposalScreen = ({
   navigation,
@@ -470,7 +480,7 @@ const ProposalScreen = ({
     }),
   };
 
-  const amount = proposalInfo?.funding / 100;
+  const amount = proposalInfo?.fundingFormatted;
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
@@ -794,7 +804,7 @@ const ProposalScreen = ({
                         ...layout.marginBottomL,
                         ...layout.marginTopXS,
                       }}>
-                      {proposalInfo?.description?.title || 'Unknown title'}
+                      {proposalInfo?.title || 'Unknown title'}
                     </Text>
                   </View>
                 ) : (
@@ -876,7 +886,7 @@ const ProposalScreen = ({
                       borderBottomLeftRadius:
                         proposalInfo.isFundingRequest &&
                         proposalInfo.isCountdown &&
-                        proposalInfo.fundingRequest.amount > 0
+                        proposalInfo.fundingAmount > 0
                           ? 0
                           : 20,
                     },

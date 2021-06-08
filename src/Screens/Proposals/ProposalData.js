@@ -46,17 +46,17 @@ const ProposalData = ({proposalId, rootStore}) => {
             textStyle={{
               ...text.regularTextBig,
               ...text.writingDirection(
-                proposalInfoState.description.description,
+                proposalInfoState.description,
               ),
             }}>
-            {proposalInfoState.description.description}
+            {proposalInfoState.description}
           </HyperText>
         </View>
 
         <View
           style={{...layout.content, ...layout.flexStart, ...{width: '100%'}}}>
-          {proposalInfoState.description?.links?.length > 0 &&
-            proposalInfoState.description?.links.map((l, index) => (
+          {proposalInfoState.links?.length > 0 &&
+            proposalInfoState.links.map((l, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="link" color={colors.mainBlue} size={16} />
                 <TouchableOpacity
@@ -70,8 +70,8 @@ const ProposalData = ({proposalId, rootStore}) => {
               </View>
             ))}
 
-          {proposalInfoState.description?.files?.length > 0 &&
-            proposalInfoState.description?.files.map((f, index) => (
+          {proposalInfoState.files?.length > 0 &&
+            proposalInfoState.files.map((f, index) => (
               <View style={styles.adRow} key={index}>
                 <Icon name="file" color={colors.mainBlue} size={16} />
                 <TouchableOpacity

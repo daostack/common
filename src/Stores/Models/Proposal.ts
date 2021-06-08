@@ -69,6 +69,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
   //description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
+  amount: number;
+
+  @observable
   moderation?: IModerationEntity;
 
   @observable
@@ -189,8 +192,10 @@ export class Proposal extends BaseModel<IProposalEntity> {
       // TODO: ... more props
     }
     if (this.type === PROPOSAL_TYPE.FundingRequest) {
-      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).fundingRequest;
+      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
       // TODO: ... more props
     }
+    this.amount = newProposalInfo.funding.amount;
+    console.log("CONSTRUCTOR PROPOSAL -> ", newProposalInfo);
   }
 }
