@@ -30,6 +30,8 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
             lastName: profile.family_name,
             email: profile.email,
             photo: userPhotoUrl,
+            //create user with an unknown country
+            country: 'Unknown',
           });
         } catch (error) {
           logger.log('Error -> ', error);
