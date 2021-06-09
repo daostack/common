@@ -38,7 +38,16 @@ export const GetUserNotifications = gql`
     $where: NotificationsWhereInput
   ) {
     user(where: $where) {
-
+      displayName
+      photo
+      notifications {
+        type
+        seenStatus
+        commonId
+        proposal
+        discussion
+        common
+      }
     }
   }
 `;

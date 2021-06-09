@@ -12,6 +12,12 @@ import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
 import {ApolloProvider} from '~/Providers/apolloProvider';
 import {AuthContextProvider} from '~/Context/AuthContext';
+import Reactotron, {networking} from 'reactotron-react-native';
+
+ Reactotron
+   .configure()
+   .use(networking())
+   .connect();
 
 LogBox.ignoreAllLogs(true);
 

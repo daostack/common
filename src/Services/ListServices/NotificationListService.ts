@@ -5,11 +5,37 @@ import {
   EventTypesOnNotificationList,
   EventTypesOnNotificationList1,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import logger from '~/Services/Logger';
+import {GetUserNotifications, NotificationsWhereInput} from '~/Graphql/Notifications';
+import {apollo} from '~/Util/helpers/apolloHelper';
+import {Notification} from '../../Stores/Models/Notification';
 
 export type commonNotificationListLoadCallbackFn = (
   updatedNotificationList: IFirebaseSnapshot<INotificationEntity>,
 ) => void;
 
+export const getNotifications = async (notificationsWhere: NotificationsWhereInput): Promise<Notification> => {
+
+console.log('NOTIFICATION WHERE -> ', notificationsWhere);
+  try {
+    const {data} = await apollo.query({
+      query: GetUserNotifications,
+      variables: {
+        where: notificationsWhere,
+      },
+    });
+
+    return new Notification(data.notifications, data.notifications.seenStatus);
+
+  } catch (err) {
+    logger.log('Error while trying to get proposals: ', /*getGQLErrorObject(*/err/*)*/);
+    throw err;
+  }
+
+};
+
+
+//FIREBASE CODE to remove -> used in NotificationStore
 export const subscribeToUserNotifications = (
   userId: string,
   listChangeCallback: commonNotificationListLoadCallbackFn,
@@ -37,4 +63,4 @@ export const subscribeToUserNotifications = (
     });
 
   return [batch1, batch2];
-};
+
