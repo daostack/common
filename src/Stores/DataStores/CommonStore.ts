@@ -8,11 +8,10 @@ import {
   fetchUserPendingCommons,
   fetchCommons,
 } from '~/Services/ListServices/CommonListService';
-import {isDaoMemberByUserId, showBackendError} from '~/Util';
 import {Common} from '../Models/Common';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
-import {UpdateCommonInfoInput} from '~/Graphql';
+import {UpdateCommonInfoInput} from '~/Graphql/Common';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
