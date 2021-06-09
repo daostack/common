@@ -119,10 +119,10 @@ class AuthStore {
   @action
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
-    const userModel = new UserModel(newUserInfo);
+    const userModel = newUserInfo ? new UserModel(newUserInfo) : null;
     this.userInfo = userModel;
     if (isUserChanged) {
-      this.signedInUser = userModel?.uid;
+      this.signedInUser = userModel?.uid || null;
       this.rootStore.notificationStore.addWelcomeNotification();
     }
   };

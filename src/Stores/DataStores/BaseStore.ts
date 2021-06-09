@@ -13,10 +13,11 @@ import {
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
-import { IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot } from '~/Firebase/types';
+import {IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
+import { BaseModel } from '../Models/BaseModel';
 
 export default abstract class BaseStore<
-  IEntityModel,
+  IEntityModel extends BaseModel<IEntity>,
   IEntity extends IBaseEntity,
 > {
   @persist('map')
@@ -67,6 +68,14 @@ export default abstract class BaseStore<
     });
     return dataMap;
   }
+
+  updateDataMap = (entity: IEntityModel, dataMap: ObservableMap<string, IEntityModel>) => {
+    const newDataMap = new Map<string, IEntityModel>();
+    newDataMap.set(entity.id, entity);
+    dataMap.merge(newDataMap);
+  }
+
+  existsInDataMap = (id: string, dataMap: ObservableMap<string, IEntityModel>) => has(dataMap, id)
 
 
   // OLD LOGIC WHICH SHOULD BE REMOVED IN THE FEATURE (or refacterd):

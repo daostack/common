@@ -2,7 +2,8 @@ import {IBaseEntity} from './IBaseEntity';
 import {ContributionType} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
-import { UserModel } from '~/Stores/Models/UserModel';
+import {UserModel} from '~/Stores/Models/UserModel';
+import {ProposalType} from '~/Graphql/Proposal';
 
 export type FundingRequestState =
   | 'countdown'
@@ -200,7 +201,7 @@ export interface IProposalFundingRequest {
  * the fields for funding requests
  */
 export interface IFundingRequestProposal extends IBaseProposalEntity {
-  type: 'fundingRequest';
+  type: ProposalType.FUNDING_REQUEST;
 
   state: FundingRequestState;
 
@@ -240,7 +241,7 @@ export interface IProposalJoin {
  * the fields for join requests
  */
 export interface IJoinRequestProposal extends IBaseProposalEntity {
-  type: 'join';
+  type: ProposalType.JOIN_REQUEST;
 
   state: RequestToJoinState;
 
@@ -261,8 +262,6 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
 
   join: IProposalJoin;
 }
-
-export type ProposalType = 'join' | 'fundingRequest';
 
 /**
  * The proposal base type. This is advanced typing that will change the

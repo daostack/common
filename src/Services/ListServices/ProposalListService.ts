@@ -13,6 +13,7 @@ import {
   CreateFundingProposalInput,
   CreateJoinProposalDocument,
   CreateJoinProposalInput,
+  CreateProposalVoteDocument,
   finalizeProposalDocument,
   getProposalsDocument,
   onProposalChangeDocument,
@@ -23,9 +24,8 @@ import {
 } from '~/Graphql/Proposal';
 
 import ApolloClient from '~/Services/util/ApolloClient';
-import {getErrorObject, getGQLErrorObject} from '~/Util';
+import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
-import { Proposal } from '~/Stores/Models/Proposal';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -168,6 +168,21 @@ export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
   }
 };
 
+export const createProposalVote = async (createProposalVoteData: CreateProposalVoteInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateProposalVoteDocument,
+      variables: {
+        proposalVote: createProposalVoteData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    logger.log('Error while trying to create a new Join Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
 // Proposal actions
 export const finalizeProposal = async (proposalId: string) => {
   try {
@@ -208,6 +223,7 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
       variables: {
         where: proposalsWhere,
       },
+      fetchPolicy: 'cache-first',
     });
   } catch (err) {
     logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));

@@ -3,6 +3,7 @@ import BaseStore from './BaseStore';
 import {
   getCommonActiveProposals,
   getCommonHistoryProposals,
+  onProposalChange,
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
@@ -14,12 +15,15 @@ import {
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {showBackendError} from '~/Util';
 import {
   subscribeToProposalList,
-  fetchProposalById,
 } from '~/Services/ListServices/ProposalListService';
+
+import {ProposalState, ProposalType} from '~/Graphql/Proposal';
+import Logger from '~/Services/Logger';
+
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -139,11 +143,37 @@ export default class ProposalStore extends BaseStore<
       this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
     });
   }
+  @action
+  subscribeToProposalById = (proposalId: string) =>
+    onProposalChange(proposalId).subscribe({
+      next: (value) => {
+        const proposal: Proposal = this.getEntityModel(value.data.onProposalChange);
 
-
-
-
-
+        if (proposal.type === ProposalType.FUNDING_REQUEST) {
+          if (this.existsInDataMap(proposal.id, this.commonHistoryProposals)) {
+            this.updateDataMap(proposal, this.commonHistoryProposals);
+          }
+          if (this.existsInDataMap(proposal.id, this.commonActiveProposals)) {
+            if (proposal.state !== ProposalState.COUNTDOWN) {
+              this.commonActiveProposals.delete(proposal.id);
+              this.updateDataMap(proposal, this.commonHistoryProposals);
+            } else {
+              this.updateDataMap(proposal, this.commonActiveProposals);
+            }
+          }
+        } else if (proposal.type === ProposalType.JOIN_REQUEST) {
+          if (this.existsInDataMap(proposal.id, this.commonPendingReqToJoins)) {
+            //TODO
+          }
+          if (this.existsInDataMap(proposal.id, this.commonHistoryReqToJoins)) {
+            //TODO
+          }
+        }
+      },
+      error: (err) => {
+        Logger.log("Subscription Error: ", err);
+      },
+    });
 
   // OLD METHODS:
   @computed
@@ -219,10 +249,6 @@ export default class ProposalStore extends BaseStore<
   };
 
   //Actions
-  subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
-      id: proposalId,
-    });
 
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this.updateStoreData, {

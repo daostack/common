@@ -1,8 +1,24 @@
 
 import {gql} from '@apollo/client';
-import * as Apollo from '@apollo/client';
-import {CommonContributionType, Exact, FileInput, ImageInput, LinkInput, Maybe, Mutation, Scalars} from '~/Graphql';
-import {COUNTDOWN_STATES} from '~/Services/ProposalService';
+import {CommonContributionType} from '~/Graphql/Common';
+import {Exact, FileInput, ImageInput, LinkInput, Maybe, Mutation, Scalars} from '~/Graphql';
+
+export enum VoteOutcome {
+  APPROVE = 'Approve',
+  REJECT = 'Condemn',
+}
+
+export enum ProposalState {
+  ACCEPTED = 'Accepted',
+  COUNTDOWN = 'Countdown',
+  FINALIZING = 'Finalizing',
+  REJECTED = 'Rejected',
+}
+
+export enum ProposalType {
+  FUNDING_REQUEST = 'FundingRequest',
+  JOIN_REQUEST = 'JoinRequest',
+}
 
 export type ProposalFunding = {
     __typename?: 'ProposalFunding';
@@ -36,17 +52,10 @@ export type CreateFundingProposalInput = CreateProposalInput & {
     funding: ProposalFunding;
 };
 
-export enum ProposalState {
-  ACCEPTED = 'Accepted',
-  COUNTDOWN = 'Countdown',
-  FINALIZING = 'Finalizing',
-  REJECTED = 'Rejected',
-}
-
-export enum ProposalType {
-  FUNDING_REQUEST = 'FundingRequest',
-  JOIN_REQUEST = 'JoinRequest',
-}
+type CreateVoteInput = {
+  outcome: string;
+  proposalId: string;
+};
 
 export type ProposalWhereInput = {
     id?: Scalars['String'];
@@ -71,6 +80,8 @@ export type CreateJoinProposalMutation = {__typename?: 'Mutation'} & Pick<
   'createJoinProposal'
 >;
 
+// Input Variables
+
 export type CreateFundingProposalMutationVariables = Exact<{
     proposal: CreateFundingProposalInput;
 }>;
@@ -86,6 +97,8 @@ export type CreateJoinProposalVariables = Exact<{
 export type CreateFundingProposalVariables = Exact<{
     proposal: CreateFundingProposalInput;
 }>;
+
+export const proposalsStateFilterQueryPart = (states: Array<ProposalState>): Array<ProposalWhereInput> => states.map((currState) => ({state: currState}));
 
 export const CreateJoinProposalDocument = gql`
   mutation CreateJoinProposal($proposal: CreateJoinProposalInput!) {
@@ -118,18 +131,47 @@ export const CreateFundingProposalDocument = gql`
   }
 `;
 
+export const CreateProposalVoteDocument = gql`
+  mutation CreateVote($proposalVote: CreateVoteInput!) {
+    createVote(input: $proposalVote) {
+      id
+    }
+  }
+  `;
+
+const gqlProposalProps = `
+  id
+  userId
+  user {
+    id
+    firstName
+    lastName
+  }
+  title
+  type
+  state
+  commonId
+  description
+  links
+  files
+  images
+  funding {
+      amount
+  }
+  createdAt
+  updatedAt
+  expiresAt
+  votesFor
+  votesAgainst
+  votes {
+    voterId
+  }`;
+
+
 export const onProposalChangeDocument = gql`
   subscription ($proposalId: ID!){
     onProposalChange(proposalId: $proposalId) {
-      title
-      commonId
-      description
-      links
-      files
-      images
-      funding {
-          amount
-      }
+      ${gqlProposalProps}
     }
   }
 `;
@@ -140,34 +182,10 @@ export const finalizeProposalDocument = gql`
   }
 `;
 
-export const proposalsStateFilterQueryPart = (states: Array<ProposalState>): Array<ProposalWhereInput> => states.map((currState) => ({state: currState}));
-
 export const getProposalsDocument = gql`
   query ($where: ProposalWhereInput!){
     proposals( where: $where) {
-      id
-      userId
-      user {
-        id
-        firstName
-        lastName
-      }
-      title
-      type
-      state
-      commonId
-      description
-      links
-      files
-      images
-      funding {
-          amount
-      }
-      createdAt
-      expiresAt
-      votes {
-        voterId
-      }
+      ${gqlProposalProps}
     }
   }
 `;
