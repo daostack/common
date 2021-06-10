@@ -381,6 +381,8 @@ query PendingCommons {
           roles
           user {
             id
+            displayName
+            photoURL: photo
           }
         }
         rules
@@ -412,6 +414,8 @@ export const GetUserCommonsDocument = gql`
           roles
           user {
             id
+            displayName
+            photoURL: photo
           }
         }
         rules
@@ -449,6 +453,8 @@ export const GetCommonsDocument = gql`
         roles
         user {
           id
+          displayName
+          photoURL: photo
         }
       }
       rules
@@ -459,6 +465,48 @@ export const GetCommonsDocument = gql`
       description
       contributionType: fundingType
       minFeeToJoin: fundingMinimumAmount
+    }
+  }
+`;
+
+
+
+export const GetCommonPendingMembers = gql`
+query CommonPendingMembers($commonId: UUID!) {
+    proposals(where: {state: ${ProposalState.Countdown}, type: ${ProposalType.FundingRequest}, commonId: $commonId}) {
+      common {
+        members {
+          user {
+            id
+            displayName
+            photoURL: photo
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GetCommonHistoryMembers = gql`
+  query CommonHistoryMembers($commonId: UUID!) {
+    proposals(
+      where: {
+        commonId: $commonId
+        OR: [
+          {type: JoinRequest, state: Rejected}
+          {type: FundingRequest, OR: [{state: Countdown}, {state: Rejected}]}
+        ]
+      }
+    ) {
+      common {
+        members {
+          user {
+            id
+            displayName
+            photoURL: photo
+          }
+        }
+      }
     }
   }
 `;
