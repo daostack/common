@@ -14,7 +14,8 @@ import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 import {IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
-import { BaseModel } from '../Models/BaseModel';
+import {BaseModel} from '../Models/BaseModel';
+import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
   IEntityModel extends BaseModel<IEntity>,
@@ -169,5 +170,4 @@ export default abstract class BaseStore<
   setData(id: string, modelStore: IEntityModel) {
     set(this.data, id, modelStore);
   }
-
 }

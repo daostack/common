@@ -22,7 +22,7 @@ export const createApolloClient = (gqlUri: string, token?: string) => {
   });
 
   const withToken = setContext(async () => {
-    const fireToken = await auth().currentUser.getIdToken(true);
+    const fireToken = await auth().currentUser?.getIdToken(true);
     return {
       headers: {
         authorization: fireToken || token,
