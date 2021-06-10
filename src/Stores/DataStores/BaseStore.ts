@@ -12,13 +12,14 @@ import {
 } from 'mobx';
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
+import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 import {IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
 import {BaseModel} from '../Models/BaseModel';
 import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
-  IEntityModel,
-  IEntity extends BaseModel<IEntity>,
+  IEntityModel extends BaseModel<IEntity>,
+  IEntity extends IBaseEntity,
 > {
   @persist('map')
   @observable
@@ -68,10 +69,6 @@ export default abstract class BaseStore<
     });
     return dataMap;
   }
-
-
-
-
 
   updateDataMap = (entity: IEntityModel, dataMap: ObservableMap<string, IEntityModel>) => {
     const newDataMap = new Map<string, IEntityModel>();

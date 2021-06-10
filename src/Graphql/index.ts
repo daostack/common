@@ -227,6 +227,8 @@ export type Mutation = {
   createUser: User;
   updateUser: User;
   createCommon: Common;
+  createJoinProposal: Proposal;
+  createFundingProposal: Proposal;
   updateCommon: Common;
   createDiscussion: Discussion;
 };
@@ -460,45 +462,21 @@ export function useCreateDiscussionMutation(
   >(CreateDiscussionDocument, baseOptions);
 }
 
-export type UpdateCommonInfoInput = {
-  commonId: Scalars['String'];
-  name?: Scalars['String'];
-  image?: Scalars['String'];
-  action?: Scalars['String'];
-  byline?: Scalars['String'];
-  description?: Scalars['String'];
-  links: Array<Link>;
-  rules: Array<Rule>;
+/** Multi fields inputs */
+export type LinkInput = {
+  /** The display title of the link */
+  title: Scalars['String'];
+  /** The actual link part of the link */
+  url: Scalars['String'];
 };
 
-export type UpdateCommonInfoMutation = {__typename?: 'Mutation'} & Pick<
-  Mutation,
-  'updateCommon'
->;
+export type FileInput = {
+  value: Scalars['String'];
+};
 
-export type UpdateCommonInfoMutationVariables = Exact<{
-  common: UpdateCommonInfoInput;
-}>;
-
-export const UpdateCommonInfoDocument = gql`
-  mutation UpdateCommonInfo($common: UpdateCommonInfoInput!) {
-    updateCommon(input: $common) {
-      id
-    }
-  }
-`;
-
-export function useUpdateCommonInfoMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    UpdateCommonInfoMutation,
-    UpdateCommonInfoMutationVariables
-  >,
-) {
-  return Apollo.useMutation<
-    UpdateCommonInfoMutation,
-    UpdateCommonInfoMutationVariables
-  >(UpdateCommonInfoDocument, baseOptions);
-}
+export type ImageInput = {
+  value: Scalars['String'];
+};
 
 export type UserWhereUniqueInput = {
   userId: Scalars['ID'];

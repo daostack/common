@@ -1,10 +1,10 @@
-import {computed, runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import BaseStore from './BaseStore';
 import {
-  subscribeToProposalList,
-  fetchProposalById,
+  getCommonActiveProposals,
+  getCommonHistoryProposals,
+  onProposalChange,
 } from '~/Services/ListServices/ProposalListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -14,7 +14,16 @@ import {
   PROPOSAL_STAGES_HISTORY,
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
+
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {showBackendError} from '~/Util';
+import {
+  subscribeToProposalList,
+} from '~/Services/ListServices/ProposalListService';
+
+import {ProposalState, ProposalType} from '~/Graphql/Proposal';
+import Logger from '~/Services/Logger';
+
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -52,9 +61,103 @@ export default class ProposalStore extends BaseStore<
   Proposal,
   IProposalEntity
 > {
+
+  @observable
+  private commonActiveProposals: ObservableMap<string, Proposal> = observable.map({});;
+
+  @observable
+  private commonHistoryProposals: ObservableMap<string, Proposal> = observable.map({});;
+
+  @observable
+  private commonPendingReqToJoins: ObservableMap<string, Proposal> = observable.map({});;
+
+  @observable
+  private commonHistoryReqToJoins: ObservableMap<string, Proposal> = observable.map({});;
+
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
+
+  @computed
+  get getCommonActiveProposals(): readonly Proposal[] {
+    return this.toDataArray(this.commonActiveProposals);
+  }
+
+  @computed
+  get getCommonHistoryProposals(): readonly Proposal[] {
+    return this.toDataArray(this.commonHistoryProposals);
+  }
+
+  @computed
+  get getCommonPendingReqToJoins(): readonly Proposal[] {
+    return this.toDataArray(this.commonPendingReqToJoins);
+  }
+
+  @computed
+  get getCommonHistoryReqToJoins(): readonly Proposal[] {
+    return this.toDataArray(this.commonHistoryReqToJoins);
+  }
+
+  // Overriden methods
+  getEntityModel(entity: IProposalEntity): Proposal {
+    return new Proposal(entity);
+  }
+
+  // TODO
+  // getRequestToJoinById = (id: string): Proposal | undefined => {
+  // }
+
+  // Data consuming methods
+  getProposalById = (id: string): Proposal | undefined => {
+    try {
+      return this.getDataByIdAndCollections(id, [this.commonActiveProposals, this.commonHistoryProposals]);
+    } catch (errr) {
+      // fetchProposalById(id)
+      // TODO: consider adding direct fetch from gql by id in order to confirm missing data
+      return undefined;
+    }
+  };
+
+  //TODO
+  //getUserProposals = (
+
+  //TODO
+  //getCommonProposals = (
+
+
+  @action
+  loadCommonActiveProposals = (commonId: string) => {
+    getCommonActiveProposals(commonId).then((proposals: IProposalEntity[]) => {
+      this.commonActiveProposals.clear();
+      this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
+    });
+  }
+
+  @action
+  loadCommonHistoryProposals = (commonId: string) => {
+    getCommonHistoryProposals(commonId).then((proposals: IProposalEntity[]) => {
+      this.commonHistoryProposals.clear();
+      this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
+    });
+  }
+  @action
+  subscribeToProposalById = (proposalId: string) =>
+    onProposalChange(proposalId).subscribe({
+      next: (value: any) => {
+        const proposal: Proposal = this.getEntityModel(value.data.onProposalChange);
+
+        if (proposal.type === ProposalType.FUNDING_REQUEST) {
+          this.updateFundingRequestData(proposal);
+        } else if (proposal.type === ProposalType.JOIN_REQUEST) {
+          this.updateRequestToJoinData(proposal);
+        }
+      },
+      error: (err) => {
+        Logger.log('Subscription Error: ', err);
+      },
+    });
+
+  // OLD METHODS:
   @computed
   get myActiveProposals() {
     if (this.isLoading || !this.rootStore.authStore.userInfo?.uid) {
@@ -77,36 +180,6 @@ export default class ProposalStore extends BaseStore<
     });
   }
 
-  // Overriden methods
-  getEntityModel(entity: IProposalEntity): Proposal {
-    return new Proposal(entity);
-  }
-
-  // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => {
-    try {
-      return this.getDataById(id);
-    } catch (errr) {
-      fetchProposalById(id)
-        .then((proposal: IFirebaseDoc<IProposalEntity>) => {
-          if (proposal.exists) {
-            runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(proposal)),
-              );
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
-        });
-      return undefined;
-    }
-  };
-
   getUserProposals = (
     userId: string,
     proposalFilter: IProposalFilter,
@@ -114,7 +187,7 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataArray
         .filter((proposal: Proposal) => {
-          const isProposer = proposal?.proposerId === userId;
+          const isProposer = proposal?.userId === userId;
           if (isProposer) {
             return this._applyFilter(proposal, proposalFilter);
           }
@@ -122,7 +195,7 @@ export default class ProposalStore extends BaseStore<
         })
         .sort(
           (proposal: Proposal, prevProposal: Proposal) =>
-            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+            (prevProposal.createdAt?.getTime() - proposal.createdAt?.getTime()) / 1000,
         );
     } catch (error) {
       showBackendError({
@@ -157,11 +230,30 @@ export default class ProposalStore extends BaseStore<
     }
   };
 
+  private updateFundingRequestData(proposal: Proposal) {
+    if (this.existsInDataMap(proposal.id, this.commonHistoryProposals)) {
+      this.updateDataMap(proposal, this.commonHistoryProposals);
+    }
+    if (this.existsInDataMap(proposal.id, this.commonActiveProposals)) {
+      if (proposal.state !== ProposalState.COUNTDOWN) {
+        this.commonActiveProposals.delete(proposal.id);
+        this.updateDataMap(proposal, this.commonHistoryProposals);
+      } else {
+        this.updateDataMap(proposal, this.commonActiveProposals);
+      }
+    }
+  }
+
+  private updateRequestToJoinData(proposal: Proposal) {
+    if (this.existsInDataMap(proposal.id, this.commonPendingReqToJoins)) {
+      //TODO
+    }
+    if (this.existsInDataMap(proposal.id, this.commonHistoryReqToJoins)) {
+      //TODO
+    }
+  }
+
   //Actions
-  subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
-      id: proposalId,
-    });
 
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
     subscribeToProposalList(this.updateStoreData, {
@@ -198,4 +290,5 @@ export default class ProposalStore extends BaseStore<
     }
     return true;
   };
+
 }

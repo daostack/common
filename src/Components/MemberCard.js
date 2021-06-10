@@ -25,15 +25,15 @@ const MemberCard = ({
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt = proposalInfo?.countdown;
+      const closingAt = proposalInfo?.expiresAt.getTime() / 1000;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
-            {proposalInfo.funding > 0 && (
+            {proposalInfo.fundingAmount > 0 && (
               <Text style={text.h2Black}>
-                {`$${proposalInfo.funding / 100}`}
+                {`$${proposalInfo.fundingFormatted}`}
                 {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}
@@ -102,7 +102,7 @@ const MemberCard = ({
         </Text>
         {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
-            {moment.unix(proposalInfo.createdAt).fromNow()}
+            {moment.unix(proposalInfo.createdAt.getTime() / 1000).fromNow()}
           </Text>
         )}
       </View>
