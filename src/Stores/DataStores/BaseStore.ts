@@ -56,8 +56,7 @@ export default abstract class BaseStore<
       return currDataValue;
     }
     else {
-      console.log('err not exists')
-      //throw Error(`Data with ID ${id} not exists.`);
+      throw Error(`Data with ID ${id} not exists.`);
     }
   }
 
