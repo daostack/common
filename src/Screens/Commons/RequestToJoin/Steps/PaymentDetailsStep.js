@@ -20,6 +20,7 @@ import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {createJoinProposal} from '~/Services/ListServices/ProposalListService';
 
 import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
@@ -56,7 +57,7 @@ const PaymentDetailsStep = ({
 
         const data = {
           description: formData.intro,
-          funding: formData.amount * 100,
+          fundingAmount: formData.amount * 100,
           commonId: currDaoId,
         };
 
@@ -71,18 +72,39 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createdCard = await createCard({
-          ...formData,
-          links: escapeUrl(formData.links),
-          ...userInfo,
-        });
+        console.log("create card -> ", {
+            ...formData,
+            ...userInfo,
+          });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
-          {
-            ...data,
-            cardId: createdCard.id,
-          },
-        );
+        const expDateArr = formData.expiration_date.split('/');
+
+        const createCardInput = {
+            expYear: expDateArr[1].trim(),
+            expMonth: expDateArr[0].trim(),
+        };
+
+        // const createdCard = await createCard({
+        //   ...formData,
+        //   links: escapeUrl(formData.links),
+        //   ...userInfo,
+        // });
+
+        // const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+        //   {
+        //     ...data,
+        //     cardId: createdCard.id,
+        //   },
+        // );
+
+        console.log("JoinRequest data -> ", data);
+
+        const createJoinProposalResponse = {status: 500} ;
+
+        // const createJoinProposalResponse = await createJoinProposal(
+        //   data,
+        // );
+
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
