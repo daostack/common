@@ -34,7 +34,6 @@ import {
   isTypeFilterFundingRequest,
   isTypeFilterJoin,
 } from '~/Stores/DataStores/ProposalStore';
-import Logger from './Logger';
 
 export default class ProposalService {
   static serviceInstance = null;
@@ -321,7 +320,7 @@ export default class ProposalService {
         },
       );
     } catch (err) {
-      Logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
+      logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
@@ -334,7 +333,7 @@ export default class ProposalService {
         },
       });
     } catch (err) {
-      Logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
+      logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
@@ -347,7 +346,7 @@ export default class ProposalService {
         },
       });
     } catch (err) {
-      Logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
