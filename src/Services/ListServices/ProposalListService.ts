@@ -234,7 +234,7 @@ export const getCommonActiveProposals = async (commonId: string): Promise<IPropo
   const {data} = await getProposals({
       commonId: commonId,
       type: ProposalType.FUNDING_REQUEST,
-      OR: proposalsStateFilterQueryPart([ProposalState.COUNTDOWN]),
+      state: ProposalState.COUNTDOWN,
   });
   return data.proposals;
 };
@@ -248,11 +248,11 @@ export const getCommonHistoryProposals = async (commonId: string): Promise<IProp
   return data.proposals;
 };
 
-export const getCommonActiveReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
+export const getCommonPendingReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
   const {data} = await getProposals({
       commonId: commonId,
       type: ProposalType.JOIN_REQUEST,
-      OR: proposalsStateFilterQueryPart([ProposalState.COUNTDOWN]),
+      state: ProposalState.COUNTDOWN,
   });
   return data.proposals;
 };

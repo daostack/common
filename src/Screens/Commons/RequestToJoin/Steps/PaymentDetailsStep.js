@@ -56,6 +56,7 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
+          title: `User join for common ${currCommon.name}`,
           description: formData.intro,
           fundingAmount: formData.amount * 100,
           commonId: currDaoId,
@@ -72,61 +73,35 @@ const PaymentDetailsStep = ({
           },
         });
 
-        console.log("create card -> ", {
-            ...formData,
-            ...userInfo,
-          });
+        const createdCard = await createCard({
+          ...formData,
+          links: escapeUrl(formData.links),
+          ...userInfo,
+        });
 
-        const expDateArr = formData.expiration_date.split('/');
-
-        const createCardInput = {
-            expYear: expDateArr[1].trim(),
-            expMonth: expDateArr[0].trim(),
-        };
-
-        // const createdCard = await createCard({
-        //   ...formData,
-        //   links: escapeUrl(formData.links),
-        //   ...userInfo,
-        // });
-
-        // const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
-        //   {
-        //     ...data,
-        //     cardId: createdCard.id,
-        //   },
-        // );
-
-        console.log("JoinRequest data -> ", data);
-
-        const createJoinProposalResponse = {status: 500} ;
-
-        // const createJoinProposalResponse = await createJoinProposal(
-        //   data,
-        // );
-
-
-        if (createRequestToJoinResponse.status === 200) {
-          const proposalId = createRequestToJoinResponse.data.id;
-
-          navigation.pop();
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
-            params: {
-              showRequestSentModal: true,
-              createdProposalId: proposalId,
-            },
-          });
-
-          if (typeof refreshFeed === 'function') {
-            refreshFeed();
+        const createJoinProposalResponse = await createJoinProposal(
+          {
+            ...data,
+            cardId: createdCard.data.createCard.id,
           }
+        );
 
-          navigation.dispatch(navigate);
-        } else {
-          navigation.pop();
-          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        const proposalId = createJoinProposalResponse.data.createJoinProposal.id;
+
+        navigation.pop();
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+            createdProposalId: proposalId,
+          },
+        });
+
+        if (typeof refreshFeed === 'function') {
+          refreshFeed();
         }
+
+        navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
 
