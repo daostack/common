@@ -5,10 +5,10 @@ import {
   NormalizedCacheObject,
   split,
 } from '@apollo/client';
-import {WebSocketLink} from '@apollo/client/link/ws';
-import {getMainDefinition} from '@apollo/client/utilities';
 import {setContext} from 'apollo-link-context';
 import {auth} from '~/Firebase';
+import {WebSocketLink} from '@apollo/client/link/ws';
+import {getMainDefinition} from '@apollo/client/utilities';
 
 enum QUERY_TYPE {
   SUBSCRIPTION = 'subscription',

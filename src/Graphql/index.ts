@@ -477,6 +477,7 @@ export type FileInput = {
 export type ImageInput = {
   value: Scalars['String'];
 };
+
 export type UserWhereUniqueInput = {
   userId: Scalars['ID'];
 };

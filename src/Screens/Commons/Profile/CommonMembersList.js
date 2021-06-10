@@ -21,13 +21,10 @@ const CommonMembersList = ({
   horizontal,
   rootStore,
 }) => {
-  const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
 
   const currCommon = commonStore.getCommonById(commonId);
-  const membersInfo = userStore.getCommonUsersByMembersArray(
-    currCommon?.members || [],
-  );
+  const membersInfo = currCommon?.members;
 
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
