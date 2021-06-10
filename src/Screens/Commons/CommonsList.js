@@ -90,13 +90,6 @@ const CommonsList = ({navigation, rootStore}) => {
   };
 
   const onAddCommon = () => {
-
-    finalizeProposal("a2ef47ef-1376-4e68-b8a3-3b303accffb6").then((result ) => {
-      console.log("finalizeProposalResult -> ", result);
-    });
-
-
-    /*
     if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
@@ -106,7 +99,7 @@ const CommonsList = ({navigation, rootStore}) => {
           message: 'Connect your account to join this Common',
         },
       );
-    }*/
+    }
   };
 
   const header = () => (

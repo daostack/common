@@ -90,8 +90,6 @@ const MemberCard = ({
     }
   };
 
-  console.log("proposalInfo.createdAt -> ", proposalInfo.createdAt.getTime());
-
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />

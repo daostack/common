@@ -118,8 +118,6 @@ const ProposalCard = ({
     proposalInfo.moderation?.reporter &&
     userStore.getUserById(proposalInfo.moderation?.reporter);
 
-  console.log("PROPOSAL INFO TITLE -> ", proposalInfo.title);
-
   return proposalInfo ? (
     <Animated.View
       style={[

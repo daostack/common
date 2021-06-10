@@ -28,8 +28,6 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     opacity: 1,
   };
 
-  console.log("CalcStatus state -> ", state, paymentStatus);
-
   if (state === ProposalState.ACCEPTED) {
     if (paymentStatus === 'confirmed') {
       status.text = TITLES.APPROVED;

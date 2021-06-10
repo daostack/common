@@ -118,13 +118,11 @@ export default class DaoService {
         },
       });
     } catch (err) {
-      console.log('CREATE COMMON ERROR -> ', err);
       throw err;
     }
   }
 
   updateCommon = async (updateCommonInfo) => {
-    logger.log('updateCommon new info -> ', updateCommonInfo);
     try {
       return await this.axiosClient.post(
         this.endpoints.update,
@@ -136,7 +134,6 @@ export default class DaoService {
         },
       );
     } catch (err) {
-      console.log('UPDATE COMMON ERROR -> ', err);
       throw err;
     }
   };

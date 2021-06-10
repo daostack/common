@@ -216,7 +216,6 @@ export const onProposalChange = (proposalId: string) => {
 // Fetch proposals
 const getProposals = async (proposalsWhere: ProposalWhereInput) => {
 
-  console.log("PROPOSAL WHERE -> ", proposalsWhere);
   try {
     return await ApolloClient.getInstance().query({
       query: getProposalsDocument,

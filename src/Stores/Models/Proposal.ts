@@ -201,6 +201,5 @@ export class Proposal extends BaseModel<IProposalEntity> {
       // TODO: ... more props
     }
     this.amount = newProposalInfo.funding.amount;
-    console.log("CONSTRUCTOR PROPOSAL -> ", newProposalInfo);
   }
 }

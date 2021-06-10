@@ -112,7 +112,6 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataByIdAndCollections(id, [this.commonActiveProposals, this.commonHistoryProposals]);
     } catch (errr) {
-      console.log("THROW ERROR ->", errr);
       // fetchProposalById(id)
       // TODO: consider adding direct fetch from gql by id in order to confirm missing data
       return undefined;
@@ -129,7 +128,6 @@ export default class ProposalStore extends BaseStore<
   @action
   loadCommonActiveProposals = (commonId: string) => {
     getCommonActiveProposals(commonId).then((proposals: IProposalEntity[]) => {
-      console.log("LOADED ACTIVE PROPOSALS -> ", proposals);
       this.commonActiveProposals.clear();
       this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
     });
@@ -138,7 +136,6 @@ export default class ProposalStore extends BaseStore<
   @action
   loadCommonHistoryProposals = (commonId: string) => {
     getCommonHistoryProposals(commonId).then((proposals: IProposalEntity[]) => {
-      console.log("LOADED HISTORY PROPOSALS -> ", proposals);
       this.commonHistoryProposals.clear();
       this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
     });
