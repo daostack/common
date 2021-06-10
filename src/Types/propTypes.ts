@@ -41,6 +41,7 @@ export const commonStorePropTypes = shape({
   getUserCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
+  updateCommonInfo: func.isRequired,
 });
 
 export const proposalStorePropTypes = shape({
