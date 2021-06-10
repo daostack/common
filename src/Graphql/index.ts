@@ -460,6 +460,46 @@ export function useCreateDiscussionMutation(
   >(CreateDiscussionDocument, baseOptions);
 }
 
+export type UpdateCommonInfoInput = {
+  commonId: Scalars['String'];
+  name?: Scalars['String'];
+  image?: Scalars['String'];
+  action?: Scalars['String'];
+  byline?: Scalars['String'];
+  description?: Scalars['String'];
+  links: Array<Link>;
+  rules: Array<Rule>;
+};
+
+export type UpdateCommonInfoMutation = {__typename?: 'Mutation'} & Pick<
+  Mutation,
+  'updateCommon'
+>;
+
+export type UpdateCommonInfoMutationVariables = Exact<{
+  common: UpdateCommonInfoInput;
+}>;
+
+export const UpdateCommonInfoDocument = gql`
+  mutation UpdateCommonInfo($common: UpdateCommonInfoInput!) {
+    updateCommon(input: $common) {
+      id
+    }
+  }
+`;
+
+export function useUpdateCommonInfoMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCommonInfoMutation,
+    UpdateCommonInfoMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    UpdateCommonInfoMutation,
+    UpdateCommonInfoMutationVariables
+  >(UpdateCommonInfoDocument, baseOptions);
+}
+
 export type UserWhereUniqueInput = {
   userId: Scalars['ID'];
 };
