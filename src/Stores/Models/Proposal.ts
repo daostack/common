@@ -200,6 +200,5 @@ export class Proposal extends BaseModel<IProposalEntity> {
       this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
       // TODO: ... more props
     }
-    this.amount = newProposalInfo.funding.amount;
   }
 }

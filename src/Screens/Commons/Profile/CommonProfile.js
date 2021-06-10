@@ -167,24 +167,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-
-    proposalStore.loadCommonActiveProposals('0eb58192-0ec8-4c22-95ee-c0d535f51a37');
-    proposalStore.loadCommonHistoryProposals('0eb58192-0ec8-4c22-95ee-c0d535f51a37');
-
-    // getCommonActiveProposals('0eb58192-0ec8-4c22-95ee-c0d535f51a37');
-    // getCommonHistoryProposals('0eb58192-0ec8-4c22-95ee-c0d535f51a37');
-
-
-    // const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-    //   currCommon.id,
-    // );
-    // const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-    //   currCommon.id,
-    // );
-    // return () => {
-    //   unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
-    //   unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
-    // };
+    proposalStore.loadCommonActiveProposals(currCommon.id);
+    proposalStore.loadCommonHistoryProposals(currCommon.id);
   }, [currCommon]);
 
   useEffect(() => {
