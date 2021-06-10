@@ -93,6 +93,14 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     return unsubscribe;
   }, [navigation]);
 
+
+  useEffect(() => {
+    (async () => {
+      console.log(' tkt use useEffect')
+      await notificationStore.loadNotifications();
+    })();
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />

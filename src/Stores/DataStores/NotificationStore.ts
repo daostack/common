@@ -1,5 +1,5 @@
 import BaseStore from './BaseStore';
-import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
+import {subscribeToUserNotifications, fetchNotifications} from '~/Services/ListServices/NotificationListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {
@@ -59,6 +59,13 @@ export default class NotificationStore extends BaseStore<
           notification.notificationItemState?.seen === false,
       )?.length || 0) > 0
     );
+  }
+
+  @action
+  loadNotifications = async () => {
+    console.log('tkt notifications b4');
+    const notifications = await fetchNotifications();
+    console.log('tkt notifications', notifications);
   }
 
   @action

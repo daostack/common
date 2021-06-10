@@ -28,11 +28,11 @@ export const fetchNotifications = async (
         where: notificationsWhere,
       },*/
     });
-
+    console.log('tkt fetchNotifications', data)
     return new Notification(data.notifications, data.notifications.seenStatus);
   } catch (err) {
     logger.log(
-      'Error while trying to get proposals: ',
+      'tkt Error while trying to get proposals: ',
       /*getGQLErrorObject(*/
       err,
       /*)*/
