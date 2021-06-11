@@ -3,13 +3,15 @@ import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
   fetchDiscussionId,
+  fetchDiscussions,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {Discussion} from '../Models/Discussion';
-import {runInAction} from 'mobx';
+import {Discussion as DiscussionModel} from '../Models/Discussion';
+import {runInAction, action, computed, observable} from 'mobx';
 import {showBackendError} from '~/Util';
+import {Discussion} from '~/Graphql/Discussion';
 
 export default class DiscussionStore extends BaseStore<
   Discussion,
@@ -17,6 +19,14 @@ export default class DiscussionStore extends BaseStore<
 > {
   constructor(rootStore: RootStore) {
     super(rootStore);
+  }
+
+  @observable
+  private discussions: Discussion[] = [];
+
+  @computed
+  get commonDiscussions() {
+    return this.discussions;
   }
 
   // Data consuming methods
@@ -75,7 +85,31 @@ export default class DiscussionStore extends BaseStore<
   };
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionEntity): Discussion {
-    return new Discussion(entity, this.getIsExpanded(entity.id));
+  getEntityModel(entity: IDiscussionEntity): any {
+    return new DiscussionModel(entity, this.getIsExpanded(entity.id));
   }
+
+  @action
+  loadCommonDiscussions = async (
+    commonId: string,
+    page: number = 0,
+  ): Promise<void> => {
+    const discussions = await fetchDiscussions({
+      where: {
+        commonId,
+      },
+      paginate: {
+        skip: page * 10,
+        take: 10,
+      },
+    });
+
+    const uniqueDiscussions = [
+      ...new Map(
+        [...this.discussions, ...discussions].map((item) => [item.id, item]),
+      ).values(),
+    ];
+
+    this.discussions = uniqueDiscussions;
+  };
 }

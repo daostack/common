@@ -1,6 +1,7 @@
 import {gql} from '@apollo/client';
 import * as Apollo from '@apollo/client';
 import {Common, CommonContributionType} from './Common';
+import {Discussion } from './Discussion'
 
 export type Maybe<T> = T | null;
 export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
@@ -13,34 +14,13 @@ export type Scalars = {
   Date: any;
 };
 
-export enum DiscussionMessageType {
-  Message = 'Message',
-}
-
-export enum DiscussionMessageFlag {
-  Clear = 'Clear',
-  Reported = 'Reported',
-  Hidden = 'Hidden',
-}
-
 export type BaseEntity = {
   id: Scalars['ID'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
 };
 
-export enum DiscussionType {
-  ProposalDiscussion = 'ProposalDiscussion',
-  CommonDiscussion = 'CommonDiscussion',
-}
 
-export type DiscussionMessage = BaseEntity & {
-  id: Scalars['ID'];
-  message: Scalars['String'];
-  type: DiscussionMessageType;
-  flag: DiscussionMessageFlag;
-  reports: Array<Report>;
-};
 
 export enum ReportFor {
   Nudity = 'Nudity',
@@ -67,15 +47,6 @@ export type Report = BaseEntity & {
   messageId: Scalars['ID'];
 };
 
-export type Discussion = BaseEntity & {
-  __typename?: 'Discussion';
-  id: Scalars['ID'];
-  messages: Array<DiscussionMessage>;
-  title: Scalars['String'];
-  description: Scalars['String'];
-  userId: Scalars['ID'];
-  owner: User;
-};
 
 export enum ProposalType {
   FundingRequest = 'FundingRequest',
@@ -424,42 +395,6 @@ export function useUpdateUserMutation(
     UpdateUserDocument,
     baseOptions,
   );
-}
-
-export type CreateDiscussionInput = {
-  topic: Scalars['String'];
-  description: Scalars['String'];
-  commonId: Scalars['String'];
-  proposalId?: Scalars['String'];
-};
-
-export type CreateDiscussionMutation = {__typename?: 'Mutation'} & Pick<
-  Mutation,
-  'createDiscussion'
->;
-
-export type CreateDiscussionMutationVariables = Exact<{
-  discussion: CreateDiscussionInput;
-}>;
-
-export const CreateDiscussionDocument = gql`
-  mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
-    createDiscussion(input: $discussion) {
-      id
-    }
-  }
-`;
-
-export function useCreateDiscussionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateDiscussionMutation,
-    CreateDiscussionMutationVariables
-  >,
-) {
-  return Apollo.useMutation<
-    CreateDiscussionMutation,
-    CreateDiscussionMutationVariables
-  >(CreateDiscussionDocument, baseOptions);
 }
 
 /** Multi fields inputs */

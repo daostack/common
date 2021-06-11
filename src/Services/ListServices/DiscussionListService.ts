@@ -3,6 +3,15 @@ import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEnt
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  CreateDiscussionInput,
+  CreateDiscussionDocument,
+  Discussion,
+  GetDiscussionDocument,
+  getDiscussionsVariable,
+} from '~/Graphql/Discussion';
+import {Pagination} from '~/Graphql';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
@@ -59,4 +68,32 @@ export const fetchDiscussionId = async (
     );
   }
   return await DiscussionsCollection.doc(discussionId).get();
+};
+
+export const createDiscussion = async (
+  discussion: CreateDiscussionInput,
+): Promise<Discussion> => {
+  const {data} = await apollo.mutate({
+    mutation: CreateDiscussionDocument,
+    variables: {
+      discussion,
+    },
+  });
+
+  return data.createCommon as Discussion;
+};
+
+export const fetchDiscussions = async ({
+  where,
+  paginate,
+}: getDiscussionsVariable): Promise<Discussion[]> => {
+  const {data} = await apollo.query({
+    query: GetDiscussionDocument,
+    variables: {
+      where,
+      paginate,
+    },
+  });
+
+  return data.discussions as Discussion[];
 };
