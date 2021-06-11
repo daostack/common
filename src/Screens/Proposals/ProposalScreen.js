@@ -27,6 +27,7 @@ import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {createProposalVote} from '~/Services/ListServices/ProposalListService';
+import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 import {VoteOutcome} from '~/Graphql/Proposal/index';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
@@ -236,6 +237,9 @@ const ProposalScreen = ({
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
+
+      console.log("sendMessageToDiscussion");
+
       if (isSending || !userInfo?.uid) {
         return;
       }
@@ -244,26 +248,32 @@ const ProposalScreen = ({
       if (!isEmptyMessage()) {
         inputRef.current.clear();
 
-        db.collection('discussionMessage')
-          .doc()
-          .set({
-            text: message,
-            createTime: new Date(),
-            ownerId: userInfo.uid,
-            ownerName: userInfo.displayName,
-            ownerAvatar: userInfo.photoURL,
-            discussionId: proposalId || proposalInfo.id,
-          })
-          .then(() => {
-            Keyboard.dismiss();
 
-            setIsSending(false);
-            setInputText(null);
-          })
-          .catch((error) => {
-            Toast.error(error);
-            setIsSending(false);
-          });
+        createDiscussionMessage({
+          discussionId: proposalId || proposalInfo.id,
+          message: message,
+        });
+
+        // db.collection('discussionMessage')
+        //   .doc()
+        //   .set({
+        //     text: message,
+        //     createTime: new Date(),
+        //     ownerId: userInfo.uid,
+        //     ownerName: userInfo.displayName,
+        //     ownerAvatar: userInfo.photoURL,
+        //     discussionId: proposalId || proposalInfo.id,
+        //   })
+        //   .then(() => {
+        //     Keyboard.dismiss();
+
+        //     setIsSending(false);
+        //     setInputText(null);
+        //   })
+        //   .catch((error) => {
+        //     Toast.error(error);
+        //     setIsSending(false);
+        //   });
       } else {
         setIsSending(false);
       }
