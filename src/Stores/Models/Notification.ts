@@ -12,13 +12,19 @@ export class Notification extends BaseModel<INotificationEntity> {
   id: string;
 
   @observable
-  eventObjectId: string;
+  commonId: string;
 
   @observable
-  eventType: string;
+  proposalId: string;
 
   @observable
-  userFilter: Array<string>;
+  discussionId: string;
+
+  @observable
+  show: boolean;
+
+  @observable
+  type: string;
 
   @observable
   notificationItemState: NotificationItemState;
@@ -28,11 +34,12 @@ export class Notification extends BaseModel<INotificationEntity> {
     notificationItemState: NotificationItemState,
   ) {
     super(newNotificationInfo);
-
     this.id = newNotificationInfo.id;
-    this.eventObjectId = newNotificationInfo.eventObjectId;
-    this.eventType = newNotificationInfo.eventType;
-    this.userFilter = newNotificationInfo.userFilter;
+    this.commonId = newNotificationInfo.commonId;
+    this.proposalId = newNotificationInfo.proposalId;
+    this.discussionId = newNotificationInfo.discussionId;
+    this.type = newNotificationInfo.type;
+    this.show = newNotificationInfo.show;
     this.notificationItemState = notificationItemState;
   }
 }

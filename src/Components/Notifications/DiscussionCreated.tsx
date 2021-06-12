@@ -19,7 +19,7 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
   const discussion = rootStore.discussionStore.getDiscussionById(
-    item.eventObjectId,
+    item.discussionId,
   );
   if (discussion) {
     const user = rootStore.userStore.getUserById(discussion.ownerId);

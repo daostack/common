@@ -19,7 +19,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
   const message = rootStore.discussionMessageStore.getDiscussionMessageById(
-    item.eventObjectId,
+    item.eventObjectId, // TODO!!
   );
   if (message) {
     const objectData =

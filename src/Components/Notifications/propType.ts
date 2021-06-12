@@ -21,9 +21,12 @@ export const notificationDataPropTypes = shape({
 
 export const notificationItemPropTypes = shape({
   id: string.isRequired,
-  eventType: string.isRequired,
+  type: string.isRequired,
   createdAt: object.isRequired,
-  eventObjectId: string.isRequired,
+  proposalId: string,
+  commonId: string,
+  common: object,
+  discussionId: string,
   notificationItemState: shape({
     seen: bool.isRequired,
     opened: bool.isRequired,

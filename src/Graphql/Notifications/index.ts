@@ -25,6 +25,10 @@ export type Notification = {
   userFilter?: Array<string>;
 };
 
+/*export type Subscription = {
+  notificationPushed(eventType: string!): Notification
+};*/
+
 /*export type NotificationsWhereInput = {
   userId: Scalars['ID'];
 };
@@ -33,19 +37,58 @@ export type GetUserNotificationsQueryVariables = Exact<{
   where: NotificationsWhereInput;
 }>;*/
 
+
+/*
+ proposal {
+          id
+        }
+        discussion {
+          id
+          topic
+        }
+        common {
+          id
+        }
+ */
+
+
 export const GetUserNotifications = gql`
   query getUserNotifications {
     user {
       displayName
       photo
-      notifications {
+      notifications (orderBy: {createdAt: asc}) {
+        id
+        createdAt
+        updatedAt
+        show
         type
         seenStatus
+        common {
+          id
+          name
+        }
         commonId
-        proposal
-        discussion
-        common
+        proposalId
+        discussionId
       }
     }
   }
 `;
+
+export const SubscribeToNotifications = gql`
+  subscription subscribeToNotification {
+    notificationCreated {
+      type,
+      seenStatus,
+      user {
+        firstName
+      }
+    }
+  }
+`;
+
+
+
+
+

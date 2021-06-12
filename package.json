@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.18",
+    "@apollo/react-hooks": "^4.0.0",
     "@invertase/react-native-apple-authentication": "^1.1.2",
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/blur": "^3.6.0",

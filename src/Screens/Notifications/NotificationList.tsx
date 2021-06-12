@@ -33,10 +33,10 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   notificationStore,
 }) => {
   const notificationList: Array<Notification> =
-    notificationStore.loggedUserNotifications;
+    notificationStore.notifications;
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
-    switch (item.eventType) {
+    switch (item.type) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
         return <CommonWhitelisted item={item} navigation={navigation} />;
@@ -53,8 +53,9 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
       case EventTypeState.commonMemberAdded:
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
-      case EventTypeState.requestToJoinCreated:
+      case EventTypeState.requestToJoinCreated: {
         return <RequestToJoinCreated item={item} navigation={navigation} />;
+      }
 
       case EventTypeState.requestToJoinRejected:
         return <RequestToJoinRejected item={item} navigation={navigation} />;
@@ -72,7 +73,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         return (
           <DiscussionMessageReported item={item} navigation={navigation} />
         );
-      case EventTypeState.welcomeNotification:
+      case 'General': //EventTypeState.welcomeNotification:
         return <WelcomeNotification item={item} navigation={navigation} />;
 
       default:
@@ -96,7 +97,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
   useEffect(() => {
     (async () => {
-      console.log(' tkt use useEffect')
       await notificationStore.loadNotifications();
     })();
   }, []);

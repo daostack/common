@@ -8,37 +8,60 @@ import {
 import logger from '~/Services/Logger';
 import {
   GetUserNotifications,
+  SubscribeToNotifications,
   //NotificationsWhereInput,
 } from '~/Graphql/Notifications';
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {Notification} from '../../Stores/Models/Notification';
+import {getGQLErrorObject} from '~/Util';
 
 export type commonNotificationListLoadCallbackFn = (
   updatedNotificationList: IFirebaseSnapshot<INotificationEntity>,
 ) => void;
 
 export const fetchNotifications = async (
-//notificationsWhere: NotificationsWhereInput,
-): Promise<Notification> => {
-  //console.log('NOTIFICATION WHERE -> ', notificationsWhere);
+): Promise<Notification[] | []> => {
   try {
     const {data} = await apollo.query({
       query: GetUserNotifications,
-      /*variables: {
-        where: notificationsWhere,
-      },*/
     });
-    console.log('tkt fetchNotifications', data)
-    return new Notification(data.notifications, data.notifications.seenStatus);
+    if (data.user.notifications) {
+    return  data.user.notifications.map((notification: any) => new Notification(notification, notification.seenStatus));//  //new Notification(data.notifications, data.notifications?.seenStatus);
+    }
+    return [];
   } catch (err) {
     logger.log(
-      'tkt Error while trying to get proposals: ',
-      /*getGQLErrorObject(*/
-      err,
-      /*)*/
+      'tkt Error while trying to getting notifications: ',
+      getGQLErrorObject(err)
     );
     throw err;
   }
+};
+
+export const newNotification = async (): Promise<any> => {
+  //useSubscription(SubscribeToNotifications)
+  //SubscribeToNotifications
+  ///return await apollo.query({
+  //    query: SubscribeToNotifications,
+  //  });
+
+
+  /*try {
+    const {data} = await apollo.query({
+      query: SubscribeToNotifications,
+    });
+    console.log('tkt fetchNotifications', data)
+    if (data.notifications) {
+    return  data.notifications.map((notification: any) => new Notification(notification, notification.seenStatus));//  //new Notification(data.notifications, data.notifications?.seenStatus);
+    }
+    return [];
+  } catch (err) {
+    logger.log(
+      'tkt Error while trying to getting notifications: ',
+      getGQLErrorObject(err)
+    );
+    throw err;
+  }*/
 };
 
 //FIREBASE CODE to remove -> used in NotificationStore

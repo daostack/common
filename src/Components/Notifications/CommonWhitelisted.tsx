@@ -22,7 +22,7 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
 
   // NOTE: if the commonData is still not loaded into the store, we will have an exception here
   try {
-    let common = rootStore.commonStore.getCommonById(item.eventObjectId);
+    let common = rootStore.commonStore.getCommonById(item.commonId);
 
     if (common) {
       notificationData = {

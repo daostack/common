@@ -5,10 +5,11 @@ import {UserModel} from '~/Stores/Models/UserModel';
 import {IBaseEntity} from './IBaseEntity';
 
 export interface INotificationEntity extends IBaseEntity {
-  eventObjectId: string;
-  eventType: string;
-
-  userFilter: Array<string>;
+  proposalId: string;
+  discussionId: string;
+  commonId: string;
+  type: string;
+  show: boolean;
 }
 
 export interface BadgeProps {
@@ -40,25 +41,25 @@ export interface NotificationItemData {
 
 export const EventTypeState = {
   creationReqToJoin: 'creationReqToJoin',
-  requestToJoinCreated: 'requestToJoinCreated',
+  requestToJoinCreated: 'JoinRequestAccepted', //'JoinRequestCreated',
   requestToJoinExecuted: 'requestToJoinExecuted',
-  requestToJoinRejected: 'requestToJoinRejected',
-  requestToJoinAccepted: 'requestToJoinAccepted',
+  requestToJoinRejected: 'JoinRequestRejected',
+  requestToJoinAccepted: 'JoinRequestAccepted',
   subscriptionPaymentConfirmed: 'subscriptionPaymentConfirmed',
   subscriptionCanceledByUser: 'subscriptionCanceledByUser',
-  fundingRequestAccepted: 'fundingRequestAccepted',
-  fundingRequestCreated: 'fundingRequestCreated',
+  fundingRequestAccepted: 'FundingRequestAccepted',
+  fundingRequestCreated: 'FundingRequestCreated',
   fundingRequestExecuted: 'fundingRequestExecuted',
-  fundingRequestRejected: 'fundingRequestRejected',
-  voteCreated: 'voteCreated',
-  cardCreated: 'cardCreated',
-  paymentFailed: 'paymentFailed',
-  messageCreated: 'messageCreated',
-  commonCreated: 'commonCreated',
-  commonWhitelisted: 'commonWhitelisted',
+  fundingRequestRejected: 'FundingRequestRejected',
+  voteCreated: 'VoteCreated',
+  cardCreated: 'CardCreated',
+  paymentFailed: 'PaymentFailed',
+  messageCreated: 'DiscussionMessageCreated',
+  commonCreated: 'CommonCreated',
+  commonWhitelisted: 'CommonWhitelisted',
   commonMemberAdded: 'commonMemberAdded',
   welcomeNotification: 'welcomeNotification',
-  discussionCreated: 'discussionCreated',
+  discussionCreated: 'DiscussionCreated',
   discussionMessageReported: 'discussionMessageReported',
   proposalReported: 'proposalReported',
   discussionReported: 'discussionReported',

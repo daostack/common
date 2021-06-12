@@ -1,54 +1,54 @@
 export enum EventType {
 	// Common related events
-  COMMON_CREATED = 'commonCreated',
+  COMMON_CREATED = 'CommonCreated',
   COMMON_CREATION_FAILED = 'commonCreationFailed',
-  COMMON_WHITELISTED = 'commonWhitelisted',
-  COMMON_MEMBER_ADDED = 'commonMemberAdded',
+  COMMON_WHITELISTED = 'CommonWhitelisted',
+  COMMON_MEMBER_ADDED = 'CommonMemberCreated',
   COMMON_MEMBER_REMOVED = 'commonMemberRemoved',
-  COMMON_UPDATED = 'commonUpdated',
+  COMMON_UPDATED = 'CommonUpdated',
 
 
   // Request to join related events
-  REQUEST_TO_JOIN_CREATED = 'requestToJoinCreated',
-  REQUEST_TO_JOIN_ACCEPTED = 'requestToJoinAccepted',
-  REQUEST_TO_JOIN_REJECTED = 'requestToJoinRejected',
+  REQUEST_TO_JOIN_CREATED = 'JoinRequestCreated',
+  REQUEST_TO_JOIN_ACCEPTED = 'JoinRequestAccepted',
+  REQUEST_TO_JOIN_REJECTED = 'JoinRequestRejected',
   REQUEST_TO_JOIN_EXECUTED = 'requestToJoinExecuted',
 
 
   // Funding request related event
-  FUNDING_REQUEST_CREATED = 'fundingRequestCreated',
-  FUNDING_REQUEST_REJECTED = 'fundingRequestRejected',
+  FUNDING_REQUEST_CREATED = 'FundingRequestCreated',
+  FUNDING_REQUEST_REJECTED = 'FundingRequestRejected',
   FUNDING_REQUEST_EXECUTED = 'fundingRequestExecuted',
-  FUNDING_REQUEST_ACCEPTED = 'fundingRequestAccepted',
+  FUNDING_REQUEST_ACCEPTED = 'FundingRequestAccepted',
   FUNDING_REQUEST_ACCEPTED_INSUFFICIENT_FUNDS = 'fundingRequestAcceptedInsufficientFunds',
 
 
   // Voting related events
-  VOTE_CREATED = 'voteCreated',
+  VOTE_CREATED = 'VoteCreated',
 
 
   // Payment related events
-  PAYMENT_CREATED = 'paymentCreated',
+  PAYMENT_CREATED = 'PaymentCreated',
   PAYMENT_CONFIRMED = 'paymentConfirmed',
   PAYMENT_UPDATED = 'paymentConfirmed',
-  PAYMENT_FAILED = 'paymentFailed',
-  PAYMENT_PAID = 'paymentPaid',
+  PAYMENT_FAILED = 'PaymentFailed',
+  PAYMENT_PAID = 'PaymentSucceeded',
 
   // Payout related events
-  PAYOUT_CREATED = 'payoutCreated',
-  PAYOUT_APPROVED = 'payoutApproved',
-  PAYOUT_EXECUTED = 'payoutExecuted',
+  PAYOUT_CREATED = 'PayoutCreated',
+  PAYOUT_APPROVED = 'PayoutApproved',
+  PAYOUT_EXECUTED = 'PayoutExecuted',
   PAYOUT_VOIDED = 'payoutVoided',
 
-  PAYOUT_COMPLETED = 'payoutCompleted',
-  PAYOUT_FAILED = 'payoutFailed',
+  PAYOUT_COMPLETED = 'PayoutCompleted',
+  PAYOUT_FAILED = 'PaymentFailed',
 
   // Card related events
-  CARD_CREATED = 'cardCreated',
+  CARD_CREATED = 'CardCreated',
 
   // Messaging related events
-  DISCUSSION_CREATED = 'discussionCreated',
-  MESSAGE_CREATED = 'messageCreated',
+  DISCUSSION_CREATED = 'DiscussionCreated',
+  MESSAGE_CREATED = 'DiscussionMessageCreated',
 
   // Subscriptions
   SUBSCRIPTION_CREATED = 'subscriptionCreated',

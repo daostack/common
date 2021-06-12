@@ -20,8 +20,8 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
-  let eventType = item.eventType;
-  const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
+  let eventType = item.type;
+  const proposal = rootStore.proposalStore.getProposalById(item.proposalId);
   if (proposal) {
     const proposer = rootStore.userStore.getUserById(proposal.proposerId);
     const isJoin = proposal.type === PROPOSAL_TYPE.Join;

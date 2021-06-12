@@ -28,7 +28,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
   const proposalNotificationData = rootStore.notificationStore.getProposalNotificationData(
-    item.eventObjectId,
+    item.proposalId,
   );
 
   if (proposalNotificationData) {

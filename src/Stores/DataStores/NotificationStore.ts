@@ -19,8 +19,13 @@ export default class NotificationStore extends BaseStore<
   Notification,
   INotificationEntity
 > {
+
+  @observable
+  notifications: Notification[]
+
   constructor(rootStore: RootStore) {
     super(rootStore);
+    this.notifications = [];
   }
 
   // Data consuming methods
@@ -35,7 +40,7 @@ export default class NotificationStore extends BaseStore<
     }
   };
 
-  @computed
+  /*@computed
   get loggedUserNotifications(): Array<Notification> | undefined {
     try {
       const notif = this.getDataArray
@@ -49,12 +54,12 @@ export default class NotificationStore extends BaseStore<
     } catch (error) {
       return [];
     }
-  }
+  }*/
 
   @computed
   get hasNewNotifications() {
     return (
-      (this.loggedUserNotifications?.filter(
+      (this.notifications?.filter(
         (notification: Notification) =>
           notification.notificationItemState?.seen === false,
       )?.length || 0) > 0
@@ -63,9 +68,9 @@ export default class NotificationStore extends BaseStore<
 
   @action
   loadNotifications = async () => {
-    console.log('tkt notifications b4');
     const notifications = await fetchNotifications();
-    console.log('tkt notifications', notifications);
+    this.notifications = notifications;
+    return notifications;
   }
 
   @action
@@ -102,13 +107,14 @@ export default class NotificationStore extends BaseStore<
   };
 
   //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
-    this.rootStore.authStore.signedInUser
+  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null => null;
+    /*this.rootStore.authStore.signedInUser
       ? subscribeToUserNotifications(
           this.rootStore.authStore.signedInUser,
           this.updateStoreData,
         )
-      : null;
+      : null;*/
+
 
   @action
   deleteUserNotifications = () => {
@@ -121,9 +127,7 @@ export default class NotificationStore extends BaseStore<
       id: EventTypeState.welcomeNotification,
       createdAt: this.rootStore.authStore.userInfo?.createdAt,
       updatedAt: this.rootStore.authStore.userInfo?.createdAt,
-      eventObjectId: '',
-      userFilter: [],
-      eventType: EventTypeState.welcomeNotification,
+      type: EventTypeState.welcomeNotification,
     } as INotificationEntity;
 
     this.setData(
