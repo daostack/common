@@ -21,8 +21,8 @@ import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
-import {SubscribeToNotifications} from '~/Graphql/Notifications';
-import {useSubscription} from '@apollo/react-hooks';
+//import {onNewNotificationCreated} from '~/Graphql/Notifications';
+//import {useSubscription} from '@apollo/react-hooks';
 
 const props = {
   navigation: shape({
@@ -55,9 +55,8 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
       case EventTypeState.commonMemberAdded:
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
-      case EventTypeState.requestToJoinCreated: {
+      case EventTypeState.requestToJoinCreated:
         return <RequestToJoinCreated item={item} navigation={navigation} />;
-      }
 
       case EventTypeState.requestToJoinRejected:
         return <RequestToJoinRejected item={item} navigation={navigation} />;
@@ -80,7 +79,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
       default:
         Logger.warn(
-          `Not existing notification item event type ${item.eventType}`,
+          `Not existing notification item event type ${item.type}`,
         );
         return null;
     }
@@ -89,12 +88,9 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
   // this currently just displays the notifications, since we
   // dont have push notifications, it can't listen to anything
-  const SubscribeToNotificationsHook = () => {
-    const data = useSubscription(SubscribeToNotifications, {
-      variables: {
-        type: 'JoinRequestAccepted',
-      },
-    });
+  /*const SubscribeToNotificationsHook = () => {
+    const data = useSubscription(onNewNotificationCreated);
+    console.log('tkt data', data)
     if (data) {
      return notificationList && (
           <FlatList
@@ -106,7 +102,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     } else {
       return <Loader isBigger />;
     }
-  };
+  };*/
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -116,6 +112,12 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     });
 
     return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribeFromNewNotifications = notificationStore.subscribeToNotifications();
+
+    return unsubscribeFromNewNotifications && unsubscribeFromNewNotifications();
   }, [navigation]);
 
 

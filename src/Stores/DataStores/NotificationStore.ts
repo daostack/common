@@ -1,5 +1,9 @@
 import BaseStore from './BaseStore';
-import {subscribeToUserNotifications, fetchNotifications} from '~/Services/ListServices/NotificationListService';
+import {
+  //subscribeToUserNotifications,
+  fetchNotifications,
+  onNewNotification,
+} from '~/Services/ListServices/NotificationListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {
@@ -115,6 +119,17 @@ export default class NotificationStore extends BaseStore<
         )
       : null;*/
 
+
+  @action
+  subscribeToNotifications = () =>
+    onNewNotification().subscribe({
+      next: (value: any) => {
+        console.log('tkt value', value);
+      },
+      error: (err: any) => {
+        Logger.log('Subscription Error: ', err);
+      },
+    });
 
   @action
   deleteUserNotifications = () => {

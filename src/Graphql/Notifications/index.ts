@@ -61,25 +61,11 @@ export const GetUserNotifications = gql`
   }
 `;
 
-export const SubscribeToNotifications = gql`
-  subscription subscribeToNotification($type: String!) {
+// is this listening to notificationCreated
+export const onNewNotificationCreated = gql`
+  subscription {
     notificationCreated {
-      type,
-      seenStatus,
-      user {
-        firstName
-      }
-    }
-  }
-`;
-
-export const onNotificationCreated = gql`
-  subscription ($userId: ID!) {
-    notificationCreated(userId: $userId) {
       ${gqlNotificationProps}
     }
   }
 `;
-
-
-

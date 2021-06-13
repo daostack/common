@@ -8,12 +8,12 @@ import {
 import logger from '~/Services/Logger';
 import {
   GetUserNotifications,
-  SubscribeToNotifications,
-  //NotificationsWhereInput,
+  onNewNotificationCreated,
 } from '~/Graphql/Notifications';
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {Notification} from '../../Stores/Models/Notification';
 import {getGQLErrorObject} from '~/Util';
+import ApolloClient from '~/Services/util/ApolloClient';
 
 export type commonNotificationListLoadCallbackFn = (
   updatedNotificationList: IFirebaseSnapshot<INotificationEntity>,
@@ -38,34 +38,20 @@ export const fetchNotifications = async (
   }
 };
 
-export const newNotification = async (): Promise<any> => {
-  //useSubscription(SubscribeToNotifications)
-  //SubscribeToNotifications
-  ///return await apollo.query({
-  //    query: SubscribeToNotifications,
-  //  });
-
-
-  /*try {
-    const {data} = await apollo.query({
-      query: SubscribeToNotifications,
+// Notification subscription
+export const onNewNotification = async () => {
+  try {
+    return ApolloClient.getInstance().subscribe({
+      query: onNewNotificationCreated,
     });
-    console.log('tkt fetchNotifications', data)
-    if (data.notifications) {
-    return  data.notifications.map((notification: any) => new Notification(notification, notification.seenStatus));//  //new Notification(data.notifications, data.notifications?.seenStatus);
-    }
-    return [];
   } catch (err) {
-    logger.log(
-      'tkt Error while trying to getting notifications: ',
-      getGQLErrorObject(err)
-    );
+    logger.log('Error while trying to listen for notification creation: ', getGQLErrorObject(err));
     throw err;
-  }*/
+  }
 };
 
 //FIREBASE CODE to remove -> used in NotificationStore
-export const subscribeToUserNotifications = (
+/*export const subscribeToUserNotifications = (
   userId: string,
   listChangeCallback: commonNotificationListLoadCallbackFn,
 ) => {
@@ -92,4 +78,4 @@ export const subscribeToUserNotifications = (
     });
 
   return [batch1, batch2];
-};
+};*/
