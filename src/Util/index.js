@@ -45,7 +45,7 @@ export function filterObjectByKeys(currObj, allowedKeys) {
 // access the mobx store outside of a react component
 export const showErrorPopUp = (bottomSheetStore, arg) => {
   if (arg instanceof Error) {
-    const errorObj = getErrorObject(arg);
+    const errorObj = getGQLErrorObject(arg);
 
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,

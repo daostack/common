@@ -25,9 +25,10 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {createProposalVote} from '~/Services/ListServices/ProposalListService';
+import {VoteOutcome} from '~/Graphql/Proposal/index';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -57,9 +58,12 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {ProposalState} from '~/Graphql/Proposal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
+
+const PROPOSAL_STAGES_ACTIVE = [ProposalState.COUNTDOWN];
 
 const ProposalScreen = ({
   navigation,
@@ -122,8 +126,6 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 'approved';
-  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
@@ -132,17 +134,15 @@ const ProposalScreen = ({
     );
 
     let unsubscribeFromProposalById = null;
-    if (fromNotificationItem) {
-      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-        proposalId,
-      );
-    }
+    unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+      proposalId
+    );
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
         unsubscribeFromProposalDiscussionMessages();
 
-      unsubscribeFromProposalById && unsubscribeFromProposalById();
+      unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
     };
   }, [proposalId]);
 
@@ -160,7 +160,7 @@ const ProposalScreen = ({
     ? commonStore.getCommonById(proposalInfo.commonId)
     : null;
   const proposedUser = proposalInfo
-    ? userStore.getUserById(proposalInfo.proposerId)
+    ? proposalInfo.user
     : null;
 
   const showDebtInfo =
@@ -359,28 +359,21 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        outcome: isApproved ? VoteOutcome.APPROVE : VoteOutcome.REJECT,
         proposalId: proposalId || proposalInfo.id,
       };
 
-      const createVoteResponse = await ProposalService.getInstance().createVote(
+      await createProposalVote(
         voteData,
       );
-      if (createVoteResponse.status === 200) {
-        setVotingProcessState({inProgress: false, error: false});
-        closeApprovalSheet();
-        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-        setIsVoteByYou({isApproved: isApproved});
-      } else {
-        setVotingProcessState({inProgress: false, error: true});
-        logger.log(createVoteResponse.status);
-        Toast.error(`Status code ${createVoteResponse.status}`);
-      }
+      setVotingProcessState({inProgress: false, error: false});
+      closeApprovalSheet();
+      Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
+      setIsVoteByYou({isApproved: isApproved});
     } catch (err) {
-      setVotingProcessState({
-        inProgress: false,
-        error: err,
-      });
+      setVotingProcessState({inProgress: false, error: true});
+      logger.log('Error while trying to create a proposal vote. ', err);
+      Toast.error(`Error: ${err}`);
     }
   };
 
@@ -470,7 +463,7 @@ const ProposalScreen = ({
     }),
   };
 
-  const amount = proposalInfo?.funding / 100;
+  const amount = proposalInfo?.fundingFormatted;
 
   const onSetIndex = (item) => {
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG_SLOW);
@@ -775,7 +768,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
+                        closingAt={proposalInfo?.expiresAt.getTime() / 1000}
                         onPress={() => openDebtInsufficientModal()}
                         hasPermission={hasPermission}
                         viewerPermission={viewerPermission}
@@ -794,7 +787,7 @@ const ProposalScreen = ({
                         ...layout.marginBottomL,
                         ...layout.marginTopXS,
                       }}>
-                      {proposalInfo?.description?.title || 'Unknown title'}
+                      {proposalInfo?.title || 'Unknown title'}
                     </Text>
                   </View>
                 ) : (
@@ -809,7 +802,7 @@ const ProposalScreen = ({
                         isScreenHeader={true}
                         state={proposalInfo?.state}
                         paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
+                        closingAt={proposalInfo?.expiresAt.getTime() / 1000}
                         hasPermission={hasPermission}
                         authInfo={authStore.userInfo}
                         viewerPermission={viewerPermission}
@@ -876,7 +869,7 @@ const ProposalScreen = ({
                       borderBottomLeftRadius:
                         proposalInfo.isFundingRequest &&
                         proposalInfo.isCountdown &&
-                        proposalInfo.fundingRequest.amount > 0
+                        proposalInfo.fundingAmount > 0
                           ? 0
                           : 20,
                     },

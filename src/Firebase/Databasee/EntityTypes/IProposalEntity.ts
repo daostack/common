@@ -2,6 +2,8 @@ import {IBaseEntity} from './IBaseEntity';
 import {ContributionType} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
+import {UserModel} from '~/Stores/Models/UserModel';
+import {ProposalType} from '~/Graphql/Proposal';
 
 export type FundingRequestState =
   | 'countdown'
@@ -25,7 +27,22 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The id of the user, who created the proposal
    */
-  proposerId: string;
+  userId: string;
+
+  /**
+   * The user object, who created the proposal
+   */
+  user: UserModel;
+
+  /**
+   * The proposal title
+   */
+  title: string;
+
+  /**
+   * The proposal description text
+   */
+   description: string;
 
   /**
    * The common for witch the
@@ -62,7 +79,7 @@ interface IBaseProposalEntity extends IBaseEntity {
   /**
    * The countdown period in seconds relative to the creation date
    */
-  countdownPeriod: number;
+   expiresAt: Date;
 
   /**
    * This is the period at the end of the voting in which if
@@ -184,14 +201,14 @@ export interface IProposalFundingRequest {
  * the fields for funding requests
  */
 export interface IFundingRequestProposal extends IBaseProposalEntity {
-  type: 'fundingRequest';
+  type: ProposalType.FUNDING_REQUEST;
 
   state: FundingRequestState;
 
   /**
    * Object with some description of the proposal
    */
-  description: TypeFundingRequestDescription;
+  //description: TypeFundingRequestDescription;
 
   fundingRequest: IProposalFundingRequest;
 }
@@ -224,14 +241,14 @@ export interface IProposalJoin {
  * the fields for join requests
  */
 export interface IJoinRequestProposal extends IBaseProposalEntity {
-  type: 'join';
+  type: ProposalType.JOIN_REQUEST;
 
   state: RequestToJoinState;
 
   /**
    * Object with some description of the proposal
    */
-  description: IJoinReqDescription;
+  //description: IJoinReqDescription;
 
   /**
    * The current state of the payment for the proposal
@@ -245,8 +262,6 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
 
   join: IProposalJoin;
 }
-
-export type ProposalType = 'join' | 'fundingRequest';
 
 /**
  * The proposal base type. This is advanced typing that will change the

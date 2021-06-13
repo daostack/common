@@ -65,6 +65,11 @@ import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 
+import {
+  getCommonActiveProposals,
+  getCommonHistoryProposals,
+} from '~/Services/ListServices/ProposalListService';
+
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
@@ -162,14 +167,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals =
-      proposalStore.subscribeToCommonProposals(currCommon.id);
-    const unsubscribeFromCommonDiscussions =
-      discussionStore.subscribeToCommonDiscussions(currCommon.id);
-    return () => {
-      unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
-      unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
-    };
+    proposalStore.loadCommonActiveProposals(currCommon.id);
+    proposalStore.loadCommonHistoryProposals(currCommon.id);
   }, [currCommon]);
 
   useEffect(() => {
@@ -611,8 +610,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const renderPendingApproval = () => {
     const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.createdAt.seconds +
-      pendingProposalsData.usersPendingProposal.countdownPeriod -
+      pendingProposalsData.usersPendingProposal.expiresAt -
       moment().unix();
 
     return (

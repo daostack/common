@@ -20,13 +20,17 @@ import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
+import { UserModel } from './UserModel';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   id: string;
 
   @observable
-  proposerId: string;
+  userId: string;
+
+  @observable
+  user: UserModel;
 
   @observable
   commonId: string;
@@ -41,7 +45,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   state: string;
 
   @observable
-  countdownPeriod: number;
+  expiresAt: Date;
 
   @observable
   quietEndingPeriod: number;
@@ -62,7 +66,14 @@ export class Proposal extends BaseModel<IProposalEntity> {
   join: IProposalJoin | undefined;
 
   @observable
-  description: IFundingRequestDescription | IJoinReqDescription;
+  title: string;
+
+  @observable
+  description: string;
+  //description: IFundingRequestDescription | IJoinReqDescription;
+
+  @observable
+  amount: number;
 
   @observable
   moderation?: IModerationEntity;
@@ -126,7 +137,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   @computed
-  get funding() {
+  get fundingAmount() {
     if (this.type === PROPOSAL_TYPE.Join) {
       return (this as IJoinRequestProposal).join.funding;
     } else {
@@ -136,7 +147,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get fundingFormatted() {
-    return this.funding / 100;
+    return this.fundingAmount / 100;
   }
 
   @computed
@@ -158,26 +169,27 @@ export class Proposal extends BaseModel<IProposalEntity> {
   get countdown() {
     return (
       this.moderation?.quietEnding ||
-      this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
-      this.createdAt.seconds + this?.countdownPeriod
+      this?.expiresAt
     );
   }
 
   constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
-    this.createdAt = newProposalInfo.createdAt;
-    this.updatedAt = newProposalInfo.updatedAt;
-    this.proposerId = newProposalInfo.proposerId;
+    this.createdAt = new Date(newProposalInfo.createdAt);
+    this.updatedAt = new Date(newProposalInfo.updatedAt);
+    this.userId = newProposalInfo.userId;
+    this.user = newProposalInfo.user;
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
-    this.countdownPeriod = newProposalInfo.countdownPeriod;
+    this.expiresAt = new Date(newProposalInfo.expiresAt);
     this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
@@ -185,7 +197,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
       // TODO: ... more props
     }
     if (this.type === PROPOSAL_TYPE.FundingRequest) {
-      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).fundingRequest;
+      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
       // TODO: ... more props
     }
   }

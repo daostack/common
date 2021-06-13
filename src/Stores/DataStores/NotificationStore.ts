@@ -169,7 +169,7 @@ export default class NotificationStore extends BaseStore<
     let proposal = this.rootStore.proposalStore.getProposalById(eventObjectId);
     if (proposal) {
       common = this.rootStore.commonStore.getCommonById(proposal.commonId);
-      user = this.rootStore.userStore.getUserById(proposal.proposerId);
+      user = proposal.user;
     }
 
     if (proposal && user && common) {
