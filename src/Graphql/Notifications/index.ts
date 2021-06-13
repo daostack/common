@@ -25,39 +25,13 @@ export type Notification = {
   userFilter?: Array<string>;
 };
 
-/*export type Subscription = {
-  notificationPushed(eventType: string!): Notification
-};*/
-
-/*export type NotificationsWhereInput = {
-  userId: Scalars['ID'];
-};
-
-export type GetUserNotificationsQueryVariables = Exact<{
-  where: NotificationsWhereInput;
-}>;*/
-
-
-/*
- proposal {
-          id
-        }
-        discussion {
-          id
-          topic
-        }
-        common {
-          id
-        }
- */
-
 
 export const GetUserNotifications = gql`
   query getUserNotifications {
     user {
       displayName
       photo
-      notifications (orderBy: {createdAt: asc}) {
+      notifications (orderBy: {createdAt: desc}) {
         id
         createdAt
         updatedAt
@@ -76,8 +50,10 @@ export const GetUserNotifications = gql`
   }
 `;
 
+// we don't have a notificationCreated endpoint, so this will not work
+// we also don't have event creating, which was in charge of creating notifications
 export const SubscribeToNotifications = gql`
-  subscription subscribeToNotification {
+  subscription subscribeToNotification($type: String!) {
     notificationCreated {
       type,
       seenStatus,

@@ -17,7 +17,6 @@ const RequestToJoinCreated: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  console.log('tkt yes got here! ', item)
   let notificationData = {missingData: true} as NotificationItemData;
   const proposalNotificationData = rootStore.notificationStore.getProposalNotificationData(
     item.proposalId,

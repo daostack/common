@@ -17,6 +17,7 @@ export const notificationDataPropTypes = shape({
   header: string,
   headerBold: string,
   tabIndex: number,
+  createdAt: object,
 });
 
 export const notificationItemPropTypes = shape({
@@ -26,6 +27,7 @@ export const notificationItemPropTypes = shape({
   proposalId: string,
   commonId: string,
   common: object,
+  show: string,
   discussionId: string,
   notificationItemState: shape({
     seen: bool.isRequired,

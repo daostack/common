@@ -41,7 +41,7 @@ export interface NotificationItemData {
 
 export const EventTypeState = {
   creationReqToJoin: 'creationReqToJoin',
-  requestToJoinCreated: 'JoinRequestAccepted', //'JoinRequestCreated',
+  requestToJoinCreated: 'JoinRequestCreated',
   requestToJoinExecuted: 'requestToJoinExecuted',
   requestToJoinRejected: 'JoinRequestRejected',
   requestToJoinAccepted: 'JoinRequestAccepted',

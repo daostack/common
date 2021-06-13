@@ -15,8 +15,12 @@ import {formatNotificationDate} from '~/Util/DateUtil';
 const props = {
   item: shape({
     id: string.isRequired,
-    eventType: string.isRequired,
+    type: string.isRequired,
     createdAt: object.isRequired,
+    show: bool.isRequired,
+    commonId: string,
+    proposalId: string,
+    discussionId: string,
     notificationItemState: shape({
       seen: bool.isRequired,
       opened: bool.isRequired,
@@ -63,7 +67,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         },
       });
       navigation.dispatch(navigate);
-    } else if (item.eventType === EventTypeState.welcomeNotification) {
+    } else if (item.type === EventTypeState.welcomeNotification) {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -105,7 +109,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         </View>
         <View style={styles.notificationContainer}>
           <View style={styles.headerContainer}>
-            <NotificationBadge type={item.eventType} />
+            <NotificationBadge type={item.type} />
             <View style={styles.headerTitle}>
               <Text numberOfLines={1}>
                 <Text style={styles.prefixStyle}>
@@ -139,7 +143,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
           </View>
           <Text style={styles.dateStyle}>
             {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
-            {notificationData.createdAt &&
+            {item.createdAt &&
               formatNotificationDate(
                 notificationData.createdAt.toDate &&
                   notificationData.createdAt.toDate(),

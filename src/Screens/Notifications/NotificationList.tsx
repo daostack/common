@@ -21,6 +21,8 @@ import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
+import {SubscribeToNotifications} from '~/Graphql/Notifications';
+import {useSubscription} from '@apollo/react-hooks';
 
 const props = {
   navigation: shape({
@@ -84,6 +86,28 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     }
   };
 
+
+  // this currently just displays the notifications, since we
+  // dont have push notifications, it can't listen to anything
+  const SubscribeToNotificationsHook = () => {
+    const data = useSubscription(SubscribeToNotifications, {
+      variables: {
+        type: 'JoinRequestAccepted',
+      },
+    });
+    if (data) {
+     return notificationList && (
+          <FlatList
+            data={notificationList.slice()}
+            renderItem={renderNotificationItem}
+            initialNumToRender={8}
+          />
+        );
+    } else {
+      return <Loader isBigger />;
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setTimeout(() => {
@@ -109,7 +133,7 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         <View style={styles.sectionContainer}>
           <Text style={styles.title}>Notifications</Text>
         </View>
-
+        {/*<SubscribeToNotificationsHook />*/}
         {notificationList ? (
           <FlatList
             data={notificationList.slice()}
