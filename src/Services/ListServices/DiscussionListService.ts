@@ -72,7 +72,7 @@ export const fetchDiscussionId = async (
 
 export const createDiscussion = async (
   discussion: CreateDiscussionInput,
-): Promise<Discussion> => {
+): Promise<IDiscussionEntity> => {
   const {data} = await apollo.mutate({
     mutation: CreateDiscussionDocument,
     variables: {
@@ -80,13 +80,13 @@ export const createDiscussion = async (
     },
   });
 
-  return data.createCommon as Discussion;
+  return data.createCommon;
 };
 
 export const fetchDiscussions = async ({
   where,
   paginate,
-}: getDiscussionsVariable): Promise<Discussion[]> => {
+}: getDiscussionsVariable): Promise<IDiscussionEntity[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
     variables: {
@@ -95,5 +95,5 @@ export const fetchDiscussions = async ({
     },
   });
 
-  return data.discussions as Discussion[];
+  return data.discussions;
 };

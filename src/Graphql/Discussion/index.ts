@@ -68,13 +68,14 @@ export const CreateDiscussionDocument = gql`
 
 export type DiscussionWhereInput = {
   commonId?: Scalars['String'];
+  proposalId?: Scalars['String'];
   commonMemberId?: Scalars['String'];
   userId?: Scalars['String'];
 };
 
 export type getDiscussionsVariable = {
   where: DiscussionWhereInput;
-  paginate: Pagination;
+  paginate?: Pagination;
 };
 
 export const GetDiscussionDocument = gql`

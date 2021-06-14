@@ -130,21 +130,24 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
 
-    let unsubscribeFromProposalById = null;
-    unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-      proposalId
-    );
+    discussionMessageStore.loadProposalMessaages(proposalInfo);
 
-    return () => {
-      unsubscribeFromProposalDiscussionMessages &&
-        unsubscribeFromProposalDiscussionMessages();
+    // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+    //   proposalId,
+    // );
 
-      unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
-    };
+    // let unsubscribeFromProposalById = null;
+    // unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+    //   proposalId
+    // );
+
+    // return () => {
+    //   unsubscribeFromProposalDiscussionMessages &&
+    //     unsubscribeFromProposalDiscussionMessages();
+
+    //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
+    // };
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
@@ -238,8 +241,6 @@ const ProposalScreen = ({
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
 
-      console.log("sendMessageToDiscussion");
-
       if (isSending || !userInfo?.uid) {
         return;
       }
@@ -247,33 +248,18 @@ const ProposalScreen = ({
       const message = inputText;
       if (!isEmptyMessage()) {
         inputRef.current.clear();
-
-
-        createDiscussionMessage({
-          discussionId: proposalId || proposalInfo.id,
-          message: message,
-        });
-
-        // db.collection('discussionMessage')
-        //   .doc()
-        //   .set({
-        //     text: message,
-        //     createTime: new Date(),
-        //     ownerId: userInfo.uid,
-        //     ownerName: userInfo.displayName,
-        //     ownerAvatar: userInfo.photoURL,
-        //     discussionId: proposalId || proposalInfo.id,
-        //   })
-        //   .then(() => {
-        //     Keyboard.dismiss();
-
-        //     setIsSending(false);
-        //     setInputText(null);
-        //   })
-        //   .catch((error) => {
-        //     Toast.error(error);
-        //     setIsSending(false);
-        //   });
+        try {
+          createDiscussionMessage({
+            discussionId: discussionMessageStore.proposalDiscussionId,
+            message: message,
+          });
+        } catch (error) {
+          Toast.error(error);
+          setIsSending(false);
+        }
+        Keyboard.dismiss();
+        setIsSending(false);
+        setInputText(null);
       } else {
         setIsSending(false);
       }
@@ -1037,7 +1023,7 @@ const ProposalScreen = ({
 
               {index === 1 && (
                 <DiscussionMessagesList
-                  discussionId={proposalId || proposalInfo.id}
+                  discussionId={discussionMessageStore.proposalDiscussionId}
                   proposal={proposalInfo}
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}

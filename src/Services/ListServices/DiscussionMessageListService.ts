@@ -5,11 +5,13 @@ import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 import {
 CreateDiscussionMessageInput,
 CreateDiscussionMessageDocument,
+GetDiscussionMessageDocument,
 } from '~/Graphql/Message';
 
 import ApolloClient from '~/Services/util/ApolloClient';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
+import { apollo } from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
@@ -27,6 +29,25 @@ export const createDiscussionMessage = async (formData: CreateDiscussionMessageI
     });
   } catch (err) {
     logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const getProposalDiscussionMessages = async (discussionId: string): Promise<IDiscussionMessageEntity[]> => {
+  try {
+    console.log("getProposalDiscussionMessages discussionId -> ", discussionId);
+    const {data} = await apollo.query({
+      query: GetDiscussionMessageDocument,
+      variables: {
+        where: {
+          id: discussionId,
+        },
+      },
+    });
+
+    return data.messages;
+  } catch (err) {
+    logger.log('Error while trying to get Proposal discussion: ', getGQLErrorObject(err));
     throw err;
   }
 };

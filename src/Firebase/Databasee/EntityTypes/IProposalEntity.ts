@@ -4,6 +4,7 @@ import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {ProposalType} from '~/Graphql/Proposal';
+import { IDiscussionEntity } from './IDiscussionEntity';
 
 export type FundingRequestState =
   | 'countdown'
@@ -101,6 +102,21 @@ interface IBaseProposalEntity extends IBaseEntity {
    * The moderation object that handles hiding/showing proposals
    */
   moderation?: IModerationEntity;
+
+  /**
+   * Discussions array which keeps all discussions for a proposal.
+   * TBD: These discussions are not visible anywhere in the app, they just help to connect proposals to
+   * discussionMessages and for now we are creating and using only one discussion for a single proposal.
+   */
+  discussions: IDiscussionEntity[];
+}
+
+export interface IProposalDiscussionEntity {
+
+  /**
+   * Id of the discussion which is attached to a proposal
+   */
+  id: string;
 }
 
 export interface IProposalVote {

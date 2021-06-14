@@ -1,42 +1,19 @@
 
 import {gql} from '@apollo/client';
-import {CommonContributionType} from '~/Graphql/Common';
-import {Exact, FileInput, ImageInput, LinkInput, Maybe, Mutation, Scalars} from '~/Graphql';
-
-export enum VoteOutcome {
-  APPROVE = 'Approve',
-  REJECT = 'Condemn',
-}
-
-export enum ProposalState {
-  ACCEPTED = 'Accepted',
-  COUNTDOWN = 'Countdown',
-  FINALIZING = 'Finalizing',
-  REJECTED = 'Rejected',
-}
-
-export enum ProposalType {
-  FUNDING_REQUEST = 'FundingRequest',
-  JOIN_REQUEST = 'JoinRequest',
-}
-
-export type ProposalFunding = {
-    __typename?: 'ProposalFunding';
-    amount: Scalars['Int'];
-  };
-
-  export type ProposalJoin = {
-    __typename?: 'ProposalJoin';
-    cardId: Scalars['ID'];
-    funding: Scalars['Int'];
-    fundingType?: Maybe<CommonContributionType>;
-  };
-
+import {Exact, Scalars} from '~/Graphql';
 
 export type CreateDiscussionMessageInput = {
     discussionId: Scalars['ID'];
     message: Scalars['String'];
 }
+
+export type DiscussionWhereInput = {
+    discussionId: Scalars['ID'];
+}
+
+export type DiscussionWhereUniqueInput = {
+    id: Scalars['ID'];
+  };
 
 // Input Variables
 
@@ -53,23 +30,17 @@ export const CreateDiscussionMessageDocument = gql`
   }
 `;
 
-
-
-
-// export const getProposalsDocument = gql`
-//   query ($where: ProposalWhereInput!){
-//     discussionMessage( where: $where) {
-//         id: UUID!
-//         createdAt: DateTime!
-//         updatedAt: DateTime!
-//         message: String!
-//         type: DiscussionMessageType!
-//         flag: DiscussionMessageFlag!
-//         userId: String!
-//         reports: [Report!]!
-//         owner: User
-//     }
-//   }
-// `;
-
+export const GetDiscussionMessageDocument = gql`
+  query discussion($id: DiscussionWhereUniqueInput) {
+    discussion(id: $id) {
+      id
+      messages {
+          id
+          message
+          userId
+          createdAt
+      }
+    }
+  }
+`;
 
