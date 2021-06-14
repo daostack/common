@@ -15,6 +15,8 @@ let commonTokenAddress;
 
 let androidAppId;
 let iosAppId;
+let graphqlApiUrl;
+let graphqlApiUseSsl;
 
 if (Config.ENV === 'production') {
   localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
@@ -27,6 +29,8 @@ if (Config.ENV === 'production') {
 
   androidAppId = 'com.daostack.common';
   iosAppId = 'id1512785740';
+  graphqlApiUrl = 'backend-graphql-staging-ty6xygjkva-nw.a.run.app';
+  graphqlApiUseSsl = true;
 } else if (Config.ENV === 'staging') {
   localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
   cloudFunctionURL =
@@ -39,6 +43,8 @@ if (Config.ENV === 'production') {
 
   androidAppId = 'com.daostack.common.staging';
   iosAppId = '1527060751';
+  graphqlApiUrl = 'backend-graphql-staging-ty6xygjkva-nw.a.run.app';
+  graphqlApiUseSsl = true;
 } else {
   throw Error(
     `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`,
@@ -56,6 +62,9 @@ if (Config.local === 'true' && __DEV__) {
     }
   });
 }
+
+export const getGraphqlApiUrl = () => graphqlApiUrl;
+export const isGraphqlApiUseSsl = () => graphqlApiUseSsl;
 
 const cloudFuncURL = () =>
   Config.local === 'true' && __DEV__ ? localFunctionURL : cloudFunctionURL;

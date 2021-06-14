@@ -12,6 +12,7 @@ import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {UserModel} from './Models/UserModel';
 import RootStore from './RootStore';
 import {apollo} from '~/Util/helpers/apolloHelper';
+import AuthService from '~/Services/AuthService';
 
 type SignInErrorWithCode = any;
 
@@ -168,7 +169,10 @@ class AuthStore {
         this.setIsLoading(false);
       }
     } catch (error) {
+      // In case there is no data in the DB with currently logged in user
       Logger.error('_processUser ~>', error);
+      await AuthService.getInstance().signOut();
+      this.setIsLoading(false);
     }
   }
 }
