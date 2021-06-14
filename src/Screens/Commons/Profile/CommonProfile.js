@@ -89,7 +89,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
-  const discussionStore = rootStore.discussionStore;
   const userStore = rootStore.userStore;
 
   const [isMember, setMemberState] = useState(false);

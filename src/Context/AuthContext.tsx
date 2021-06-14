@@ -17,6 +17,7 @@ const AuthContext = React.createContext<IAuthContext>(defaultAppContext);
 
 export const useAuthContext = () => React.useContext<IAuthContext>(AuthContext);
 
+// eslint-disable-next-line react/prop-types
 export const AuthContextProvider: React.FC<PropsWithChildren<any>> = ({children}) => {
     const [context, setContext] = React.useState<IAuthContext>(defaultAppContext);
 

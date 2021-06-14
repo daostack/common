@@ -5,6 +5,7 @@ import {useApollo} from '~/Util/hooks';
 import {useAuthContext} from '~/Context/AuthContext';
 
 export const ApolloProvider: React.FC<PropsWithChildren<any>> = ({
+  // eslint-disable-next-line react/prop-types
   children,
   ...rest
 }) => {

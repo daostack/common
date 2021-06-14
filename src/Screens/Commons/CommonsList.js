@@ -26,9 +26,6 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
 
-import {finalizeProposal} from '~/Services/ListServices/ProposalListService';
-
-
 const TIMEOUT = 1500;
 
 const groupTitle = (title, arrLength) =>

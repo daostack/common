@@ -22,7 +22,6 @@ import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
 import {createCommon} from '~/Services/ListServices/CommonListService';
