@@ -35,17 +35,14 @@ export const createDiscussionMessage = async (formData: CreateDiscussionMessageI
 
 export const getProposalDiscussionMessages = async (discussionId: string): Promise<IDiscussionMessageEntity[]> => {
   try {
-    console.log("getProposalDiscussionMessages discussionId -> ", discussionId);
     const {data} = await apollo.query({
       query: GetDiscussionMessageDocument,
       variables: {
-        where: {
-          id: discussionId,
-        },
+         id: discussionId,
       },
     });
 
-    return data.messages;
+    return data.discussion.messages;
   } catch (err) {
     logger.log('Error while trying to get Proposal discussion: ', getGQLErrorObject(err));
     throw err;

@@ -10,11 +10,11 @@ export interface IBaseEntity {
    * The time that the entity
    * was created
    */
-  createdAt: firebase.firestore.Timestamp;
+  createdAt: Date;
 
   /**
    * The last time that the entity
    * was modified
    */
-  updatedAt: firebase.firestore.Timestamp;
+  updatedAt: Date;
 }

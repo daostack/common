@@ -12,7 +12,7 @@ export interface IDiscussionMessageEntity extends IBaseEntity {
   /**
    * The ID of the creator of the message
    */
-  ownerId: string;
+  userId: string;
 
   /**
    * The name of the creator of the message
@@ -22,12 +22,7 @@ export interface IDiscussionMessageEntity extends IBaseEntity {
   /**
    * The content of the message
    */
-  text: string;
-
-  /**
-   * Time of creation
-   */
-  createTime: firebase.firestore.Timestamp;
+  message: string;
 
   /**
    * Image URLs of the user's avatar
