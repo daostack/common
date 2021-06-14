@@ -120,7 +120,7 @@ const DiscussionCard = ({
                   </Text>
                   {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                   <Text style={styles.date}>
-                    {moment(data.createTime).fromNow()}
+                    {moment(data.createdAt).fromNow()}
                   </Text>
                 </View>
               </View>

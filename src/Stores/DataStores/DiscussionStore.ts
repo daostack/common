@@ -22,7 +22,7 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @observable
-  private discussions: Discussion[] = [];
+  private discussions: IDiscussionEntity[] = [];
 
   @computed
   get commonDiscussions() {

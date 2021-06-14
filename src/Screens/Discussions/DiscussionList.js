@@ -50,7 +50,7 @@ const DiscussionList = ({
               }
               isMember={isMember}
               viewerPermission={viewerPermission}
-              // onEndReachedThreshold={0}
+              onEndReachedThreshold={0}
               onEndReached={loadMoreDiscussions}
             />
           )}

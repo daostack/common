@@ -85,15 +85,14 @@ export const createDiscussion = async (
 
 export const fetchDiscussions = async ({
   where,
-  paginate,
-}: getDiscussionsVariable): Promise<Discussion[]> => {
+}: // paginate,
+getDiscussionsVariable): Promise<IDiscussionEntity[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
     variables: {
       where,
-      paginate,
     },
   });
 
-  return data.discussions as Discussion[];
+  return data.discussions as IDiscussionEntity[];
 };
