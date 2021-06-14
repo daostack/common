@@ -15,9 +15,12 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import CommonMembersList from './CommonMembersList';
 import CommonTabBar from '../../CommonTabBar';
 import {string, func, array, object, shape, bool} from 'prop-types';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {PROPOSAL_STAGE} from '~/Config';
 import {observer, inject} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {
+  ProposalType,
+} from '~/Graphql/Proposal';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
@@ -41,7 +44,7 @@ const Pending = ({
       commonInfo={{id: commonId}}
       proposalFilter={{
         stage: PROPOSAL_STAGE.Active,
-        type: PROPOSAL_TYPE.Join,
+        type: ProposalType.JOIN_REQUEST,
       }}
       hasPermission={hasPermission}
       openCommonOptions={(requestToJoin) => openCommonOptions(requestToJoin)}
@@ -60,7 +63,7 @@ const History = ({navigation, commonId}) => (
       commonInfo={{id: commonId}}
       proposalFilter={{
         stage: PROPOSAL_STAGE.History,
-        type: PROPOSAL_TYPE.Join,
+        type: ProposalType.JOIN_REQUEST,
       }}
     />
   </View>
@@ -73,14 +76,8 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
   const {commonId, hasPermission, openCommonOptions, showHiddenNote, isMember} =
     router.params;
   const [index, setIndex] = useState(0);
-  const pendingCount = proposalStore.getCommonProposals(commonId, {
-    stage: PROPOSAL_STAGE.Active,
-    type: PROPOSAL_TYPE.Join,
-  }).length;
-  const historyCount = proposalStore.getCommonProposals(commonId, {
-    stage: PROPOSAL_STAGE.History,
-    type: PROPOSAL_TYPE.Join,
-  }).length;
+  const pendingCount = proposalStore.getCommonPendingReqToJoins.length;
+  const historyCount = proposalStore.getCommonHistoryReqToJoins.length;
   const membersCount = commonStore.getCommonById(commonId)?.members.length;
 
   const routes = [

@@ -46,7 +46,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
@@ -66,9 +66,9 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 
 import {
-  getCommonActiveProposals,
-  getCommonHistoryProposals,
-} from '~/Services/ListServices/ProposalListService';
+  ProposalType,
+} from '~/Graphql/Proposal';
+
 
 const {width} = Dimensions.get('window');
 
@@ -169,6 +169,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     proposalStore.loadCommonActiveProposals(currCommon.id);
     proposalStore.loadCommonHistoryProposals(currCommon.id);
+    proposalStore.loadCommonMembersPendingProposals(currCommon.id);
+    proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
   }, [currCommon]);
 
   useEffect(() => {
@@ -186,41 +188,31 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
-    let unsubscribe = null;
-    let getPendingProposalsData = async () => {
-      unsubscribe =
-        await ProposalService.getInstance().subscribeToPendingProposalsData(
-          commonId,
-          authStore.userInfo?.uid,
-          (data) => {
-            setPendingProposalsData({...data});
 
-            if (!isMember) {
-              if (data) {
-                if (data.usersPendingProposal) {
-                  animateNextStateRender();
-                  setShowPending(true);
+    let userPendingProposalId = null;
 
-                  animateNextStateRender();
-                  setShowRequestToJoin(false);
-                } else {
-                  animateNextStateRender();
-                  setShowRequestToJoin(true);
-                }
-              }
-            }
-          },
-        );
-    };
-
-    getPendingProposalsData();
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
+    // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
+    // On the other hand we already have all pending proposals loaded so, not really sure.
+    proposalStore.getCommonPendingReqToJoins.filter((pendingProposal) => {
+      if (pendingProposal.userId === authStore.userInfo?.uid) {
+        userPendingProposalId = pendingProposal.id;
       }
-    };
-  }, [commonId, isMember, authStore.userInfo]);
+    });
+
+    setPendingProposalsData({
+      pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+      usersPendingProposal: userPendingProposalId ? proposalStore.getProposalById(userPendingProposalId) : false,
+    });
+
+    const userHasPendingProposal = userPendingProposalId === null;
+
+    animateNextStateRender();
+    setShowRequestToJoin(!userHasPendingProposal);
+    if (!userHasPendingProposal) {
+      setShowPending(true);
+    }
+
+  }, [commonId, isMember, authStore.userInfo, proposalStore.getCommonPendingReqToJoins]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -276,7 +268,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, TITLES.proposals)
@@ -302,7 +294,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.History,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)

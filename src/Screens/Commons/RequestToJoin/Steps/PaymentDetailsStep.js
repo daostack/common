@@ -20,6 +20,7 @@ import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {createJoinProposal} from '~/Services/ListServices/ProposalListService';
 
 import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
@@ -55,8 +56,9 @@ const PaymentDetailsStep = ({
         };
 
         const data = {
+          title: `User join for common ${currCommon.name}`,
           description: formData.intro,
-          funding: formData.amount * 100,
+          fundingAmount: formData.amount * 100,
           commonId: currDaoId,
         };
 
@@ -77,34 +79,29 @@ const PaymentDetailsStep = ({
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+        const createJoinProposalResponse = await createJoinProposal(
           {
             ...data,
-            cardId: createdCard.id,
-          },
+            cardId: createdCard.data.createCard.id,
+          }
         );
 
-        if (createRequestToJoinResponse.status === 200) {
-          const proposalId = createRequestToJoinResponse.data.id;
+        const proposalId = createJoinProposalResponse.data.createJoinProposal.id;
 
-          navigation.pop();
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
-            params: {
-              showRequestSentModal: true,
-              createdProposalId: proposalId,
-            },
-          });
+        navigation.pop();
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+            createdProposalId: proposalId,
+          },
+        });
 
-          if (typeof refreshFeed === 'function') {
-            refreshFeed();
-          }
-
-          navigation.dispatch(navigate);
-        } else {
-          navigation.pop();
-          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        if (typeof refreshFeed === 'function') {
+          refreshFeed();
         }
+
+        navigation.dispatch(navigate);
       } catch (e) {
         navigation.pop();
 
