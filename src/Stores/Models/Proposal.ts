@@ -68,15 +68,11 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @observable
   description: string;
-  //description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
-<<<<<<< HEAD
   discussions: IDiscussionEntity[];
 
   @observable
-=======
->>>>>>> CM-481-migration-to-graphql
   moderation?: IModerationEntity;
 
   @observable
