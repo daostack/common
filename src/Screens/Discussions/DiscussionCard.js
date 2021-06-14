@@ -101,16 +101,15 @@ const DiscussionCard = ({
                   )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {data.owner?.photo ? (
+                {data.owner?.photoURL ? (
                   <FastImage
                     style={styles.image}
-                    source={{uri: data.owner.photo}}
+                    source={{uri: data.owner.photoURL}}
                   />
                 ) : (
                   <View style={styles.displayNameContainer}>
                     <Text style={styles.displayName}>
-                      {data.owner?.displayName &&
-                        data.owner?.displayName.substring(0, 1)}
+                      {data.owner?.displayName && data.owner.displayName}
                     </Text>
                   </View>
                 )}

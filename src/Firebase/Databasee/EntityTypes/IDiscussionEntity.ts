@@ -26,7 +26,7 @@ export interface IDiscussionEntity extends IBaseEntity {
   /**
    * Time of creation
    */
-  createdAt: firebase.firestore.Timestamp;
+  createdAt: Date;
 
   /**
    * Owner info
@@ -37,7 +37,7 @@ export interface IDiscussionEntity extends IBaseEntity {
   /**
    * When was the last message sent in this discussion
    */
-  lastMessage: firebase.firestore.Timestamp;
+  lastMessage: Date;
 
   isModerationHidden: boolean;
 

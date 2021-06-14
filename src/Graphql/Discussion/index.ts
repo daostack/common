@@ -87,8 +87,7 @@ export const GetDiscussionDocument = gql`
       createTime: createdAt
       ownerId: userId
       owner {
-        displayName
-        photo
+        photoURL: photo
         email
         firstName
         lastName

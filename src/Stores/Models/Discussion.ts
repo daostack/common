@@ -3,6 +3,7 @@ import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEnt
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {BaseModel} from './BaseModel';
+import {UserModel} from './UserModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
@@ -45,9 +46,9 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.message = newDiscussionInfo.message;
     this.ownerId = newDiscussionInfo.ownerId;
     this.commonId = newDiscussionInfo.commonId;
-    this.createdAt = newDiscussionInfo.createdAt;
+    this.createdAt = new Date(newDiscussionInfo.createdAt);
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.isExpanded = isExpanded;
-    this.owner = newDiscussionInfo.owner;
+    this.owner = new UserModel(newDiscussionInfo.owner);
   }
 }

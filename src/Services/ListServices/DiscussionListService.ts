@@ -6,11 +6,10 @@ import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
-  Discussion,
   GetDiscussionDocument,
   getDiscussionsVariable,
 } from '~/Graphql/Discussion';
-import {Pagination} from '~/Graphql';
+import {Discussion} from '../../Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
@@ -80,13 +79,13 @@ export const createDiscussion = async (
     },
   });
 
-  return data.createCommon as Discussion;
+  return new Discussion(data.createCommon, false);
 };
 
 export const fetchDiscussions = async ({
   where,
-}: // paginate,
-getDiscussionsVariable): Promise<IDiscussionEntity[]> => {
+}: // paginate, TODO: Add after fix react-native-parallax
+getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
     variables: {
@@ -94,5 +93,7 @@ getDiscussionsVariable): Promise<IDiscussionEntity[]> => {
     },
   });
 
-  return data.discussions as IDiscussionEntity[];
+  return data.discussions.map(
+    (item: IDiscussionEntity) => new Discussion(item, false),
+  ) as Discussion[];
 };

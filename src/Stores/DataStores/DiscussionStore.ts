@@ -9,12 +9,12 @@ import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
-import {runInAction, action, computed, observable} from 'mobx';
+import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
 import {Discussion} from '~/Graphql/Discussion';
 
 export default class DiscussionStore extends BaseStore<
-  Discussion,
+  DiscussionModel,
   IDiscussionEntity
 > {
   constructor(rootStore: RootStore) {
@@ -22,15 +22,17 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @observable
-  private discussions: IDiscussionEntity[] = [];
+  private discussions: ObservableMap<string, DiscussionModel> = observable.map(
+    {},
+  );
 
   @computed
   get commonDiscussions() {
-    return this.discussions;
+    return this.toDataArray(this.discussions);
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): Discussion | undefined => {
+  getDiscussionById = (id: string): DiscussionModel | undefined => {
     try {
       return this.getDataById(id);
     } catch (errr) {
@@ -55,7 +57,9 @@ export default class DiscussionStore extends BaseStore<
     }
   };
 
-  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
+  getCommonDiscussions = (
+    commonId: string,
+  ): Array<IDiscussionEntity> | undefined =>
     this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
@@ -85,7 +89,7 @@ export default class DiscussionStore extends BaseStore<
   };
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionEntity): any {
+  getEntityModel(entity: IDiscussionEntity): DiscussionModel {
     return new DiscussionModel(entity, this.getIsExpanded(entity.id));
   }
 
