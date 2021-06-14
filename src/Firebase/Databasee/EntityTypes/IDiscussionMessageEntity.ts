@@ -1,5 +1,4 @@
 import {IBaseEntity} from './IBaseEntity';
-import {firebase} from '~/Firebase';
 import {IModerationEntity} from './IModerationEntity';
 
 // TODO: implement IBaseEntity when the backend is refactored
