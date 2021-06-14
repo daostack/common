@@ -68,32 +68,33 @@ export const CreateDiscussionDocument = gql`
 
 export type DiscussionWhereInput = {
   commonId?: Scalars['String'];
-  proposalId?: Scalars['String'];
   commonMemberId?: Scalars['String'];
   userId?: Scalars['String'];
 };
 
 export type getDiscussionsVariable = {
   where: DiscussionWhereInput;
-  paginate?: Pagination;
+  paginate: Pagination;
 };
 
 export const GetDiscussionDocument = gql`
-  query GetDiscussions(
-    $where: DiscussionWhereInput
-    $paginate: PaginateInput! = {take: 10, skip: 0}
-  ) {
-    discussions(where: $where, paginate: $paginate) {
+  query GetDiscussions($where: DiscussionWhereInput) {
+    discussions(where: $where) {
       id
       title: topic
-      description
+      message: description
       messageCount
       createTime: createdAt
-      userId
+      ownerId: userId
       owner {
-        displayName
-        photo
+        photoURL: photo
+        email
+        firstName
+        lastName
+        country
       }
+      lastMessage: latestMessage
+      createdAt
     }
   }
 `;

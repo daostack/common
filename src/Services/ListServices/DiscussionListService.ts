@@ -9,6 +9,7 @@ import {
   GetDiscussionDocument,
   getDiscussionsVariable,
 } from '~/Graphql/Discussion';
+import {Discussion} from '../../Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
@@ -70,7 +71,7 @@ export const fetchDiscussionId = async (
 
 export const createDiscussion = async (
   discussion: CreateDiscussionInput,
-): Promise<IDiscussionEntity> => {
+): Promise<Discussion> => {
   const {data} = await apollo.mutate({
     mutation: CreateDiscussionDocument,
     variables: {
@@ -78,20 +79,21 @@ export const createDiscussion = async (
     },
   });
 
-  return data.createCommon;
+  return new Discussion(data.createCommon, false);
 };
 
 export const fetchDiscussions = async ({
   where,
-  paginate,
-}: getDiscussionsVariable): Promise<IDiscussionEntity[]> => {
+}: // paginate, TODO: Add after fix react-native-parallax
+getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
     variables: {
       where,
-      paginate,
     },
   });
 
-  return data.discussions;
+  return data.discussions.map(
+    (item: IDiscussionEntity) => new Discussion(item, false),
+  ) as Discussion[];
 };
