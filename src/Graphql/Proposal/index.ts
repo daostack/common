@@ -166,7 +166,11 @@ const gqlProposalProps = `
   votesAgainst
   votes {
     voterId
-  }`;
+  }
+  discussions {
+    id
+  }
+  `;
 
 
 export const onProposalChangeDocument = gql`

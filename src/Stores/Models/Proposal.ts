@@ -17,6 +17,7 @@ import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {ProposalType} from '~/Graphql/Proposal';
 
 export class Proposal extends BaseModel<IProposalEntity> {
@@ -67,7 +68,9 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @observable
   description: string;
-  //description: IFundingRequestDescription | IJoinReqDescription;
+
+  @observable
+  discussions: IDiscussionEntity[];
 
   @observable
   moderation?: IModerationEntity;
@@ -194,5 +197,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
       this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
       // TODO: ... more props
     }
+    this.discussions = newProposalInfo.discussions;
   }
 }

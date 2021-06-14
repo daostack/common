@@ -35,9 +35,9 @@ const DiscussionMessagesList = ({
   );
 
   const msgGroups = discussionMessageStore
-    .getDiscussionMessagesByDiscussionId(discussionId)
+    .getProposalMessages
     .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+      date: moment(msg.createdAt).format('YYYY-MM-DD'),
       data: msg,
     }))
     .reduce((acc, curr) => {

@@ -1,4 +1,4 @@
-import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import BaseStore from './BaseStore';
 import {
   getCommonActiveProposals,
@@ -65,16 +65,16 @@ export default class ProposalStore extends BaseStore<
 > {
 
   @observable
-  private commonActiveProposals: ObservableMap<string, Proposal> = observable.map({});;
+  private commonActiveProposals: ObservableMap<string, Proposal> = observable.map({});
 
   @observable
-  private commonHistoryProposals: ObservableMap<string, Proposal> = observable.map({});;
+  private commonHistoryProposals: ObservableMap<string, Proposal> = observable.map({});
 
   @observable
-  private commonPendingReqToJoins: ObservableMap<string, Proposal> = observable.map({});;
+  private commonPendingReqToJoins: ObservableMap<string, Proposal> = observable.map({});
 
   @observable
-  private commonHistoryReqToJoins: ObservableMap<string, Proposal> = observable.map({});;
+  private commonHistoryReqToJoins: ObservableMap<string, Proposal> = observable.map({});
 
   constructor(rootStore: RootStore) {
     super(rootStore);
