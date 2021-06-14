@@ -52,7 +52,7 @@ export type CreateFundingProposalInput = CreateProposalInput & {
     funding: ProposalFunding;
 };
 
-type CreateVoteInput = {
+export type CreateVoteInput = {
   outcome: string;
   proposalId: string;
 };

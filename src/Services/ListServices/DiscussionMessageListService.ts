@@ -11,7 +11,7 @@ GetDiscussionMessageDocument,
 import ApolloClient from '~/Services/util/ApolloClient';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
-import { apollo } from '~/Util/helpers/apolloHelper';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,

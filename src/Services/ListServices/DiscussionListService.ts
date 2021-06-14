@@ -6,11 +6,9 @@ import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
-  Discussion,
   GetDiscussionDocument,
   getDiscussionsVariable,
 } from '~/Graphql/Discussion';
-import {Pagination} from '~/Graphql';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (

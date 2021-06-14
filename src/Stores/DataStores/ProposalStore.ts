@@ -1,4 +1,4 @@
-import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import BaseStore from './BaseStore';
 import {
   getCommonActiveProposals,

@@ -6,7 +6,6 @@ import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
-import {db} from '~Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
 import {authStorePropTypes} from '~/Types/propTypes';

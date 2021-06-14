@@ -34,7 +34,6 @@ import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
-import {db} from '~/Firebase';
 import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
@@ -79,7 +78,6 @@ const ProposalScreen = ({
   },
   rootStore,
 }) => {
-  const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;

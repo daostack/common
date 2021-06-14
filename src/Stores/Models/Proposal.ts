@@ -8,11 +8,8 @@ import {
   IProposalFundingRequest,
   IProposalJoin,
   IProposalVote,
-  ProposalType,
   IProposalImage,
   IUIProposalImage,
-  IJoinReqDescription,
-  IFundingRequestDescription,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
@@ -20,8 +17,9 @@ import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
-import { UserModel } from './UserModel';
-import { IDiscussionEntity } from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {UserModel} from './UserModel';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {ProposalType} from '~/Graphql/Proposal';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable

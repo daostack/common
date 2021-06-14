@@ -4,7 +4,7 @@ import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {ProposalType} from '~/Graphql/Proposal';
-import { IDiscussionEntity } from './IDiscussionEntity';
+import {IDiscussionEntity} from './IDiscussionEntity';
 
 export type FundingRequestState =
   | 'countdown'
