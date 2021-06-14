@@ -14,6 +14,7 @@ import {
   CreateJoinProposalDocument,
   CreateJoinProposalInput,
   CreateProposalVoteDocument,
+  CreateVoteInput,
   finalizeProposalDocument,
   getProposalsDocument,
   onProposalChangeDocument,
@@ -168,7 +169,7 @@ export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
   }
 };
 
-export const createProposalVote = async (createProposalVoteData: CreateProposalVoteInput) => {
+export const createProposalVote = async (createProposalVoteData: CreateVoteInput) => {
   try {
     return await ApolloClient.getInstance().mutate({
       mutation: CreateProposalVoteDocument,

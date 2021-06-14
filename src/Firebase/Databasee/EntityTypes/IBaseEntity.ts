@@ -1,5 +1,3 @@
-import {firebase} from '~/Firebase';
-
 export interface IBaseEntity {
   /**
    * The main identifier of the common
@@ -10,11 +8,11 @@ export interface IBaseEntity {
    * The time that the entity
    * was created
    */
-  createdAt: firebase.firestore.Timestamp;
+  createdAt: Date;
 
   /**
    * The last time that the entity
    * was modified
    */
-  updatedAt: firebase.firestore.Timestamp;
+  updatedAt: Date;
 }

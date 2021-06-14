@@ -1,4 +1,3 @@
-import {firebase} from '~/Firebase';
 import {IBaseEntity} from './IBaseEntity';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
