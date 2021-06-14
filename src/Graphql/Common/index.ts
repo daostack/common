@@ -162,11 +162,8 @@ export type GetCommonDiscussionsQueryVariables = Exact<{
 }>;
 
 export const GetCommonDiscussions = gql`
-  query getCommonDiscussions(
-    $where: DiscussionWhereInput
-    $paginate: PaginateInput! = {take: 10, skip: 0}
-  ) {
-    discussions(where: $where, paginate: $paginate) {
+  query getCommonDiscussions($where: DiscussionWhereInput) {
+    discussions(where: $where) {
       id
       createdAt
       messages {
@@ -468,8 +465,6 @@ export const GetCommonsDocument = gql`
     }
   }
 `;
-
-
 
 export const GetCommonPendingMembers = gql`
 query CommonPendingMembers($commonId: UUID!) {
