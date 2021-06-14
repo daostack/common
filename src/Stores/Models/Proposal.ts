@@ -1,5 +1,4 @@
 import {observable, computed} from 'mobx';
-import {PROPOSAL_TYPE} from '~/Config';
 import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
 import {
   IFundingRequestProposal,
@@ -72,9 +71,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
   //description: IFundingRequestDescription | IJoinReqDescription;
 
   @observable
+<<<<<<< HEAD
   discussions: IDiscussionEntity[];
 
   @observable
+=======
+>>>>>>> CM-481-migration-to-graphql
   moderation?: IModerationEntity;
 
   @observable
@@ -122,12 +124,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get isJoinRequest() {
-    return this.type === PROPOSAL_TYPE.Join;
+    return this.type === ProposalType.JOIN_REQUEST;
   }
 
   @computed
   get isFundingRequest() {
-    return this.type === PROPOSAL_TYPE.FundingRequest;
+    return this.type === ProposalType.FUNDING_REQUEST;
   }
 
   @computed
@@ -137,7 +139,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get fundingAmount() {
-    if (this.type === PROPOSAL_TYPE.Join) {
+    if (this.type === ProposalType.JOIN_REQUEST) {
       return (this as IJoinRequestProposal).join.funding;
     } else {
       return (this as IFundingRequestProposal).fundingRequest.amount;
@@ -190,12 +192,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
-    if (this.type === PROPOSAL_TYPE.Join) {
+    if (this.type === ProposalType.JOIN_REQUEST) {
       this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
-    if (this.type === PROPOSAL_TYPE.FundingRequest) {
+    if (this.type === ProposalType.FUNDING_REQUEST) {
       this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
       // TODO: ... more props
     }

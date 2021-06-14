@@ -108,8 +108,6 @@ export const CreateJoinProposalDocument = gql`
       commonId
       description
       links
-      fundingAmount
-      cardId
     }
   }
 `;
@@ -156,7 +154,10 @@ const gqlProposalProps = `
   files
   images
   funding {
-      amount
+    amount
+  }
+  join {
+    funding
   }
   createdAt
   updatedAt

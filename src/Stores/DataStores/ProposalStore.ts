@@ -3,6 +3,8 @@ import BaseStore from './BaseStore';
 import {
   getCommonActiveProposals,
   getCommonHistoryProposals,
+  getCommonPendingReqToJoins,
+  getCommonHistoryReqToJoins,
   onProposalChange,
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
@@ -30,18 +32,18 @@ export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.History;
 
 export type IProposalTypeFilter =
-  | typeof PROPOSAL_TYPE.FundingRequest
-  | typeof PROPOSAL_TYPE.Join;
+  | typeof ProposalType.FUNDING_REQUEST
+  | typeof ProposalType.JOIN_REQUEST;
 export interface IProposalFilter {
   type: IProposalTypeFilter;
   stage: IProposalStageFilter;
 }
 
 export const isTypeFilterJoin = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.Join;
+  typeFilter === ProposalType.JOIN_REQUEST;
 
 export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.FundingRequest;
+  typeFilter === ProposalType.FUNDING_REQUEST;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
   stageFilter === PROPOSAL_STAGE.Active;
@@ -110,7 +112,7 @@ export default class ProposalStore extends BaseStore<
   // Data consuming methods
   getProposalById = (id: string): Proposal | undefined => {
     try {
-      return this.getDataByIdAndCollections(id, [this.commonActiveProposals, this.commonHistoryProposals]);
+      return this.getDataByIdAndCollections(id, [this.commonActiveProposals, this.commonHistoryProposals, this.commonPendingReqToJoins, this.commonHistoryReqToJoins]);
     } catch (errr) {
       // fetchProposalById(id)
       // TODO: consider adding direct fetch from gql by id in order to confirm missing data
@@ -140,6 +142,22 @@ export default class ProposalStore extends BaseStore<
       this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
     });
   }
+  @action
+  loadCommonMembersPendingProposals = (commonId: string) => {
+    getCommonPendingReqToJoins(commonId).then((proposals: IProposalEntity[]) => {
+      this.commonPendingReqToJoins.clear();
+      this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
+    });
+  }
+
+  @action
+  loadCommonMembersHistoryProposals = (commonId: string) => {
+    getCommonHistoryReqToJoins(commonId).then((proposals: IProposalEntity[]) => {
+      this.commonHistoryReqToJoins.clear();
+      this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
+    });
+  }
+
   @action
   subscribeToProposalById = (proposalId: string) =>
     onProposalChange(proposalId).subscribe({
@@ -245,11 +263,16 @@ export default class ProposalStore extends BaseStore<
   }
 
   private updateRequestToJoinData(proposal: Proposal) {
-    if (this.existsInDataMap(proposal.id, this.commonPendingReqToJoins)) {
-      //TODO
-    }
     if (this.existsInDataMap(proposal.id, this.commonHistoryReqToJoins)) {
-      //TODO
+      this.updateDataMap(proposal, this.commonHistoryReqToJoins);
+    }
+    if (this.existsInDataMap(proposal.id, this.commonPendingReqToJoins)) {
+      if (proposal.state !== ProposalState.COUNTDOWN) {
+        this.commonPendingReqToJoins.delete(proposal.id);
+        this.updateDataMap(proposal, this.commonHistoryReqToJoins);
+      } else {
+        this.updateDataMap(proposal, this.commonPendingReqToJoins);
+      }
     }
   }
 
