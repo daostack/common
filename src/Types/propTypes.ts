@@ -38,7 +38,6 @@ export const userStorePropTypes = shape({
 
 export const commonStorePropTypes = shape({
   subscribeToAllCommons: func.isRequired,
-  getUserCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
   updateCommonInfo: func.isRequired,
@@ -48,6 +47,10 @@ export const proposalStorePropTypes = shape({
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
   getUserProposals: func.isRequired,
+  getCommonActiveProposals: func.isRequired,
+  getCommonHistoryProposals: func.isRequired,
+  getCommonPendingReqToJoins: func.isRequired,
+  getCommonHistoryReqToJoins: func.isRequired,
 });
 
 export const discussionStorePropTypes = shape({
