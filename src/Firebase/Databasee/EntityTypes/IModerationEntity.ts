@@ -40,11 +40,11 @@ export interface IModerationEntity extends IBaseEntity {
   countdownStart: firebase.firestore.Timestamp;
 
   /**
-   * New countdown period calculated by time already passed from the
+   * New property for keeping countdown period calculated by time already passed from the
    * actual countdown and the time proposal was creating
    * We do that when proposal is hiding, in order to freeze the countdown
    */
-  countdownPeriod?: number;
+  expiresAt?: Date;
 
   /**
    * A countdown using quiet ending period,

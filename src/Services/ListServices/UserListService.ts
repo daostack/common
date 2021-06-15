@@ -5,6 +5,8 @@ import {
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
+import {apollo} from '~/Util/helpers/apolloHelper';
+import {User, GetUserInfoDocument} from '~/Graphql';
 
 export type userListLoadCallbackFn = (
   updatedUserList: IFirebaseSnapshot<IUserEntity>,
@@ -71,4 +73,17 @@ export const updateUser = async (
   }
 
   return await UsersCollection.doc(userId).update(user);
+};
+
+export const getUserById = async (userId: string): Promise<User> => {
+  const {data} = await apollo.query({
+    query: GetUserInfoDocument,
+    variables: {
+      where: {
+        userId,
+      },
+    },
+  });
+
+  return data.user as User;
 };

@@ -1,62 +1,92 @@
-import {computed, observable} from 'mobx';
-import BaseStore from './BaseStore';
+import {computed, observable, ObservableMap, action} from 'mobx';
+import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
   subscribeToAllCommons,
   updateCommon,
-  fetchCommonById,
+  fetchUserCommons,
+  fetchUserPendingCommons,
+  fetchCommons,
 } from '~/Services/ListServices/CommonListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
-import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {DAO_REGISTERED} from '~/Firebase/Databasee';
-import {Proposal} from '../Models/Proposal';
-import {isDaoMemberByUserId, showBackendError} from '~/Util';
-import {runInAction} from 'mobx';
+import RootStore from '../RootStore';
+import BaseStore from './BaseStore';
+import {UpdateCommonInfoInput} from '~/Graphql/Common';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
+
+  @observable
+  private myCommons: ObservableMap<string, Common> = observable.map({});
+
+  @observable
+  private pendingCommons: ObservableMap<string, Common> = observable.map({});
+
+  @observable
+  private featuredCommons: ObservableMap<string, Common> = observable.map({});
 
   constructor(rootStore: RootStore) {
     super(rootStore);
     this.isLoading = false;
   }
 
-  @computed
-  get myCommons() {
-    try {
-      return this.getDataArray.filter((common: Common) =>
-        this.rootStore.authStore.isDaoMember(common?.members),
-      );
-    } catch (error) {
-      return [];
-    }
-  }
+  @action
+  loadMyCommons = async (): Promise<void> => {
+    const commons = await fetchUserCommons();
+    this.myCommons = observable.map(this.toEntityModelArr(commons));
+  };
 
   @computed
-  get pendingCommons() {
-    try {
-      return this.rootStore.proposalStore.myActiveMembershipRequests.map(
-        (proposal: Proposal) => this.getCommonById(proposal.commonId),
-      );
-    } catch (error) {
-      return [];
-    }
+  get myCommonsValues() {
+    return this.toDataArray(this.myCommons);
   }
 
+  @action
+  loadPendingCommons = async (): Promise<void> => {
+    const commons = await fetchUserPendingCommons();
+    this.pendingCommons = observable.map(this.toEntityModelArr(commons));
+  };
+
   @computed
-  get featuredCommons() {
-    try {
-      return this.getDataArray.filter(
-        (common: Common) =>
-          !this.myCommons.includes(common) &&
-          !this.pendingCommons.includes(common) &&
-          common.register === DAO_REGISTERED,
-      );
-    } catch (error) {
-      return [];
-    }
+  get pendingCommonsValues() {
+    return this.toDataArray(this.pendingCommons);
+  }
+
+  @action
+  loadFeaturedCommons = async (page: number = 0): Promise<void> => {
+    const [myCommons, pendingCommons] = await Promise.all([
+      fetchUserCommons(),
+      fetchUserPendingCommons(),
+    ]);
+    const ids = [...myCommons, ...pendingCommons].map(
+      (item: ICommonEntity) => item.id,
+    );
+    const commons = await fetchCommons({ids, page});
+
+    const featuredCommonsMap = new Map<string, Common>();
+    commons.forEach((item) => {
+      featuredCommonsMap.set(item.id, item);
+    });
+    this.featuredCommons.forEach((value, key) => {
+      if (!featuredCommonsMap.has(key)) {
+        featuredCommonsMap.set(key, value);
+      }
+    });
+    this.featuredCommons = observable.map(featuredCommonsMap);
+  };
+
+  @computed
+  get featuredCommonsValues() {
+    return this.toDataArray(this.featuredCommons);
+  }
+
+  getCommonById(id: string) {
+    return this.getDataByIdAndCollections(id, [
+      this.featuredCommons,
+      this.pendingCommons,
+      this.myCommons,
+    ]);
   }
 
   // Overriden methods
@@ -64,55 +94,11 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     return new Common(entity);
   }
 
-  // Data consuming methods
-  getCommonById = (id: string): Common | undefined => {
-    try {
-      return this.getDataById(id);
-    } catch (err) {
-      fetchCommonById(id)
-        .then((common: IFirebaseDoc<ICommonEntity>) => {
-          if (common.exists) {
-            runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(common)),
-              );
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
-        });
-      return undefined;
-    }
-  };
-
-  getUserCommons = (userId: string) => {
-    try {
-      return this.getDataArray.filter((common: Common) =>
-        isDaoMemberByUserId(common?.members, userId),
-      );
-    } catch (error) {
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
-      return [];
-    }
-  };
-
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
     subscribeToAllCommons(this.updateStoreData);
 
-  /**
-   * This function is updating the common in the firebase with the new changes
-   * @param  updateCommonInfo - a common object with new changes
-   * @param  changedBy        - the user who is responsible for the change
-   * @return                  - response returned from the updateCommon call
-   */
-  updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
+  updateCommonInfo = async (updateCommonInfo: UpdateCommonInfoInput) => {
     try {
       return await updateCommon(updateCommonInfo);
     } catch (err) {

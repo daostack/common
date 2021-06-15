@@ -12,16 +12,13 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   discussionId: string;
 
   @observable
-  ownerId: string;
+  userId: string;
 
   @observable
   ownerName: string;
 
   @observable
-  text: string;
-
-  @observable
-  createTime: Date;
+  message: string;
 
   @observable
   ownerAvatar: string;
@@ -37,10 +34,10 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
     super(newDiscussionMessageInfo);
     this.discussionId = newDiscussionMessageInfo.discussionId;
-    this.ownerId = newDiscussionMessageInfo.ownerId;
+    this.userId = newDiscussionMessageInfo.userId;
     this.ownerName = newDiscussionMessageInfo.ownerName;
-    this.text = newDiscussionMessageInfo.text;
-    this.createTime = newDiscussionMessageInfo.createTime;
+    this.message = newDiscussionMessageInfo.message;
+    this.createdAt = newDiscussionMessageInfo.createdAt;
     this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
     this.moderation = newDiscussionMessageInfo.moderation;
   }

@@ -19,7 +19,7 @@ import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
-import ProposalService from '~/Services/ProposalService';
+import {createFundingProposal} from '~/Services/ListServices/ProposalListService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
@@ -52,7 +52,7 @@ const FundingProposal = ({
           links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
-          commonId,
+          commonId: '0eb58192-0ec8-4c22-95ee-c0d535f51a37',
         };
 
         navigation.navigate({
@@ -62,32 +62,25 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+        const createFundingProposalResponse = await createFundingProposal(
           data,
         );
 
-        if (createFundingProposalResponse.status === 200) {
-          const proposalId = createFundingProposalResponse.data.id;
+        const proposalId = createFundingProposalResponse.id;
 
-          navigation.pop();
+        navigation.pop();
 
-          Toast.done('Your proposal was created!');
+        Toast.done('Your proposal was created!');
 
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
-            params: {
-              showRequestSentModal: true,
-              createdProposalId: proposalId,
-            },
-          });
-          navigation.dispatch(navigate);
-        } else {
-          navigation.pop();
-          showErrorPopUp(
-            uiStore.bottomSheetStore,
-            createFundingProposalResponse,
-          );
-        }
+        const navigate = CommonActions.navigate({
+          name: 'CommonProfile',
+          params: {
+            showRequestSentModal: true,
+            createdProposalId: proposalId,
+          },
+        });
+        navigation.dispatch(navigate);
+
       } catch (error) {
         navigation.pop();
         showErrorPopUp(uiStore.bottomSheetStore, error);

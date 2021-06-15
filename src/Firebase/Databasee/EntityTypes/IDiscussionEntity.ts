@@ -1,6 +1,5 @@
 import {IBaseEntity} from './IBaseEntity';
-import {firebase} from '~/Firebase';
-import {IModerationEntity} from './IModerationEntity';
+import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
 export interface IDiscussionEntity extends IBaseEntity {
   /**
@@ -26,32 +25,20 @@ export interface IDiscussionEntity extends IBaseEntity {
   /**
    * Time of creation
    */
-  createTime: firebase.firestore.Timestamp;
+  createdAt: Date;
+
+  /**
+   * Owner info
+   */
+
+  owner: IUserEntity;
 
   /**
    * When was the last message sent in this discussion
    */
-  lastMessage: firebase.firestore.Timestamp;
-
-  /**
-   * File URLs the discussion owner added in discussion creation
-   */
-  files: string[];
-
-  /**
-   * Image URLs the discussion owner added in discussion creation
-   */
-  images: string[];
-
-  /**
-   * Users who follow this discussion
-   */
-  followers: string[];
-
-  /**
-   * The moderation object that handles hiding/showing proposals
-   */
-  moderation?: IModerationEntity;
+  lastMessage: Date;
 
   isModerationHidden: boolean;
+
+  isExpanded: boolean;
 }
