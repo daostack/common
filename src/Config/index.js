@@ -29,7 +29,7 @@ if (Config.ENV === 'production') {
 
   androidAppId = 'com.daostack.common';
   iosAppId = 'id1512785740';
-  graphqlApiUrl = 'backend-graphql-staging-ty6xygjkva-nw.a.run.app';
+  graphqlApiUrl = 'api.staging.common.io';
   graphqlApiUseSsl = true;
 } else if (Config.ENV === 'staging') {
   localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
@@ -43,7 +43,7 @@ if (Config.ENV === 'production') {
 
   androidAppId = 'com.daostack.common.staging';
   iosAppId = '1527060751';
-  graphqlApiUrl = 'backend-graphql-staging-ty6xygjkva-nw.a.run.app';
+  graphqlApiUrl = 'api.staging.common.io';
   graphqlApiUseSsl = true;
 } else {
   throw Error(
