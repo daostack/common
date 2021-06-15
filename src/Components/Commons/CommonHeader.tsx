@@ -12,6 +12,7 @@ import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import {object, shape, string, bool, func, InferProps} from 'prop-types';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   navigation: object,
@@ -22,9 +23,11 @@ const props = {
     name: string.isRequired,
     description: string,
     byline: string,
-  }),
-  common: object,
-  canEdit: string,
+  }).isRequired,
+  common: shape({
+    id: string.isRequired,
+  }).isRequired,
+  canEdit: bool,
   onEdit: func,
 };
 
@@ -38,9 +41,8 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
   onEdit,
 }) => {
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      screenTitle: name,
-      common: common,
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: common.id,
       canEdit,
       onEdit,
     });

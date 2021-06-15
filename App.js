@@ -70,6 +70,7 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
@@ -370,7 +371,7 @@ const App = ({rootStore, navigation}) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="CommonAgenda"
+            name={NAVIGATION_SCREENS.COMMON_AGENDA}
             component={CommonAgenda}
             options={({route}) => ({
               title: route.params.screenTitle,

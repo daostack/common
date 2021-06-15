@@ -1,59 +1,70 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {colors, text, layout, font, sizeL, sizeLineHeight} from '~/Theme';
-import {func, object, shape, array, InferProps} from 'prop-types';
-import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
-import {RULES} from '~/Components/Forms/EditCommonForm';
+import MultiTitleValueField from '~/Components/FormikForm/MultiTitleValueField';
 
-const EditRules: React.FC<InferProps<typeof EditRules.propTypes>> = ({
-  isValidChange,
-  common,
-  editCommonFormStore,
-}) => (
-  <View style={styles.body}>
-    <Text style={styles.subtitle}>Define your rules of conduct</Text>
+import {object, string, array} from 'yup';
+import {FormikProps} from 'formik';
+import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
-    <View style={styles.divider} />
+export const validationSchema = object({
+  rules: array().of(object().shape(
+    {
+      title: string().when('value', {
+        is: (value: any) => value !== undefined,
+        then: string().max(80, 'Max 28 chars').required('Field is required'),
+        otherwise: string().max(80, 'Max 28 chars'),
+      }),
+      value: string().when('title', {
+        is: (value: any) => value !== undefined,
+        then: string().required('Field is required'),
+        otherwise: string(),
+      }),
+    }, ['title', 'value']
+  )),
+});
 
-    <Text style={styles.title}>Rules of conduct</Text>
-    <Text
-      style={{
-        ...font.primary.regular,
-        ...font.fontSize(2),
-        ...font.lineHeight(2),
-        color: colors.grey3,
-      }}>
-      Use rules to set the tone for your Common's discussions. (No advertising
-      and spam, accepted language, etc.)
-    </Text>
+export interface Values {
+  rules: Array<ICommonRule>;
+}
 
-    <MultiTitleValueField
-      rule
-      allowsEditing={true}
-      title="Rule title"
-      placeholderValueText="Rule description"
-      multiline={true}
-      addMultiFieldBtnName="Add Rule"
-      onChangeText={(value) => isValidChange(value)}
-      currRules={common.rules}
-      validation={{
-        name: RULES,
-        formStore: editCommonFormStore,
-        validateRule: {
-          value: 'string|required',
-          title: 'string|max:80|required',
-        },
-      }}
-    />
-  </View>
-);
+const EditRules = (formik: {
+  formikProps: FormikProps<Values>;
+}): ReactElement => {
+  const {
+    values,
+  } = formik.formikProps;
 
-EditRules.propTypes = {
-  common: shape({
-    rules: array,
-  }),
-  editCommonFormStore: object,
-  isValidChange: func,
+  return (
+    <View style={styles.body}>
+      <Text style={styles.subtitle}>Define your rules of conduct</Text>
+
+      <View style={styles.divider} />
+
+      <Text style={styles.title}>Rules of conduct</Text>
+      <Text
+        style={{
+          ...font.primary.regular,
+          ...font.fontSize(2),
+          ...font.lineHeight(2),
+          color: colors.grey3,
+        }}>
+        Use rules to set the tone for your Common's discussions. (No advertising
+        and spam, accepted language, etc.)
+      </Text>
+
+      <MultiTitleValueField
+        rule
+        allowsEditing={true}
+        title="Rule title"
+        placeholderValueText="Rule description"
+        multiline={true}
+        addMultiFieldBtnName="Add Rule"
+        currRules={values.rules}
+        formik={formik}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

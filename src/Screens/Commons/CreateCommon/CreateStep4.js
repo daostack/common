@@ -59,6 +59,8 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION] ? '0' : form[CreateCommonForm.MINIMUM];
+
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
@@ -138,7 +140,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
+    `${numberFormatter(minContribution)}${
       CONTRIBUTION[form.contribution]
     }`;
 
@@ -213,7 +215,7 @@ const CreateStep4 = ({
               title="Min. Contribution"
               value={displayString()}
               contribution
-              amount={form[CreateCommonForm.MINIMUM]}
+              amount={minContribution}
             />
           </View>
 
@@ -294,7 +296,7 @@ const CreateStep4 = ({
             <Text style={styles.textTitle}>Minimum contribution</Text>
           </View>
           <Text style={styles.textContent}>
-            ${form[CreateCommonForm.MINIMUM]}{' '}
+            ${minContribution}{' '}
             <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} /> contribution
           </Text>
           {form.zeroContribution && (
