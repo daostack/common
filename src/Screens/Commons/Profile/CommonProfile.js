@@ -46,12 +46,12 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast.js';
+import Toast from '~/Util/Toast';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 
 import {
@@ -64,6 +64,12 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+
+import {
+  ProposalType,
+} from '~/Graphql/Proposal';
+
 
 import {
   getCommonActiveProposals,
@@ -89,7 +95,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
-  const discussionStore = rootStore.discussionStore;
   const userStore = rootStore.userStore;
 
   const [isMember, setMemberState] = useState(false);
@@ -169,6 +174,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     proposalStore.loadCommonActiveProposals(currCommon.id);
     proposalStore.loadCommonHistoryProposals(currCommon.id);
+    proposalStore.loadCommonMembersPendingProposals(currCommon.id);
+    proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
   }, [currCommon]);
 
   useEffect(() => {
@@ -186,41 +193,31 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
-    let unsubscribe = null;
-    let getPendingProposalsData = async () => {
-      unsubscribe =
-        await ProposalService.getInstance().subscribeToPendingProposalsData(
-          commonId,
-          authStore.userInfo?.uid,
-          (data) => {
-            setPendingProposalsData({...data});
 
-            if (!isMember) {
-              if (data) {
-                if (data.usersPendingProposal) {
-                  animateNextStateRender();
-                  setShowPending(true);
+    let userPendingProposalId = null;
 
-                  animateNextStateRender();
-                  setShowRequestToJoin(false);
-                } else {
-                  animateNextStateRender();
-                  setShowRequestToJoin(true);
-                }
-              }
-            }
-          },
-        );
-    };
-
-    getPendingProposalsData();
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
+    // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
+    // On the other hand we already have all pending proposals loaded so, not really sure.
+    proposalStore.getCommonPendingReqToJoins.filter((pendingProposal) => {
+      if (pendingProposal.userId === authStore.userInfo?.uid) {
+        userPendingProposalId = pendingProposal.id;
       }
-    };
-  }, [commonId, isMember, authStore.userInfo]);
+    });
+
+    setPendingProposalsData({
+      pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+      usersPendingProposal: userPendingProposalId ? proposalStore.getProposalById(userPendingProposalId) : false,
+    });
+
+    const userHasPendingProposal = userPendingProposalId === null;
+
+    animateNextStateRender();
+    setShowRequestToJoin(!userHasPendingProposal);
+    if (!userHasPendingProposal) {
+      setShowPending(true);
+    }
+
+  }, [commonId, isMember, authStore.userInfo, proposalStore.getCommonPendingReqToJoins]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -276,7 +273,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, TITLES.proposals)
@@ -302,7 +299,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.History,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -326,9 +323,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      screenTitle: currCommon.name,
-      common: currCommon,
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: currCommon.id,
     });
   };
 
@@ -419,7 +415,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const openCommonMembers = (e) => {
+  const openCommonMembers = () => {
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
@@ -432,7 +428,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = () => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
@@ -443,9 +439,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    type === 'info'
-      ? navigateTo('Edit info and cover photo')
-      : navigateTo('Edit Rules');
+    navigateTo(type);
   };
 
   /**
@@ -534,10 +528,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const getType = (title) =>
     title === TITLES.proposals ? TITLES.proposalText : title;
 
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
       currCommon: currCommon,
-      title: screenTitle,
+      type: type,
     });
   };
 
@@ -548,27 +542,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
   */
 
-  const calcShouldSkipRules = () => {
-    const rules = currCommon?.rules;
-    if (rules?.length > 0) {
-      // NOTE: value of multiple fields was stored in url prop before
-      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
-    } else {
-      return true;
-    }
-  };
-
-  const requestToJoin = (event) => {
+  const requestToJoin = () => {
     if (authStore.userInfo) {
-      const shouldSkipRules = calcShouldSkipRules();
-
       const introduceYourselfFormStore = new IntroduceYourselfFormStore();
       const paymentFormStore = new PaymentFormStore();
       const personalContributionFormStore = new PersonalContributionFormStore();
       const billingDetailsFormStore = new BillingDetailsFormStore();
 
       const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
+        name: 'IntroductionStep', // #498 we always go to Introduction first
         params: {
           formStores: {
             paymentFormStore,
@@ -578,7 +560,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           },
           currCommon: currCommon,
           currDaoId: currCommon.id,
-          skipFirstStep: shouldSkipRules,
+          skipFirstStep: false,
           refreshFeed,
         },
       });

@@ -9,16 +9,18 @@ import {setContext} from 'apollo-link-context';
 import {auth} from '~/Firebase';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
+import {getGraphqlApiUrl, isGraphqlApiUseSsl} from '~/Config';
 
 enum QUERY_TYPE {
   SUBSCRIPTION = 'subscription',
   OPERATION_DEFINITION = 'OperationDefinition',
 }
-const APOLLO_URL = 'localhost:4000'; // TODO: Move to env
+const APOLLO_URL = getGraphqlApiUrl();
+const APOLLO_URL_USE_SSL = isGraphqlApiUseSsl();
 
 export const createApolloClient = (gqlUri: string, token?: string) => {
   const baseLink = new HttpLink({
-    uri: `http://${APOLLO_URL}/graphql`,
+    uri: `${APOLLO_URL_USE_SSL ? 'https' : 'http'}://${gqlUri}/graphql`,
   });
 
   const withToken = setContext(async () => {

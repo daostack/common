@@ -3,6 +3,14 @@ import {circlePayUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import OpenPGP from 'react-native-fast-openpgp';
 
+import ApolloClient from '~/Services/util/ApolloClient';
+import {getGQLErrorObject} from '~/Util';
+import logger from '~/Services/Logger';
+
+import {
+  CreateCardDocument,
+} from '~/Graphql/Card';
+
 var base64 = require('base-64');
 
 const axiosClient = axios.create({
@@ -10,11 +18,8 @@ const axiosClient = axios.create({
   timeout: 1000000,
 });
 
-const endpoints = {
-  assign: '/assign-card',
-  create: '/create-card',
-};
 
+// TODO: replace with call to new backend when API is ready.
 const getEncryptedData = async (token, dataToEncrypt) => {
   const {data} = await axiosClient.get('encryption', {
     headers: {
@@ -44,18 +49,19 @@ const cardData = (formData) => ({
   expYear: +(`20${formData.expiration_date.split('/')[1]}`),
 });
 
-export const createCard = async (formData) =>
-  (
-    await axiosClient.post(
-      endpoints.create,
-      await createCardPayload(formData),
-      {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
+export const createCard = async (formData) => {
+    try {
+      return await ApolloClient.getInstance().mutate({
+        mutation: CreateCardDocument,
+        variables: {
+          createCard: await createCardPayload(formData),
         },
-      },
-    )
-  ).data;
+      });
+    } catch (err) {
+      logger.log('Error while trying to create a new Card: ', getGQLErrorObject(err));
+      throw err;
+    }
+ };
 
 export const createCardPayload = async (formData) => {
   const idToken = await auth().currentUser.getIdToken(true);

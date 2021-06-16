@@ -27,13 +27,13 @@ import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {createProposalVote} from '~/Services/ListServices/ProposalListService';
+import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 import {VoteOutcome} from '~/Graphql/Proposal/index';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
-import {db} from '~/Firebase';
 import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
@@ -78,7 +78,6 @@ const ProposalScreen = ({
   },
   rootStore,
 }) => {
-  const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
@@ -129,21 +128,24 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
 
-    let unsubscribeFromProposalById = null;
-    unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-      proposalId
-    );
+    discussionMessageStore.loadProposalMessaages(proposalInfo);
 
-    return () => {
-      unsubscribeFromProposalDiscussionMessages &&
-        unsubscribeFromProposalDiscussionMessages();
+    // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+    //   proposalId,
+    // );
 
-      unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
-    };
+    // let unsubscribeFromProposalById = null;
+    // unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+    //   proposalId
+    // );
+
+    // return () => {
+    //   unsubscribeFromProposalDiscussionMessages &&
+    //     unsubscribeFromProposalDiscussionMessages();
+
+    //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
+    // };
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
@@ -236,6 +238,7 @@ const ProposalScreen = ({
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
+
       if (isSending || !userInfo?.uid) {
         return;
       }
@@ -243,27 +246,18 @@ const ProposalScreen = ({
       const message = inputText;
       if (!isEmptyMessage()) {
         inputRef.current.clear();
-
-        db.collection('discussionMessage')
-          .doc()
-          .set({
-            text: message,
-            createTime: new Date(),
-            ownerId: userInfo.uid,
-            ownerName: userInfo.displayName,
-            ownerAvatar: userInfo.photoURL,
-            discussionId: proposalId || proposalInfo.id,
-          })
-          .then(() => {
-            Keyboard.dismiss();
-
-            setIsSending(false);
-            setInputText(null);
-          })
-          .catch((error) => {
-            Toast.error(error);
-            setIsSending(false);
+        try {
+          createDiscussionMessage({
+            discussionId: discussionMessageStore.proposalDiscussionId,
+            message: message,
           });
+        } catch (error) {
+          Toast.error(error);
+          setIsSending(false);
+        }
+        Keyboard.dismiss();
+        setIsSending(false);
+        setInputText(null);
       } else {
         setIsSending(false);
       }
@@ -1027,7 +1021,7 @@ const ProposalScreen = ({
 
               {index === 1 && (
                 <DiscussionMessagesList
-                  discussionId={proposalId || proposalInfo.id}
+                  discussionId={discussionMessageStore.proposalDiscussionId}
                   proposal={proposalInfo}
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}

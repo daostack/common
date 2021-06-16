@@ -2,9 +2,66 @@ import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/Dis
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
+import {
+CreateDiscussionMessageInput,
+CreateDiscussionMessageDocument,
+GetDiscussionMessageDocument,
+} from '~/Graphql/Message';
+
+import ApolloClient from '~/Services/util/ApolloClient';
+import {getGQLErrorObject} from '~/Util';
+import logger from '~/Services/Logger';
+import {apollo} from '~/Util/helpers/apolloHelper';
+
 export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
 ) => void;
+
+
+// Create Proposals
+export const createDiscussionMessage = async (formData: CreateDiscussionMessageInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateDiscussionMessageDocument,
+      variables: {
+        discussionMessage: formData,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const getProposalDiscussionMessages = async (discussionId: string): Promise<IDiscussionMessageEntity[]> => {
+  try {
+    const {data} = await apollo.query({
+      query: GetDiscussionMessageDocument,
+      variables: {
+         id: discussionId,
+      },
+    });
+
+    return data.discussion.messages;
+  } catch (err) {
+    logger.log('Error while trying to get Proposal discussion: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+
+
+//OLD Methods: To be removed at the end of the migration
+export const fetchDiscussionMessageById = async (
+  messageId: string,
+): Promise<IFirebaseDoc<IDiscussionMessageEntity>> => {
+  if (!messageId) {
+    throw new Error(
+      'Message Id (messageId) is required parameter, but it was not provided',
+    );
+  }
+  return await DiscussionMessagesCollection.doc(messageId).get();
+};
 
 export const subscribeToProposalDiscussionMessages = (
   proposalId: string,
@@ -44,15 +101,4 @@ export const subscribeToDiscussionsMessages = (
     }
   }
   return unsubscribeArr;
-};
-
-export const fetchDiscussionMessageById = async (
-  messageId: string,
-): Promise<IFirebaseDoc<IDiscussionMessageEntity>> => {
-  if (!messageId) {
-    throw new Error(
-      'Message Id (messageId) is required parameter, but it was not provided',
-    );
-  }
-  return await DiscussionMessagesCollection.doc(messageId).get();
 };

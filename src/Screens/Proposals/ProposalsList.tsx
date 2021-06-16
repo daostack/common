@@ -24,6 +24,9 @@ import {
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {PROPOSAL_STAGE} from '~/Config';
+import {
+  ProposalType,
+} from '~/Graphql/Proposal';
 
 const {width, height} = Dimensions.get('window');
 
@@ -73,10 +76,18 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     let list: Proposal[] = [];
 
     if (commonInfo) {
-      if (proposalFilter.stage === PROPOSAL_STAGE.History) {
-        list = rootStore.proposalStore.getCommonHistoryProposals;
-      } else {
-        list = rootStore.proposalStore.getCommonActiveProposals;
+      if (proposalFilter.type === ProposalType.FUNDING_REQUEST) {
+        if (proposalFilter.stage === PROPOSAL_STAGE.History) {
+          list = rootStore.proposalStore.getCommonHistoryProposals;
+        } else {
+          list = rootStore.proposalStore.getCommonActiveProposals;
+        }
+      } else if (proposalFilter.type === ProposalType.JOIN_REQUEST) {
+        if (proposalFilter.stage === PROPOSAL_STAGE.History) {
+          list = rootStore.proposalStore.getCommonHistoryReqToJoins;
+        } else {
+          list = rootStore.proposalStore.getCommonPendingReqToJoins;
+        }
       }
     } else if (userInfo) {
       list = rootStore.proposalStore.getUserProposals(

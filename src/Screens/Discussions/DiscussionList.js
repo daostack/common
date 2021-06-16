@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -16,7 +16,8 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
-  const list = rootStore.discussionStore.getCommonDiscussions(commonId);
+  const [page, setPage] = useState(0);
+  const list = rootStore.discussionStore.commonDiscussions;
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
     auth()?.currentUser?.uid,
@@ -24,17 +25,13 @@ const DiscussionList = ({
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
-    const unsubscribeFromDiscussionMessages =
-      rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
-        list?.map((discussion) => discussion.id),
-      );
-    return () => {
-      unsubscribeFromDiscussionMessages &&
-        unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>
-          unsubscribeFromChunk(),
-        );
-    };
-  }, [list]);
+    rootStore.discussionStore.loadCommonDiscussions(commonId);
+  }, []);
+
+  async function loadMoreDiscussions() {
+    await rootStore.discussionStore.loadCommonDiscussions(commonId, page);
+    setPage(page + 1);
+  }
 
   return (
     <>
@@ -53,6 +50,8 @@ const DiscussionList = ({
               }
               isMember={isMember}
               viewerPermission={viewerPermission}
+              onEndReachedThreshold={0}
+              onEndReached={loadMoreDiscussions}
             />
           )}
         />

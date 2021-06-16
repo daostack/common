@@ -52,7 +52,7 @@ export type CreateFundingProposalInput = CreateProposalInput & {
     funding: ProposalFunding;
 };
 
-type CreateVoteInput = {
+export type CreateVoteInput = {
   outcome: string;
   proposalId: string;
 };
@@ -108,8 +108,6 @@ export const CreateJoinProposalDocument = gql`
       commonId
       description
       links
-      fundingAmount
-      cardId
     }
   }
 `;
@@ -156,7 +154,10 @@ const gqlProposalProps = `
   files
   images
   funding {
-      amount
+    amount
+  }
+  join {
+    funding
   }
   createdAt
   updatedAt
@@ -165,7 +166,11 @@ const gqlProposalProps = `
   votesAgainst
   votes {
     voterId
-  }`;
+  }
+  discussions {
+    id
+  }
+  `;
 
 
 export const onProposalChangeDocument = gql`

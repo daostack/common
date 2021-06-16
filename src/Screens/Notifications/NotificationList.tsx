@@ -1,6 +1,15 @@
 import React, {useEffect} from 'react';
 
-import {SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+} from 'react-native';
+import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {func, InferProps, shape} from 'prop-types';
 import {FlatList} from 'react-native-gesture-handler';
@@ -34,6 +43,14 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   navigation,
   notificationStore,
 }) => {
+  useEffect(() => {
+    if (!notificationStore.hasNewNotifications) {
+      Platform.OS === 'ios'
+        ? PushNotificationIOS.removeAllDeliveredNotifications()
+        : PushNotification.removeAllDeliveredNotifications();
+    }
+  }, [notificationStore.hasNewNotifications]);
+
   const notificationList: Array<Notification> =
     notificationStore.notifications;
 
