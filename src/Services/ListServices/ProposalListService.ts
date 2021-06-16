@@ -137,3 +137,136 @@ export const fetchProposalById = async (
   }
   return await ProposalsCollection.doc(proposalId).get();
 };
+
+
+// Create Proposals
+export const createFundingProposal = async (formData: CreateFundingProposalInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateFundingProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateJoinProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    logger.log('Error while trying to create a new Join Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const createProposalVote = async (createProposalVoteData: CreateVoteInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateProposalVoteDocument,
+      variables: {
+        proposalVote: createProposalVoteData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    logger.log('Error while trying to create a new Join Proposal: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+// Proposal actions
+export const finalizeProposal = async (proposalId: string) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: finalizeProposalDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to listen for proposal change: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+// Proposal subscription
+export const onProposalChange = (proposalId: string) => {
+  try {
+    return ApolloClient.getInstance().subscribe({
+      query: onProposalChangeDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log('Error while trying to listen for proposal change: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+// Fetch proposals
+const getProposals = async (proposalsWhere: ProposalWhereInput) => {
+
+  try {
+    return await ApolloClient.getInstance().query({
+      query: getProposalsDocument,
+      variables: {
+        where: proposalsWhere,
+      },
+      fetchPolicy: 'cache-first',
+    });
+  } catch (err) {
+    logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const getCommonActiveProposals = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      state: ProposalState.COUNTDOWN,
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryProposals = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.ACCEPTED, ProposalState.FINALIZING, ProposalState.REJECTED]),
+  });
+  return data.proposals;
+};
+
+export const getCommonPendingReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      state: ProposalState.COUNTDOWN,
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryReqToJoins = async (commonId: string): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      OR: proposalsStateFilterQueryPart([ProposalState.ACCEPTED, ProposalState.FINALIZING, ProposalState.REJECTED]),
+  });
+  return data.proposals;
+};
+
+
+
+

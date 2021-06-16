@@ -71,11 +71,6 @@ import {
 } from '~/Graphql/Proposal';
 
 
-import {
-  getCommonActiveProposals,
-  getCommonHistoryProposals,
-} from '~/Services/ListServices/ProposalListService';
-
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 56;
