@@ -2,7 +2,6 @@ import {db} from '~/Firebase';
 import Toast from '~/Util/Toast';
 import axios from 'axios';
 import {commonsUrl} from '~/Config';
-import logger from './Logger';
 
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {auth} from '~/Firebase';
@@ -118,13 +117,11 @@ export default class DaoService {
         },
       });
     } catch (err) {
-      console.log('CREATE COMMON ERROR -> ', err);
       throw err;
     }
   }
 
   updateCommon = async (updateCommonInfo) => {
-    logger.log('updateCommon new info -> ', updateCommonInfo);
     try {
       return await this.axiosClient.post(
         this.endpoints.update,
@@ -136,7 +133,6 @@ export default class DaoService {
         },
       );
     } catch (err) {
-      console.log('UPDATE COMMON ERROR -> ', err);
       throw err;
     }
   };

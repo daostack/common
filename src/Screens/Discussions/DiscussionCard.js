@@ -1,23 +1,23 @@
+import {CommonActions} from '@react-navigation/native';
+import {inject, observer} from 'mobx-react';
+import moment from 'moment';
+import {bool, func, object, shape, string} from 'prop-types';
 import React from 'react';
 import {
+  Dimensions,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  Dimensions,
+  View,
 } from 'react-native';
-import {string, shape, object, func, bool} from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {observer, inject} from 'mobx-react';
-import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import moment from 'moment';
-import {CommonActions} from '@react-navigation/native';
+import {colors, font, sizeM, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
-import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
+import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 
 const {width} = Dimensions.get('window');
 
@@ -34,11 +34,7 @@ const DiscussionCard = ({
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
-  const discussionId = data.id;
-  const user = userStore.getUserById(data.ownerId);
-  const msgCount =
-    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
-      ?.length || 0;
+  const msgCount = data.messageCount || 0;
   const hasPermission = authStore.getPermission(
     commonId,
     authStore?.userInfo?.uid,
@@ -105,23 +101,25 @@ const DiscussionCard = ({
                   )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                {user.photoURL ? (
+                {data.owner?.photoURL ? (
                   <FastImage
                     style={styles.image}
-                    source={{uri: user.photoURL}}
+                    source={{uri: data.owner.photoURL}}
                   />
                 ) : (
                   <View style={styles.displayNameContainer}>
                     <Text style={styles.displayName}>
-                      {user.displayName && user.displayName.substring(0, 1)}
+                      {data.owner?.displayName && data.owner.displayName}
                     </Text>
                   </View>
                 )}
                 <View style={styles.primaryNameContainer}>
-                  <Text style={styles.primaryName}>{user.displayName}</Text>
+                  <Text style={styles.primaryName}>
+                    {data.owner?.displayName}
+                  </Text>
                   {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                   <Text style={styles.date}>
-                    {moment(data.createTime.toDate()).fromNow()}
+                    {moment(data.createdAt).fromNow()}
                   </Text>
                 </View>
               </View>

@@ -1405,3 +1405,5 @@ export const getCountryCodeFromName = (name) => {
 
   return countryObj?.value;
 };
+
+export const UNKNOWN_COUNTRY = 'Unknown';

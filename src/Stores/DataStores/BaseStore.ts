@@ -1,28 +1,25 @@
 import {
   observable,
+  get,
+  ObservableMap,
+  values,
+  has,
+  runInAction,
+  computed,
   action,
   set,
   keys,
-  get,
-  ObservableMap,
-  computed,
-  values,
-  runInAction,
-  has,
 } from 'mobx';
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
-import {
-  IFirebaseDoc,
-  IFirebaseDocChange,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
+import {IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
+import {BaseModel} from '../Models/BaseModel';
 import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
-  IEntityModel,
-  IEntity extends IBaseEntity
+  IEntityModel extends BaseModel<IEntity>,
+  IEntity extends IBaseEntity,
 > {
   @persist('map')
   @observable
@@ -38,24 +35,51 @@ export default abstract class BaseStore<
     this.isLoading = false;
   }
 
-  @computed
-  get isEmpty(): boolean {
-    return keys(this.data).length > 0;
+
+  toDataArray(dataArray: ObservableMap<string, IEntityModel>): readonly IEntityModel[] {
+    return values(dataArray);
   }
 
-  @computed
-  get getDataArray(): readonly IEntityModel[] {
-    return values(this.data);
-  }
-
-  @action
-  setData(id: string, modelStore: IEntityModel) {
-    set(this.data, id, modelStore);
-  }
 
   abstract getEntityModel(entity: IEntity): IEntityModel;
 
   //Functions
+  getDataByIdAndCollections(id: string, dataCollections: ObservableMap<string, IEntityModel>[]): IEntityModel | undefined {
+    let currDataValue: IEntityModel | undefined;
+    dataCollections.forEach((currDataMap) => {
+      if (has(currDataMap, id)) {
+        currDataValue = get(currDataMap, id);
+        return;
+      }
+    });
+
+    if (currDataValue) {
+      return currDataValue;
+    }
+    else {
+      throw Error(`Data with ID ${id} not exists.`);
+    }
+  }
+
+
+  toEntityModelArr = (data: IEntity[]) => {
+    const dataMap = new Map<string, IEntityModel>();
+    data.forEach((currEntity: IEntity) => {
+      dataMap.set(currEntity.id, this.getEntityModel(currEntity));
+    });
+    return dataMap;
+  }
+
+  updateDataMap = (entity: IEntityModel, dataMap: ObservableMap<string, IEntityModel>) => {
+    const newDataMap = new Map<string, IEntityModel>();
+    newDataMap.set(entity.id, entity);
+    dataMap.merge(newDataMap);
+  }
+
+  existsInDataMap = (id: string, dataMap: ObservableMap<string, IEntityModel>) => has(dataMap, id)
+
+
+  // OLD LOGIC WHICH SHOULD BE REMOVED IN THE FEATURE (or refacterd):
   getDataById(id: string): IEntityModel | undefined {
     if (has(this.data, id)) {
       return get(this.data, id);
@@ -130,5 +154,20 @@ export default abstract class BaseStore<
       };
     }
     return docData;
+  }
+
+  @computed
+  get isEmpty(): boolean {
+    return keys(this.data).length > 0;
+  }
+
+  @computed
+  get getDataArray(): readonly IEntityModel[] {
+    return values(this.data);
+  }
+
+  @action
+  setData(id: string, modelStore: IEntityModel) {
+    set(this.data, id, modelStore);
   }
 }
