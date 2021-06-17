@@ -54,7 +54,9 @@ export const fetchUserPendingCommons = async (): Promise<ICommonEntity[]> => {
     });
 
     return (
-      data.user?.proposals?.map(({common}: any) => new Common(common)) ?? []
+      data.user?.proposals?.map(
+        ({common}: {common: ICommonEntity}) => new Common(common),
+      ) ?? []
     );
   } catch (err) {
     logger.log(
@@ -71,7 +73,9 @@ export const fetchUserCommons = async (): Promise<ICommonEntity[]> => {
       query: GetUserCommonsDocument,
     });
 
-    return data.user?.commons.map((item: any) => new Common(item)) ?? [];
+    return (
+      data.user?.commons.map((item: ICommonEntity) => new Common(item)) ?? []
+    );
   } catch (err) {
     logger.log(
       'Error while trying to get user commons: ',
@@ -97,7 +101,7 @@ export const fetchCommons = async ({
       },
     });
 
-    return data?.commons.map((item: any) => new Common(item)) ?? [];
+    return data?.commons.map((item: ICommonEntity) => new Common(item)) ?? [];
   } catch (err) {
     logger.log(
       'Error while trying to get featured commons: ',
