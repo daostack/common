@@ -62,6 +62,20 @@ export const CreateDiscussionDocument = gql`
   mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
     createDiscussion(input: $discussion) {
       id
+      title: topic
+      message: description
+      messageCount
+      createTime: createdAt
+      ownerId: userId
+      owner {
+        photoURL: photo
+        email
+        firstName
+        lastName
+        country
+      }
+      lastMessage: latestMessage
+      createdAt
     }
   }
 `;

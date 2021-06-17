@@ -79,7 +79,7 @@ export const createDiscussion = async (
     },
   });
 
-  return new Discussion(data.createCommon, false);
+  return new Discussion(data.createDiscussion, false);
 };
 
 export const fetchDiscussions = async ({
