@@ -33,8 +33,10 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @action
   loadMyCommons = async (): Promise<void> => {
-    const commons = await fetchUserCommons();
-    this.myCommons = observable.map(this.toEntityModelArr(commons));
+    if (this.rootStore.authStore.signedInUser) {
+      const commons = await fetchUserCommons();
+      this.myCommons = observable.map(this.toEntityModelArr(commons));
+    }
   };
 
   @computed
@@ -44,8 +46,10 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @action
   loadPendingCommons = async (): Promise<void> => {
-    const commons = await fetchUserPendingCommons();
-    this.pendingCommons = observable.map(this.toEntityModelArr(commons));
+    if (this.rootStore.authStore.signedInUser) {
+      const commons = await fetchUserPendingCommons();
+      this.pendingCommons = observable.map(this.toEntityModelArr(commons));
+    }
   };
 
   @computed
@@ -55,13 +59,16 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   @action
   loadFeaturedCommons = async (page: number = 0): Promise<void> => {
-    const [myCommons, pendingCommons] = await Promise.all([
-      fetchUserCommons(),
-      fetchUserPendingCommons(),
-    ]);
-    const ids = [...myCommons, ...pendingCommons].map(
-      (item: ICommonEntity) => item.id,
-    );
+    let ids: Array<string> = [];
+    if (this.rootStore.authStore.signedInUser) {
+      const [myCommons, pendingCommons] = await Promise.all([
+        fetchUserCommons(),
+        fetchUserPendingCommons(),
+      ]);
+      ids = [...myCommons, ...pendingCommons].map(
+        (item: ICommonEntity) => item.id,
+      );
+    }
     const commons = await fetchCommons({ids, page});
 
     const featuredCommonsMap = new Map<string, Common>();

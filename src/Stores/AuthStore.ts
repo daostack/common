@@ -49,11 +49,15 @@ class AuthStore {
   }
 
   onIdTokenChanged = (user: any) => {
-    if (user) {
-      user.getIdToken().then( (token : string) => {
-        this.setUserToken(token);
-      });
-    } else {
+    try {
+      if (user) {
+        user.getIdToken().then((token: string) => {
+          this.setUserToken(token);
+        });
+      } else {
+        this.setUserToken(null);
+      }
+    } catch (error) {
       this.setUserToken(null);
     }
   };
@@ -69,6 +73,9 @@ class AuthStore {
     try {
       // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
       // In order to prevent unwanted rerendering we need to make some checks.
+      if (this.userInfo?.id) {
+        this.syncMigrationUsers();
+      }
       if (
         !this.isLoginInProgressExists(user?.uid) &&
         this.userInfo?.uid !== user?.uid
@@ -173,6 +180,19 @@ class AuthStore {
       Logger.error('_processUser ~>', error);
       await AuthService.getInstance().signOut();
       this.setIsLoading(false);
+    }
+  }
+
+  async syncMigrationUsers() {
+    try {
+      const {data} = await apollo.query({
+        query: LoadUserContextDocument,
+      });
+      if (data.user?.id !== this.userInfo?.id) {
+        await AuthService.getInstance().signOut();
+      }
+    } catch (error) {
+      await AuthService.getInstance().signOut();
     }
   }
 }
