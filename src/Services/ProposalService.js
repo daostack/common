@@ -174,8 +174,6 @@ export default class ProposalService {
               x.data().state !== PROPOSAL_STAGE.passed),
         );
 
-        console.log(pendingProposals);
-
         callback({
           pendingProposalCount: pendingProposals.length,
           usersPendingProposal:
@@ -322,7 +320,7 @@ export default class ProposalService {
         },
       );
     } catch (err) {
-      console.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
+      logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
@@ -335,7 +333,7 @@ export default class ProposalService {
         },
       });
     } catch (err) {
-      console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
+      logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
       throw err;
     }
   }
@@ -348,7 +346,7 @@ export default class ProposalService {
         },
       });
     } catch (err) {
-      console.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   }

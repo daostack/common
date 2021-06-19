@@ -39,30 +39,52 @@ const CommonsList = ({navigation, rootStore}) => {
   const handleLoader = () => {
     setLoading(false);
   };
+  const [page, setPage] = useState(0);
 
   useTimeoutFn(handleLoader, TIMEOUT);
 
-  const myDaosGroup = {
-    title: groupTitle('My Commons', commonStore.myCommons.length),
-    data: commonStore.myCommons,
+  const initialLoad = async () => {
+    commonStore.loadMyCommons();
+    commonStore.loadPendingCommons();
+    commonStore.loadFeaturedCommons();
+    setPage(0);
   };
-  const pendingDaosGroup = {
-    title: groupTitle('Pending', commonStore.pendingCommons.length),
-    data: commonStore.pendingCommons,
+
+  const myCommonsGroup = {
+    title: groupTitle('My Commons', commonStore.myCommons?.size),
+    data: commonStore.myCommonsValues,
   };
-  const featuredDaosGroup = {
+
+  const pendingCommonsGroup = {
+    title: groupTitle('Pending', commonStore.pendingCommons?.size),
+    data: commonStore.pendingCommonsValues,
+  };
+
+  const featuredCommonsGroup = {
     title: 'Featured',
-    data: commonStore.featuredCommons,
+    data: commonStore.featuredCommonsValues,
   };
+
+  React.useEffect(async () => {
+    setLoading(true);
+    await initialLoad();
+    setLoading(false);
+  }, []);
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    // TODO: Implement logic for refresh or leave it as it is now - faky
-    // DaoService.getInstance().getDaoList(loadDaosList);
+    await initialLoad();
     setRefreshing(false);
   }, [refreshing]);
+
+  const onEndReached = async () => {
+    if (myCommonsGroup.title && pendingCommonsGroup.title) {
+      commonStore.loadFeaturedCommons(page + 1);
+      setPage(page + 1);
+    }
+  };
 
   const onAddCommon = () => {
     if (authStore.signedInUser) {
@@ -168,12 +190,12 @@ const CommonsList = ({navigation, rootStore}) => {
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: '#FBFCFC'}}>
-        {featuredDaosGroup.data.length > 0 || !commonStore.isLoading ? (
+        {featuredCommonsGroup.data.length > 0 || !commonStore.isLoading ? (
           <SectionList
             sections={
               authStore.signedInUser
-                ? [myDaosGroup, pendingDaosGroup, featuredDaosGroup]
-                : [featuredDaosGroup]
+                ? [myCommonsGroup, pendingCommonsGroup, featuredCommonsGroup]
+                : [featuredCommonsGroup]
             }
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
@@ -191,6 +213,8 @@ const CommonsList = ({navigation, rootStore}) => {
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
             initialNumToRender={4}
+            onEndReachedThreshold={400}
+            onEndReached={onEndReached}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }

@@ -1,6 +1,7 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
+
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
@@ -8,6 +9,26 @@ import {
 } from '~/Firebase/types';
 import {VotesCollection} from '~/Firebase/Databasee/Collections/VotesCollection';
 import {IVoteEntity} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
+
+import {
+  CreateFundingProposalDocument,
+  CreateFundingProposalInput,
+  CreateJoinProposalDocument,
+  CreateJoinProposalInput,
+  CreateProposalVoteDocument,
+  CreateVoteInput,
+  finalizeProposalDocument,
+  getProposalsDocument,
+  onProposalChangeDocument,
+  proposalsStateFilterQueryPart,
+  ProposalState,
+  ProposalType,
+  ProposalWhereInput,
+} from '~/Graphql/Proposal';
+
+import ApolloClient from '~/Services/util/ApolloClient';
+import {getGQLErrorObject} from '~/Util';
+import logger from '~/Services/Logger';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -129,4 +150,168 @@ export const fetchProposalVoteById = async (
   }
 
   return await VotesCollection.doc(voteId).get();
+}  
+
+// Create Proposals
+export const createFundingProposal = async (
+  formData: CreateFundingProposalInput,
+) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateFundingProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+    });
+  } catch (err) {
+    logger.log(
+      'Error while trying to create a new Funding Proposal: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateJoinProposalDocument,
+      variables: {
+        proposal: formData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    logger.log(
+      'Error while trying to create a new Join Proposal: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+export const createProposalVote = async (
+  createProposalVoteData: CreateVoteInput,
+) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: CreateProposalVoteDocument,
+      variables: {
+        proposalVote: createProposalVoteData,
+      },
+      errorPolicy: 'none',
+    });
+  } catch (err) {
+    logger.log(
+      'Error while trying to create a new Join Proposal: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+// Proposal actions
+export const finalizeProposal = async (proposalId: string) => {
+  try {
+    return await ApolloClient.getInstance().mutate({
+      mutation: finalizeProposalDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log(
+      'Error while trying to listen for proposal change: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+// Proposal subscription
+export const onProposalChange = (proposalId: string) => {
+  try {
+    return ApolloClient.getInstance().subscribe({
+      query: onProposalChangeDocument,
+      variables: {
+        proposalId: proposalId,
+      },
+    });
+  } catch (err) {
+    logger.log(
+      'Error while trying to listen for proposal change: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+// Fetch proposals
+const getProposals = async (proposalsWhere: ProposalWhereInput) => {
+  try {
+    const t = await ApolloClient.getInstance().query({
+      query: getProposalsDocument,
+      variables: {
+        where: proposalsWhere,
+      },
+      fetchPolicy: 'cache-first',
+    });
+
+    return t;
+  } catch (err) {
+    logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
+    throw err;
+  }
+};
+
+export const getCommonActiveProposals = async (
+  commonId: string,
+): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+    commonId: commonId,
+    type: ProposalType.FUNDING_REQUEST,
+    state: ProposalState.COUNTDOWN,
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryProposals = async (
+  commonId: string,
+): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+    commonId: commonId,
+    type: ProposalType.FUNDING_REQUEST,
+    OR: proposalsStateFilterQueryPart([
+      ProposalState.ACCEPTED,
+      ProposalState.FINALIZING,
+      ProposalState.REJECTED,
+    ]),
+  });
+  return data.proposals;
+};
+
+export const getCommonPendingReqToJoins = async (
+  commonId: string,
+): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+    commonId: commonId,
+    type: ProposalType.JOIN_REQUEST,
+    state: ProposalState.COUNTDOWN,
+  });
+  return data.proposals;
+};
+
+export const getCommonHistoryReqToJoins = async (
+  commonId: string,
+): Promise<IProposalEntity[]> => {
+  const {data} = await getProposals({
+    commonId: commonId,
+    type: ProposalType.JOIN_REQUEST,
+    OR: proposalsStateFilterQueryPart([
+      ProposalState.ACCEPTED,
+      ProposalState.FINALIZING,
+      ProposalState.REJECTED,
+    ]),
+  });
+  return data.proposals;
 };

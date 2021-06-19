@@ -10,6 +10,9 @@ import stores from './src/Stores';
 import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
 import {Update} from '~/Components/Update/Update';
+import Reactotron, {networking} from 'reactotron-react-native';
+
+Reactotron.configure().use(networking()).connect();
 
 LogBox.ignoreAllLogs(true);
 
@@ -17,7 +20,7 @@ const MobX = () => (
   <Update>
     {() => (
       <Provider {...stores}>
-        <App/>
+        <App />
       </Provider>
     )}
   </Update>

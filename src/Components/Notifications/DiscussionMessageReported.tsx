@@ -22,7 +22,7 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
   const getParentObject = (
     discussionObject: Proposal | Discussion,
   ): Record<any, any> =>
-    discussionObject?.proposerId
+    discussionObject?.userId
       ? {
           proposal: discussionObject,
           tabIndex: 1,

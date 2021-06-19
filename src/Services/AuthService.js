@@ -1,17 +1,15 @@
-import {firebaseWebClientId} from '~/Config';
-
-// Firebase imports
-import {auth} from '~/Firebase';
-import {addUser, updateUser} from '~/Services/ListServices/UserListService';
-
-// Google imports
-import {GoogleSignin} from '@react-native-community/google-signin';
-
 // Apple imports
 import appleAuth, {
-  AppleAuthRequestScope,
   AppleAuthRequestOperation,
+  AppleAuthRequestScope,
 } from '@invertase/react-native-apple-authentication';
+// Google imports
+import {GoogleSignin} from '@react-native-community/google-signin';
+import {firebaseWebClientId} from '~/Config';
+// Firebase imports
+import {auth} from '~/Firebase';
+import {UpdateUserDocument, CreateUserDocument} from '~/Graphql';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
@@ -116,43 +114,29 @@ export default class AuthService {
     }
   }
 
-  // Firebase
-  async updateUserData(userData, publicData) {
-    const currentUser = await auth().currentUser;
-    currentUser.updateProfile(userData);
-
-    return await updateUser(currentUser.uid, {
-      ...publicData,
-      ...userData,
+  async createUser(user) {
+    const {data} = apollo.mutate({
+      mutation: CreateUserDocument,
+      variables: {
+        user,
+      },
     });
+
+    return data?.user;
   }
 
-  async createUser(user) {
-    const splittedDisplayName = user?.displayName?.split(' ') || [
-      user?.email.split('@')[0],
-    ];
-    const userPhotoUrl = user.photoURL
-      ? user.photoURL
-      : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
-          user.displayName ? user.displayName : user.email
-        }&rounded=true`;
-    const userPublicData = {
-      createdAt: new Date(user.metadata.creationTime),
-      firstName:
-        user.firstName || splittedDisplayName?.length >= 1
-          ? splittedDisplayName[0]
-          : '',
-      lastName:
-        user.lastName || splittedDisplayName?.length >= 2
-          ? splittedDisplayName[1]
-          : '',
-      email: user.email,
-      photoURL: userPhotoUrl,
-      uid: user.uid,
-    };
+  async updateUserData(user) {
+    const currentUser = await auth().currentUser;
+    currentUser.updateProfile(user);
 
-    await addUser(user.uid, userPublicData);
-    return userPublicData;
+    const {data} = await apollo.mutate({
+      mutation: UpdateUserDocument,
+      variables: {
+        user,
+      },
+    });
+
+    return data?.updateUser;
   }
 
   async _applePerformRequest() {

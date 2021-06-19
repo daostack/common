@@ -14,12 +14,12 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
   style,
   id,
 }) =>
-  userInfo?.photoURL ? (
+  userInfo.user?.photoURL ? (
     <FastImage
       key={id}
       style={styles.memberImage}
       source={{
-        uri: userInfo?.photoURL,
+        uri: userInfo.user?.photoURL,
       }}
     />
   ) : (
@@ -31,7 +31,7 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
         backgroundColor: '#6e7d82',
         ...style,
       }}>
-      <Text style={styles.memberImageDisplayName}>{userInfo?.displayName}</Text>
+      <Text style={styles.memberImageDisplayName}>{userInfo.user?.displayName}</Text>
     </View>
   );
 

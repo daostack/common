@@ -11,8 +11,8 @@ import {commonStorePropTypes} from '~/Types/propTypes';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
-const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
-  const myDaos = commonStore.getUserCommons(userId);
+const CommonsSwiper = ({navigation, showMax, commonStore}) => {
+  const myDaos = commonStore.myCommonsValues;
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
   const headerHeightLayouted = (height) => {
