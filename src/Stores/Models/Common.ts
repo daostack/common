@@ -8,6 +8,7 @@ import {
   ICommonMetadata,
   ICommonRule,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 import {BaseModel} from './BaseModel';
 
 export class Common extends BaseModel<ICommonEntity> {
@@ -55,7 +56,16 @@ export class Common extends BaseModel<ICommonEntity> {
     this.members = newCommonInfo.members;
     this.rules = newCommonInfo.rules;
     this.links = newCommonInfo.links;
-    this.metadata = newCommonInfo.metadata;
+    this.metadata = {
+      action: newCommonInfo.action,
+      byline: newCommonInfo.byline,
+      contributionType: newCommonInfo.contributionType,
+      description: newCommonInfo.description,
+      minFeeToJoin: newCommonInfo.minFeeToJoin,
+      founderId: newCommonInfo.members?.find(({roles = []}) =>
+        (roles ?? []).includes(PERMISSIONS_GRAPHQL.FOUNDER),
+      )?.userId,
+    };
     this.register = newCommonInfo.register;
   }
 
@@ -72,8 +82,8 @@ export class Common extends BaseModel<ICommonEntity> {
   @computed
   get minFeeToJoinFormatted(): string {
     const minValue = this.metadata.zeroContribution
-    ? 0
-    : +this.metadata.minFeeToJoin;
+      ? 0
+      : +this.metadata.minFeeToJoin;
     return formatNumber(minValue / 100).toString();
   }
 }

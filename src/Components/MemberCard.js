@@ -6,10 +6,10 @@ import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
-import {LAUNCHED_STATES} from '~/Services/ProposalService';
+import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 
 const MemberCard = ({
   userInfo,
@@ -18,27 +18,22 @@ const MemberCard = ({
   commonId,
   rootStore,
 }) => {
-  const viewerPermission = rootStore.authStore.getPermission(
-    commonId,
-    userInfo.id,
-  );
-
   const isModerator = useMemo(
-    () => viewerPermission === PERMISSIONS.MODERATOR,
-    [moderatorId],
+    () => userInfo.roles?.includes(PERMISSIONS_GRAPHQL.MODERATOR),
+    [userInfo.roles],
   );
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt = proposalInfo?.countdown;
+      const closingAt = proposalInfo?.expiresAt.getTime() / 1000;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
-            {proposalInfo.funding > 0 && (
+            {proposalInfo.fundingAmount > 0 && (
               <Text style={text.h2Black}>
-                {`$${proposalInfo.funding / 100}`}
+                {`$${proposalInfo.fundingFormatted}`}
                 {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}
@@ -46,6 +41,7 @@ const MemberCard = ({
             {/* Hide the time if the proposal is expired or new */}
             {remainingSeconds > 0 &&
               !LAUNCHED_STATES.includes(proposalInfo?.state) &&
+              !COUNTDOWN_STATES.includes(proposalInfo?.state) &&
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
               (remainingSeconds > 24 * 60 * 60 ? (
@@ -71,7 +67,7 @@ const MemberCard = ({
     } else {
       let memberCreatedDateInfo = null;
       if (userInfo?.joinedAt) {
-        const memberCreatedDate = new Date(userInfo.joinedAt.seconds * 1000);
+        const memberCreatedDate = new Date(userInfo.joinedAt);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
               monthShortNames[memberCreatedDate.getMonth()]
@@ -102,11 +98,11 @@ const MemberCard = ({
         }}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
-          {userInfo?.displayName || 'Unknown user'}
+          {userInfo.user?.displayName || 'Unknown user'}
         </Text>
         {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
-            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+            {moment.unix(proposalInfo.createdAt.getTime() / 1000).fromNow()}
           </Text>
         )}
       </View>

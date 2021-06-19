@@ -70,6 +70,7 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import DiscussionImageBeforeSend from '~/Screens/Discussions/DiscussionImageBeforeSend';
@@ -92,7 +93,6 @@ if (Platform.OS === 'android') {
 const App = ({rootStore, navigation}) => {
   const authStore = rootStore.authStore;
   const userStore = rootStore.userStore;
-  const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
   const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
@@ -128,18 +128,17 @@ const App = ({rootStore, navigation}) => {
   // Initialize Mobx Stores
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
-    const unsubscribeCommons = commonStore.subscribeToAllCommons();
     let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
-      unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
       unsubscribeLoggedUserNotifications?.forEach(
         (unsubscribeLoggedUserNotificationsBatch) =>
@@ -162,12 +161,8 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -379,7 +374,7 @@ const App = ({rootStore, navigation}) => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="CommonAgenda"
+            name={NAVIGATION_SCREENS.COMMON_AGENDA}
             component={CommonAgenda}
             options={({route}) => ({
               title: route.params.screenTitle,

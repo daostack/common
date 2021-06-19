@@ -46,9 +46,10 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
     type: PROPOSAL_TYPE.FundingRequest,
   }).length;
 
-  const commonsCount = commonStore.getUserCommons(user.uid).length;
+  const commonsCount = commonStore.myCommonsValues?.length;
 
   useEffect(() => {
+    commonStore.loadMyCommons();
     const unsubscribeUserActiveProposals = !isOwnProfile
       ? proposalStore.subscribeToUserActiveProposals(userId)
       : null;

@@ -3,6 +3,14 @@ import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEnt
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  CreateDiscussionInput,
+  CreateDiscussionDocument,
+  GetDiscussionDocument,
+  getDiscussionsVariable,
+} from '~/Graphql/Discussion';
+import {Discussion} from '../../Stores/Models/Discussion';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
@@ -59,4 +67,33 @@ export const fetchDiscussionId = async (
     );
   }
   return await DiscussionsCollection.doc(discussionId).get();
+};
+
+export const createDiscussion = async (
+  discussion: CreateDiscussionInput,
+): Promise<Discussion> => {
+  const {data} = await apollo.mutate({
+    mutation: CreateDiscussionDocument,
+    variables: {
+      discussion,
+    },
+  });
+
+  return new Discussion(data.createDiscussion, false);
+};
+
+export const fetchDiscussions = async ({
+  where,
+}: // paginate, TODO: Add after fix react-native-parallax
+getDiscussionsVariable): Promise<Discussion[]> => {
+  const {data} = await apollo.query({
+    query: GetDiscussionDocument,
+    variables: {
+      where,
+    },
+  });
+
+  return data.discussions.map(
+    (item: IDiscussionEntity) => new Discussion(item, false),
+  ) as Discussion[];
 };

@@ -1,18 +1,18 @@
-import {observable, action} from 'mobx';
-import {isDaoMemberByUserId} from '~/Util';
-import logger from '~/Services/Logger';
-import AuthService from '~/Services/AuthService';
-import NotificationService from '~/Services/NotificationService';
+import {action, observable} from 'mobx';
+import {persist} from 'mobx-persist';
 import {auth} from '~/Firebase';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {subscribeToUser} from '~/Services/ListServices/UserListService';
-import {UserModel} from './Models/UserModel';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
-import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {persist} from 'mobx-persist';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import {LoadUserContextDocument} from '~/Graphql';
+import {default as logger, default as Logger} from '~/Services/Logger';
+import NotificationService from '~/Services/NotificationService';
+import {isDaoMemberByUserId} from '~/Util';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {UserModel} from './Models/UserModel';
+import RootStore from './RootStore';
+import {apollo} from '~/Util/helpers/apolloHelper';
+import AuthService from '~/Services/AuthService';
 
 type SignInErrorWithCode = any;
 
@@ -20,6 +20,9 @@ class AuthStore {
   @persist('object')
   @observable
   userInfo: UserModel | null = null;
+
+  @observable
+  userToken: string | null = null;
 
   @persist
   @observable
@@ -42,7 +45,22 @@ class AuthStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
+    auth().onIdTokenChanged(this.onIdTokenChanged);
   }
+
+  onIdTokenChanged = (user: any) => {
+    try {
+      if (user) {
+        user.getIdToken().then((token: string) => {
+          this.setUserToken(token);
+        });
+      } else {
+        this.setUserToken(null);
+      }
+    } catch (error) {
+      this.setUserToken(null);
+    }
+  };
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
   onAuthStateChanged = (user: any) => {
@@ -55,6 +73,9 @@ class AuthStore {
     try {
       // onAuthStateChanged method is called on many events, not only when the logged in user is changed.
       // In order to prevent unwanted rerendering we need to make some checks.
+      if (this.userInfo?.id) {
+        this.syncMigrationUsers();
+      }
       if (
         !this.isLoginInProgressExists(user?.uid) &&
         this.userInfo?.uid !== user?.uid
@@ -63,7 +84,7 @@ class AuthStore {
           this.setIsLoading(true);
           this.addLoginInProgress(user?.uid);
 
-          this._processUser(user);
+          this._processUser();
         } else {
           // We need to delete the notification store on logout
           // as we are keeping there only logged in user notifications.
@@ -76,6 +97,11 @@ class AuthStore {
       logger.log(error);
       throw error;
     }
+  };
+
+  @action
+  setUserToken = (token: string | null) => {
+    this.userToken = token;
   };
 
   @action
@@ -101,9 +127,10 @@ class AuthStore {
   @action
   setSignedInUser = (newUserInfo: any) => {
     const isUserChanged = newUserInfo?.uid !== this.userInfo?.uid;
-    this.userInfo = newUserInfo;
+    const userModel = newUserInfo ? new UserModel(newUserInfo) : null;
+    this.userInfo = userModel;
     if (isUserChanged) {
-      this.signedInUser = newUserInfo?.uid;
+      this.signedInUser = userModel?.uid || null;
       this.rootStore.notificationStore.addWelcomeNotification();
     }
   };
@@ -129,7 +156,7 @@ class AuthStore {
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
   isProposer = (proposal: IProposalEntity) =>
-    this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
+    this.userInfo ? this.userInfo.uid === proposal.userId : false;
 
   isLoginInProgressExists = (uid: any) =>
     this.loginInProgress.filter((item: any) => item === uid).length > 0;
@@ -137,33 +164,36 @@ class AuthStore {
   isCurrentlyLogged = (userId: string) => this.userInfo?.uid === userId;
 
   // Private functions
-  async _processUser(user: any) {
-    this.unsubscribeFromUser && this.unsubscribeFromUser();
-    this.unsubscribeFromUser = subscribeToUser(
-      user?.uid,
-      async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
-        const updatedUser = updatedUserDoc.data();
-        const isNewUser = !updatedUser;
-        if (isNewUser) {
-          const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
-            user.providerData[0].providerId,
-          );
-          const userInfo = {
-            ...user._user,
-            ...{
-              firstName: providerUserInfo.user.givenName,
-              lastName: providerUserInfo.user.familyName,
-            },
-          };
-          AuthService.getInstance().createUser(userInfo);
-        } else {
-          updatedUser && this.setSignedInUser(new UserModel(updatedUser));
-          NotificationService.saveTokenToDatabase();
-          this.removeLoginInProgress(updatedUser?.uid);
-          this.setIsLoading(false);
-        }
-      },
-    );
+  async _processUser() {
+    try {
+      const {data} = await apollo.query({
+        query: LoadUserContextDocument,
+      });
+      if (data?.user) {
+        this.setSignedInUser(data?.user);
+        NotificationService.saveTokenToDatabase();
+        this.removeLoginInProgress(data?.user?.uid);
+        this.setIsLoading(false);
+      }
+    } catch (error) {
+      // In case there is no data in the DB with currently logged in user
+      Logger.error('_processUser ~>', error);
+      await AuthService.getInstance().signOut();
+      this.setIsLoading(false);
+    }
+  }
+
+  async syncMigrationUsers() {
+    try {
+      const {data} = await apollo.query({
+        query: LoadUserContextDocument,
+      });
+      if (data.user?.id !== this.userInfo?.id) {
+        await AuthService.getInstance().signOut();
+      }
+    } catch (error) {
+      await AuthService.getInstance().signOut();
+    }
   }
 }
 

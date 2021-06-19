@@ -28,7 +28,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
 
     const user = rootStore.userStore.getUserById(message.ownerId);
 
-    const objectType = objectData?.proposerId
+    const objectType = objectData?.userId
       ? {
           proposal: objectData,
           tabIndex: 1,
