@@ -1,11 +1,11 @@
 import {observable, computed} from 'mobx';
 import {
+  DiscussionMessageImage,
   IDiscussionMessageEntity,
   IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {BaseModel} from './BaseModel';
 import {FLAGS} from '~/Components/Moderation/constants';
-
 
 export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   @observable
@@ -29,6 +29,9 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   @observable
   moderation?: IModerationEntity;
 
+  @observable
+  image?: DiscussionMessageImage;
+
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
@@ -43,5 +46,6 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
     this.createTime = newDiscussionMessageInfo.createTime;
     this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
     this.moderation = newDiscussionMessageInfo.moderation;
+    this.image = newDiscussionMessageInfo.image;
   }
 }

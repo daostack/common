@@ -16,7 +16,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     content: CommonOperationalStateNotif,
   },
   SCREEN_OPTIONS: {
-    topSnap: 280,
+    topSnap: 900,
     content: CommonProfileOptions, // this should have its own component maybe?
     props: {
       isCommonProfile: false,

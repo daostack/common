@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
   Text,
   StyleSheet,
@@ -16,6 +16,7 @@ import logger from '../../Services/Logger';
 import PropTypes, {string, bool, func} from 'prop-types';
 import {discussionStorePropTypes} from '~/Types/propTypes';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import DiscussionMessageImage from '~/Screens/Discussions/DiscussionMessageImage';
 
 const DiscussionMessagesList = ({
   discussionId,
@@ -63,6 +64,34 @@ const DiscussionMessagesList = ({
     }
   }, 150);
 
+  const renderItem = useCallback((x) => {
+    if (x.item.image) {
+      return (
+        <DiscussionMessageImage
+          data={x.item}
+          showCurrentUserAvatar
+          hasPermission={hasPermission}
+          viewerPermission={viewerPermission}
+          commonId={commonId}
+          openMessageOptions={() => openMessageOptions(x.item)}
+          isMember={isMember}
+        />
+      );
+    }
+
+    return (
+      <DiscussionMessage
+        data={x.item}
+        showCurrentUserAvatar
+        hasPermission={hasPermission}
+        viewerPermission={viewerPermission}
+        commonId={commonId}
+        openMessageOptions={() => openMessageOptions(x.item)}
+        isMember={isMember}
+      />
+    );
+  }, []);
+
   return (
     <View style={styles.viewContainer}>
       {msgGroups.length > 0 ? (
@@ -76,17 +105,7 @@ const DiscussionMessagesList = ({
             paddingTop: 100,
             width: Dimensions.get('screen').width * 0.9,
           }}
-          renderItem={(x) => (
-            <DiscussionMessage
-              data={x.item}
-              showCurrentUserAvatar
-              hasPermission={hasPermission}
-              viewerPermission={viewerPermission}
-              commonId={commonId}
-              openMessageOptions={() => openMessageOptions(x.item)}
-              isMember={isMember}
-            />
-          )}
+          renderItem={renderItem}
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
           }}

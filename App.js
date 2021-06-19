@@ -72,6 +72,9 @@ import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import DiscussionImageBeforeSend from '~/Screens/Discussions/DiscussionImageBeforeSend';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import DiscussionFullScreenImage from '~/Screens/Discussions/DiscussionFullScreenImage';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -523,7 +526,20 @@ const App = ({rootStore, navigation}) => {
               headerShown: false,
             })}
           />
-
+          <Stack.Screen
+            name={NAVIGATION_SCREENS.DISCUSSION_IMAGE_BEFORE_SEND}
+            component={DiscussionImageBeforeSend}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name={NAVIGATION_SCREENS.DISCUSSION_FULL_SCREEN_IMAGE}
+            component={DiscussionFullScreenImage}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
           <Stack.Screen
             name="FullScreenCreationLoader"
             component={FullScreenCreationLoader}

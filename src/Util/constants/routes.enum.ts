@@ -31,4 +31,6 @@ export enum NAVIGATION_SCREENS {
   FUNDING_PROPOSAL = 'FundingProposal',
   MONTHLY_CONTRIBUTIONS_LIST = 'MonthlyContributionsList',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
+  DISCUSSION_FULL_SCREEN_IMAGE = 'DiscussionFullScreenImage',
+  DISCUSSION_IMAGE_BEFORE_SEND = 'DiscussionImageBeforeSend',
 }

@@ -1,6 +1,9 @@
 import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {db} from '~/Firebase';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
@@ -55,4 +58,21 @@ export const fetchDiscussionMessageById = async (
     );
   }
   return await DiscussionMessagesCollection.doc(messageId).get();
+};
+
+export const sendDiscussionImageMessage = async (
+  discussionId: string,
+  ownerId: string,
+  payload: any,
+) => {
+  await db
+    .collection(DB_COLLECTIONS.discussionMessages)
+    .doc()
+    .set(payload)
+    .then(async (_) => {
+      await updateDiscussionLastMessage(discussionId, ownerId);
+    })
+    .catch((error: Error) => {
+      throw new Error(error.message);
+    });
 };

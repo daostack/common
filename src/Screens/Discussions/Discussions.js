@@ -35,6 +35,8 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
+import ImagePicker from 'react-native-image-picker';
+import logger from '~/Services/Logger';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -393,6 +395,37 @@ const Discussions = ({
 
   const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
+  const handleSendImage = () => {
+    const options = {
+      title: 'Add a photo',
+      quality: 0.7,
+      allowsEditing: false,
+    };
+
+    ImagePicker.showImagePicker(options, async (response) => {
+      if (response.didCancel) {
+        return;
+      }
+
+      if (response.error) {
+        logger.log('ImagePicker Error: ', response.error);
+        Toast.error(response.error);
+        return;
+      }
+
+      navigation.navigate('DiscussionImageBeforeSend', {
+        image: {
+          url: response.uri,
+          width: response.width,
+          height: response.height,
+        },
+        ownerId: currentUser.uid,
+        commonId,
+        discussionId,
+      });
+    });
+  };
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -438,14 +471,11 @@ const Discussions = ({
               ...styles.inputContainer,
               height: Math.max(100, inputHeight + 50),
             }}>
-            {/* should be added in better discussion batch 3
             <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                justifyContent: 'center',
-              }}>
+              onPress={handleSendImage}
+              style={styles.sendImageButton}>
               <Icon name="add-24" size={30} color={colors.mainBlue} />
-            </TouchableOpacity>*/}
+            </TouchableOpacity>
             <TextInput
               ref={inputRef}
               editable={true}
@@ -620,6 +650,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 30,
     backgroundColor: colors.paleLilacTwo,
+  },
+  sendImageButton: {
+    justifyContent: 'center',
   },
 });
 

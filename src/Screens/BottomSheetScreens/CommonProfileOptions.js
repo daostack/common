@@ -4,12 +4,14 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func, string} from 'prop-types';
+import IcondownArrow from '~/Assets/iconfont/IcondownArrow';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
@@ -67,6 +69,17 @@ const CommonProfileOptions = ({
         )}
         {item && (
           <>
+            {item.image && (
+              <TouchableOpacity
+                style={styles.optionBtn}
+                onPress={() => Linking.openURL(item.image.url)}>
+                <IcondownArrow
+                  style={layout.marginRightS}
+                  color={colors.error}
+                />
+                <Text style={text.buttonred}>{'Download'}</Text>
+              </TouchableOpacity>
+            )}
             {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
             {hasPermission && (
               <TouchableOpacity
@@ -140,6 +153,7 @@ const styles = StyleSheet.create({
     ...text.h2Black,
     alignSelf: 'center',
     marginBottom: 30,
+    marginTop: 5,
   },
 });
 
