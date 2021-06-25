@@ -18,10 +18,18 @@ const DiscussionList = ({
 }) => {
   const [page, setPage] = useState(0);
   const list = rootStore.discussionStore.commonDiscussions;
-  const viewerPermission = rootStore.authStore.getPermission(
-    commonId,
-    auth()?.currentUser?.uid,
-  );
+
+  const [viewerPermission, setViewerPermission] = useState();
+  useEffect(() => {
+    (async () => {
+      const permission = await rootStore.authStore.getPermission(
+        commonId,
+        auth()?.currentUser?.uid,
+      );
+      setViewerPermission(permission);
+    })();
+  }, [commonId]);
+
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {

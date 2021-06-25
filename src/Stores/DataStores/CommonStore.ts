@@ -7,6 +7,7 @@ import {
   fetchUserCommons,
   fetchUserPendingCommons,
   fetchCommons,
+  fetchCommonById,
 } from '~/Services/ListServices/CommonListService';
 import {Common} from '../Models/Common';
 import RootStore from '../RootStore';
@@ -88,12 +89,18 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     return this.toDataArray(this.featuredCommons);
   }
 
-  getCommonById(id: string) {
-    return this.getDataByIdAndCollections(id, [
-      this.featuredCommons,
-      this.pendingCommons,
-      this.myCommons,
-    ]);
+  async getCommonById(id: string) {
+    try {
+      console.log('-----id', id);
+      return this.getDataByIdAndCollections(id, [
+        this.featuredCommons,
+        this.pendingCommons,
+        this.myCommons,
+      ]);
+    } catch (error) {
+      console.log('-----ierwqeqwd', id);
+      return await fetchCommonById(id);
+    }
   }
 
   // Overriden methods

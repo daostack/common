@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef} from 'react';
+import React, {ReactElement, useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,7 +17,10 @@ import {object, shape, InferProps, string, func} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ICommonEntity, ICommonMetadata} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {
+  ICommonEntity,
+  ICommonMetadata,
+} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 import {Formik, FormikProps} from 'formik';
 import {
@@ -31,8 +34,7 @@ import {
 import {editType} from './Profile/CommonAgenda';
 import Loader from '~/Components/Loader';
 
-
-type EditFormValues =  EditInfoValues | EditRulesValues;
+type EditFormValues = EditInfoValues | EditRulesValues;
 
 const props = {
   rootStore: rootStorePropTypes.isRequired,
@@ -59,9 +61,18 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const currCommon: ICommonEntity = commonStore.getCommonById(route.params.currCommon.id) as ICommonEntity;
+  const [currCommon, setCurrCommon] = useState<ICommonEntity>({});
   const type: string = route.params.type;
   const formikRef = useRef();
+
+  useEffect(() => {
+    (async () => {
+      const response = (await commonStore.getCommonById(
+        route.params.currCommon.id,
+      )) as ICommonEntity;
+      setCurrCommon(response);
+    })();
+  }, [route.params]);
 
   navigation.setOptions({
     headerLeft: () => (
@@ -100,7 +111,6 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
         image: infoValues.image,
         metadata: updatedMetadata,
       } as Partial<ICommonEntity>;
-
     } else {
       const rulesValues = formValues as EditInfoValues;
       commonUpdate = {
@@ -138,24 +148,30 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const initialValues: EditInfoValues | EditRulesValues  = type === editType.info ? ({
-    image: currCommon?.image,
-    name: currCommon?.name,
-    tagLine: currCommon?.metadata?.byline,
-    about: currCommon?.metadata?.description,
-  } as EditInfoValues) : ({
-    rules: currCommon.rules,
-  } as EditRulesValues);
+  const initialValues: EditInfoValues | EditRulesValues =
+    type === editType.info
+      ? ({
+          image: currCommon?.image,
+          name: currCommon?.name,
+          tagLine: currCommon?.metadata?.byline,
+          about: currCommon?.metadata?.description,
+        } as EditInfoValues)
+      : ({
+          rules: currCommon.rules,
+        } as EditRulesValues);
 
   return (
     <Formik
       innerRef={formikRef}
       enableReinitialize={true}
       initialValues={initialValues}
-      validationSchema={type === editType.info ? editInfoValidation : editRulesValidation}
+      validationSchema={
+        type === editType.info ? editInfoValidation : editRulesValidation
+      }
       onSubmit={formSave}>
-      {(formikProps: FormikProps<EditInfoValues | EditRulesValues>): ReactElement => {
-
+      {(
+        formikProps: FormikProps<EditInfoValues | EditRulesValues>,
+      ): ReactElement => {
         const {handleSubmit} = formikProps;
 
         return (
@@ -166,17 +182,15 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-
                 {authStore.userInfo ? (
-                    type === editType.info ? (
-                      <EditInfo formikProps={formikProps} />
-                    ) : (
-                      <EditRules formikProps={formikProps} />
-                    )
+                  type === editType.info ? (
+                    <EditInfo formikProps={formikProps} />
                   ) : (
-                    <Loader />
+                    <EditRules formikProps={formikProps} />
+                  )
+                ) : (
+                  <Loader />
                 )}
-
               </ScrollView>
 
               <View style={{marginBottom: 20}}>

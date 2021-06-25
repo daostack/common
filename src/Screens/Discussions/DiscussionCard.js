@@ -2,7 +2,7 @@ import {CommonActions} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
 import moment from 'moment';
 import {bool, func, object, shape, string} from 'prop-types';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -35,10 +35,18 @@ const DiscussionCard = ({
   const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const msgCount = data.messageCount || 0;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const [hasPermission, setHasPermission] = useState();
+  useEffect(() => {
+    (async () => {
+      const permission = await authStore.getPermission(
+        commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+    })();
+  }, [commonId, authStore?.userInfo]);
+
   const showHeader =
     data.moderation?.flag === FLAGS.hidden ||
     (data.moderation?.flag === FLAGS.reported &&

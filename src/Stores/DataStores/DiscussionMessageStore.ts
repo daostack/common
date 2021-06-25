@@ -23,12 +23,13 @@ export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
   IDiscussionMessageEntity
 > {
+  @observable
+  private proposalMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
-  private proposalMessages: ObservableMap<string, DiscussionMessage> = observable.map({});
-
-  @observable
-  private discussionMessages: ObservableMap<string, DiscussionMessage> = observable.map({});
+  private discussionMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
   proposalDiscussionId: String | null = null;
@@ -39,6 +40,7 @@ export default class DiscussionMessageStore extends BaseStore<
 
   @computed
   get getProposalMessages(): readonly DiscussionMessage[] {
+    console.log('proposalMessages----', this.proposalMessages);
     return this.toDataArray(this.proposalMessages);
   }
 
@@ -49,25 +51,31 @@ export default class DiscussionMessageStore extends BaseStore<
 
   @action
   loadProposalMessaages = (proposal: IProposalEntity) => {
-      if (proposal.discussions.length > 0) {
-        this.proposalDiscussionId = proposal.discussions[0].id;
-        getProposalDiscussionMessages(proposal.discussions[0].id).then((disscussionMessages: IDiscussionMessageEntity[])=> {
+    console.log('-----proposal', proposal);
+    if (proposal.discussions.length > 0) {
+      this.proposalDiscussionId = proposal.discussions[0].id;
+      console.log('-----proposal', JSON.stringify(proposal));
+      getProposalDiscussionMessages(proposal.discussions[0].id).then(
+        (disscussionMessages: IDiscussionMessageEntity[]) => {
+          console.log('------disscussionMessages', disscussionMessages);
           this.proposalMessages.clear();
-          this.proposalMessages.merge(this.toEntityModelArr(disscussionMessages));
-        });
-
-      } else {
-        createDiscussion({
-          topic: 'linking discussion',
-          description: 'Linking discussion',
-          commonId: proposal.commonId,
-          proposalId: proposal.id,
-        }).then((discussion: IDiscussionEntity)=> {
-          this.proposalMessages.clear();
-          this.proposalDiscussionId = discussion.id;
-        });
-      }
-  }
+          this.proposalMessages.merge(
+            this.toEntityModelArr(disscussionMessages),
+          );
+        },
+      );
+    } else {
+      createDiscussion({
+        topic: 'linking discussion',
+        description: 'Linking discussion',
+        commonId: proposal.commonId,
+        proposalId: proposal.id,
+      }).then((discussion: IDiscussionEntity) => {
+        this.proposalMessages.clear();
+        this.proposalDiscussionId = discussion.id;
+      });
+    }
+  };
 
   // Data consuming methods
   getDiscussionMessageById = (id: string): DiscussionMessage | undefined => {

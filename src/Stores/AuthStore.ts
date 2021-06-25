@@ -139,9 +139,11 @@ class AuthStore {
    * Checks if the user has permission to a certain common
    * @return the user permission of the common with commonId
    */
-  getPermission = (commonId: string, userId: string): string => {
+  getPermission = async (commonId: string, userId: string): Promise<string> => {
     try {
-      const currCommon = this.rootStore.commonStore.getCommonById(commonId);
+      const currCommon = await this.rootStore.commonStore.getCommonById(
+        commonId,
+      );
       const memberObj = currCommon.members.find(
         (member) => member.userId === userId,
       );

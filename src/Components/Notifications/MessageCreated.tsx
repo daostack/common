@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import _ from 'lodash';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -17,48 +18,58 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
   const message = rootStore.discussionMessageStore.getDiscussionMessageById(
     item.eventObjectId,
   );
-  if (message) {
-    const objectData =
-      rootStore.discussionStore.getDiscussionById(message.discussionId) ||
-      rootStore.proposalStore.getProposalById(message.discussionId);
 
-    const user = rootStore.userStore.getUserById(message.ownerId);
+  useEffect(() => {
+    (async () => {
+      if (message) {
+        let data = {} as NotificationItemData;
+        const objectData =
+          rootStore.discussionStore.getDiscussionById(message.discussionId) ||
+          rootStore.proposalStore.getProposalById(message.discussionId);
 
-    const objectType = objectData?.userId
-      ? {
-          proposal: objectData,
-          tabIndex: 1,
+        const user = rootStore.userStore.getUserById(message.ownerId);
+
+        const objectType = objectData?.userId
+          ? {
+              proposal: objectData,
+              tabIndex: 1,
+            }
+          : {discussion: objectData};
+
+        if (objectData && user) {
+          data = {
+            missingData: false,
+            createdAt: item.createdAt,
+            descriptionBold: `${user.firstName} ${user.lastName}:`,
+            description: ` ${message.text}`,
+            ownerAvatar: user.photoURL,
+            ...objectType,
+          };
         }
-      : {discussion: objectData};
 
-    if (objectData && user) {
-      notificationData = {
-        missingData: false,
-        createdAt: item.createdAt,
-        descriptionBold: `${user.firstName} ${user.lastName}:`,
-        description: ` ${message.text}`,
-        ownerAvatar: user.photoURL,
-        ...objectType,
-      };
-    }
+        if (objectData && objectData.commonId) {
+          const common = rootStore.commonStore.getCommonById(
+            objectData.commonId,
+          );
 
-    if (objectData && objectData.commonId) {
-      const common = rootStore.commonStore.getCommonById(objectData.commonId);
-
-      if (common && common.name) {
-        notificationData = {
-          ...notificationData,
-          header: ' on',
-          headerBold: `${objectData.title || objectData.description.title}`,
-          common,
-        };
+          if (common && common.name) {
+            data = {
+              ...notificationData,
+              header: ' on',
+              headerBold: `${objectData.title || objectData.description.title}`,
+              common,
+            };
+          }
+        }
+        setNotificationData(data);
       }
-    }
-  }
+    })();
+  }, [message]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || message?.isModerationHidden) {

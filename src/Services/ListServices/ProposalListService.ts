@@ -24,7 +24,7 @@ import {
   ProposalWhereInput,
 } from '~/Graphql/Proposal';
 
-import ApolloClient from '~/Services/util/ApolloClient';
+import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 
@@ -143,7 +143,7 @@ export const createFundingProposal = async (
   formData: CreateFundingProposalInput,
 ) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    return await apollo.mutate({
       mutation: CreateFundingProposalDocument,
       variables: {
         proposal: formData,
@@ -160,7 +160,7 @@ export const createFundingProposal = async (
 
 export const createJoinProposal = async (formData: CreateJoinProposalInput) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    return await apollo.mutate({
       mutation: CreateJoinProposalDocument,
       variables: {
         proposal: formData,
@@ -180,7 +180,7 @@ export const createProposalVote = async (
   createProposalVoteData: CreateVoteInput,
 ) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    return await apollo.mutate({
       mutation: CreateProposalVoteDocument,
       variables: {
         proposalVote: createProposalVoteData,
@@ -199,7 +199,7 @@ export const createProposalVote = async (
 // Proposal actions
 export const finalizeProposal = async (proposalId: string) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    return await apollo.mutate({
       mutation: finalizeProposalDocument,
       variables: {
         proposalId: proposalId,
@@ -217,7 +217,7 @@ export const finalizeProposal = async (proposalId: string) => {
 // Proposal subscription
 export const onProposalChange = (proposalId: string) => {
   try {
-    return ApolloClient.getInstance().subscribe({
+    return apollo.subscribe({
       query: onProposalChangeDocument,
       variables: {
         proposalId: proposalId,
@@ -235,10 +235,15 @@ export const onProposalChange = (proposalId: string) => {
 // Fetch proposals
 const getProposals = async (proposalsWhere: ProposalWhereInput) => {
   try {
-    const t = await ApolloClient.getInstance().query({
+    console.log('-----proposalsWhere', {
+      commonId: proposalsWhere.commonId,
+    });
+    const t = await apollo.query({
       query: getProposalsDocument,
       variables: {
-        where: proposalsWhere,
+        where: {
+          commonId: proposalsWhere.commonId,
+        },
       },
       fetchPolicy: 'cache-first',
     });
@@ -246,6 +251,7 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
     return t;
   } catch (err) {
     logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
+    console.log('err', err);
     throw err;
   }
 };

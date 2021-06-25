@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -18,9 +18,7 @@ import {string, func, array, object, shape, bool} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
 import {observer, inject} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {
-  ProposalType,
-} from '~/Graphql/Proposal';
+import {ProposalType} from '~/Graphql/Proposal';
 
 const initialLayout = {width: Dimensions.get('window').width};
 const getTabName = (objectName, count) =>
@@ -78,7 +76,14 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonPendingReqToJoins.length;
   const historyCount = proposalStore.getCommonHistoryReqToJoins.length;
-  const membersCount = commonStore.getCommonById(commonId)?.members.length;
+  const [membersCount, setMembersCount] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      const response = await commonStore.getCommonById(commonId);
+      setMembersCount(response?.members.length);
+    })();
+  }, [commonId]);
 
   const routes = [
     {

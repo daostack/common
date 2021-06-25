@@ -138,7 +138,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     if (this.type === ProposalType.JOIN_REQUEST) {
       return (this as IJoinRequestProposal).join.funding;
     } else {
-      return (this as IFundingRequestProposal).fundingRequest.amount;
+      return (this as IFundingRequestProposal).fundingRequest?.amount;
     }
   }
 
@@ -164,10 +164,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get countdown() {
-    return (
-      this.moderation?.quietEnding ||
-      this?.expiresAt
-    );
+    return this.moderation?.quietEnding || this?.expiresAt;
   }
 
   constructor(newProposalInfo: IProposalEntity) {
@@ -189,12 +186,16 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
     if (this.type === ProposalType.JOIN_REQUEST) {
-      this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
+      this.paymentState = (
+        newProposalInfo as IJoinRequestProposal
+      ).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
     if (this.type === ProposalType.FUNDING_REQUEST) {
-      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).funding;
+      this.fundingRequest = (
+        newProposalInfo as IFundingRequestProposal
+      ).funding;
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;

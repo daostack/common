@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -31,9 +31,16 @@ const CommonAgenda = ({
     params: {commonId, canEdit, onEdit},
   },
 }) => {
-  const common = commonStore.getCommonById(commonId);
+  const [common, setCommon] = useState();
   const isFocused = useIsFocused();
   useEffect(() => {}, [isFocused]);
+
+  useEffect(() => {
+    (async () => {
+      const response = await commonStore.getCommonById(commonId);
+      setCommon(response);
+    })();
+  }, [commonId]);
 
   navigation.setOptions({
     title: common.name,

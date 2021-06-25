@@ -34,7 +34,7 @@ export default class DiscussionStore extends BaseStore<
   // Data consuming methods
   getDiscussionById = (id: string): DiscussionModel | undefined => {
     try {
-      return this.getDataById(id);
+      return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
       fetchDiscussionId(id)
@@ -108,12 +108,16 @@ export default class DiscussionStore extends BaseStore<
       },
     });
 
-    const uniqueDiscussions = [
-      ...new Map(
-        [...this.discussions, ...discussions].map((item) => [item.id, item]),
-      ).values(),
-    ];
+    const discussionsMap = new Map<string, DiscussionModel>();
 
-    this.discussions = uniqueDiscussions;
+    discussions.forEach((item) => {
+      if (!this.discussions.has(item.id)) {
+        discussionsMap.set(item.id, item);
+      }
+    });
+
+    console.log('discussionsMap', discussionsMap);
+
+    this.discussions = observable.map(discussionsMap);
   };
 }
