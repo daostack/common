@@ -13,10 +13,14 @@ import {Common} from '../Models/Common';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
+import {showErrorPopUp} from '~/Util';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
+
+  @observable
+  private loadedCommons: ObservableMap<string, Common> = observable.map({});
 
   @observable
   private myCommons: ObservableMap<string, Common> = observable.map({});
@@ -89,17 +93,23 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     return this.toDataArray(this.featuredCommons);
   }
 
+  @action
   async getCommonById(id: string) {
     try {
-      console.log('-----id', id);
       return this.getDataByIdAndCollections(id, [
+        this.loadedCommons,
         this.featuredCommons,
         this.pendingCommons,
         this.myCommons,
       ]);
     } catch (error) {
-      console.log('-----ierwqeqwd', id);
-      return await fetchCommonById(id);
+      try {
+        const common = await fetchCommonById(id);
+        this.loadedCommons = observable.map(this.toEntityModelArr([common]));
+        return common;
+      } catch (err) {
+        showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, err);
+      }
     }
   }
 

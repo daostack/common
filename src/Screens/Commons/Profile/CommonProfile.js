@@ -164,9 +164,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     useState(false);
 
   // checking if user is the founder or had moderator permissions
-  const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid),
-  );
+  const [hasPermission, setHasPermission] = useState();
 
   const headerHeightLayouted = (height) => height;
 
@@ -176,14 +174,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    try {
+    (async () => {
       proposalStore.loadCommonActiveProposals(currCommon.id);
       proposalStore.loadCommonHistoryProposals(currCommon.id);
       proposalStore.loadCommonMembersPendingProposals(currCommon.id);
       proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
-    } catch (err) {
-      console.log('----error', err);
-    }
+      const permission = await authStore.getPermission(
+        commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+    })();
   }, [currCommon]);
 
   useEffect(() => {
@@ -195,9 +196,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
-    setHasPermission(
-      authStore.getPermission(commonId, authStore?.userInfo?.uid),
-    );
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {

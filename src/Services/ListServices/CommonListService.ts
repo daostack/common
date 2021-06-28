@@ -29,7 +29,9 @@ export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
     callback(snapshot);
   });
 
-export const fetchCommonById = async (commonId: string): Promise<Common> => {
+export const fetchCommonById = async (
+  commonId: string,
+): Promise<ICommonEntity> => {
   if (!commonId) {
     throw new Error(
       'Common Id (commonId) is required parameter, but it was not provided',

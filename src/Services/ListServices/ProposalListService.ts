@@ -235,9 +235,6 @@ export const onProposalChange = (proposalId: string) => {
 // Fetch proposals
 const getProposals = async (proposalsWhere: ProposalWhereInput) => {
   try {
-    console.log('-----proposalsWhere', {
-      commonId: proposalsWhere.commonId,
-    });
     const t = await apollo.query({
       query: getProposalsDocument,
       variables: {
