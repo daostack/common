@@ -129,6 +129,8 @@ export default class ProposalStore extends BaseStore<
 
   @action
   loadCommonActiveProposals = (commonId: string) => {
+    console.log('tkt loadCommonActiveProposals')
+    //getCommonActiveProposals(commonId);
     getCommonActiveProposals(commonId).then((proposals: IProposalEntity[]) => {
       this.commonActiveProposals.clear();
       this.commonActiveProposals.merge(this.toEntityModelArr(proposals));

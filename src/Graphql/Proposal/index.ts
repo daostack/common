@@ -198,7 +198,7 @@ export const finalizeProposalDocument = gql`
 export const getProposalsDocument = gql`
   query getProposalsDocument($where: ProposalWhereInput!) {
     proposals(where: $where) {
-      id
+      ${gqlProposalProps}
     }
   }
 `;
