@@ -5,7 +5,6 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import _ from 'lodash';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
