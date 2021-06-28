@@ -235,7 +235,7 @@ export const onProposalChange = (proposalId: string) => {
 // Fetch proposals
 const getProposals = async (proposalsWhere: ProposalWhereInput) => {
   try {
-    const t = await apollo.query({
+    return await apollo.query({
       query: getProposalsDocument,
       variables: {
         where: {
@@ -244,8 +244,6 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
       },
       fetchPolicy: 'cache-first',
     });
-
-    return t;
   } catch (err) {
     logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
     throw err;
