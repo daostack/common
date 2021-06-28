@@ -116,8 +116,6 @@ export default class DiscussionStore extends BaseStore<
       }
     });
 
-    console.log('discussionsMap', discussionsMap);
-
     this.discussions = observable.map(discussionsMap);
   };
 }

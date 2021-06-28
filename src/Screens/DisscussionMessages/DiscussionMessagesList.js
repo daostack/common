@@ -59,14 +59,9 @@ const DiscussionMessagesList = ({
       return acc;
     }, []);
 
-  React.useEffect(
-    () => [
-      // discussionMessageStore.loadProposalMessaages(proposalInfo);
-    ],
-    [],
-  );
-
-  console.log('msgGroups', msgGroups);
+  React.useEffect(() => {
+    // discussionMessageStore.loadProposalMessaages(proposalInfo);
+  }, []);
 
   setTimeout(() => {
     // Sometimes that code is executed after we leave the actual screen, so we need that check.

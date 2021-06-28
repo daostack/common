@@ -248,7 +248,6 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
     return t;
   } catch (err) {
     logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
-    console.log('err', err);
     throw err;
   }
 };

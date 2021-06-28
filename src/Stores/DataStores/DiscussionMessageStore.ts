@@ -40,7 +40,6 @@ export default class DiscussionMessageStore extends BaseStore<
 
   @computed
   get getProposalMessages(): readonly DiscussionMessage[] {
-    console.log('proposalMessages----', this.proposalMessages);
     return this.toDataArray(this.proposalMessages);
   }
 
@@ -51,13 +50,10 @@ export default class DiscussionMessageStore extends BaseStore<
 
   @action
   loadProposalMessaages = (proposal: IProposalEntity) => {
-    console.log('-----proposal', proposal);
     if (proposal.discussions.length > 0) {
       this.proposalDiscussionId = proposal.discussions[0].id;
-      console.log('-----proposal', JSON.stringify(proposal));
       getProposalDiscussionMessages(proposal.discussions[0].id).then(
         (disscussionMessages: IDiscussionMessageEntity[]) => {
-          console.log('------disscussionMessages', disscussionMessages);
           this.proposalMessages.clear();
           this.proposalMessages.merge(
             this.toEntityModelArr(disscussionMessages),

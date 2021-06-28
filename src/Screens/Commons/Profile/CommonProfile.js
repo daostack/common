@@ -753,8 +753,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     />
   );
 
-  console.log('----hasPermission', hasPermission);
-
   const renderRequestToJoinBtn = () => (
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
@@ -787,8 +785,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     paddingBottom: 5,
     zIndex: 1,
   };
-
-  console.log('currCOmmon', currCommon);
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
