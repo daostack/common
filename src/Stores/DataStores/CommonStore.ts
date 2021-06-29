@@ -40,7 +40,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   loadMyCommons = async (): Promise<void> => {
     if (this.rootStore.authStore.signedInUser) {
       const commons = await fetchUserCommons();
-      console.log('tkt  commons', commons)
       this.myCommons = observable.map(this.toEntityModelArr(commons));
     }
   };

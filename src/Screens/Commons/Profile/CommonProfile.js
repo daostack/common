@@ -76,12 +76,6 @@ const STICKY_HEADER_HEIGHT =
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
-  /* all of  params.commonId,
-  params.showRequestSentModal,
-  params.createdProposalId
-  are undefined
-  is this sth we plan on having in future?
-   */
 
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
@@ -124,11 +118,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  // const currCommon = commonStore.getCommonById(
-  //   params.commonId || params.currCommon?.id,
-  // );
 
   const [currCommon, setCurrCommon] = useState({});
 
@@ -146,9 +136,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showPending, setShowPending] = React.useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const commonId = params.commonId || params.currCommon?.id;
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false,
+  );
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -160,8 +151,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false,
+  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState();
@@ -175,10 +167,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
-      proposalStore.loadCommonActiveProposals(currCommon.id);
-      proposalStore.loadCommonHistoryProposals(currCommon.id);
-      proposalStore.loadCommonMembersPendingProposals(currCommon.id);
-      proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+      proposalStore.loadCommonActiveProposals(commonId);
+      proposalStore.loadCommonHistoryProposals(commonId);
+      proposalStore.loadCommonMembersPendingProposals(commonId);
+      proposalStore.loadCommonMembersHistoryProposals(commonId);
       const permission = await authStore.getPermission(
         commonId,
         authStore?.userInfo?.uid,
@@ -233,10 +225,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count =
-          await ProposalService.getInstance().getProposalDiscussionsCount(
-            pendingProposalsData.usersPendingProposal.id,
-          );
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
         }

@@ -190,7 +190,7 @@ export const onProposalChangeDocument = gql`
 `;
 
 export const finalizeProposalDocument = gql`
-  mutation ($proposalId: ID!) {
+  mutation($proposalId: ID!) {
     finalizeProposal(proposalId: $proposalId)
   }
 `;
