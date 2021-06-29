@@ -45,7 +45,7 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
         }
       }
     })();
-  }, [discussion, discussion.ownerId, discussion.commonId]);
+  }, [discussion, discussion?.ownerId, discussion?.commonId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || discussion?.isModerationHidden) {
