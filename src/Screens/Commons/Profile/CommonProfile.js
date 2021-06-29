@@ -76,7 +76,6 @@ const STICKY_HEADER_HEIGHT =
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
-
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -85,8 +84,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
