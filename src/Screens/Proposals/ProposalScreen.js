@@ -100,17 +100,14 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -128,7 +125,6 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-
     discussionMessageStore.loadProposalMessaages(proposalInfo);
 
     // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
@@ -150,20 +146,26 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
-  let viewerPermission = '';
-  if (proposalInfo) {
-    viewerPermission = rootStore.authStore.getPermission(
-      proposalInfo?.id,
-      auth()?.currentUser?.uid,
-    );
-  }
+  const [viewerPermission, setViewerPermission] = useState();
+  useEffect(() => {
+    (async () => {
+      const permission = await rootStore.authStore.getPermission(
+        proposalInfo?.id,
+        auth()?.currentUser?.uid,
+      );
+      setViewerPermission(permission);
+    })();
+  }, [proposalInfo?.id]);
 
-  const proposalCommon = proposalInfo
-    ? commonStore.getCommonById(proposalInfo.commonId)
-    : null;
-  const proposedUser = proposalInfo
-    ? proposalInfo.user
-    : null;
+  const [proposalCommon, setProposalCommon] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const common = await commonStore.getCommonById(proposalInfo.commonId);
+      setProposalCommon(common);
+    })();
+  }, [proposalInfo, proposalInfo.commonId]);
+  const proposedUser = proposalInfo ? proposalInfo.user : null;
 
   const showDebtInfo =
     proposalInfo?.isFundingRequest &&
@@ -197,10 +199,8 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
+  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
+    useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -238,7 +238,6 @@ const ProposalScreen = ({
 
   const messageInput = () => {
     const sendMessageToDiscussion = async () => {
-
       if (isSending || !userInfo?.uid) {
         return;
       }
@@ -357,9 +356,7 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalInfo.id,
       };
 
-      await createProposalVote(
-        voteData,
-      );
+      await createProposalVote(voteData);
       setVotingProcessState({inProgress: false, error: false});
       closeApprovalSheet();
       Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');

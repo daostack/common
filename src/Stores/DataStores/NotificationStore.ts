@@ -135,9 +135,8 @@ export default class NotificationStore extends BaseStore<
     let notificationItemState = defaultNotificationItemState;
 
     if (this.rootStore.notificationStore.exists(entity.id)) {
-      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
-        entity.id,
-      );
+      const notificationFromStore =
+        this.rootStore.notificationStore.getNotificationById(entity.id);
       // It's possible to have undefined notificationItemState for existing Notification in the store,
       // because of old notifications, before the implementation of the feature with the dot indicator.
       // So, we are setting a default state to such of prorposals for safety.
@@ -150,14 +149,16 @@ export default class NotificationStore extends BaseStore<
     return newNotif;
   }
 
-  getProposalNotificationData(
+  async getProposalNotificationData(
     eventObjectId: string,
-  ): IProposalNotificationData | null {
+  ): Promise<IProposalNotificationData | null> {
     let user = null;
     let common = null;
     let proposal = this.rootStore.proposalStore.getProposalById(eventObjectId);
     if (proposal) {
-      common = this.rootStore.commonStore.getCommonById(proposal.commonId);
+      common = await this.rootStore.commonStore.getCommonById(
+        proposal.commonId,
+      );
       user = proposal.user;
     }
 

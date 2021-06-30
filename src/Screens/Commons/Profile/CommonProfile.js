@@ -66,10 +66,7 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
-import {
-  ProposalType,
-} from '~/Graphql/Proposal';
-
+import {ProposalType} from '~/Graphql/Proposal';
 
 const {width} = Dimensions.get('window');
 
@@ -129,9 +126,21 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  const currCommon = commonStore.getCommonById(
-    params.commonId || params.currCommon?.id,
-  );
+  // const currCommon = commonStore.getCommonById(
+  //   params.commonId || params.currCommon?.id,
+  // );
+
+  const [currCommon, setCurrCommon] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const common = await commonStore.getCommonById(
+        params.commonId || params.currCommon?.id,
+      );
+      setCurrCommon(common);
+    })();
+  }, [params]);
+
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
@@ -155,9 +164,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     useState(false);
 
   // checking if user is the founder or had moderator permissions
-  const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid),
-  );
+  const [hasPermission, setHasPermission] = useState();
 
   const headerHeightLayouted = (height) => height;
 
@@ -167,10 +174,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    proposalStore.loadCommonActiveProposals(currCommon.id);
-    proposalStore.loadCommonHistoryProposals(currCommon.id);
-    proposalStore.loadCommonMembersPendingProposals(currCommon.id);
-    proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+    (async () => {
+      proposalStore.loadCommonActiveProposals(currCommon.id);
+      proposalStore.loadCommonHistoryProposals(currCommon.id);
+      proposalStore.loadCommonMembersPendingProposals(currCommon.id);
+      proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+      const permission = await authStore.getPermission(
+        commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+    })();
   }, [currCommon]);
 
   useEffect(() => {
@@ -182,13 +196,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
-    setHasPermission(
-      authStore.getPermission(commonId, authStore?.userInfo?.uid),
-    );
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
-
     let userPendingProposalId = null;
 
     // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
@@ -201,7 +211,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
     setPendingProposalsData({
       pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
-      usersPendingProposal: userPendingProposalId ? proposalStore.getProposalById(userPendingProposalId) : false,
+      usersPendingProposal: userPendingProposalId
+        ? proposalStore.getProposalById(userPendingProposalId)
+        : false,
     });
 
     const userHasPendingProposal = userPendingProposalId === null;
@@ -211,8 +223,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     if (!userHasPendingProposal) {
       setShowPending(true);
     }
-
-  }, [commonId, isMember, authStore.userInfo, proposalStore.getCommonPendingReqToJoins]);
+  }, [
+    commonId,
+    isMember,
+    authStore.userInfo,
+    proposalStore.getCommonPendingReqToJoins,
+  ]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -587,8 +603,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const renderPendingApproval = () => {
     const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.expiresAt -
-      moment().unix();
+      pendingProposalsData.usersPendingProposal.expiresAt - moment().unix();
 
     return (
       <TouchableOpacity
@@ -719,7 +734,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               />
             </BlurView>
           </TouchableOpacity>
-          {hasPermission && (
+          {!!hasPermission && (
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 10}}
               onPress={() => openCommonOptions()}>
@@ -789,7 +804,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         action={action}
       />
-      {currCommon.metadata?.founderId ? (
+      {currCommon?.metadata?.founderId ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
             onPress={() => navigation.pop()}
@@ -820,7 +835,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.image,
+                  uri: currCommon?.image,
                 }}
                 style={{
                   width: width,
@@ -872,11 +887,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 headerHeightLayouted={headerHeightLayouted}
                 onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
-                  logo: currCommon.metadata?.avatar,
-                  name: currCommon.name,
-                  description: currCommon.description,
-                  byline: currCommon.metadata?.byline,
-                  cover: currCommon.image,
+                  logo: currCommon?.metadata?.avatar,
+                  name: currCommon?.name,
+                  description: currCommon?.description,
+                  byline: currCommon?.metadata?.byline,
+                  cover: currCommon?.image,
                 }}
                 common={currCommon}
                 canEdit={hasPermission}
@@ -907,7 +922,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   renderPendingApproval()}
               </React.Fragment>
             )}
-
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 commonProgressInfo={{
@@ -923,9 +937,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 }}
               />
             </View>
-
             {renderMembersRow()}
-
             {!isMember && showReqToJoin && (
               <View
                 style={styles.upperActionButtonContainer}
@@ -934,9 +946,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 {renderRequestToJoinBtn()}
               </View>
             )}
-
             {renderAgendaForNonMembers()}
-
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
                 navigationState={{index, routes}}

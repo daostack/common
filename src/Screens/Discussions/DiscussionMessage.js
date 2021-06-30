@@ -67,15 +67,26 @@ const DiscussionMessage = ({
     );
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
-    const userPermission = authStore.getPermission(commonId, ownerInfo.id);
-    if (userPermission) {
-      setPermission(userPermission);
-    }
+    (async () => {
+      const userPermission = await authStore.getPermission(
+        commonId,
+        ownerInfo.id,
+      );
+      if (userPermission) {
+        setPermission(userPermission);
+      }
+    })();
   }, []);
 
   const flagView = (isModerator || isHidden) && isFlagged && (
     <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
-      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
+      {isHidden && (
+        <Icon
+          name={'hidden'}
+          style={layout.marginRightS}
+          color={colors.grey3}
+        />
+      )}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
         {isHidden && !isModerator ? '' : ` by ${moderatorName}`}

@@ -65,34 +65,44 @@ const Discussions = ({
   const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
-  const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const [currCommon, setCurrCommon] = useState();
+  const [hasPermission, setHasPermission] = useState();
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
     authStore.userInfo &&
     (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
 
+  useEffect(() => {
+    (async () => {
+      const common = await commonStore.getCommonById(commonId);
+      const permission = await authStore.getPermission(
+        commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+      setCurrCommon(common);
+    })();
+  }, [commonId, authStore?.userInfo]);
+
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {

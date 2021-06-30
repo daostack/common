@@ -59,7 +59,9 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION] ? '0' : form[CreateCommonForm.MINIMUM];
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -123,7 +125,7 @@ const CreateStep4 = ({
         fundingType: 'OneTime', // TODO: change funding types
       });
 
-      if (createCommonResponse.status === 200) {
+      if (createCommonResponse.id) {
         setNewCommonAddress(createCommonResponse.id);
       } else {
         //navigation.pop();
@@ -140,9 +142,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(minContribution)}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -17,34 +17,40 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
   const discussion = rootStore.discussionStore.getDiscussionById(
     item.eventObjectId,
   );
-  if (discussion) {
-    const user = rootStore.userStore.getUserById(discussion.ownerId);
-    if (discussion && user) {
-      notificationData = {
-        missingData: false,
-        createdAt: item.createdAt,
-        descriptionBold: ` by ${user.firstName} ${user.lastName}`,
-        ownerAvatar: user.photoURL,
-        discussion: discussion,
-      };
-    }
 
-    if (discussion && discussion.commonId) {
-      const common = rootStore.commonStore.getCommonById(discussion.commonId);
-
-      if (common && common.name) {
-        notificationData = {
-          ...notificationData,
-          headerBold: `${discussion.title}`,
-          common,
+  useEffect(() => {
+    if (discussion) {
+      const user = rootStore.userStore.getUserById(discussion.ownerId);
+      let data = {} as NotificationItemData;
+      if (discussion && user) {
+        data = {
+          missingData: false,
+          createdAt: item.createdAt,
+          descriptionBold: ` by ${user.firstName} ${user.lastName}`,
+          ownerAvatar: user.photoURL,
+          discussion: discussion,
         };
       }
+
+      if (discussion && discussion.commonId) {
+        const common = rootStore.commonStore.getCommonById(discussion.commonId);
+
+        if (common && common.name) {
+          data = {
+            ...data,
+            headerBold: `${discussion.title}`,
+            common,
+          };
+        }
+      }
+      setNotificationData(data);
     }
-  }
+  }, [discussion]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || discussion?.isModerationHidden) {

@@ -53,11 +53,18 @@ const ProposalCard = ({
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible = true;
-    //proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
-  const hasPermission = authStore.getPermission(
-    proposalInfo.commonId,
-    authStore?.userInfo?.uid,
-  );
+  //proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+  const [hasPermission, setHasPermission] = useState();
+  useEffect(() => {
+    (async () => {
+      const permission = authStore.getPermission(
+        proposalInfo.commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+    })();
+  }, [proposalInfo.commonId, authStore?.userInfo]);
+
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.userId);
 
@@ -66,12 +73,13 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -130,10 +138,9 @@ const ProposalCard = ({
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
           closingAt={
-            (
-              //TODO: set once it's added to backend
-              //proposalInfo?.moderation?.updatedAt.seconds ||
-              proposalInfo?.expiresAt?.getTime() / 1000)
+            //TODO: set once it's added to backend
+            //proposalInfo?.moderation?.updatedAt.seconds ||
+            proposalInfo?.expiresAt?.getTime() / 1000
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
           moderation={proposalInfo.moderation}
@@ -146,8 +153,7 @@ const ProposalCard = ({
           <View style={styles.containerView}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>
-                {isFundingRequest &&
-                  (proposalInfo?.title || 'Unknown title')}
+                {isFundingRequest && (proposalInfo?.title || 'Unknown title')}
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
                 isMember &&

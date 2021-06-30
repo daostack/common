@@ -105,7 +105,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     navigation.goBack();
   };
 
-  const onFormClose = () => {
+  const onFormClose = (): void => {
     const values = (formikRef?.current ?? {values: {}})?.values;
     const {isCompleteAccount, isSignedWithApple} = route.params;
 

@@ -7,15 +7,20 @@ import {
   fetchUserCommons,
   fetchUserPendingCommons,
   fetchCommons,
+  fetchCommonById,
 } from '~/Services/ListServices/CommonListService';
 import {Common} from '../Models/Common';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
+import {showErrorPopUp} from '~/Util';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @observable
   isLoading: boolean;
+
+  @observable
+  private loadedCommons: ObservableMap<string, Common> = observable.map({});
 
   @observable
   private myCommons: ObservableMap<string, Common> = observable.map({});
@@ -88,12 +93,24 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     return this.toDataArray(this.featuredCommons);
   }
 
-  getCommonById(id: string) {
-    return this.getDataByIdAndCollections(id, [
-      this.featuredCommons,
-      this.pendingCommons,
-      this.myCommons,
-    ]);
+  @action
+  async getCommonById(id: string) {
+    try {
+      return this.getDataByIdAndCollections(id, [
+        this.loadedCommons,
+        this.featuredCommons,
+        this.pendingCommons,
+        this.myCommons,
+      ]);
+    } catch (error) {
+      try {
+        const common = await fetchCommonById(id);
+        this.loadedCommons = observable.map(this.toEntityModelArr([common]));
+        return common;
+      } catch (err) {
+        showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, err);
+      }
+    }
   }
 
   // Overriden methods

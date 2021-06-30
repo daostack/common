@@ -24,9 +24,7 @@ import {
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {PROPOSAL_STAGE} from '~/Config';
-import {
-  ProposalType,
-} from '~/Graphql/Proposal';
+import {ProposalType} from '~/Graphql/Proposal';
 
 const {width, height} = Dimensions.get('window');
 
@@ -115,13 +113,15 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     );
 
     React.useEffect(() => {
-      if (commonInfo) {
-        const permission = rootStore.authStore.getPermission(
-          commonInfo?.id,
-          auth()?.currentUser?.uid,
-        );
-        setViewerPermission(permission);
-      }
+      (async () => {
+        if (commonInfo) {
+          const permission = await rootStore.authStore.getPermission(
+            commonInfo?.id,
+            auth()?.currentUser?.uid,
+          );
+          setViewerPermission(permission);
+        }
+      })();
     }, [commonInfo]);
 
     let listRef = useRef([]);

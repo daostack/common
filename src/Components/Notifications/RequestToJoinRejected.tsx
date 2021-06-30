@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -17,28 +17,35 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
-  const proposalNotificationData = rootStore.notificationStore.getProposalNotificationData(
-    item.eventObjectId,
-  );
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
 
-  if (proposalNotificationData) {
-    const {proposal, common} = proposalNotificationData;
+  useEffect(() => {
+    (async () => {
+      const proposalNotificationData =
+        await rootStore.notificationStore.getProposalNotificationData(
+          item.eventObjectId,
+        );
+      if (proposalNotificationData) {
+        const {proposal, common} = proposalNotificationData;
 
-    if (proposal?.isModerationHidden) {
-      return null;
-    }
+        if (proposal?.isModerationHidden) {
+          return null;
+        }
 
-    notificationData = {
-      createdAt: item.createdAt,
-      missingData: false,
-      description:
-        "Don't give up, there are plenty of other Commons you can join.",
-      ownerAvatar: common.image,
-      common,
-      proposal,
-    };
-  }
+        const data = {
+          createdAt: item.createdAt,
+          missingData: false,
+          description:
+            "Don't give up, there are plenty of other Commons you can join.",
+          ownerAvatar: common?.image,
+          common,
+          proposal,
+        };
+        setNotificationData(data);
+      }
+    })();
+  }, [item, item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData) {
