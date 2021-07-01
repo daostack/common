@@ -160,7 +160,7 @@ export default class ProposalStore extends BaseStore<
       (proposals: IProposalEntity[]) => {
         this.commonPendingReqToJoins.clear();
         this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
-      }
+      },
     );
   };
 
@@ -179,7 +179,7 @@ export default class ProposalStore extends BaseStore<
     onProposalChange(proposalId).subscribe({
       next: (value: any) => {
         const proposal: Proposal = this.getEntityModel(
-          value.data.onProposalChange
+          value.data.onProposalChange,
         );
 
         if (proposal.type === ProposalType.FUNDING_REQUEST) {
