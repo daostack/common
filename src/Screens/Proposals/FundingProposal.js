@@ -45,7 +45,7 @@ const FundingProposal = ({
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
-        const data = {
+        const proposalData = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
           amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
@@ -62,8 +62,8 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await createFundingProposal(data);
-        const proposalId = createFundingProposalResponse.id;
+        const {data} = await createFundingProposal(proposalData);
+        const proposalId = data.createFundingProposal.id;
 
         navigation.pop();
 
