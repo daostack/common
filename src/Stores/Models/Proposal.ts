@@ -162,8 +162,8 @@ export class Proposal extends BaseModel<IProposalEntity> {
   @computed
   get countdown() {
     return (
-      this.moderation?.updatedAt.seconds + this.moderation?.countdownPeriod ||
-      this.createdAt.seconds + this?.countdownPeriod
+      this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
+      this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
     );
   }
 
@@ -178,9 +178,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
-    this.countdownPeriod = newProposalInfo.countdownPeriod;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
@@ -196,7 +194,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     if (this.type === ProposalType.FUNDING_REQUEST) {
       this.fundingRequest = (
         newProposalInfo as IFundingRequestProposal
-      ).funding;
+      ).fundingRequest;
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;
