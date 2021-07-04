@@ -46,9 +46,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
   expiresAt: Date;
 
   @observable
-  quietEndingPeriod: number;
-
-  @observable
   votesFor: number;
 
   @observable
@@ -164,7 +161,10 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get countdown() {
-    return this.moderation?.quietEnding || this?.expiresAt;
+    return (
+      this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
+      this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
+    );
   }
 
   constructor(newProposalInfo: IProposalEntity) {
@@ -179,7 +179,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
@@ -195,7 +194,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     if (this.type === ProposalType.FUNDING_REQUEST) {
       this.fundingRequest = (
         newProposalInfo as IFundingRequestProposal
-      ).funding;
+      ).fundingRequest;
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;

@@ -83,12 +83,6 @@ interface IBaseProposalEntity extends IBaseEntity {
    expiresAt: Date;
 
   /**
-   * This is the period at the end of the voting in which if
-   * vote flip occurs the countdown period will be extended
-   */
-  quietEndingPeriod: number;
-
-  /**
    * The number of votes for the proposal
    */
   votesFor: number;

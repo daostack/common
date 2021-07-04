@@ -238,7 +238,9 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
     return await apollo.query({
       query: getProposalsDocument,
       variables: {
-        where: proposalsWhere,
+        where: {
+          commonId: proposalsWhere.commonId,
+        },
       },
       fetchPolicy: 'cache-first',
     });

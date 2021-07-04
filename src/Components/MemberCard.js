@@ -4,12 +4,13 @@ import {observer, inject} from 'mobx-react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
 import CountDown from 'react-native-countdown-component';
-import {monthShortNames} from '~/Util/DateUtil';
+import {monthShortNames, getFreezeTime} from '~/Util/DateUtil';
 import moment from 'moment';
 import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
+import {FLAGS} from './Moderation/constants';
 
 const MemberCard = ({
   userInfo,
@@ -23,6 +24,34 @@ const MemberCard = ({
     [userInfo.roles],
   );
 
+  const fundingAmount = () =>
+    proposalInfo.funding > 0 && (
+      <Text style={text.h2Black}>
+        {`$${proposalInfo.funding / 100}`}
+        {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
+      </Text>
+    );
+
+  const expirationDate = (closingAt) => (
+    <Text style={styles.expDate}>
+      {moment.unix(closingAt).format('dddd, h:mm')}
+    </Text>
+  );
+
+  const countdownView = (remainingSeconds) => (
+    <CountDown
+      digitTxtStyle={text.smallGreyText}
+      separatorStyle={text.smallGreyText}
+      timeLabels={false}
+      showSeparator={true}
+      digitStyle={{
+        height: 'auto',
+        width: 'auto',
+      }}
+      until={remainingSeconds}
+    />
+  );
+
   const renderRightContainer = () => {
     if (proposalInfo) {
       const closingAt = proposalInfo?.expiresAt.getTime() / 1000;
@@ -31,36 +60,23 @@ const MemberCard = ({
       return (
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
-            {proposalInfo.fundingAmount > 0 && (
-              <Text style={text.h2Black}>
-                {`$${proposalInfo.fundingFormatted}`}
-                {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
-              </Text>
-            )}
+            {fundingAmount()}
 
-            {/* Hide the time if the proposal is expired or new */}
-            {remainingSeconds > 0 &&
+            {proposalInfo?.moderation?.flag === FLAGS.hidden ? (
+              <Text style={styles.freezeTimeText}>
+                {getFreezeTime(proposalInfo?.moderation?.countdownPeriod)}
+              </Text>
+            ) : (
+              remainingSeconds > 0 &&
               !LAUNCHED_STATES.includes(proposalInfo?.state) &&
               !COUNTDOWN_STATES.includes(proposalInfo?.state) &&
               // If the remaining time is more than 1 day show the date,
               // if it is less show countdown till it
-              (remainingSeconds > 24 * 60 * 60 ? (
-                <Text style={{...text.runningblack, width: '100%'}}>
-                  {moment.unix(closingAt).format('dddd, h:mm')}
-                </Text>
-              ) : (
-                <CountDown
-                  digitTxtStyle={text.smallGreyText}
-                  separatorStyle={text.smallGreyText}
-                  timeLabels={false}
-                  showSeparator={true}
-                  digitStyle={{
-                    height: 'auto',
-                    width: 'auto',
-                  }}
-                  until={remainingSeconds}
-                />
-              ))}
+              (remainingSeconds > 24 * 60 * 60
+                ? expirationDate(closingAt)
+                : countdownView(remainingSeconds))
+            )}
+            {/* Hide the time if the proposal is expired or new */}
           </View>
         </View>
       );
@@ -89,13 +105,7 @@ const MemberCard = ({
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
       <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          alignContent: 'flex-start',
-          flex: 1.9,
-          flexWrap: 'wrap',
-        }}>
+        style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
@@ -158,6 +168,21 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 1.1,
     alignItems: 'flex-end',
+  },
+  freezeTimeText: {
+    width: '100%',
+    ...text.smallGreyText,
+  },
+  expDate: {
+    ...text.runningblack,
+    width: '100%',
+  },
+  memberCard: {
+    ...layout.content,
+    ...layout.flexStart,
+    alignContent: 'flex-start',
+    flex: 1.9,
+    flexWrap: 'wrap',
   },
 });
 
