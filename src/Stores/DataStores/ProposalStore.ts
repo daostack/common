@@ -9,7 +9,6 @@ import {
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {
   PROPOSAL_STAGES_ACTIVE,
@@ -21,7 +20,7 @@ import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {showBackendError} from '~/Util';
 import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 
-import {ProposalState, ProposalType} from '~/Graphql/Proposal';
+import {ProposalState, ProposalType, ProposalEntity} from '~/Graphql/Proposal';
 import Logger from '~/Services/Logger';
 
 export type IProposalStageFilter =
@@ -56,10 +55,7 @@ export const isProposalHistory = (proposal: Proposal) =>
   PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
   !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
-export default class ProposalStore extends BaseStore<
-  Proposal,
-  IProposalEntity
-> {
+export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   @observable
   private commonActiveProposals: ObservableMap<
     string,
@@ -109,7 +105,7 @@ export default class ProposalStore extends BaseStore<
   }
 
   // Overriden methods
-  getEntityModel(entity: IProposalEntity): Proposal {
+  getEntityModel(entity: ProposalEntity): Proposal {
     return new Proposal(entity);
   }
 
@@ -141,7 +137,7 @@ export default class ProposalStore extends BaseStore<
 
   @action
   loadCommonActiveProposals = (commonId: string) => {
-    getCommonActiveProposals(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonActiveProposals(commonId).then((proposals: ProposalEntity[]) => {
       this.commonActiveProposals.clear();
       this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
     });
@@ -149,29 +145,25 @@ export default class ProposalStore extends BaseStore<
 
   @action
   loadCommonHistoryProposals = (commonId: string) => {
-    getCommonHistoryProposals(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonHistoryProposals(commonId).then((proposals: ProposalEntity[]) => {
       this.commonHistoryProposals.clear();
       this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
     });
   };
   @action
   loadCommonMembersPendingProposals = (commonId: string) => {
-    getCommonPendingReqToJoins(commonId).then(
-      (proposals: IProposalEntity[]) => {
-        this.commonPendingReqToJoins.clear();
-        this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
-      },
-    );
+    getCommonPendingReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
+      this.commonPendingReqToJoins.clear();
+      this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
+    });
   };
 
   @action
   loadCommonMembersHistoryProposals = (commonId: string) => {
-    getCommonHistoryReqToJoins(commonId).then(
-      (proposals: IProposalEntity[]) => {
-        this.commonHistoryReqToJoins.clear();
-        this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
-      },
-    );
+    getCommonHistoryReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
+      this.commonHistoryReqToJoins.clear();
+      this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
+    });
   };
 
   @action

@@ -2,7 +2,7 @@ import {action, observable} from 'mobx';
 import {persist} from 'mobx-persist';
 import {auth} from '~/Firebase';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {ProposalEntity} from '~/Graphql/Proposal';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {LoadUserContextDocument} from '~/Graphql';
 import {default as logger, default as Logger} from '~/Services/Logger';
@@ -157,7 +157,7 @@ class AuthStore {
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: IProposalEntity) =>
+  isProposer = (proposal: ProposalEntity) =>
     this.userInfo ? this.userInfo.uid === proposal.userId : false;
 
   isLoginInProgressExists = (uid: any) =>

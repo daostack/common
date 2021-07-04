@@ -280,7 +280,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonInfo={{
           name: currCommon.name,
-          id: currCommon.id,
+          id: commonId,
           balance: currCommon.balance,
         }}
         proposalFilter={{

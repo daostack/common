@@ -10,10 +10,11 @@ import {
   Scalars,
 } from '~/Graphql';
 
-export enum VoteOutcome {
-  APPROVE = 'Approve',
-  REJECT = 'Condemn',
-}
+import {Vote} from '../Votes';
+import {Discussion} from '../Discussion';
+import {UserModel} from '~/Stores/Models/UserModel';
+
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export enum ProposalState {
   ACCEPTED = 'Accepted',
@@ -22,10 +23,67 @@ export enum ProposalState {
   REJECTED = 'Rejected',
 }
 
+export enum RequestToJoinState {
+  COUNTDOWN = 'countdown',
+  PASSED = 'passed',
+  FAILED = 'failed',
+}
+
+export enum ProposalPaymentState {
+  NOT_ATTEMPTED = 'notAttempted',
+  PENDING = 'pending',
+  FAILED = 'failed',
+  CONFIRMED = 'confirmed',
+  NOT_RELEVANT = 'notRelevant',
+}
+
+export enum FundingState {
+  NOT_ELIGIBLE = 'NotEligible',
+  ELIGIBLE = 'Eligible',
+  REDEEMED = 'Redeemed',
+}
+
 export enum ProposalType {
   FUNDING_REQUEST = 'FundingRequest',
   JOIN_REQUEST = 'JoinRequest',
 }
+
+interface BaseProposal {
+  id: string;
+  userId: string;
+  user: UserModel;
+  title: string;
+  type: ProposalType;
+  state: string;
+  commonId: string;
+  description: string;
+  links?: Maybe<Array<LinkInput>>;
+  files?: Maybe<Array<FileInput>>;
+  images?: Maybe<Array<ImageInput>>;
+  createdAt: Date;
+  updatedAt: Date;
+  expiresAt: number;
+  votesFor: number;
+  votesAgainst: number;
+  votes: Vote[];
+  discussions: Discussion[];
+  moderation?: IModerationEntity | undefined;
+}
+
+export interface FundingProposalEntity extends BaseProposal {
+  type: ProposalType.FUNDING_REQUEST;
+  funding: ProposalFunding;
+  fundingState: FundingState;
+}
+
+export interface JoinRequestEntity extends BaseProposal {
+  type: ProposalType.JOIN_REQUEST;
+  state: RequestToJoinState;
+  paymentState: ProposalPaymentState;
+  join: ProposalJoin;
+}
+
+export type ProposalEntity = JoinRequestEntity | FundingProposalEntity;
 
 export type ProposalFunding = {
   __typename?: 'ProposalFunding';
