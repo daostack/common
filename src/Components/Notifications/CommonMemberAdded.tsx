@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -17,23 +17,30 @@ const CommonMemberAdded: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
-  const proposalNotificationData = rootStore.notificationStore.getProposalNotificationData(
-    item.eventObjectId,
-  );
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
 
-  if (proposalNotificationData) {
-    const {proposal, user, common} = proposalNotificationData;
+  useEffect(() => {
+    (async () => {
+      const proposalNotificationData =
+        await rootStore.notificationStore.getProposalNotificationData(
+          item.eventObjectId,
+        );
+      if (proposalNotificationData) {
+        const {proposal, user, common} = proposalNotificationData;
 
-    notificationData = {
-      createdAt: item.createdAt,
-      missingData: false,
-      description: ' Congrats! You are now a member!',
-      ownerAvatar: user.photoURL,
-      common,
-      proposal,
-    };
-  }
+        const data = {
+          createdAt: item.createdAt,
+          missingData: false,
+          description: ' Congrats! You are now a member!',
+          ownerAvatar: user.photoURL,
+          common,
+          proposal,
+        };
+        setNotificationData(data);
+      }
+    })();
+  }, [item, item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData) {

@@ -36,13 +36,13 @@ const DiscussionMessage = ({
   viewerPermission,
 }) => {
   let currentUserUid = null;
-  const isHidden = data.moderation?.flag === FLAGS.hidden;
-  const flag = data.moderation?.flag || '';
+  const isHidden = false; // TODO: data.moderation?.flag === FLAGS.hidden;
+  const flag = ''; // TODO: data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
-  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
+  const isOwner = authStore.isCurrentlyLogged(data.userId);
 
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
@@ -51,7 +51,7 @@ const DiscussionMessage = ({
   }
 
   const navigation = useNavigation();
-  const ownerInfo = userStore.getUserById(data.ownerId);
+  const ownerInfo = userStore.getUserById(data.userId);
 
   function goToUserProfile() {
     navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
@@ -59,6 +59,7 @@ const DiscussionMessage = ({
       ownerInfo,
     });
   }
+  // TODO: implement moderation for messages
   const moderatorInfo =
     data.moderation &&
     userStore.getUserById(
@@ -66,15 +67,26 @@ const DiscussionMessage = ({
     );
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
-    const userPermission = authStore.getPermission(commonId, ownerInfo.id);
-    if (userPermission) {
-      setPermission(userPermission);
-    }
+    (async () => {
+      const userPermission = await authStore.getPermission(
+        commonId,
+        ownerInfo.id,
+      );
+      if (userPermission) {
+        setPermission(userPermission);
+      }
+    })();
   }, []);
 
   const flagView = (isModerator || isHidden) && isFlagged && (
     <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
-      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
+      {isHidden && (
+        <Icon
+          name={'hidden'}
+          style={layout.marginRightS}
+          color={colors.grey3}
+        />
+      )}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
         {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
@@ -88,7 +100,7 @@ const DiscussionMessage = ({
         ...styles.date,
         color: isHidden ? colors.grey3 : colors.formPlaceholderColor,
       }}>
-      {moment(data.createTime.toDate()).format('HH:mm')}
+      {moment(data.createdAt).format('HH:mm')}
     </Text>
   );
 
@@ -101,7 +113,7 @@ const DiscussionMessage = ({
         !isOwner &&
         openMessageOptions()
       }>
-      {currentUserUid === data.ownerId ? (
+      {currentUserUid === data.userId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
           <View
             style={{
@@ -117,12 +129,12 @@ const DiscussionMessage = ({
                   textStyle={{
                     ...styles.text,
                     color: isHidden ? colors.grey3 : colors.black,
-                    ...textjs.writingDirection(data.text),
+                    ...textjs.writingDirection(data.message),
                     maxWidth: '93%',
                     minWidth: '20%',
                   }}
                   selectable>
-                  {data.text}
+                  {data.message}
                 </HyperText>
                 {!isHidden && dateView()}
               </View>
@@ -175,11 +187,11 @@ const DiscussionMessage = ({
                     textStyle={{
                       ...styles.text,
                       color: isHidden ? colors.grey3 : colors.black,
-                      ...textjs.writingDirection(data.text),
+                      ...textjs.writingDirection(data.message),
                       maxWidth: '93%',
                       minWidth: '40%',
                     }}>
-                    {data.text}
+                    {data.message}
                   </HyperText>
                   {!isHidden && dateView()}
                 </View>
@@ -194,8 +206,8 @@ const DiscussionMessage = ({
 
 DiscussionMessage.propTypes = {
   data: shape({
-    ownerId: string,
-    text: string,
+    userId: string,
+    message: string,
     createTime: object,
   }),
   showCurrentUserAvatar: bool,

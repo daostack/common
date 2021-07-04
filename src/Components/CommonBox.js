@@ -32,9 +32,9 @@ const CommonBox = ({
     <CommonCover
       isMember={false}
       commonInfo={{
-        cover: common.image,
-        name: common.name,
-        description: common.metadata?.byline,
+        cover: common?.image,
+        name: common?.name,
+        description: common?.metadata?.byline,
       }}
       common={common}
     />

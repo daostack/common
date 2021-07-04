@@ -24,6 +24,7 @@ import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
+import {UNKNOWN_COUNTRY} from '~/Util/countries';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -77,17 +78,16 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     onFormSubmitStart();
 
     try {
-      await AuthService.getInstance().updateUserData(
-        {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          photoURL: values.photoURL,
-          country: values.country,
-        },
-        {
-          intro: values.intro,
-        },
-      );
+      const user = await AuthService.getInstance().updateUserData({
+        id: authStore.userInfo.uid,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        photo: values.photoURL,
+        country: values.country || UNKNOWN_COUNTRY,
+        intro: values.intro,
+      });
+
+      authStore.setSignedInUser(user);
     } catch (err) {
       logger.log('Error -> ', err);
       throw err;
@@ -105,7 +105,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     navigation.goBack();
   };
 
-  const onFormClose = () => {
+  const onFormClose = (): void => {
     const values = (formikRef?.current ?? {values: {}})?.values;
     const {isCompleteAccount, isSignedWithApple} = route.params;
 

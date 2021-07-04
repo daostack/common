@@ -1,6 +1,7 @@
 import BaseStore from './BaseStore';
 import {
   fetchDiscussionMessageById,
+  getProposalDiscussionMessages,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
@@ -12,16 +13,65 @@ import {
 import RootStore from '../RootStore';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
-import {runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
   IDiscussionMessageEntity
 > {
+  @observable
+  private proposalMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
+
+  @observable
+  private discussionMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
+
+  @observable
+  proposalDiscussionId: String | null = null;
+
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
+
+  @computed
+  get getProposalMessages(): readonly DiscussionMessage[] {
+    return this.toDataArray(this.proposalMessages);
+  }
+
+  @computed
+  get getDiscussionMessages(): readonly DiscussionMessage[] {
+    return this.toDataArray(this.discussionMessages);
+  }
+
+  @action
+  loadProposalMessaages = (proposal: IProposalEntity) => {
+    if (proposal.discussions.length > 0) {
+      this.proposalDiscussionId = proposal.discussions[0].id;
+      getProposalDiscussionMessages(proposal.discussions[0].id).then(
+        (disscussionMessages: IDiscussionMessageEntity[]) => {
+          this.proposalMessages.clear();
+          this.proposalMessages.merge(
+            this.toEntityModelArr(disscussionMessages),
+          );
+        },
+      );
+    } else {
+      createDiscussion({
+        topic: 'linking discussion',
+        description: 'Linking discussion',
+        commonId: proposal.commonId,
+        proposalId: proposal.id,
+      }).then((discussion: IDiscussionEntity) => {
+        this.proposalMessages.clear();
+        this.proposalDiscussionId = discussion.id;
+      });
+    }
+  };
 
   // Data consuming methods
   getDiscussionMessageById = (id: string): DiscussionMessage | undefined => {

@@ -9,7 +9,7 @@ import moment from 'moment';
 import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 import {FLAGS} from './Moderation/constants';
 
 const MemberCard = ({
@@ -19,14 +19,9 @@ const MemberCard = ({
   commonId,
   rootStore,
 }) => {
-  const viewerPermission = rootStore.authStore.getPermission(
-    commonId,
-    userInfo.id,
-  );
-
   const isModerator = useMemo(
-    () => viewerPermission === PERMISSIONS.MODERATOR,
-    [moderatorId],
+    () => userInfo.roles?.includes(PERMISSIONS_GRAPHQL.MODERATOR),
+    [userInfo.roles],
   );
 
   const fundingAmount = () =>
@@ -59,7 +54,7 @@ const MemberCard = ({
 
   const renderRightContainer = () => {
     if (proposalInfo) {
-      const closingAt = proposalInfo?.countdown;
+      const closingAt = proposalInfo?.expiresAt.getTime() / 1000;
       const remainingSeconds = closingAt - moment().unix();
 
       return (
@@ -88,7 +83,7 @@ const MemberCard = ({
     } else {
       let memberCreatedDateInfo = null;
       if (userInfo?.joinedAt) {
-        const memberCreatedDate = new Date(userInfo.joinedAt.seconds * 1000);
+        const memberCreatedDate = new Date(userInfo.joinedAt);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
               monthShortNames[memberCreatedDate.getMonth()]
@@ -113,11 +108,11 @@ const MemberCard = ({
         style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
-          {userInfo?.displayName || 'Unknown user'}
+          {userInfo.user?.displayName || 'Unknown user'}
         </Text>
         {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
-            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+            {moment.unix(proposalInfo.createdAt.getTime() / 1000).fromNow()}
           </Text>
         )}
       </View>

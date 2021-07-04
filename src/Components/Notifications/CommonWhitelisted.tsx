@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -18,25 +18,33 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const common = await rootStore.commonStore.getCommonById(
+          item.eventObjectId,
+        );
+
+        if (common) {
+          const data = {
+            missingData: false,
+            descriptionBold: `"${common.name}"`,
+            description: ' - You might want to check it out.',
+            ownerAvatar: common?.image,
+            createdAt: item.createdAt,
+            common,
+          };
+          setNotificationData(data);
+        }
+      } catch (error) {
+        Logger.warn('Not found data');
+      }
+    })();
+  }, [item.eventObjectId]);
   // NOTE: if the commonData is still not loaded into the store, we will have an exception here
-  try {
-    let common = rootStore.commonStore.getCommonById(item.eventObjectId);
-
-    if (common) {
-      notificationData = {
-        missingData: false,
-        descriptionBold: `"${common.name}"`,
-        description: ' - You might want to check it out.',
-        ownerAvatar: common.image,
-        createdAt: item.createdAt,
-        common,
-      };
-    }
-  } catch (error) {
-    Logger.warn('Not found data');
-  }
 
   //Skip in case of missiing data
   if (notificationData.missingData) {

@@ -3,26 +3,38 @@ import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
   fetchDiscussionId,
+  fetchDiscussions,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {Discussion} from '../Models/Discussion';
-import {runInAction} from 'mobx';
+import {Discussion as DiscussionModel} from '../Models/Discussion';
+import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
+import {Discussion} from '~/Graphql/Discussion';
 
 export default class DiscussionStore extends BaseStore<
-  Discussion,
+  DiscussionModel,
   IDiscussionEntity
 > {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
 
+  @observable
+  private discussions: ObservableMap<string, DiscussionModel> = observable.map(
+    {},
+  );
+
+  @computed
+  get commonDiscussions() {
+    return this.toDataArray(this.discussions);
+  }
+
   // Data consuming methods
-  getDiscussionById = (id: string): Discussion | undefined => {
+  getDiscussionById = (id: string): DiscussionModel | undefined => {
     try {
-      return this.getDataById(id);
+      return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
       fetchDiscussionId(id)
@@ -45,7 +57,9 @@ export default class DiscussionStore extends BaseStore<
     }
   };
 
-  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
+  getCommonDiscussions = (
+    commonId: string,
+  ): Array<IDiscussionEntity> | undefined =>
     this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
@@ -75,7 +89,33 @@ export default class DiscussionStore extends BaseStore<
   };
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionEntity): Discussion {
-    return new Discussion(entity, this.getIsExpanded(entity.id));
+  getEntityModel(entity: IDiscussionEntity): DiscussionModel {
+    return new DiscussionModel(entity, this.getIsExpanded(entity.id));
   }
+
+  @action
+  loadCommonDiscussions = async (
+    commonId: string,
+    page: number = 0,
+  ): Promise<void> => {
+    const discussions = await fetchDiscussions({
+      where: {
+        commonId,
+      },
+      paginate: {
+        skip: page * 10,
+        take: 10,
+      },
+    });
+
+    const discussionsMap = new Map<string, DiscussionModel>();
+
+    discussions.forEach((item) => {
+      if (!this.discussions.has(item.id)) {
+        discussionsMap.set(item.id, item);
+      }
+    });
+
+    this.discussions = observable.map(discussionsMap);
+  };
 }

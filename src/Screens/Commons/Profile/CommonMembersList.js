@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
@@ -21,13 +21,18 @@ const CommonMembersList = ({
   horizontal,
   rootStore,
 }) => {
-  const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
 
-  const currCommon = commonStore.getCommonById(commonId);
-  const membersInfo = userStore.getCommonUsersByMembersArray(
-    currCommon?.members || [],
-  );
+  const [currCommon, setCurrCommon] = useState();
+  const [membersInfo, setMembersInfo] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const common = await commonStore.getCommonById(commonId);
+      setCurrCommon(common);
+      setMembersInfo(common?.members);
+    })();
+  }, [commonId]);
 
   const showUserProfile = (userInfo) => {
     navigation.navigate('Profile', {userId: userInfo.uid, userInfo});

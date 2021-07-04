@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -17,25 +17,35 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
   const discussion = rootStore.discussionStore.getDiscussionById(
     item.eventObjectId,
   );
-  if (discussion) {
-    const reporter = rootStore.userStore.getUserById(discussion.ownerId);
 
-    if (discussion && discussion.commonId) {
-      const common = rootStore.commonStore.getCommonById(discussion.commonId);
+  useEffect(() => {
+    (async () => {
+      if (discussion) {
+        const reporter = rootStore.userStore.getUserById(discussion.ownerId);
 
-      notificationData = {
-        createdAt: item.createdAt,
-        missingData: false,
-        description: 'A post was reported',
-        ownerAvatar: reporter.photoURL,
-        common,
-      };
-    }
-  }
+        if (discussion && discussion.commonId) {
+          const common = rootStore.commonStore.getCommonById(
+            discussion.commonId,
+          );
+
+          const data = {
+            createdAt: item.createdAt,
+            missingData: false,
+            description: 'A post was reported',
+            ownerAvatar: reporter.photoURL,
+            common,
+          };
+
+          setNotificationData(data);
+        }
+      }
+    })();
+  }, [discussion, discussion?.ownerId, discussion?.commonId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || discussion?.isModerationHidden) {

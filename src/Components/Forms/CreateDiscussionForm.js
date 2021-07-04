@@ -6,10 +6,10 @@ import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
 import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
-import {db} from '~Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
 import {authStorePropTypes} from '~/Types/propTypes';
+import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
 
 const CreateDiscussionForm = ({
   authStore,
@@ -21,8 +21,6 @@ const CreateDiscussionForm = ({
   const [createDiscussionStore] = useState(new CreateDiscussionStore());
   const TITLE = 'title';
   const MESSAGE = 'message';
-  const IMAGES = 'images';
-  const FILES = 'files';
 
   const formSave = async (e) => {
     try {
@@ -32,31 +30,20 @@ const CreateDiscussionForm = ({
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
-        const images = changedFields[IMAGES] || [];
-        const files = changedFields[FILES] || [];
-        db.collection('discussion')
-          .doc()
-          .set({
-            title: changedFields[TITLE],
-            message: changedFields[MESSAGE],
-            images: images.filter((image) => image.value !== ''),
-            files: files.filter((file) => file.value !== ''),
-            createTime: new Date(),
-            lastMessage: new Date(),
-            ownerId: authStore.userInfo.uid,
-            commonId: commonId,
-            follower: [],
-          })
-          .then(() => {
-            Toast.success('Done');
-            if (onFormSubmit) {
-              onFormSubmit(changedFields);
-            }
-          })
-          .catch((error) => {
-            Toast.error(error);
-            logger.log(error);
+        try {
+          await createDiscussion({
+            topic: changedFields[TITLE],
+            description: changedFields[MESSAGE],
+            commonId,
           });
+          Toast.success('Done');
+          if (onFormSubmit) {
+            onFormSubmit(changedFields);
+          }
+        } catch (error) {
+          Toast.error(error); // TODO: Change Toast message
+          logger.log(error);
+        }
       }
     } catch (err) {
       logger.log(err);

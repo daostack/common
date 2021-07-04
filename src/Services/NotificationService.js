@@ -107,7 +107,7 @@ export default class NotificationService {
                   proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
-                    user = await getUserById(proposal.proposerId);
+                    user = proposal.user;
                     if (common && user) {
                       data = {
                         ...data,
@@ -175,7 +175,7 @@ export default class NotificationService {
                   proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
-                    user = await getUserById(proposal.proposerId);
+                    user = proposal.user;
 
                     if (common && user) {
                       data = {
@@ -195,7 +195,7 @@ export default class NotificationService {
                   proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
-                    user = await getUserById(proposal.proposerId);
+                    user = proposal.user;
 
                     if (common && user) {
                       data = {
@@ -216,7 +216,7 @@ export default class NotificationService {
                   proposal = await fetchProposalById(data.eventObjectId);
                   if (proposal) {
                     common = await fetchCommonById(proposal.commonId);
-                    user = await getUserById(proposal.proposerId);
+                    user = proposal.user;
 
                     if (common && user) {
                       data = {

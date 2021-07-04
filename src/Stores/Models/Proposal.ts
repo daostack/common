@@ -1,5 +1,4 @@
 import {observable, computed} from 'mobx';
-import {PROPOSAL_TYPE} from '~/Config';
 import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
 import {
   IFundingRequestProposal,
@@ -8,11 +7,8 @@ import {
   IProposalFundingRequest,
   IProposalJoin,
   IProposalVote,
-  ProposalType,
   IProposalImage,
   IUIProposalImage,
-  IJoinReqDescription,
-  IFundingRequestDescription,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
@@ -20,13 +16,19 @@ import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {UserModel} from './UserModel';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {ProposalType} from '~/Graphql/Proposal';
 
 export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   id: string;
 
   @observable
-  proposerId: string;
+  userId: string;
+
+  @observable
+  user: UserModel;
 
   @observable
   commonId: string;
@@ -41,7 +43,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   state: string;
 
   @observable
-  countdownPeriod: number;
+  expiresAt: Date;
 
   @observable
   votesFor: number;
@@ -59,7 +61,13 @@ export class Proposal extends BaseModel<IProposalEntity> {
   join: IProposalJoin | undefined;
 
   @observable
-  description: IFundingRequestDescription | IJoinReqDescription;
+  title: string;
+
+  @observable
+  description: string;
+
+  @observable
+  discussions: IDiscussionEntity[];
 
   @observable
   moderation?: IModerationEntity;
@@ -109,12 +117,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get isJoinRequest() {
-    return this.type === PROPOSAL_TYPE.Join;
+    return this.type === ProposalType.JOIN_REQUEST;
   }
 
   @computed
   get isFundingRequest() {
-    return this.type === PROPOSAL_TYPE.FundingRequest;
+    return this.type === ProposalType.FUNDING_REQUEST;
   }
 
   @computed
@@ -123,17 +131,17 @@ export class Proposal extends BaseModel<IProposalEntity> {
   }
 
   @computed
-  get funding() {
-    if (this.type === PROPOSAL_TYPE.Join) {
+  get fundingAmount() {
+    if (this.type === ProposalType.JOIN_REQUEST) {
       return (this as IJoinRequestProposal).join.funding;
     } else {
-      return (this as IFundingRequestProposal).fundingRequest.amount;
+      return (this as IFundingRequestProposal).fundingRequest?.amount;
     }
   }
 
   @computed
   get fundingFormatted() {
-    return this.funding / 100;
+    return this.fundingAmount / 100;
   }
 
   @computed
@@ -162,26 +170,35 @@ export class Proposal extends BaseModel<IProposalEntity> {
   constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
-    this.createdAt = newProposalInfo.createdAt;
-    this.updatedAt = newProposalInfo.updatedAt;
-    this.proposerId = newProposalInfo.proposerId;
+    this.createdAt = new Date(newProposalInfo.createdAt);
+    this.updatedAt = new Date(newProposalInfo.updatedAt);
+    this.userId = newProposalInfo.userId;
+    this.user = newProposalInfo.user;
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.countdownPeriod = newProposalInfo.countdownPeriod;
+    this.expiresAt = new Date(newProposalInfo.expiresAt);
+    this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
+    this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
-    if (this.type === PROPOSAL_TYPE.Join) {
-      this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
+    if (this.type === ProposalType.JOIN_REQUEST) {
+      this.paymentState = (
+        newProposalInfo as IJoinRequestProposal
+      ).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
-    if (this.type === PROPOSAL_TYPE.FundingRequest) {
-      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).fundingRequest;
+    if (this.type === ProposalType.FUNDING_REQUEST) {
+      this.fundingRequest = (
+        newProposalInfo as IFundingRequestProposal
+      ).funding;
       // TODO: ... more props
     }
+    this.discussions = newProposalInfo.discussions;
   }
 }

@@ -20,12 +20,11 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
+import {createCommon} from '~/Services/ListServices/CommonListService';
 
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -60,7 +59,9 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION] ? '0' : form[CreateCommonForm.MINIMUM];
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -101,15 +102,13 @@ const CreateStep4 = ({
       logger.log('calling createCommon(...)');
 
       const formattedData = {
+        //founderId: data.founderId,
         name: data.name,
         image: data.image,
-        rules: data.rules,
-        links: escapeUrl(data.links),
+        rules: [], // TODO: Change Link component to new fields { title, url } data.rules,
+        links: [], //escapeUrl(data.links),
         byline: data.byline || '',
         description: data.description || '',
-        contributionType: data.contributionType,
-        contributionAmount: data.contributionAmount,
-        zeroContribution: data.zeroContribution,
       };
 
       navigation.navigate({
@@ -120,21 +119,22 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
-        formattedData,
-      );
+      const createCommonResponse = await createCommon({
+        ...formattedData,
+        fundingMinimumAmount: data.contributionAmount,
+        fundingType: 'OneTime', // TODO: change funding types
+      });
 
-      if (createCommonResponse.status === 200) {
-        setNewCommonAddress(createCommonResponse.data.id);
+      if (createCommonResponse.id) {
+        setNewCommonAddress(createCommonResponse.id);
       } else {
         //navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
-      return {commonAddress: createCommonResponse.data.id};
+      return {commonAddress: createCommonResponse.id};
     } catch (e) {
-      //navigation.pop();
-      console.log('error -> ', e);
+      navigation.pop();
       showErrorPopUp(bottomSheetStore, e);
 
       navigation.pop();
@@ -142,9 +142,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(minContribution)}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout

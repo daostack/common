@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -29,15 +29,20 @@ const DiscussionMessagesList = ({
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
 
-  const viewerPermission = rootStore.authStore.getPermission(
-    commonId,
-    auth()?.currentUser?.uid,
-  );
+  const [viewerPermission, setViewerPermission] = useState();
+  useEffect(() => {
+    (async () => {
+      const permission = await rootStore.authStore.getPermission(
+        commonId,
+        auth()?.currentUser?.uid,
+      );
+      setViewerPermission(permission);
+    })();
+  }, [commonId]);
 
-  const msgGroups = discussionMessageStore
-    .getDiscussionMessagesByDiscussionId(discussionId)
+  const msgGroups = discussionMessageStore.getProposalMessages
     .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+      date: moment(msg.createdAt).format('YYYY-MM-DD'),
       data: msg,
     }))
     .reduce((acc, curr) => {
@@ -53,6 +58,10 @@ const DiscussionMessagesList = ({
       }
       return acc;
     }, []);
+
+  React.useEffect(() => {
+    // discussionMessageStore.loadProposalMessaages(proposalInfo);
+  }, []);
 
   setTimeout(() => {
     // Sometimes that code is executed after we leave the actual screen, so we need that check.

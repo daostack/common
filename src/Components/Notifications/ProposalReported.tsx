@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
@@ -19,30 +19,37 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  let notificationData = {missingData: true} as NotificationItemData;
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
   let eventType = item.eventType;
   const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
-  if (proposal) {
-    const proposer = rootStore.userStore.getUserById(proposal.proposerId);
-    const isJoin = proposal.type === PROPOSAL_TYPE.Join;
 
-    if (isJoin) {
-      eventType = EventTypeState.membershipRequestReported;
-    }
-    if (proposal && proposal.commonId) {
-      const common = rootStore.commonStore.getCommonById(proposal.commonId);
+  useEffect(() => {
+    (async () => {
+      if (proposal) {
+        const proposer = proposal.user;
+        const isJoin = proposal.type === PROPOSAL_TYPE.Join;
 
-      notificationData = {
-        createdAt: item.createdAt,
-        missingData: false,
-        description: `A ${
-          isJoin ? 'membership request' : 'proposal'
-        } was reported`,
-        ownerAvatar: proposer.photoURL,
-        common,
-      };
-    }
-  }
+        if (isJoin) {
+          eventType = EventTypeState.membershipRequestReported;
+        }
+        if (proposal && proposal.commonId) {
+          const common = rootStore.commonStore.getCommonById(proposal.commonId);
+
+          const data = {
+            createdAt: item.createdAt,
+            missingData: false,
+            description: `A ${
+              isJoin ? 'membership request' : 'proposal'
+            } was reported`,
+            ownerAvatar: proposer.photoURL,
+            common,
+          };
+          setNotificationData(data);
+        }
+      }
+    })();
+  }, [proposal]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || proposal?.isModerationHidden) {

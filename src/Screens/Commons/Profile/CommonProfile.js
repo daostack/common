@@ -46,7 +46,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
 import Logger from '~/Services/Logger';
 import moment from 'moment';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
@@ -65,6 +65,8 @@ import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+
+import {ProposalType} from '~/Graphql/Proposal';
 
 const {width} = Dimensions.get('window');
 
@@ -85,14 +87,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
-  const discussionStore = rootStore.discussionStore;
   const userStore = rootStore.userStore;
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -126,9 +126,21 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  const currCommon = commonStore.getCommonById(
-    params.commonId || params.currCommon?.id,
-  );
+  // const currCommon = commonStore.getCommonById(
+  //   params.commonId || params.currCommon?.id,
+  // );
+
+  const [currCommon, setCurrCommon] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const common = await commonStore.getCommonById(
+        params.commonId || params.currCommon?.id,
+      );
+      setCurrCommon(common);
+    })();
+  }, [params]);
+
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
@@ -136,9 +148,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -150,14 +161,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
-  const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid),
-  );
+  const [hasPermission, setHasPermission] = useState();
 
   const headerHeightLayouted = (height) => height;
 
@@ -167,16 +175,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-      currCommon.id,
-    );
-    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-      currCommon.id,
-    );
-    return () => {
-      unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
-      unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
-    };
+    (async () => {
+      proposalStore.loadCommonActiveProposals(currCommon.id);
+      proposalStore.loadCommonHistoryProposals(currCommon.id);
+      proposalStore.loadCommonMembersPendingProposals(currCommon.id);
+      proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+      const permission = await authStore.getPermission(
+        commonId,
+        authStore?.userInfo?.uid,
+      );
+      setHasPermission(permission);
+    })();
   }, [currCommon]);
 
   useEffect(() => {
@@ -188,44 +197,39 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setMemberState(false);
       setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
-    setHasPermission(
-      authStore.getPermission(commonId, authStore?.userInfo?.uid),
-    );
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
-    let unsubscribe = null;
-    (async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
-        commonId,
-        authStore.userInfo?.uid,
-        (data) => {
-          setPendingProposalsData({...data});
+    let userPendingProposalId = null;
 
-          if (!isMember) {
-            if (data) {
-              if (data.usersPendingProposal) {
-                animateNextStateRender();
-                setShowPending(true);
-
-                animateNextStateRender();
-                setShowRequestToJoin(false);
-              } else {
-                animateNextStateRender();
-                setShowRequestToJoin(true);
-              }
-            }
-          }
-        },
-      );
-    })();
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
+    // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
+    // On the other hand we already have all pending proposals loaded so, not really sure.
+    proposalStore.getCommonPendingReqToJoins.filter((pendingProposal) => {
+      if (pendingProposal.userId === authStore.userInfo?.uid) {
+        userPendingProposalId = pendingProposal.id;
       }
-    };
-  }, [commonId, isMember, authStore.userInfo]);
+    });
+
+    setPendingProposalsData({
+      pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+      usersPendingProposal: userPendingProposalId
+        ? proposalStore.getProposalById(userPendingProposalId)
+        : false,
+    });
+
+    const userHasPendingProposal = userPendingProposalId === null;
+
+    animateNextStateRender();
+    setShowRequestToJoin(!userHasPendingProposal);
+    if (!userHasPendingProposal) {
+      setShowPending(true);
+    }
+  }, [
+    commonId,
+    isMember,
+    authStore.userInfo,
+    proposalStore.getCommonPendingReqToJoins,
+  ]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -289,7 +293,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, TITLES.proposals)
@@ -315,7 +319,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.History,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: ProposalType.FUNDING_REQUEST,
         }}
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -357,7 +361,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 ...text.writingDirection(currCommon.metadata.description),
               }}>
               {truncateString(
-                currCommon.metadata.description,
+                currCommon.metadata.description ?? '',
                 ABOUT_TRUNCATE_LENGTH,
               )}
             </Text>
@@ -741,7 +745,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               />
             </BlurView>
           </TouchableOpacity>
-          {hasPermission && (
+          {!!hasPermission && (
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 10}}
               onPress={() => openCommonOptions()}>
@@ -811,7 +815,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         action={action}
       />
-      {currCommon ? (
+      {currCommon?.metadata?.founderId ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
             onPress={() => navigation.pop()}
@@ -842,7 +846,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             renderBackground={() => (
               <FastImage
                 source={{
-                  uri: currCommon.image,
+                  uri: currCommon?.image,
                 }}
                 style={{
                   width: width,
@@ -894,11 +898,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 headerHeightLayouted={headerHeightLayouted}
                 onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
-                  logo: currCommon.metadata?.avatar,
-                  name: currCommon.name,
-                  description: currCommon.description,
-                  byline: currCommon.metadata?.byline,
-                  cover: currCommon.image,
+                  logo: currCommon?.metadata?.avatar,
+                  name: currCommon?.name,
+                  description: currCommon?.description,
+                  byline: currCommon?.metadata?.byline,
+                  cover: currCommon?.image,
                 }}
                 common={currCommon}
                 canEdit={hasPermission}
@@ -929,7 +933,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   renderPendingApproval()}
               </React.Fragment>
             )}
-
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 commonProgressInfo={{
@@ -945,9 +948,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 }}
               />
             </View>
-
             {renderMembersRow()}
-
             {!isMember && showReqToJoin && (
               <View
                 style={styles.upperActionButtonContainer}
@@ -956,9 +957,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 {renderRequestToJoinBtn()}
               </View>
             )}
-
             {renderAgendaForNonMembers()}
-
             <View ref={stickyTabBarRef} collapsable={false}>
               <TabView
                 navigationState={{index, routes}}
