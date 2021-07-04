@@ -51,8 +51,8 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Toast from '~/Util/Toast.js';
+import {TITLES, ACTIONS, FLAGS} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -144,6 +144,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
+  const [isPendingHidden, setIsPendingHidden] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
@@ -232,18 +233,26 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
-      const getPendingProposalsDiscussionCount = async () => {
-        const count =
-          await ProposalService.getInstance().getProposalDiscussionsCount(
-            pendingProposalsData.usersPendingProposal.id,
-          );
+      (async () => {
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
         }
-      };
-      getPendingProposalsDiscussionCount();
+      })();
     }
   }, [pendingProposalsData]);
+
+  useEffect(() => {
+    setIsPendingHidden(
+      pendingProposalsData?.usersPendingProposal.moderation?.flag ===
+        FLAGS.hidden,
+    );
+  }, [
+    pendingProposalsData,
+    pendingProposalsData?.usersPendingProposal?.moderation?.flag,
+  ]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
@@ -602,8 +611,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const renderPendingApproval = () => {
-    const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.expiresAt - moment().unix();
+    const proposalInfo = proposalStore.getProposalById(
+      pendingProposalsData?.usersPendingProposal?.id,
+    );
+    const remainingSeconds = proposalInfo?.countdown - moment().unix();
 
     return (
       <TouchableOpacity
@@ -916,7 +927,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               </View>
             )}
             renderFixedHeader={fixedHeaderHeight}>
-            {showPending && (
+            {showPending && !isPendingHidden && (
               <React.Fragment>
                 {pendingProposalsData?.usersPendingProposal &&
                   renderPendingApproval()}
