@@ -204,7 +204,7 @@ const ProposalScreen = ({
 
   const [
     isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible
+    setIsApprovalBottomModalVisible,
   ] = useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
