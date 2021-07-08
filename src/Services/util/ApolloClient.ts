@@ -1,19 +1,22 @@
-import {ApolloClient as OriginalApolloClient, NormalizedCacheObject} from '@apollo/client';
+import {
+  ApolloClient as OriginalApolloClient,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import {createApolloClient} from '~/Util/helpers/apolloHelper';
 // import {SubscriptionClient, addGraphQLSubscriptions} from 'subscriptions-transport-ws';
 // import {WebSocketLink} from '@apollo/client/link/ws';
 
-const QGL_URL = 'localhost:4000';
+const QGL_URL = 'https://api.staging.common.io';
 
 export default class ApolloClient {
-    static clientInstance: OriginalApolloClient<NormalizedCacheObject> | null = null;
+  static clientInstance: OriginalApolloClient<NormalizedCacheObject> | null = null;
 
-    static getInstance = () => {
-      if (ApolloClient.clientInstance == null) {
-        ApolloClient.clientInstance = createApolloClient(QGL_URL);
-      }
-      return ApolloClient.clientInstance;
-    };
+  static getInstance = () => {
+    if (ApolloClient.clientInstance == null) {
+      ApolloClient.clientInstance = createApolloClient(QGL_URL);
+    }
+    return ApolloClient.clientInstance;
+  };
 }
 
 // const wsLink = new WebSocketLink({
