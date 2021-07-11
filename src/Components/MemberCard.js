@@ -104,8 +104,7 @@ const MemberCard = ({
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
-      <View
-        style={styles.memberCard}>
+      <View style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}

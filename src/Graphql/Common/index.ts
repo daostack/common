@@ -241,12 +241,12 @@ export const GetCommonByIdDocument = gql`
       }
       rules
       links
-      register: whitelisted
+      whitelisted
       action
       byline
       description
-      contributionType: fundingType
-      minFeeToJoin: fundingMinimumAmount
+      fundingType
+      fundingMinimumAmount
     }
   }
 `;

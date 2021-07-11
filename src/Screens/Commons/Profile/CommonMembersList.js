@@ -91,7 +91,7 @@ const CommonMembersList = ({
               key={`touch_${i}`}>
               <MemberImage
                 id={i}
-                userInfo={member}
+                userInfo={{...member?.user, ...member}}
                 style={{marginLeft: i > 0 ? -15 : 0}}
               />
             </TouchableOpacity>
@@ -104,7 +104,7 @@ const CommonMembersList = ({
                 key={i}
                 moderatorId={currCommon?.metadata?.founderId}
                 commonId={currCommon.id}
-                userInfo={member}
+                userInfo={{...member?.user, ...member}}
               />
             </TouchableOpacity>
           ),
