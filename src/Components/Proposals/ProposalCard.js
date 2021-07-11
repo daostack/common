@@ -73,13 +73,12 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -269,12 +268,8 @@ const styles = StyleSheet.create({
     //flexWrap: 'wrap',
   },
   proposalCard: {
-    // marginHorizontal: 5,
     ...layout.marginBottomL,
     backgroundColor: colors.white,
-    //borderRadius: 20,
-    //alignSelf: 'stretch',
-
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: colors.grey4,

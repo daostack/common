@@ -108,7 +108,7 @@ const MemberCard = ({
         style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
-          {userInfo.user?.displayName || 'Unknown user'}
+          {userInfo?.displayName || 'Unknown user'}
         </Text>
         {proposalInfo && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
