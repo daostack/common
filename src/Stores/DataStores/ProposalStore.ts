@@ -30,6 +30,7 @@ export type IProposalStageFilter =
 export type IProposalTypeFilter =
   | typeof ProposalType.FUNDING_REQUEST
   | typeof ProposalType.JOIN_REQUEST;
+
 export interface IProposalFilter {
   type: IProposalTypeFilter;
   stage: IProposalStageFilter;
@@ -128,9 +129,6 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
       return undefined;
     }
   };
-
-  //TODO
-  //getUserProposals = (
 
   //TODO
   //getCommonProposals = (
@@ -250,7 +248,8 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
         })
         .sort(
           (proposal: Proposal, prevProposal: Proposal) =>
-            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+            prevProposal.createdAt?.getSeconds() -
+            proposal.createdAt?.getSeconds(),
         );
     } catch (error) {
       showBackendError({

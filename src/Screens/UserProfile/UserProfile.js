@@ -32,7 +32,6 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 
-
 const UserProfile = ({authStore, navigation, route}) => {
   //const [editMode, setEditMode] = useState(false);
 
