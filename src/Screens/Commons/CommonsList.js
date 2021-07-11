@@ -170,9 +170,7 @@ const CommonsList = ({navigation, rootStore}) => {
   );
 
   const refreshFeed = () => {
-    console.log('TODO: implement refreshFeed with commonStore');
-    // TODO
-    // filterCommons();
+    initialLoad();
   };
 
   const navigateToCommon = (common) => {
