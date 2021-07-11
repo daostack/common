@@ -131,8 +131,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();

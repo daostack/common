@@ -51,8 +51,8 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Toast from '~/Util/Toast.js';
+import {TITLES, ACTIONS, FLAGS} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -76,13 +76,6 @@ const STICKY_HEADER_HEIGHT =
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
-  /* all of  params.commonId,
-  params.showRequestSentModal,
-  params.createdProposalId
-  are undefined
-  is this sth we plan on having in future?
-   */
-
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -91,8 +84,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -124,11 +118,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  // const currCommon = commonStore.getCommonById(
-  //   params.commonId || params.currCommon?.id,
-  // );
 
   const [currCommon, setCurrCommon] = useState({});
 
@@ -144,11 +134,13 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
   const [showPending, setShowPending] = React.useState(false);
+  const [isPendingHidden, setIsPendingHidden] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const commonId = params.commonId || params.currCommon?.id;
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false,
+  );
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -160,8 +152,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false,
+  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState();
@@ -175,10 +168,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
-      proposalStore.loadCommonActiveProposals(currCommon.id);
-      proposalStore.loadCommonHistoryProposals(currCommon.id);
-      proposalStore.loadCommonMembersPendingProposals(currCommon.id);
-      proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+      proposalStore.loadCommonActiveProposals(commonId);
+      proposalStore.loadCommonHistoryProposals(commonId);
+      proposalStore.loadCommonMembersPendingProposals(commonId);
+      proposalStore.loadCommonMembersHistoryProposals(commonId);
       const permission = await authStore.getPermission(
         commonId,
         authStore?.userInfo?.uid,
@@ -232,18 +225,26 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
-      const getPendingProposalsDiscussionCount = async () => {
-        const count =
-          await ProposalService.getInstance().getProposalDiscussionsCount(
-            pendingProposalsData.usersPendingProposal.id,
-          );
+      (async () => {
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
         }
-      };
-      getPendingProposalsDiscussionCount();
+      })();
     }
   }, [pendingProposalsData]);
+
+  useEffect(() => {
+    setIsPendingHidden(
+      pendingProposalsData?.usersPendingProposal.moderation?.flag ===
+        FLAGS.hidden,
+    );
+  }, [
+    pendingProposalsData,
+    pendingProposalsData?.usersPendingProposal?.moderation?.flag,
+  ]);
 
   const renderTabBar = (props) => (
     <TabBarRenderer
@@ -279,7 +280,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonInfo={{
           name: currCommon.name,
-          id: currCommon.id,
+          id: commonId,
           balance: currCommon.balance,
         }}
         proposalFilter={{
@@ -602,8 +603,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const renderPendingApproval = () => {
-    const remainingSeconds =
-      pendingProposalsData.usersPendingProposal.expiresAt - moment().unix();
+    const proposalInfo = proposalStore.getProposalById(
+      pendingProposalsData?.usersPendingProposal?.id,
+    );
+    const remainingSeconds = proposalInfo?.countdown - moment().unix();
 
     return (
       <TouchableOpacity
@@ -916,7 +919,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               </View>
             )}
             renderFixedHeader={fixedHeaderHeight}>
-            {showPending && (
+            {showPending && !isPendingHidden && (
               <React.Fragment>
                 {pendingProposalsData?.usersPendingProposal &&
                   renderPendingApproval()}

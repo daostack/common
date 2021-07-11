@@ -9,11 +9,7 @@ import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PROPOSAL_TYPE} from '~/Config';
-import {
-  IFundingRequestDescription,
-  IFundingRequestProposal,
-  IJoinRequestProposal,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {JoinRequestEntity, FundingProposalEntity} from '~/Graphql/Proposal';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -26,15 +22,16 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  const [notificationData, setNotificationData] =
-    useState<NotificationItemData>({missingData: true});
+  const [
+    notificationData,
+    setNotificationData,
+  ] = useState<NotificationItemData>({missingData: true});
 
   useEffect(() => {
     (async () => {
-      const proposalNotificationData =
-        await rootStore.notificationStore.getProposalNotificationData(
-          item.eventObjectId,
-        );
+      const proposalNotificationData = await rootStore.notificationStore.getProposalNotificationData(
+        item.eventObjectId,
+      );
       if (proposalNotificationData) {
         const {proposal, user, common} = proposalNotificationData;
         let data = {} as NotificationItemData;
@@ -48,19 +45,16 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
         // all the computed fields in Proposal model are undefined once we read it from mobx-persist.
         let proposalFunding = 0;
         if (proposal.type === PROPOSAL_TYPE.Join) {
-          proposalFunding = (proposal as IJoinRequestProposal).join.funding;
+          proposalFunding = (proposal as JoinRequestEntity).join.funding;
         } else {
-          proposalFunding = (proposal as IFundingRequestProposal).fundingRequest
-            .amount;
+          proposalFunding = (proposal as FundingProposalEntity).funding.amount;
         }
         const fundingFormatted = proposalFunding / 100;
 
         data = {
           createdAt: item.createdAt,
           missingData: false,
-          descriptionBold: `"${
-            (proposal.description as IFundingRequestDescription).title
-          }"`,
+          descriptionBold: `"${proposal.description}"`,
           description: ` (${fundingFormatted}$ requested)`,
           common,
           ownerAvatar: user.photoURL,
