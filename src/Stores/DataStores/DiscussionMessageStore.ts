@@ -15,7 +15,7 @@ import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscus
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
-import {ProposalEntity} from '~/Graphql/Proposal';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 
@@ -24,16 +24,12 @@ export default class DiscussionMessageStore extends BaseStore<
   IDiscussionMessageEntity
 > {
   @observable
-  private proposalMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private proposalMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
-  private discussionMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private discussionMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
   proposalDiscussionId: String | null = null;
@@ -53,7 +49,7 @@ export default class DiscussionMessageStore extends BaseStore<
   }
 
   @action
-  loadProposalMessaages = (proposal: ProposalEntity) => {
+  loadProposalMessaages = (proposal: IProposalEntity) => {
     if (proposal.discussions.length > 0) {
       this.proposalDiscussionId = proposal.discussions[0].id;
       getProposalDiscussionMessages(proposal.discussions[0].id).then(
@@ -113,8 +109,7 @@ export default class DiscussionMessageStore extends BaseStore<
         )
         .sort(
           (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
-            prevMessage?.createdAt?.getSeconds() -
-            message?.createdAt?.getSeconds(),
+            prevMessage?.createdAt?.seconds - message?.createdAt?.seconds,
         );
     } catch (error) {
       showBackendError({

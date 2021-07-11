@@ -2,23 +2,24 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {colors, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
-import {UserModel} from '~/Stores/Models/UserModel';
+import {InferProps, number, object} from 'prop-types';
 
-const MemberImage = ({
+const props = {
+  userInfo: object,
+  style: object,
+  id: number,
+};
+const MemberImage: React.FC<InferProps<typeof props>> = ({
   userInfo,
   style,
   id,
-}: {
-  userInfo: UserModel;
-  style?: object;
-  id: string;
 }) =>
-  userInfo?.photoURL ? (
+  userInfo.user?.photoURL ? (
     <FastImage
       key={id}
       style={styles.memberImage}
       source={{
-        uri: userInfo?.photoURL,
+        uri: userInfo.user?.photoURL,
       }}
     />
   ) : (
@@ -30,9 +31,11 @@ const MemberImage = ({
         backgroundColor: '#6e7d82',
         ...style,
       }}>
-      <Text style={styles.memberImageDisplayName}>{userInfo?.displayName}</Text>
+      <Text style={styles.memberImageDisplayName}>{userInfo.user?.displayName}</Text>
     </View>
   );
+
+MemberImage.propTypes = props;
 
 const styles = StyleSheet.create({
   memberImageDisplayName: {

@@ -20,6 +20,8 @@ export type BaseEntity = {
   updatedAt: Scalars['Date'];
 };
 
+
+
 export enum ReportFor {
   Nudity = 'Nudity',
   Violance = 'Violance',
@@ -44,6 +46,7 @@ export type Report = BaseEntity & {
   reporter: User;
   messageId: Scalars['ID'];
 };
+
 
 export enum ProposalType {
   FundingRequest = 'FundingRequest',

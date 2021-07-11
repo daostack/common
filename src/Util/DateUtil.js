@@ -31,27 +31,3 @@ export const formatNotificationDate = (date) => {
 
   return dateFormatted;
 };
-
-/**
- * Adds a leading 0 to digits, so the num will be displayed as a double digit
- * 4 -> 04
- * @param num        the number we want to add a leading zero to
- * @return   the number with a leading zero if it's < 10, or without a leading zero when its > 10
- */
-const leadingZero = (num) => (num < 10 ? `0${num}` : num);
-
-/**
- * Get a string of the frozen countdown for when a proposal is hidden, and we want to show a stopped countdown
- * @param until the time the countdown froze
- * @return a string that represents the frozen time dd:hh:mm:ss
- */
-export const getFreezeTime = (until) => {
-  const unitsArr = [
-    parseInt(until / (60 * 60 * 24), 10), // days
-    parseInt(until / (60 * 60), 10) % 24, // hours
-    parseInt(until / 60, 10) % 60, // minutes
-    until % 60, // seconds
-  ];
-
-  return unitsArr.map((unit) => leadingZero(unit)).join(' : ');
-};

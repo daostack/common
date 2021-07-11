@@ -1,24 +1,26 @@
 import {observable, computed} from 'mobx';
 import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
+import {
+  IFundingRequestProposal,
+  IJoinRequestProposal,
+  IProposalEntity,
+  IProposalFundingRequest,
+  IProposalJoin,
+  IProposalVote,
+  IProposalImage,
+  IUIProposalImage,
+} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
-//import ImageSize from 'react-native-image-size';
-//import {promisedComputed} from 'computed-async-mobx';
-//import Logger from '~/Services/Logger';
+import ImageSize from 'react-native-image-size';
+import {promisedComputed} from 'computed-async-mobx';
+import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
-import {
-  ProposalType,
-  ProposalEntity,
-  ProposalJoin,
-  ProposalFunding,
-  JoinRequestEntity,
-  FundingProposalEntity,
-} from '~/Graphql/Proposal';
-import {Vote} from '~/Graphql/Votes';
-import {Discussion} from '~/Graphql/Discussion';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {ProposalType} from '~/Graphql/Proposal';
 
-export class Proposal extends BaseModel<ProposalEntity> {
+export class Proposal extends BaseModel<IProposalEntity> {
   @observable
   id: string;
 
@@ -35,13 +37,16 @@ export class Proposal extends BaseModel<ProposalEntity> {
   type: ProposalType;
 
   @observable
-  votes: Vote[];
+  votes: IProposalVote[];
 
   @observable
   state: string;
 
   @observable
   expiresAt: Date;
+
+  @observable
+  quietEndingPeriod: number;
 
   @observable
   votesFor: number;
@@ -53,10 +58,10 @@ export class Proposal extends BaseModel<ProposalEntity> {
   paymentState?: string;
 
   @observable
-  funding: ProposalFunding | undefined;
+  fundingRequest: IProposalFundingRequest | undefined;
 
   @observable
-  join: ProposalJoin | undefined;
+  join: IProposalJoin | undefined;
 
   @observable
   title: string;
@@ -65,19 +70,19 @@ export class Proposal extends BaseModel<ProposalEntity> {
   description: string;
 
   @observable
-  discussions: Discussion[];
+  discussions: IDiscussionEntity[];
 
   @observable
-  moderation?: IModerationEntity | undefined;
+  moderation?: IModerationEntity;
 
-  /* @observable
+  @observable
   imagesPromised = promisedComputed(
     [],
     async (): Promise<IUIProposalImage[]> => {
       const tempImages: IUIProposalImage[] = [];
-      if (this.images?.length) {
+      if (this.description.images?.length) {
         await Promise.all(
-          this.images.map(async (currImage: IProposalImage) => {
+          this.description.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
               let currImageEntity: IUIProposalImage | null = null;
               try {
@@ -106,12 +111,12 @@ export class Proposal extends BaseModel<ProposalEntity> {
       }
       return tempImages;
     },
-  );*/
+  );
 
-  /*@computed
+  @computed
   get images() {
     return this.imagesPromised.value;
-  }*/
+  }
 
   @computed
   get isJoinRequest() {
@@ -130,14 +135,16 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get fundingAmount() {
-    return this.type === ProposalType.JOIN_REQUEST
-      ? this.join?.funding
-      : this.funding?.amount;
+    if (this.type === ProposalType.JOIN_REQUEST) {
+      return (this as IJoinRequestProposal).join.funding;
+    } else {
+      return (this as IFundingRequestProposal).fundingRequest?.amount;
+    }
   }
 
   @computed
   get fundingFormatted() {
-    return (this.fundingAmount || 0) / 100;
+    return this.fundingAmount / 100;
   }
 
   @computed
@@ -157,13 +164,10 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get countdown() {
-    return (
-      this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
-      this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
-    );
+    return this.moderation?.quietEnding || this?.expiresAt;
   }
 
-  constructor(newProposalInfo: ProposalEntity) {
+  constructor(newProposalInfo: IProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
     this.createdAt = new Date(newProposalInfo.createdAt);
@@ -175,19 +179,23 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
+    this.quietEndingPeriod = newProposalInfo.quietEndingPeriod;
     this.votesFor = newProposalInfo.votesFor;
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
-    //this.images = newProposalInfo.images;
     if (this.type === ProposalType.JOIN_REQUEST) {
-      this.paymentState = (newProposalInfo as JoinRequestEntity).paymentState;
-      this.join = (newProposalInfo as JoinRequestEntity).join;
+      this.paymentState = (
+        newProposalInfo as IJoinRequestProposal
+      ).paymentState;
+      this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
     if (this.type === ProposalType.FUNDING_REQUEST) {
-      this.funding = (newProposalInfo as FundingProposalEntity).funding;
+      this.fundingRequest = (
+        newProposalInfo as IFundingRequestProposal
+      ).funding;
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;

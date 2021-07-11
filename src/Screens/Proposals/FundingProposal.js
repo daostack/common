@@ -45,14 +45,14 @@ const FundingProposal = ({
     if (fundingRequestFormStore.isFormValid()) {
       try {
         const formData = fundingRequestFormStore.getChangedFormFieldsJson();
-        const proposalData = {
+        const data = {
           title: formData[FundingRequestForm.FIELD_TITLE],
           description: formData[FundingRequestForm.FIELD_DESCRIPTION],
           amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
           links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
           images: formData[FundingRequestForm.FIELD_IMAGES],
           files: formData[FundingRequestForm.FIELD_FILES],
-          commonId,
+          commonId: '0eb58192-0ec8-4c22-95ee-c0d535f51a37',
         };
 
         navigation.navigate({
@@ -62,8 +62,11 @@ const FundingProposal = ({
           },
         });
 
-        const {data} = await createFundingProposal(proposalData);
-        const proposalId = data.createFundingProposal.id;
+        const createFundingProposalResponse = await createFundingProposal(
+          data,
+        );
+
+        const proposalId = createFundingProposalResponse.id;
 
         navigation.pop();
 
@@ -77,6 +80,7 @@ const FundingProposal = ({
           },
         });
         navigation.dispatch(navigate);
+
       } catch (error) {
         navigation.pop();
         showErrorPopUp(uiStore.bottomSheetStore, error);

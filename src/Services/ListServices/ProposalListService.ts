@@ -1,4 +1,5 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE} from '~/Config';
 
 import {
@@ -21,7 +22,6 @@ import {
   ProposalState,
   ProposalType,
   ProposalWhereInput,
-  ProposalEntity,
 } from '~/Graphql/Proposal';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -29,7 +29,7 @@ import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 
 export type proposalListLoadCallbackFn = (
-  updatedProposalList: Array<ProposalEntity>,
+  updatedProposalList: Array<IProposalEntity>,
 ) => void;
 
 export const PROPOSAL_STAGE = {
@@ -64,7 +64,7 @@ interface ProposalFilter {
 // Private
 export const subscribeToProposalList = (
   listChangeCallback: (
-    updatedProposals: IFirebaseSnapshot<ProposalEntity>,
+    updatedProposals: IFirebaseSnapshot<IProposalEntity>,
   ) => void,
   filter: ProposalFilter,
 ): FirestoreUnsubscribeFn => {
@@ -121,7 +121,7 @@ export const subscribeToProposalList = (
   //proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
 
   return proposalListQuery.onSnapshot(
-    (snapshot: IFirebaseSnapshot<ProposalEntity>) => {
+    (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
       listChangeCallback(snapshot);
     },
   );
@@ -129,7 +129,7 @@ export const subscribeToProposalList = (
 
 export const fetchProposalById = async (
   proposalId: string,
-): Promise<IFirebaseDoc<ProposalEntity>> => {
+): Promise<IFirebaseDoc<IProposalEntity>> => {
   if (!proposalId) {
     throw new Error(
       'Proposal Id (proposalId) is required parameter, but it was not provided',
@@ -238,9 +238,11 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
     return await apollo.query({
       query: getProposalsDocument,
       variables: {
-        where: proposalsWhere,
+        where: {
+          commonId: proposalsWhere.commonId,
+        },
       },
-      //fetchPolicy: 'cache-first',
+      fetchPolicy: 'cache-first',
     });
   } catch (err) {
     logger.log('Error while trying to get proposals: ', getGQLErrorObject(err));
@@ -250,7 +252,7 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
 
 export const getCommonActiveProposals = async (
   commonId: string,
-): Promise<ProposalEntity[]> => {
+): Promise<IProposalEntity[]> => {
   const {data} = await getProposals({
     commonId: commonId,
     type: ProposalType.FUNDING_REQUEST,
@@ -261,7 +263,7 @@ export const getCommonActiveProposals = async (
 
 export const getCommonHistoryProposals = async (
   commonId: string,
-): Promise<ProposalEntity[]> => {
+): Promise<IProposalEntity[]> => {
   const {data} = await getProposals({
     commonId: commonId,
     type: ProposalType.FUNDING_REQUEST,
@@ -276,7 +278,7 @@ export const getCommonHistoryProposals = async (
 
 export const getCommonPendingReqToJoins = async (
   commonId: string,
-): Promise<ProposalEntity[]> => {
+): Promise<IProposalEntity[]> => {
   const {data} = await getProposals({
     commonId: commonId,
     type: ProposalType.JOIN_REQUEST,
@@ -287,7 +289,7 @@ export const getCommonPendingReqToJoins = async (
 
 export const getCommonHistoryReqToJoins = async (
   commonId: string,
-): Promise<ProposalEntity[]> => {
+): Promise<IProposalEntity[]> => {
   const {data} = await getProposals({
     commonId: commonId,
     type: ProposalType.JOIN_REQUEST,
