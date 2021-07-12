@@ -209,8 +209,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         : false,
     });
 
-    const userHasPendingProposal = userPendingProposalId === null;
-
+    const userHasPendingProposal = userPendingProposalId !== null;
     animateNextStateRender();
     setShowRequestToJoin(!userHasPendingProposal);
     if (!userHasPendingProposal) {
@@ -337,6 +336,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       commonId: currCommon.id,
+      common: currCommon,
     });
   };
 

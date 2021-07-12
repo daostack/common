@@ -14,7 +14,7 @@ type Props = {
 };
 
 const CommonRules: FC<Props> = ({onEdit, canEdit, rules}) => {
-  if (!canEdit && rules.length === 0) {
+  if (!canEdit && rules?.length === 0) {
     return null;
   }
 
@@ -25,7 +25,7 @@ const CommonRules: FC<Props> = ({onEdit, canEdit, rules}) => {
       <View style={styles.sectionContainer}>
         <Title title="Rules of conduct" onPress={onEdit} canEdit={canEdit} />
 
-        {rules.map((rule, i) => (
+        {rules?.map((rule, i) => (
           <View key={i} style={{width: '100%'}}>
             <HyperText
               textStyle={{

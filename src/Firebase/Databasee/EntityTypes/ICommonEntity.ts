@@ -46,17 +46,27 @@ export interface ICommonEntity extends IBaseEntity {
   /**
    * The common metadata properties
    */
-  metadata: ICommonMetadata;
+  //metadata: ICommonMetadata;
 
   /**
    * The whitelisting status of the common
    */
-  register: CommonRegister;
+  //register: CommonRegister
+
+  fundingMinimumAmount: number;
+
+  whitelisted: boolean;
+
+  fundingType: string;
+
+  founderId: string;
+
+  fundingGoalDeadline: number;
 
   // // TODO: Change this interface to graphql approach
-  // action: string;
-  // byline: string;
-  // description: string;
+  action: string;
+  byline: string;
+  description: string;
 
   // /**
   //  * The id of the user, who created the common
@@ -74,7 +84,7 @@ export interface ICommonEntity extends IBaseEntity {
   //  * month, that they are member of the common,
   //  * or only when they join
   //  */
-  // contributionType: ContributionType;
+  contributionType: ContributionType;
 }
 
 export interface ICommonRule {
