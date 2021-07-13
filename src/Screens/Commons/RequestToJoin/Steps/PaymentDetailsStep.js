@@ -102,10 +102,10 @@ const PaymentDetailsStep = ({
       } catch (e) {
         navigation.pop();
 
-        /*bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+        bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
           subTitle: "We couldn't create your proposal",
           error: e,
-        });*/
+        });
       }
     }
   };
