@@ -70,7 +70,6 @@ export interface ICommonEntity extends IBaseEntity {
    */
   founderId: string;
 
-  // // TODO: Change this interface to graphql approach
   action: string;
   byline: string;
   description: string;
