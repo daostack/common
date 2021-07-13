@@ -45,9 +45,7 @@ const ProposalData = ({proposalId, rootStore}) => {
           <HyperText
             textStyle={{
               ...text.regularTextBig,
-              ...text.writingDirection(
-                proposalInfoState.description,
-              ),
+              ...text.writingDirection(proposalInfoState.description),
             }}>
             {proposalInfoState.description}
           </HyperText>

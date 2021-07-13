@@ -2,7 +2,7 @@ import {action, observable} from 'mobx';
 import {persist} from 'mobx-persist';
 import {auth} from '~/Firebase';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {ProposalEntity} from '~/Graphql/Proposal';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {LoadUserContextDocument} from '~/Graphql';
 import {default as logger, default as Logger} from '~/Services/Logger';
@@ -139,15 +139,18 @@ class AuthStore {
    * Checks if the user has permission to a certain common
    * @return the user permission of the common with commonId
    */
-  getPermission = async (commonId: string, userId: string): Promise<string> => {
+  getPermission = async (
+    commonId: string,
+    userId: string,
+  ): Promise<string | undefined> => {
     try {
       const currCommon = await this.rootStore.commonStore.getCommonById(
         commonId,
       );
-      const memberObj = currCommon.members.find(
+      const memberObj = currCommon?.members.find(
         (member) => member.userId === userId,
       );
-      if (currCommon?.metadata?.founderId === userId || memberObj?.permission) {
+      if (currCommon?.founderId === userId || memberObj?.permission) {
         return PERMISSIONS.MODERATOR;
       }
     } catch (error) {
@@ -157,7 +160,7 @@ class AuthStore {
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: IProposalEntity) =>
+  isProposer = (proposal: ProposalEntity) =>
     this.userInfo ? this.userInfo.uid === proposal.userId : false;
 
   isLoginInProgressExists = (uid: any) =>

@@ -94,15 +94,13 @@ const CreateStep4 = ({
       const data = {
         ...formDataInit,
         founderId: authStore.userInfo?.uid,
-        minFeeToJoin: contributionAmount,
+        fundingMinimumAmount: contributionAmount,
         contributionAmount,
-        contributionType: formDataInit.contribution,
-        fundingGoal: parseInt(formDataInit.funding, 10) * 100,
+        fundingType: formDataInit.contribution,
       };
       logger.log('calling createCommon(...)');
 
       const formattedData = {
-        //founderId: data.founderId,
         name: data.name,
         image: data.image,
         rules: [], // TODO: Change Link component to new fields { title, url } data.rules,

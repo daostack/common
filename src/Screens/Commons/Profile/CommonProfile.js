@@ -76,13 +76,6 @@ const STICKY_HEADER_HEIGHT =
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
-  /* all of  params.commonId,
-  params.showRequestSentModal,
-  params.createdProposalId
-  are undefined
-  is this sth we plan on having in future?
-   */
-
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -91,8 +84,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -124,11 +118,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  //const routeCommon = params.currCommon;
   Logger.log('Common id ->', params.currCommon);
-  // const currCommon = commonStore.getCommonById(
-  //   params.commonId || params.currCommon?.id,
-  // );
 
   const [currCommon, setCurrCommon] = useState({});
 
@@ -147,9 +137,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [isPendingHidden, setIsPendingHidden] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
-  const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const commonId = params.commonId || params.currCommon?.id;
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false,
+  );
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -161,8 +152,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false,
+  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState();
@@ -176,10 +168,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
-      proposalStore.loadCommonActiveProposals(currCommon.id);
-      proposalStore.loadCommonHistoryProposals(currCommon.id);
-      proposalStore.loadCommonMembersPendingProposals(currCommon.id);
-      proposalStore.loadCommonMembersHistoryProposals(currCommon.id);
+      proposalStore.loadCommonActiveProposals(commonId);
+      proposalStore.loadCommonHistoryProposals(commonId);
+      proposalStore.loadCommonMembersPendingProposals(commonId);
+      proposalStore.loadCommonMembersHistoryProposals(commonId);
       const permission = await authStore.getPermission(
         commonId,
         authStore?.userInfo?.uid,
@@ -217,8 +209,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         : false,
     });
 
-    const userHasPendingProposal = userPendingProposalId === null;
-
+    const userHasPendingProposal = userPendingProposalId !== null;
     animateNextStateRender();
     setShowRequestToJoin(!userHasPendingProposal);
     if (!userHasPendingProposal) {
@@ -288,7 +279,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonInfo={{
           name: currCommon.name,
-          id: currCommon.id,
+          id: commonId,
           balance: currCommon.balance,
         }}
         proposalFilter={{
@@ -345,6 +336,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       commonId: currCommon.id,
+      common: currCommon,
     });
   };
 
@@ -358,10 +350,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               style={{
                 ...text.regularText,
                 ...layout.marginTopS,
-                ...text.writingDirection(currCommon.metadata.description),
+                ...text.writingDirection(currCommon.description),
               }}>
               {truncateString(
-                currCommon.metadata.description ?? '',
+                currCommon.description ?? '',
                 ABOUT_TRUNCATE_LENGTH,
               )}
             </Text>
@@ -768,9 +760,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
-        {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
-        contribution
+        ${currCommon.fundingMinimumAmountFormatted}
+        {currCommon.fundingType === 'monthly' && '/mo'} min.contribution
       </Text>
     </TouchableOpacity>
   );
@@ -815,7 +806,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         action={action}
       />
-      {currCommon?.metadata?.founderId ? (
+      {currCommon?.founderId ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
             onPress={() => navigation.pop()}
@@ -898,10 +889,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 headerHeightLayouted={headerHeightLayouted}
                 onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
-                  logo: currCommon?.metadata?.avatar,
+                  logo: currCommon?.avatar,
                   name: currCommon?.name,
                   description: currCommon?.description,
-                  byline: currCommon?.metadata?.byline,
+                  byline: currCommon?.byline,
                   cover: currCommon?.image,
                 }}
                 common={currCommon}
@@ -936,12 +927,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 commonProgressInfo={{
-                  time: currCommon.fundingGoalDeadline,
                   activeProposals:
                     currCommon.numberOfBoostedProposals +
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
-                  /* goal: currCommon.fundingGoal, */
                   members: currCommon?.members?.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,

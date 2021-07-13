@@ -47,7 +47,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   const {width} = Dimensions.get('window');
   const [country, setCountry] = useState(country);
 
-  const isMonthly = currCommon.metadata.contributionType === 'monthly';
+  const isMonthly = currCommon.fundingType === 'monthly';
 
   const getUserFullName = () => {
     const name =

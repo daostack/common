@@ -71,8 +71,13 @@ const CommonMembers = ({navigation, route: router, rootStore}) => {
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
 
-  const {commonId, hasPermission, openCommonOptions, showHiddenNote, isMember} =
-    router.params;
+  const {
+    commonId,
+    hasPermission,
+    openCommonOptions,
+    showHiddenNote,
+    isMember,
+  } = router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonPendingReqToJoins.length;
   const historyCount = proposalStore.getCommonHistoryReqToJoins.length;

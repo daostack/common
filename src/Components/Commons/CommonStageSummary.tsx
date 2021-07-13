@@ -13,7 +13,6 @@ const props = {
   isCommonCard: bool,
   uiStore: uiStorePropTypes.isRequired,
   commonProgressInfo: shape({
-    time: number,
     activeProposals: number,
     goal: number,
     members: number,
@@ -27,7 +26,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   commonProgressInfo: {raised, balance, members},
   uiStore,
 }) => {
-  // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
   // const isFundingStage = !deadlineHasPassed;
   /* const renderFundingProgressBar = () => {

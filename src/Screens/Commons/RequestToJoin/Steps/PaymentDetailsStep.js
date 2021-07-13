@@ -33,7 +33,7 @@ const PaymentDetailsStep = ({
   const userInfo = rootStore.authStore.userInfo;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
-  const isMonthly = currCommon.metadata.contributionType === 'monthly';
+  const isMonthly = currCommon.fundingType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
@@ -77,14 +77,13 @@ const PaymentDetailsStep = ({
           ...userInfo,
         });
 
-        const createJoinProposalResponse = await createJoinProposal(
-          {
-            ...data,
-            cardId: createdCard.data.createCard.id,
-          }
-        );
+        const createJoinProposalResponse = await createJoinProposal({
+          ...data,
+          cardId: createdCard.data.createCard.id,
+        });
 
-        const proposalId = createJoinProposalResponse.data.createJoinProposal.id;
+        const proposalId =
+          createJoinProposalResponse.data.createJoinProposal.id;
 
         navigation.pop();
         const navigate = CommonActions.navigate({

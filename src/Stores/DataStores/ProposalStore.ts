@@ -9,7 +9,6 @@ import {
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {
   PROPOSAL_STAGES_ACTIVE,
@@ -19,13 +18,10 @@ import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {showBackendError} from '~/Util';
-import {
-  subscribeToProposalList,
-} from '~/Services/ListServices/ProposalListService';
+import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 
-import {ProposalState, ProposalType} from '~/Graphql/Proposal';
+import {ProposalState, ProposalType, ProposalEntity} from '~/Graphql/Proposal';
 import Logger from '~/Services/Logger';
-
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -34,6 +30,7 @@ export type IProposalStageFilter =
 export type IProposalTypeFilter =
   | typeof ProposalType.FUNDING_REQUEST
   | typeof ProposalType.JOIN_REQUEST;
+
 export interface IProposalFilter {
   type: IProposalTypeFilter;
   stage: IProposalStageFilter;
@@ -59,22 +56,30 @@ export const isProposalHistory = (proposal: Proposal) =>
   PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
   !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
-export default class ProposalStore extends BaseStore<
-  Proposal,
-  IProposalEntity
-> {
+export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
+  @observable
+  private commonActiveProposals: ObservableMap<
+    string,
+    Proposal
+  > = observable.map({});
 
   @observable
-  private commonActiveProposals: ObservableMap<string, Proposal> = observable.map({});
+  private commonHistoryProposals: ObservableMap<
+    string,
+    Proposal
+  > = observable.map({});
 
   @observable
-  private commonHistoryProposals: ObservableMap<string, Proposal> = observable.map({});
+  private commonPendingReqToJoins: ObservableMap<
+    string,
+    Proposal
+  > = observable.map({});
 
   @observable
-  private commonPendingReqToJoins: ObservableMap<string, Proposal> = observable.map({});
-
-  @observable
-  private commonHistoryReqToJoins: ObservableMap<string, Proposal> = observable.map({});
+  private commonHistoryReqToJoins: ObservableMap<
+    string,
+    Proposal
+  > = observable.map({});
 
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -101,7 +106,7 @@ export default class ProposalStore extends BaseStore<
   }
 
   // Overriden methods
-  getEntityModel(entity: IProposalEntity): Proposal {
+  getEntityModel(entity: ProposalEntity): Proposal {
     return new Proposal(entity);
   }
 
@@ -112,7 +117,12 @@ export default class ProposalStore extends BaseStore<
   // Data consuming methods
   getProposalById = (id: string): Proposal | undefined => {
     try {
-      return this.getDataByIdAndCollections(id, [this.commonActiveProposals, this.commonHistoryProposals, this.commonPendingReqToJoins, this.commonHistoryReqToJoins]);
+      return this.getDataByIdAndCollections(id, [
+        this.commonActiveProposals,
+        this.commonHistoryProposals,
+        this.commonPendingReqToJoins,
+        this.commonHistoryReqToJoins,
+      ]);
     } catch (errr) {
       // fetchProposalById(id)
       // TODO: consider adding direct fetch from gql by id in order to confirm missing data
@@ -121,48 +131,46 @@ export default class ProposalStore extends BaseStore<
   };
 
   //TODO
-  //getUserProposals = (
-
-  //TODO
   //getCommonProposals = (
-
 
   @action
   loadCommonActiveProposals = (commonId: string) => {
-    getCommonActiveProposals(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonActiveProposals(commonId).then((proposals: ProposalEntity[]) => {
       this.commonActiveProposals.clear();
       this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
     });
-  }
+  };
 
   @action
   loadCommonHistoryProposals = (commonId: string) => {
-    getCommonHistoryProposals(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonHistoryProposals(commonId).then((proposals: ProposalEntity[]) => {
       this.commonHistoryProposals.clear();
       this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
     });
-  }
+  };
   @action
   loadCommonMembersPendingProposals = (commonId: string) => {
-    getCommonPendingReqToJoins(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonPendingReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
       this.commonPendingReqToJoins.clear();
       this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
     });
-  }
+  };
 
   @action
   loadCommonMembersHistoryProposals = (commonId: string) => {
-    getCommonHistoryReqToJoins(commonId).then((proposals: IProposalEntity[]) => {
+    getCommonHistoryReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
       this.commonHistoryReqToJoins.clear();
       this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
     });
-  }
+  };
 
   @action
   subscribeToProposalById = (proposalId: string) =>
     onProposalChange(proposalId).subscribe({
       next: (value: any) => {
-        const proposal: Proposal = this.getEntityModel(value.data.onProposalChange);
+        const proposal: Proposal = this.getEntityModel(
+          value.data.onProposalChange,
+        );
 
         if (proposal.type === ProposalType.FUNDING_REQUEST) {
           this.updateFundingRequestData(proposal);
@@ -213,7 +221,9 @@ export default class ProposalStore extends BaseStore<
         })
         .sort(
           (proposal: Proposal, prevProposal: Proposal) =>
-            (prevProposal.createdAt?.getTime() - proposal.createdAt?.getTime()) / 1000,
+            (prevProposal.createdAt?.getTime() -
+              proposal.createdAt?.getTime()) /
+            1000,
         );
     } catch (error) {
       showBackendError({
@@ -238,7 +248,8 @@ export default class ProposalStore extends BaseStore<
         })
         .sort(
           (proposal: Proposal, prevProposal: Proposal) =>
-            prevProposal.createdAt?.seconds - proposal.createdAt?.seconds,
+            prevProposal.createdAt?.getSeconds() -
+            proposal.createdAt?.getSeconds(),
         );
     } catch (error) {
       showBackendError({
@@ -313,5 +324,4 @@ export default class ProposalStore extends BaseStore<
     }
     return true;
   };
-
 }

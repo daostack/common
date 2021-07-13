@@ -39,7 +39,7 @@ const ContributionListItem = ({subscription, navigation}) => {
 
           <Text style={styles.bottomText}>
             {isCanceled
-              ? (subscription.dueDate.toDate() < new Date())
+              ? subscription.dueDate.toDate() < new Date()
                 ? 'Canceled by user'
                 : 'Cancels at'
               : `Payment Due: ${dueDate}`}

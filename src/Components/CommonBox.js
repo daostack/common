@@ -34,7 +34,7 @@ const CommonBox = ({
       commonInfo={{
         cover: common?.image,
         name: common?.name,
-        description: common?.metadata?.byline,
+        description: common?.byline,
       }}
       common={common}
     />
@@ -42,12 +42,10 @@ const CommonBox = ({
     <CommonStageSummary
       isCommonCard={true}
       commonProgressInfo={{
-        time: common.fundingGoalDeadline,
         activeProposals:
           common.numberOfBoostedProposals +
           common.numberOfPreBoostedProposals +
           common.numberOfQueuedProposals,
-        goal: common.fundingGoal,
         members: common?.members?.length,
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.raised,
@@ -61,12 +59,9 @@ CommonBox.propTypes = {
   common: shape({
     image: string,
     name: string,
-    metadata: object,
-    fundingGoalDeadline: number,
     numberOfBoostedProposals: number,
     numberOfPreBoostedProposals: number,
     numberOfQueuedProposals: number,
-    fundingGoal: number,
     members: array,
     balance: number,
     tokenTotalSupply: string,

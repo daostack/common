@@ -13,13 +13,17 @@ import {
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
-import {IFirebaseDoc, IFirebaseDocChange, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  IFirebaseDoc,
+  IFirebaseDocChange,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 import {BaseModel} from '../Models/BaseModel';
 import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
   IEntityModel extends BaseModel<IEntity>,
-  IEntity extends IBaseEntity,
+  IEntity extends IBaseEntity
 > {
   @persist('map')
   @observable
@@ -35,16 +39,19 @@ export default abstract class BaseStore<
     this.isLoading = false;
   }
 
-
-  toDataArray(dataArray: ObservableMap<string, IEntityModel>): readonly IEntityModel[] {
+  toDataArray(
+    dataArray: ObservableMap<string, IEntityModel>,
+  ): readonly IEntityModel[] {
     return values(dataArray);
   }
-
 
   abstract getEntityModel(entity: IEntity): IEntityModel;
 
   //Functions
-  getDataByIdAndCollections(id: string, dataCollections: ObservableMap<string, IEntityModel>[]): IEntityModel | undefined {
+  getDataByIdAndCollections(
+    id: string,
+    dataCollections: ObservableMap<string, IEntityModel>[],
+  ): IEntityModel | undefined {
     let currDataValue: IEntityModel | undefined;
     dataCollections.forEach((currDataMap) => {
       if (has(currDataMap, id)) {
@@ -55,12 +62,10 @@ export default abstract class BaseStore<
 
     if (currDataValue) {
       return currDataValue;
-    }
-    else {
+    } else {
       throw Error(`Data with ID ${id} not exists.`);
     }
   }
-
 
   toEntityModelArr = (data: IEntity[]) => {
     const dataMap = new Map<string, IEntityModel>();
@@ -68,16 +73,21 @@ export default abstract class BaseStore<
       dataMap.set(currEntity.id, this.getEntityModel(currEntity));
     });
     return dataMap;
-  }
+  };
 
-  updateDataMap = (entity: IEntityModel, dataMap: ObservableMap<string, IEntityModel>) => {
+  updateDataMap = (
+    entity: IEntityModel,
+    dataMap: ObservableMap<string, IEntityModel>,
+  ) => {
     const newDataMap = new Map<string, IEntityModel>();
     newDataMap.set(entity.id, entity);
     dataMap.merge(newDataMap);
-  }
+  };
 
-  existsInDataMap = (id: string, dataMap: ObservableMap<string, IEntityModel>) => has(dataMap, id)
-
+  existsInDataMap = (
+    id: string,
+    dataMap: ObservableMap<string, IEntityModel>,
+  ) => has(dataMap, id);
 
   // OLD LOGIC WHICH SHOULD BE REMOVED IN THE FEATURE (or refacterd):
   getDataById(id: string): IEntityModel | undefined {

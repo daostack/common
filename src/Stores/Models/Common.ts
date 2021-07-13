@@ -1,11 +1,9 @@
 import {observable, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
-  CommonRegister,
   ICommonEntity,
   ICommonLink,
   ICommonMember,
-  ICommonMetadata,
   ICommonRule,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
@@ -19,6 +17,12 @@ export class Common extends BaseModel<ICommonEntity> {
   name: string;
 
   @observable
+  createdAt: Date;
+
+  @observable
+  updatedAt: Date;
+
+  @observable
   image: string;
 
   @observable
@@ -26,9 +30,6 @@ export class Common extends BaseModel<ICommonEntity> {
 
   @observable
   raised: number;
-
-  @observable
-  fundingGoalDeadline: number;
 
   @observable
   members: ICommonMember[];
@@ -40,33 +41,47 @@ export class Common extends BaseModel<ICommonEntity> {
   links: ICommonLink[];
 
   @observable
-  metadata: ICommonMetadata;
+  fundingMinimumAmount: number;
 
   @observable
-  register: CommonRegister;
+  whitelisted: boolean;
+
+  @observable
+  fundingType: string;
+
+  @observable
+  action: string;
+
+  @observable
+  byline: string;
+
+  @observable
+  description: string;
+
+  @observable
+  founderId: string | undefined;
 
   constructor(newCommonInfo: ICommonEntity) {
     super(newCommonInfo);
     this.id = newCommonInfo.id;
+    this.createdAt = newCommonInfo.createdAt;
+    this.updatedAt = newCommonInfo.updatedAt;
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;
     this.balance = newCommonInfo.balance;
     this.raised = newCommonInfo.raised;
-    this.fundingGoalDeadline = newCommonInfo.fundingGoalDeadline;
-    this.members = newCommonInfo.members;
-    this.rules = newCommonInfo.rules;
-    this.links = newCommonInfo.links;
-    this.metadata = {
-      action: newCommonInfo.action,
-      byline: newCommonInfo.byline,
-      contributionType: newCommonInfo.contributionType,
-      description: newCommonInfo.description,
-      minFeeToJoin: newCommonInfo.minFeeToJoin,
-      founderId: newCommonInfo.members?.find(({roles = []}) =>
-        (roles ?? []).includes(PERMISSIONS_GRAPHQL.FOUNDER),
-      )?.userId,
-    };
-    this.register = newCommonInfo.register;
+    this.members = newCommonInfo.members.map((member: ICommonMember) => member);
+    this.rules = newCommonInfo.rules || [];
+    this.links = newCommonInfo.links || [];
+    this.fundingMinimumAmount = newCommonInfo.fundingMinimumAmount;
+    this.whitelisted = newCommonInfo.whitelisted;
+    this.fundingType = newCommonInfo.fundingType;
+    this.action = newCommonInfo.action;
+    this.byline = newCommonInfo.byline;
+    this.description = newCommonInfo.description;
+    this.founderId = newCommonInfo.members.find(({roles = []}) =>
+      (roles ?? []).includes(PERMISSIONS_GRAPHQL.FOUNDER),
+    )?.userId;
   }
 
   @computed
@@ -80,10 +95,8 @@ export class Common extends BaseModel<ICommonEntity> {
   }
 
   @computed
-  get minFeeToJoinFormatted(): string {
-    const minValue = this.metadata.zeroContribution
-      ? 0
-      : +this.metadata.minFeeToJoin;
+  get fundingMinimumAmountFormatted(): string {
+    const minValue = +this.fundingMinimumAmount;
     return formatNumber(minValue / 100).toString();
   }
 }

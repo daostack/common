@@ -44,37 +44,35 @@ export interface ICommonEntity extends IBaseEntity {
   links: ICommonLink[];
 
   /**
-   * The common metadata properties
+   * The minimum amount in cents, required
+   * to join the common
    */
-  metadata: ICommonMetadata;
+  fundingMinimumAmount: number;
 
   /**
-   * The whitelisting status of the common
+   * Used to showcase whether the common is whitelisted
+   *
+   * false - The common is not whitelisted and thus visible only to members
+   * true - The common is whitelisted and part of the featured list
    */
-  register: CommonRegister;
 
-  // // TODO: Change this interface to graphql approach
-  // action: string;
-  // byline: string;
-  // description: string;
+  whitelisted: boolean;
 
-  // /**
-  //  * The id of the user, who created the common
-  //  */
-  // founderId: string;
+  /**
+   * Whether the user should be charged every
+   * month, that they are member of the common,
+   * or only when they join
+   */
+  fundingType: ContributionType;
 
-  // /**
-  //  * The minimum amount in cents, required
-  //  * to join the common
-  //  */
-  // minFeeToJoin: number;
+  /**
+   * The id of the user, who created the common
+   */
+  founderId: string;
 
-  // /**
-  //  * Whether the user should be charged every
-  //  * month, that they are member of the common,
-  //  * or only when they join
-  //  */
-  // contributionType: ContributionType;
+  action: string;
+  byline: string;
+  description: string;
 }
 
 export interface ICommonRule {
@@ -106,39 +104,7 @@ export interface ICommonLink {
   value: string;
 }
 
-export interface ICommonMetadata {
-  action: string;
-  byline: string;
-  description: string;
-
-  /**
-   * The id of the user, who created the common
-   */
-  founderId: string;
-
-  /**
-   * The minimum amount in cents, required
-   * to join the common
-   */
-  minFeeToJoin: number;
-
-  /**
-   * Whether the user should be charged every
-   * month, that they are member of the common,
-   * or only when they join
-   */
-  contributionType: ContributionType;
-}
-
 export type ContributionType = 'one-time' | 'monthly';
-
-/**
- * Used to showcase whether the common is whitelisted
- *
- * na - The common is not whitelisted and thus visible only to members
- * registered - The common is whitelisted and part of the featured list
- */
-export type CommonRegister = 'na' | 'registered';
 
 export interface ICommonMember {
   userId: string;

@@ -45,6 +45,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
       commonId: common.id,
       canEdit,
       onEdit,
+      common,
     });
   };
   return (

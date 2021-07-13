@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
-import {object, shape, number, array, string, func} from 'prop-types';
+import {object, shape, string, func} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
 import {HyperText} from '~/Components/Text/HyperText';
@@ -28,22 +28,14 @@ const CommonAgenda = ({
   commonStore,
   navigation,
   route: {
-    params: {commonId, canEdit, onEdit},
+    params: {commonId, canEdit, onEdit, common},
   },
 }) => {
-  const [common, setCommon] = useState();
   const isFocused = useIsFocused();
   useEffect(() => {}, [isFocused]);
 
-  useEffect(() => {
-    (async () => {
-      const response = await commonStore.getCommonById(commonId);
-      setCommon(response);
-    })();
-  }, [commonId]);
-
   navigation.setOptions({
-    title: common.name,
+    title: common?.name,
   });
 
   return (
@@ -75,16 +67,16 @@ const CommonAgenda = ({
               textStyle={{
                 ...styles.description,
                 width: '100%',
-                ...text.writingDirection(common.metadata.description),
+                ...text.writingDirection(common?.description),
               }}>
-              {common.metadata.description}
+              {common?.description}
             </HyperText>
           </View>
 
-          {common.links?.length > 0 && (
+          {common?.links?.length > 0 && (
             <View style={styles.sectionContainer}>
               <Text style={text.h3Black}>Links</Text>
-              {common.links.map((link, i) => (
+              {common?.links.map((link, i) => (
                 <View key={i}>
                   <Text
                     style={styles.linkText}
@@ -104,7 +96,7 @@ const CommonAgenda = ({
           <CommonRules
             onEdit={() => onEdit(editType.rules)}
             canEdit={canEdit}
-            rules={common.rules}
+            rules={common?.rules}
           />
 
           <SectionDivider />
@@ -112,8 +104,8 @@ const CommonAgenda = ({
           <View style={styles.sectionContainer}>
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
-              minFeeToJoin={common.minFeeToJoinFormatted}
-              contributionType={common.metadata.contributionType || 'one-time'}
+              fundingMinimumAmount={common?.fundingMinimumAmountFormatted}
+              fundingType={common?.fundingType || 'one-time'}
             />
           </View>
         </ScrollView>
@@ -127,15 +119,7 @@ CommonAgenda.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
-      common: shape({
-        metadata: shape({
-          description: string.isRequired,
-          action: string,
-          links: array,
-          rules: array,
-        }),
-        fundingGoalDeadline: number,
-      }).isRequired,
+      common: object,
     }),
   }),
 };

@@ -1,26 +1,24 @@
 import {observable, computed} from 'mobx';
 import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
-import {
-  IFundingRequestProposal,
-  IJoinRequestProposal,
-  IProposalEntity,
-  IProposalFundingRequest,
-  IProposalJoin,
-  IProposalVote,
-  IProposalImage,
-  IUIProposalImage,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
-import ImageSize from 'react-native-image-size';
-import {promisedComputed} from 'computed-async-mobx';
-import Logger from '~/Services/Logger';
+//import ImageSize from 'react-native-image-size';
+//import {promisedComputed} from 'computed-async-mobx';
+//import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {ProposalType} from '~/Graphql/Proposal';
+import {
+  ProposalType,
+  ProposalEntity,
+  ProposalJoin,
+  ProposalFunding,
+  JoinRequestEntity,
+  FundingProposalEntity,
+} from '~/Graphql/Proposal';
+import {Vote} from '~/Graphql/Votes';
+import {Discussion} from '~/Graphql/Discussion';
 
-export class Proposal extends BaseModel<IProposalEntity> {
+export class Proposal extends BaseModel<ProposalEntity> {
   @observable
   id: string;
 
@@ -37,7 +35,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
   type: ProposalType;
 
   @observable
-  votes: IProposalVote[];
+  votes: Vote[];
 
   @observable
   state: string;
@@ -55,10 +53,10 @@ export class Proposal extends BaseModel<IProposalEntity> {
   paymentState?: string;
 
   @observable
-  fundingRequest: IProposalFundingRequest | undefined;
+  funding: ProposalFunding | undefined;
 
   @observable
-  join: IProposalJoin | undefined;
+  join: ProposalJoin | undefined;
 
   @observable
   title: string;
@@ -67,26 +65,25 @@ export class Proposal extends BaseModel<IProposalEntity> {
   description: string;
 
   @observable
-  discussions: IDiscussionEntity[];
+  discussions: Discussion[];
 
   @observable
-  moderation?: IModerationEntity;
+  moderation?: IModerationEntity | undefined;
 
-  @observable
+  /* @observable
   imagesPromised = promisedComputed(
     [],
     async (): Promise<IUIProposalImage[]> => {
       const tempImages: IUIProposalImage[] = [];
-      if (this.description.images?.length) {
+      if (this.images?.length) {
         await Promise.all(
-          this.description.images.map(async (currImage: IProposalImage) => {
+          this.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
               let currImageEntity: IUIProposalImage | null = null;
               try {
                 const {width, height} = await ImageSize.getSize(
                   currImage.value,
                 );
-
                 currImageEntity = {
                   title: currImage.title,
                   widthRatio: (width / height) * 220,
@@ -98,7 +95,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
                   err,
                 );
               }
-
               if (currImageEntity) {
                 tempImages.push(currImageEntity);
               }
@@ -108,12 +104,12 @@ export class Proposal extends BaseModel<IProposalEntity> {
       }
       return tempImages;
     },
-  );
+  );*/
 
-  @computed
+  /*@computed
   get images() {
     return this.imagesPromised.value;
-  }
+  }*/
 
   @computed
   get isJoinRequest() {
@@ -132,16 +128,14 @@ export class Proposal extends BaseModel<IProposalEntity> {
 
   @computed
   get fundingAmount() {
-    if (this.type === ProposalType.JOIN_REQUEST) {
-      return (this as IJoinRequestProposal).join.funding;
-    } else {
-      return (this as IFundingRequestProposal).fundingRequest?.amount;
-    }
+    return this.type === ProposalType.JOIN_REQUEST
+      ? this.join?.funding
+      : this.funding?.amount;
   }
 
   @computed
   get fundingFormatted() {
-    return this.fundingAmount / 100;
+    return (this.fundingAmount || 0) / 100;
   }
 
   @computed
@@ -167,7 +161,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
     );
   }
 
-  constructor(newProposalInfo: IProposalEntity) {
+  constructor(newProposalInfo: ProposalEntity) {
     super(newProposalInfo);
     this.id = newProposalInfo.id;
     this.createdAt = new Date(newProposalInfo.createdAt);
@@ -184,17 +178,14 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
+    //this.images = newProposalInfo.images;
     if (this.type === ProposalType.JOIN_REQUEST) {
-      this.paymentState = (
-        newProposalInfo as IJoinRequestProposal
-      ).paymentState;
-      this.join = (newProposalInfo as IJoinRequestProposal).join;
+      this.paymentState = (newProposalInfo as JoinRequestEntity).paymentState;
+      this.join = (newProposalInfo as JoinRequestEntity).join;
       // TODO: ... more props
     }
     if (this.type === ProposalType.FUNDING_REQUEST) {
-      this.fundingRequest = (
-        newProposalInfo as IFundingRequestProposal
-      ).fundingRequest;
+      this.funding = (newProposalInfo as FundingProposalEntity).funding;
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;

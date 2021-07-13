@@ -1,23 +1,24 @@
-
 import {gql} from '@apollo/client';
 import {Exact, Scalars} from '~/Graphql';
 
 export type CreateDiscussionMessageInput = {
-    discussionId: Scalars['ID'];
-    message: Scalars['String'];
-}
+  discussionId: Scalars['ID'];
+  message: Scalars['String'];
+};
 
 export type DiscussionWhereInput = {
-    discussionId: Scalars['ID'];
-}
+  discussionId: Scalars['ID'];
+};
 
 // Input Variables
 export type CreateDiscussionMessageVariables = Exact<{
-    discussionMessage: CreateDiscussionMessageInput;
+  discussionMessage: CreateDiscussionMessageInput;
 }>;
 
 export const CreateDiscussionMessageDocument = gql`
-  mutation CreateDiscussionMessage($discussionMessage: CreateDiscussionMessageInput!) {
+  mutation CreateDiscussionMessage(
+    $discussionMessage: CreateDiscussionMessageInput!
+  ) {
     createDiscussionMessage(input: $discussionMessage) {
       id
       message
@@ -30,12 +31,11 @@ export const GetDiscussionMessageDocument = gql`
     discussion(id: $id) {
       id
       messages {
-          id
-          message
-          userId
-          createdAt
+        id
+        message
+        userId
+        createdAt
       }
     }
   }
 `;
-
