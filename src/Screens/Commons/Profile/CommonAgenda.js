@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
-import {object, shape, number, string, func} from 'prop-types';
+import {object, shape, string, func} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
 import {HyperText} from '~/Components/Text/HyperText';
@@ -104,8 +104,8 @@ const CommonAgenda = ({
           <View style={styles.sectionContainer}>
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
-              minFeeToJoin={common?.minFeeToJoinFormatted}
-              contributionType={common?.contributionType || 'one-time'}
+              fundingMinimumAmount={common?.fundingMinimumAmountFormatted}
+              fundingType={common?.fundingType || 'one-time'}
             />
           </View>
         </ScrollView>
@@ -119,9 +119,7 @@ CommonAgenda.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
-      common: shape({
-        fundingGoalDeadline: number,
-      }).isRequired,
+      common: object,
     }),
   }),
 };

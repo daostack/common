@@ -33,7 +33,7 @@ const PaymentDetailsStep = ({
   const userInfo = rootStore.authStore.userInfo;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
-  const isMonthly = currCommon.contributionType === 'monthly';
+  const isMonthly = currCommon.fundingType === 'monthly';
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;

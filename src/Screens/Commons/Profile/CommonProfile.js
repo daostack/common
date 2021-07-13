@@ -760,9 +760,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
-        {currCommon.contributionType === 'monthly' && '/mo'} min.
-        contribution
+        ${currCommon.fundingMinimumAmountFormatted}
+        {currCommon.fundingType === 'monthly' && '/mo'} min.contribution
       </Text>
     </TouchableOpacity>
   );
@@ -928,12 +927,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
                 commonProgressInfo={{
-                  time: currCommon.fundingGoalDeadline,
                   activeProposals:
                     currCommon.numberOfBoostedProposals +
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals,
-                  /* goal: currCommon.fundingGoal, */
                   members: currCommon?.members?.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,

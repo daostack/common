@@ -12,7 +12,7 @@ const AmountField = ({
   onCustomSelect,
   onCustomClose,
   onAmountSelected,
-  minFeeToJoin,
+  fundingMinimumAmount,
   isMonthly,
   zeroContribution,
 }) => {
@@ -26,14 +26,17 @@ const AmountField = ({
   const multiplications = zeroContribution ? [0, 1, 2.5] : [1, 2.5, 5];
 
   const errorMessage =
-    minFeeToJoin > 0
-      ? `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`
+    fundingMinimumAmount > 0
+      ? `The amount must be at least $${fundingMinimumAmount.toString()} and at most $2500.`
       : 'The amount must be 0, or at least $5 and at most $2500.';
 
   // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
-    minFeeToJoin > 0
-      ? [...multiplications.map((m) => m * minFeeToJoin), 1 * minFeeToJoin]
+    fundingMinimumAmount > 0
+      ? [
+          ...multiplications.map((m) => m * fundingMinimumAmount),
+          1 * fundingMinimumAmount,
+        ]
       : [0, 5, 10, 10];
 
   const onAmountPress = (isCustom, amount, id) => {
@@ -98,7 +101,7 @@ const AmountField = ({
           validateRule: [
             'required',
             'numeric',
-            `${customAmountRules.AMOUNT_RULES.MIN_FEE_TO_JOIN_RULE}:${minFeeToJoin}`,
+            `${customAmountRules.AMOUNT_RULES.FUNDING_MINIMUM_AMOUNT_RULE}:${fundingMinimumAmount}`,
             'max:2500',
           ],
           customErrorMessage: errorMessage,
@@ -113,7 +116,7 @@ AmountField.propTypes = {
   onCustomSelect: func,
   onCustomClose: func,
   onAmountSelected: func,
-  minFeeToJoin: number,
+  fundingMinimumAmount: number,
   isMonthly: bool,
   zeroContribution: bool,
 };

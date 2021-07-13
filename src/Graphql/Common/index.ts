@@ -56,8 +56,7 @@ export type Common = {
   openJoinRequests: Scalars['Int'];
   openFundingRequests: Scalars['Int'];
   image: Scalars['String'];
-  //register: Scalars['String'];
-  whitelisted: Scalars['String'];
+  whitelisted: Scalars['Boolean'];
 };
 
 export type Mutation = {

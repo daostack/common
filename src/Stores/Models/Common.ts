@@ -17,6 +17,12 @@ export class Common extends BaseModel<ICommonEntity> {
   name: string;
 
   @observable
+  createdAt: Date;
+
+  @observable
+  updatedAt: Date;
+
+  @observable
   image: string;
 
   @observable
@@ -24,9 +30,6 @@ export class Common extends BaseModel<ICommonEntity> {
 
   @observable
   raised: number;
-
-  /*@observable
-  fundingGoalDeadline: number;*/
 
   @observable
   members: ICommonMember[];
@@ -61,19 +64,16 @@ export class Common extends BaseModel<ICommonEntity> {
   constructor(newCommonInfo: ICommonEntity) {
     super(newCommonInfo);
     this.id = newCommonInfo.id;
-    if (newCommonInfo.name === 'Ravenclaw') {
-      console.log('tlt newCommonInfo', newCommonInfo);
-    }
+    this.createdAt = newCommonInfo.createdAt;
+    this.updatedAt = newCommonInfo.updatedAt;
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;
     this.balance = newCommonInfo.balance;
     this.raised = newCommonInfo.raised;
-    //this.fundingGoalDeadline = newCommonInfo.fundingGoalDeadline;
     this.members = newCommonInfo.members.map((member: ICommonMember) => member);
     this.rules = newCommonInfo.rules || [];
     this.links = newCommonInfo.links || [];
-    this.fundingMinimumAmount =
-      newCommonInfo.minFeeToJoin || newCommonInfo.fundingMinimumAmount;
+    this.fundingMinimumAmount = newCommonInfo.fundingMinimumAmount;
     this.whitelisted = newCommonInfo.whitelisted;
     this.fundingType = newCommonInfo.fundingType;
     this.action = newCommonInfo.action;
@@ -95,13 +95,8 @@ export class Common extends BaseModel<ICommonEntity> {
   }
 
   @computed
-  get minFeeToJoinFormatted(): string {
+  get fundingMinimumAmountFormatted(): string {
     const minValue = +this.fundingMinimumAmount;
-    /*
-      ? 0
-      : +this.fundingMinimumAmount;//this.minFeeToJoin;
-*/
-    console.log('tkt this.minValue', minValue);
     return formatNumber(minValue / 100).toString();
   }
 }

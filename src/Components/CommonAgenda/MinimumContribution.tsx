@@ -4,23 +4,25 @@ import {StyleSheet, View, Text} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 
 type Props = {
-  minFeeToJoin: string;
-  contributionType: string;
+  fundingMinimumAmount: string;
+  fundingType: string;
 };
 
-const MinimumContribution: FC<Props> = ({minFeeToJoin, contributionType}) => (
+const MinimumContribution: FC<Props> = ({
+  fundingMinimumAmount,
+  fundingType,
+}) => (
   <View>
     <Text style={styles.text}>
-      {`$${minFeeToJoin} `}
-      <Text style={[styles.text, styles.bold]}>{contributionType}</Text>{' '}
-      contribution
+      {`$${fundingMinimumAmount} `}
+      <Text style={[styles.text, styles.bold]}>{fundingType}</Text> contribution
     </Text>
   </View>
 );
 
 MinimumContribution.propTypes = {
-  minFeeToJoin: string.isRequired,
-  contributionType: string.isRequired,
+  fundingMinimumAmount: string.isRequired,
+  fundingType: string.isRequired,
 };
 
 const styles = StyleSheet.create({

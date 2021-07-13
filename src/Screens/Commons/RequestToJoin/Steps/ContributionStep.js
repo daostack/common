@@ -23,7 +23,7 @@ const ContributionStep = ({
   uiStore,
 }) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const isMonthly = currCommon.contributionType === 'monthly';
+  const isMonthly = currCommon.fundingType === 'monthly';
   const zeroContribution = isMonthly ? false : currCommon?.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -147,9 +147,11 @@ const ContributionStep = ({
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month ($${currCommon.minFeeToJoinFormatted}/mo min.)`
+    ? `${contributeMessage} each month ($${currCommon.fundingMinimumAmountFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0 ? `($${currCommon.minFeeToJoinFormatted} min.)` : ''
+        currCommon.fundingMinimumAmountFormatted !== 0
+          ? `($${currCommon.fundingMinimumAmountFormatted} min.)`
+          : ''
       }`;
 
   return (
@@ -200,7 +202,7 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={currCommon.minFeeToJoinFormatted}
+          fundingMinimumAmount={currCommon.fundingMinimumAmountFormatted}
           zeroContribution={zeroContribution}
         />
 
