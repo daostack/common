@@ -17,12 +17,6 @@ export class Common extends BaseModel<ICommonEntity> {
   name: string;
 
   @observable
-  createdAt: Date;
-
-  @observable
-  updatedAt: Date;
-
-  @observable
   image: string;
 
   @observable

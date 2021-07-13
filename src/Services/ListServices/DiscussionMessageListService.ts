@@ -3,9 +3,9 @@ import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscus
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
-CreateDiscussionMessageInput,
-CreateDiscussionMessageDocument,
-GetDiscussionMessageDocument,
+  CreateDiscussionMessageInput,
+  CreateDiscussionMessageDocument,
+  GetDiscussionMessageDocument,
 } from '~/Graphql/Message';
 
 import ApolloClient from '~/Services/util/ApolloClient';
@@ -17,7 +17,6 @@ export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
 ) => void;
 
-
 // Create Proposals
 export const createDiscussionMessage = async (formData: CreateDiscussionMessageInput) => {
   try {
@@ -28,28 +27,34 @@ export const createDiscussionMessage = async (formData: CreateDiscussionMessageI
       },
     });
   } catch (err) {
-    logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
+    logger.log(
+      'Error while trying to create a new Funding Proposal: ',
+      getGQLErrorObject(err),
+    );
     throw err;
   }
 };
 
-export const getProposalDiscussionMessages = async (discussionId: string): Promise<IDiscussionMessageEntity[]> => {
+export const getProposalDiscussionMessages = async (
+  discussionId: string,
+): Promise<IDiscussionMessageEntity[]> => {
   try {
     const {data} = await apollo.query({
       query: GetDiscussionMessageDocument,
       variables: {
-         id: discussionId,
+        id: discussionId,
       },
     });
 
     return data.discussion.messages;
   } catch (err) {
-    logger.log('Error while trying to get Proposal discussion: ', getGQLErrorObject(err));
+    logger.log(
+      'Error while trying to get Proposal discussion: ',
+      getGQLErrorObject(err),
+    );
     throw err;
   }
 };
-
-
 
 //OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (

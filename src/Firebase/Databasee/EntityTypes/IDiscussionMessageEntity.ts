@@ -14,11 +14,6 @@ export interface IDiscussionMessageEntity extends IBaseEntity {
   userId: string;
 
   /**
-   * The name of the creator of the message
-   */
-  ownerName: string;
-
-  /**
    * The content of the message
    */
   message: string;
@@ -32,4 +27,6 @@ export interface IDiscussionMessageEntity extends IBaseEntity {
    * The moderation object that handles hiding/showing proposals
    */
   moderation?: IModerationEntity;
+
+  type: string;
 }
