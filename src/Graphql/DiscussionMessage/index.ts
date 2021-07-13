@@ -1,5 +1,5 @@
 import {gql} from '@apollo/client';
-import {
+/*import {
   Exact,
   FileInput,
   ImageInput,
@@ -7,7 +7,7 @@ import {
   Maybe,
   Mutation,
   Scalars,
-} from '~/Graphql';
+} from '~/Graphql';*/
 
 const gqlDiscussionMessageProps = `
 	id
