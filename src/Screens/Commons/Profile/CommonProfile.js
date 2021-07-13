@@ -350,10 +350,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               style={{
                 ...text.regularText,
                 ...layout.marginTopS,
-                ...text.writingDirection(currCommon.metadata.description),
+                ...text.writingDirection(currCommon.description),
               }}>
               {truncateString(
-                currCommon.metadata.description ?? '',
+                currCommon.description ?? '',
                 ABOUT_TRUNCATE_LENGTH,
               )}
             </Text>
@@ -761,7 +761,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         ${currCommon.minFeeToJoinFormatted}
-        {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
+        {currCommon.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
     </TouchableOpacity>
@@ -807,7 +807,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         }
         action={action}
       />
-      {currCommon?.metadata?.founderId ? (
+      {currCommon?.founderId ? (
         <View style={{flex: 1, position: 'relative'}}>
           <TouchableOpacity
             onPress={() => navigation.pop()}
@@ -890,10 +890,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 headerHeightLayouted={headerHeightLayouted}
                 onHeaderMenuOpen={() => openCommonOptions()}
                 commonInfo={{
-                  logo: currCommon?.metadata?.avatar,
+                  logo: currCommon?.avatar,
                   name: currCommon?.name,
                   description: currCommon?.description,
-                  byline: currCommon?.metadata?.byline,
+                  byline: currCommon?.byline,
                   cover: currCommon?.image,
                 }}
                 common={currCommon}

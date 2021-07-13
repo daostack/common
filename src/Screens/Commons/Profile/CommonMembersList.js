@@ -102,7 +102,7 @@ const CommonMembersList = ({
               key={`touch_${i}`}>
               <MemberCard
                 key={i}
-                moderatorId={currCommon?.metadata?.founderId}
+                moderatorId={currCommon?.founderId}
                 commonId={currCommon.id}
                 userInfo={{...member?.user, ...member}}
               />

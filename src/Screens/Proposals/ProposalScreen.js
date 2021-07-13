@@ -885,9 +885,7 @@ const ProposalScreen = ({
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
                       {proposalInfo.type === PROPOSAL_TYPE.Join &&
-                        proposalCommon?.metadata?.contributionType ===
-                          'monthly' &&
-                        ' per month'}
+                        proposalCommon?.contributionType === 'monthly' && ' per month'}
                     </Text>
                   </View>
                   {isIsraelLocale &&

@@ -34,7 +34,7 @@ const CommonBox = ({
       commonInfo={{
         cover: common?.image,
         name: common?.name,
-        description: common?.metadata?.byline,
+        description: common?.byline,
       }}
       common={common}
     />
@@ -61,7 +61,6 @@ CommonBox.propTypes = {
   common: shape({
     image: string,
     name: string,
-    metadata: object,
     fundingGoalDeadline: number,
     numberOfBoostedProposals: number,
     numberOfPreBoostedProposals: number,

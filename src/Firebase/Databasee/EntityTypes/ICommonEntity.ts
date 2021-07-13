@@ -43,10 +43,6 @@ export interface ICommonEntity extends IBaseEntity {
    */
   links: ICommonLink[];
 
-  /**
-   * The common metadata properties
-   */
-  //metadata: ICommonMetadata;
 
   /**
    * The whitelisting status of the common
@@ -114,30 +110,6 @@ export interface ICommonLink {
    * The address, to which the link is pointing
    */
   value: string;
-}
-
-export interface ICommonMetadata {
-  action: string;
-  byline: string;
-  description: string;
-
-  /**
-   * The id of the user, who created the common
-   */
-  founderId: string;
-
-  /**
-   * The minimum amount in cents, required
-   * to join the common
-   */
-  minFeeToJoin: number;
-
-  /**
-   * Whether the user should be charged every
-   * month, that they are member of the common,
-   * or only when they join
-   */
-  contributionType: ContributionType;
 }
 
 export type ContributionType = 'one-time' | 'monthly';

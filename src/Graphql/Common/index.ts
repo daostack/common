@@ -19,16 +19,6 @@ export enum CommonContributionType {
   Monthly = 'Monthly',
 }
 
-export type CommonMetadata = {
-  __typename?: 'CommonMetadata';
-  byline: Scalars['String'];
-  description: Scalars['String'];
-  founderId: Scalars['String'];
-  minFeeToJoin: Scalars['Int'];
-  contributionType: CommonContributionType;
-  action: Scalars['String'];
-};
-
 export type CommonMember = {
   __typename?: 'CommonMember';
   /** The user ID of the member */
@@ -66,7 +56,8 @@ export type Common = {
   openJoinRequests: Scalars['Int'];
   openFundingRequests: Scalars['Int'];
   image: Scalars['String'];
-  register: Scalars['String'];
+  //register: Scalars['String'];
+  whitelisted: Scalars['String'];
 };
 
 export type Mutation = {
@@ -384,12 +375,12 @@ query PendingCommons {
         }
         rules
         links
-        register: whitelisted
+        whitelisted
         action
         byline
         description
-        contributionType: fundingType
-        minFeeToJoin: fundingMinimumAmount
+        fundingType
+        fundingMinimumAmount
       }
     }
   }
@@ -417,12 +408,12 @@ export const GetUserCommonsDocument = gql`
         }
         rules
         links
-        register: whitelisted
+        whitelisted
         action
         byline
         description
-        contributionType: fundingType
-        minFeeToJoin: fundingMinimumAmount
+        fundingType
+        fundingMinimumAmount
       }
     }
   }

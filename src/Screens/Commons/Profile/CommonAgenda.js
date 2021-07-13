@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
-import {object, shape, number, array, string, func} from 'prop-types';
+import {object, shape, number, string, func} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
 import {HyperText} from '~/Components/Text/HyperText';
@@ -67,9 +67,9 @@ const CommonAgenda = ({
               textStyle={{
                 ...styles.description,
                 width: '100%',
-                ...text.writingDirection(common?.metadata.description),
+                ...text.writingDirection(common?.description),
               }}>
-              {common?.metadata.description}
+              {common?.description}
             </HyperText>
           </View>
 
@@ -105,7 +105,7 @@ const CommonAgenda = ({
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
               minFeeToJoin={common?.minFeeToJoinFormatted}
-              contributionType={common?.metadata.contributionType || 'one-time'}
+              contributionType={common?.contributionType || 'one-time'}
             />
           </View>
         </ScrollView>
@@ -120,12 +120,6 @@ CommonAgenda.propTypes = {
   route: shape({
     params: shape({
       common: shape({
-        metadata: shape({
-          description: string.isRequired,
-          action: string,
-          links: array,
-          rules: array,
-        }),
         fundingGoalDeadline: number,
       }).isRequired,
     }),

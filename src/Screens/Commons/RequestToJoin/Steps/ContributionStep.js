@@ -23,9 +23,8 @@ const ContributionStep = ({
   uiStore,
 }) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const metadata = currCommon.metadata;
-  const isMonthly = metadata.contributionType === 'monthly';
-  const zeroContribution = isMonthly ? false : metadata.zeroContribution;
+  const isMonthly = currCommon.contributionType === 'monthly';
+  const zeroContribution = isMonthly ? false : currCommon?.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;

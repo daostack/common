@@ -17,10 +17,7 @@ import {object, shape, InferProps, string, func} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {
-  ICommonEntity,
-  ICommonMetadata,
-} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 
 import {Formik, FormikProps} from 'formik';
 import {
@@ -99,17 +96,13 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
 
     if (type === editType.info) {
       const infoValues = formValues as EditInfoValues;
-      const updatedMetadata = {
-        ...currCommon.metadata,
-        byline: infoValues.tagLine,
-        description: infoValues.about,
-      } as ICommonMetadata;
 
       commonUpdate = {
         ...currCommon,
         name: infoValues.name,
         image: infoValues.image,
-        metadata: updatedMetadata,
+        byline: infoValues.tagLine,
+        description: infoValues.about,
       } as Partial<ICommonEntity>;
     } else {
       const rulesValues = formValues as EditInfoValues;
@@ -153,8 +146,8 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
       ? ({
           image: currCommon?.image,
           name: currCommon?.name,
-          tagLine: currCommon?.metadata?.byline,
-          about: currCommon?.metadata?.description,
+          tagLine: currCommon?.byline,
+          about: currCommon?.description,
         } as EditInfoValues)
       : ({
           rules: currCommon.rules,
