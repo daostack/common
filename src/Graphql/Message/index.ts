@@ -16,11 +16,11 @@ export type CreateDiscussionMessageVariables = Exact<{
 }>;
 
 export const CreateDiscussionMessageDocument = gql`
-  mutation CreateDiscussionMessage(
+  mutation createDiscussionMessage(
     $discussionMessage: CreateDiscussionMessageInput!
   ) {
     createDiscussionMessage(input: $discussionMessage) {
-      id
+      discussionId
       message
     }
   }

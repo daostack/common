@@ -17,8 +17,9 @@ export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
 ) => void;
 
-// Create Proposals
-export const createDiscussionMessage = async (formData: CreateDiscussionMessageInput) => {
+export const createDiscussionMessage = async (
+  formData: CreateDiscussionMessageInput,
+) => {
   try {
     return await ApolloClient.getInstance().mutate({
       mutation: CreateDiscussionMessageDocument,
@@ -28,7 +29,7 @@ export const createDiscussionMessage = async (formData: CreateDiscussionMessageI
     });
   } catch (err) {
     logger.log(
-      'Error while trying to create a new Funding Proposal: ',
+      'Error while trying to create a new discussion message ',
       getGQLErrorObject(err),
     );
     throw err;
@@ -49,7 +50,7 @@ export const getProposalDiscussionMessages = async (
     return data.discussion.messages;
   } catch (err) {
     logger.log(
-      'Error while trying to get Proposal discussion: ',
+      'Error while trying to get discussionMessage: ',
       getGQLErrorObject(err),
     );
     throw err;

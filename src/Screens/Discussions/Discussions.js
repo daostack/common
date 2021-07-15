@@ -35,6 +35,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
+import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -129,8 +130,18 @@ const Discussions = ({
     const message = inputText;
     if (!isEmptyMessage()) {
       inputRef.current.clear();
+      Keyboard.dismiss();
+      try {
+        await createDiscussionMessage({
+          discussionId,
+          message,
+        });
+        Toast.success('Done');
+      } catch (error) {
+        Toast.error(error);
+      }
 
-      db.collection('discussionMessage')
+      /*db.collection('discussionMessage')
         .doc()
         .set({
           text: message,
@@ -149,7 +160,7 @@ const Discussions = ({
         })
         .finally(() => {
           setIsSending(false);
-        });
+        });*/
     } else {
       setIsSending(false);
     }
