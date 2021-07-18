@@ -2,7 +2,7 @@ import {gql} from '@apollo/client';
 import {Exact, Scalars} from '~/Graphql';
 
 export type CreateDiscussionMessageInput = {
-  discussionId: Scalars['ID'];
+  discussionId: Scalars['String'];
   message: Scalars['String'];
 };
 

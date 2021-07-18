@@ -140,27 +140,6 @@ const Discussions = ({
       } catch (error) {
         Toast.error(error);
       }
-
-      /*db.collection('discussionMessage')
-        .doc()
-        .set({
-          text: message,
-          createTime: new Date(),
-          ownerId: currentUser.uid,
-          commonId: commonId,
-          discussionId: discussionId,
-        })
-        .then(async (msg) => {
-          Keyboard.dismiss();
-          setInputText('');
-          await updateDiscussionLastMessage(discussionId, currentUser.uid);
-        })
-        .catch((error) => {
-          Toast.error(error);
-        })
-        .finally(() => {
-          setIsSending(false);
-        });*/
     } else {
       setIsSending(false);
     }
