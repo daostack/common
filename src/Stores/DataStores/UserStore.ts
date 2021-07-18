@@ -11,7 +11,7 @@ import {
   IFirebaseDocChange,
 } from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonMemberType} from '~/Graphql/Common/CommonType';
 import {showBackendError} from '~/Util';
 import {runInAction} from 'mobx';
 
@@ -46,10 +46,10 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   };
 
   getCommonUsersByMembersArray = (
-    members: Array<ICommonMember>,
+    members: Array<CommonMemberType>,
   ): Array<UserModel | undefined> => {
     try {
-      return members.map((commonMember: ICommonMember) => {
+      return members.map((commonMember: CommonMemberType) => {
         const user = this.getUserById(commonMember.userId);
         if (user) {
           user.joinedAt = commonMember.joinedAt;

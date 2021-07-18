@@ -1,5 +1,5 @@
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonType} from '~/Graphql/Common/CommonType';
 import {IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CommonsWhereInput,
@@ -18,10 +18,10 @@ import logger from '~/Services/Logger';
 import {getGQLErrorObject} from '~/Util';
 
 export type commonListLoadCallbackFn = (
-  updatedCommonList: IFirebaseSnapshot<ICommonEntity>,
+  updatedCommonList: IFirebaseSnapshot<CommonType>,
 ) => void;
 export type commonLoadCallbackFn = (
-  updatedCommonList: ICommonEntity | null,
+  updatedCommonList: CommonType | null,
 ) => void;
 
 export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
@@ -31,7 +31,7 @@ export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
 
 export const fetchCommonById = async (
   commonId: string,
-): Promise<ICommonEntity> => {
+): Promise<CommonType> => {
   if (!commonId) {
     throw new Error(
       'Common Id (commonId) is required parameter, but it was not provided',
@@ -49,7 +49,7 @@ export const fetchCommonById = async (
   return new Common(data.common);
 };
 
-export const fetchUserPendingCommons = async (): Promise<ICommonEntity[]> => {
+export const fetchUserPendingCommons = async (): Promise<CommonType[]> => {
   try {
     const {data} = await apollo.query({
       query: GetUserPendingCommonsDocument,
@@ -57,7 +57,7 @@ export const fetchUserPendingCommons = async (): Promise<ICommonEntity[]> => {
 
     return (
       data.user?.proposals?.map(
-        ({common}: {common: ICommonEntity}) => new Common(common),
+        ({common}: {common: CommonType}) => new Common(common),
       ) ?? []
     );
   } catch (err) {
@@ -69,15 +69,13 @@ export const fetchUserPendingCommons = async (): Promise<ICommonEntity[]> => {
   }
 };
 
-export const fetchUserCommons = async (): Promise<ICommonEntity[]> => {
+export const fetchUserCommons = async (): Promise<CommonType[]> => {
   try {
     const {data} = await apollo.query({
       query: GetUserCommonsDocument,
     });
 
-    return (
-      data.user?.commons.map((item: ICommonEntity) => new Common(item)) ?? []
-    );
+    return data.user?.commons.map((item: CommonType) => new Common(item)) ?? [];
   } catch (err) {
     logger.log(
       'Error while trying to get user commons: ',
@@ -103,7 +101,7 @@ export const fetchCommons = async ({
       },
     });
 
-    return data?.commons.map((item: ICommonEntity) => new Common(item)) ?? [];
+    return data?.commons.map((item: CommonType) => new Common(item)) ?? [];
   } catch (err) {
     logger.log(
       'Error while trying to get featured commons: ',

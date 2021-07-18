@@ -12,7 +12,7 @@ import {
 } from 'mobx';
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
-import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {
   IFirebaseDoc,
   IFirebaseDocChange,
@@ -22,8 +22,8 @@ import {BaseModel} from '../Models/BaseModel';
 import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
-  IEntityModel extends BaseModel<IEntity>,
-  IEntity extends IBaseEntity
+  IEntityModel extends BaseModel<BaseType>,
+  IEntity extends BaseType
 > {
   @persist('map')
   @observable

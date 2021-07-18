@@ -1,9 +1,6 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 
-export interface IUserEntity extends IBaseEntity {
-  // TODO: remove "uid" from the users collection and use "id";
-  // The users collection is the only one that has & use "uid" instead of "id" for representing the unique id.
-  // However in the IBaseEntity there is "id" both in mobile app and clouldfunctions.
+export interface IUserEntity extends BaseType {
   uid: string;
 
   email: string;

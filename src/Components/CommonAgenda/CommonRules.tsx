@@ -5,12 +5,12 @@ import {string, func, array} from 'prop-types';
 import Title from '~/Components/CommonAgenda/Title';
 import {HyperText} from '~/Components/Text/HyperText';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
-import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonRule} from '~/Graphql/Common/CommonType';
 
 type Props = {
   onEdit: () => void;
   canEdit: string;
-  rules: ICommonRule[];
+  rules: CommonRule[];
 };
 
 const CommonRules: FC<Props> = ({onEdit, canEdit, rules}) => {

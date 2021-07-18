@@ -5,35 +5,36 @@ import MultiTitleValueField from '~/Components/FormikForm/MultiTitleValueField';
 
 import {object, string, array} from 'yup';
 import {FormikProps} from 'formik';
-import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonRule} from '~/Graphql/Common/CommonType';
 
 export const validationSchema = object({
-  rules: array().of(object().shape(
-    {
-      title: string().when('value', {
-        is: (value: any) => value !== undefined,
-        then: string().max(80, 'Max 28 chars').required('Field is required'),
-        otherwise: string().max(80, 'Max 28 chars'),
-      }),
-      value: string().when('title', {
-        is: (value: any) => value !== undefined,
-        then: string().required('Field is required'),
-        otherwise: string(),
-      }),
-    }, ['title', 'value']
-  )),
+  rules: array().of(
+    object().shape(
+      {
+        title: string().when('value', {
+          is: (value: any) => value !== undefined,
+          then: string().max(80, 'Max 28 chars').required('Field is required'),
+          otherwise: string().max(80, 'Max 28 chars'),
+        }),
+        value: string().when('title', {
+          is: (value: any) => value !== undefined,
+          then: string().required('Field is required'),
+          otherwise: string(),
+        }),
+      },
+      ['title', 'value'],
+    ),
+  ),
 });
 
 export interface Values {
-  rules: Array<ICommonRule>;
+  rules: Array<CommonRule>;
 }
 
 const EditRules = (formik: {
   formikProps: FormikProps<Values>;
 }): ReactElement => {
-  const {
-    values,
-  } = formik.formikProps;
+  const {values} = formik.formikProps;
 
   return (
     <View style={styles.body}>
