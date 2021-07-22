@@ -1,7 +1,7 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {firebase} from '~/Firebase';
 
-export interface IModerationEntity extends IBaseEntity {
+export interface IModerationEntity extends BaseType {
   /**
    * type of moderation: hidden, reported, visible
    */

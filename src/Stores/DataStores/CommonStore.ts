@@ -1,5 +1,4 @@
 import {computed, observable, ObservableMap, action} from 'mobx';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
   subscribeToAllCommons,
@@ -13,9 +12,10 @@ import {Common} from '../Models/Common';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
+import {CommonType} from '~/Graphql/Common/CommonType';
 import {showErrorPopUp} from '~/Util';
 
-export default class CommonStore extends BaseStore<Common, ICommonEntity> {
+export default class CommonStore extends BaseStore<Common, CommonType> {
   @observable
   isLoading: boolean;
 
@@ -71,7 +71,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         fetchUserPendingCommons(),
       ]);
       ids = [...myCommons, ...pendingCommons].map(
-        (item: ICommonEntity) => item.id,
+        (item: CommonType) => item.id,
       );
     }
     const commons = await fetchCommons({ids, page});
@@ -114,7 +114,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   }
 
   // Overriden methods
-  getEntityModel(entity: ICommonEntity): Common {
+  getEntityModel(entity: CommonType): Common {
     return new Common(entity);
   }
 

@@ -17,7 +17,7 @@ import {object, shape, InferProps, string, func} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonType} from '~/Graphql/Common/CommonType';
 
 import {Formik, FormikProps} from 'formik';
 import {
@@ -58,7 +58,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const [currCommon, setCurrCommon] = useState<ICommonEntity>({});
+  const [currCommon, setCurrCommon] = useState<CommonType>({});
   const type: string = route.params.type;
   const formikRef = useRef();
 
@@ -66,7 +66,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     (async () => {
       const response = (await commonStore.getCommonById(
         route.params.currCommon.id,
-      )) as ICommonEntity;
+      )) as CommonType;
       setCurrCommon(response);
     })();
   }, [route.params]);
@@ -103,19 +103,19 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
         image: infoValues.image,
         byline: infoValues.tagLine,
         description: infoValues.about,
-      } as Partial<ICommonEntity>;
+      } as Partial<CommonType>;
     } else {
       const rulesValues = formValues as EditInfoValues;
       commonUpdate = {
         ...currCommon,
         ...rulesValues,
-      } as Partial<ICommonEntity>;
+      } as Partial<CommonType>;
     }
 
     onFormSubmitEnd(commonUpdate);
   };
 
-  const onFormSubmitEnd = async (updatedCommon: Partial<ICommonEntity>) => {
+  const onFormSubmitEnd = async (updatedCommon: Partial<CommonType>) => {
     try {
       commonStore.updateCommonInfo(updatedCommon);
       Toast.done('Your Common is updated');

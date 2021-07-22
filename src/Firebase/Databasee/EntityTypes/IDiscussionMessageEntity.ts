@@ -1,8 +1,7 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {IModerationEntity} from './IModerationEntity';
 
-// TODO: implement IBaseEntity when the backend is refactored
-export interface IDiscussionMessageEntity extends IBaseEntity {
+export interface IDiscussionMessageEntity extends BaseType {
   /**
    * ID of the parent discussion of this message, could be a Discussion ID, or a Proposal ID
    */

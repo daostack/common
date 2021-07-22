@@ -3,17 +3,15 @@ import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonRule} from '~/Graphql/Common/CommonType';
 import {FormikProps, getIn} from 'formik';
-import {
-  Values as EditRulesValues,
-} from '~/Components/EditCommon/EditRules';
+import {Values as EditRulesValues} from '~/Components/EditCommon/EditRules';
 
 interface RemoveBtnProps {
-  onFieldDeleted: () => void,
+  onFieldDeleted: () => void;
 }
 
-const RemoveLinkBtn = ({onFieldDeleted} : RemoveBtnProps) => (
+const RemoveLinkBtn = ({onFieldDeleted}: RemoveBtnProps) => (
   <TouchableOpacity
     style={styles.removeBtnContainer}
     onPress={() => onFieldDeleted()}>
@@ -22,20 +20,20 @@ const RemoveLinkBtn = ({onFieldDeleted} : RemoveBtnProps) => (
 );
 
 interface Props {
-  formik: {formikProps: FormikProps<EditRulesValues>},
-  placeholderValueText: string,
-  multiline: boolean,
-  addMultiFieldBtnName: string,
-  maxLength: number,
-  maxLengthDescription: number,
-  label: string,
-  title: string,
-  maxCount: number,
-  link: boolean,
-  rule: boolean,
-  onFieldDeleted: () => void,
-  currRules: Array<ICommonRule>,
-  onChangeText: (index: number) => void,
+  formik: {formikProps: FormikProps<EditRulesValues>};
+  placeholderValueText: string;
+  multiline: boolean;
+  addMultiFieldBtnName: string;
+  maxLength: number;
+  maxLengthDescription: number;
+  label: string;
+  title: string;
+  maxCount: number;
+  link: boolean;
+  rule: boolean;
+  onFieldDeleted: () => void;
+  currRules: Array<CommonRule>;
+  onChangeText: (index: number) => void;
 }
 
 const MultiTitleValueField = (props: Props) => {
@@ -64,7 +62,7 @@ const MultiTitleValueField = (props: Props) => {
   let currRules = values?.rules || [];
 
   useEffect(() => {
-    if (values.rules.length > 0 ) {
+    if (values.rules.length > 0) {
       setCount(values.rules?.length);
     }
     canAddMore();
@@ -93,7 +91,10 @@ const MultiTitleValueField = (props: Props) => {
   const canAddMore = () => {
     let canAdd = true;
     [...Array(count).keys()].forEach((i) => {
-      if (!currRules[i].value || typeof getIn(errors,`rules[${i}].value`) === 'string') {
+      if (
+        !currRules[i].value ||
+        typeof getIn(errors, `rules[${i}].value`) === 'string'
+      ) {
         canAdd = false;
       }
     });
@@ -108,13 +109,14 @@ const MultiTitleValueField = (props: Props) => {
         const currRuleTitleName = `rules[${currIndex}].title`;
 
         return (
-          <View
-            key={`key_${currIndex}`}
-            style={layout.marginBottomM}>
+          <View key={`key_${currIndex}`} style={layout.marginBottomM}>
             {props.title && (
-
               <TextInputField
-                errorMessage={errors && getIn(touched,currRuleTitleName) && getIn(errors, currRuleTitleName)}
+                errorMessage={
+                  errors &&
+                  getIn(touched, currRuleTitleName) &&
+                  getIn(errors, currRuleTitleName)
+                }
                 value={getIn(values, currRuleTitleName)}
                 viewStyle={{alignSelf: 'stretch', marginTop: 0}}
                 placeholderText={props.title}
@@ -128,22 +130,26 @@ const MultiTitleValueField = (props: Props) => {
               />
             )}
 
-              <TextInputField
-                errorMessage={errors && getIn(touched,currRuleValueName) && getIn(errors, currRuleValueName)}
-                value={getIn(values, currRuleValueName)}
-                viewStyle={{alignSelf: 'stretch', marginTop: -5}}
-                placeholderText={
-                  placeholderValueText ? placeholderValueText : 'https://'
-                }
-                onBlur={handleBlur(currRuleValueName)}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={handleChange(currRuleValueName)}
-                multiline={multiline}
-                maxLength={maxLengthDescription}
-              />
+            <TextInputField
+              errorMessage={
+                errors &&
+                getIn(touched, currRuleValueName) &&
+                getIn(errors, currRuleValueName)
+              }
+              value={getIn(values, currRuleValueName)}
+              viewStyle={{alignSelf: 'stretch', marginTop: -5}}
+              placeholderText={
+                placeholderValueText ? placeholderValueText : 'https://'
+              }
+              onBlur={handleBlur(currRuleValueName)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={handleChange(currRuleValueName)}
+              multiline={multiline}
+              maxLength={maxLengthDescription}
+            />
 
-           {count > currIndex && (
+            {count > currIndex && (
               <View style={styles.removeBtn}>
                 <RemoveLinkBtn
                   onFieldDeleted={() => onFieldDeleted(currIndex)}
