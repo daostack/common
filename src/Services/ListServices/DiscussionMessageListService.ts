@@ -8,7 +8,6 @@ import {
   GetDiscussionMessageDocument,
 } from '~/Graphql/Message';
 
-import ApolloClient from '~/Services/util/ApolloClient';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -21,12 +20,14 @@ export const createDiscussionMessage = async (
   formData: CreateDiscussionMessageInput,
 ) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    const data = await apollo.mutate({
       mutation: CreateDiscussionMessageDocument,
       variables: {
         discussionMessage: formData,
       },
     });
+    console.log('data', data);
+    return data;
   } catch (err) {
     logger.log(
       'Error while trying to create a new discussion message ',
@@ -36,7 +37,7 @@ export const createDiscussionMessage = async (
   }
 };
 
-export const getProposalDiscussionMessages = async (
+export const getDiscussionMessages = async (
   discussionId: string,
 ): Promise<IDiscussionMessageEntity[]> => {
   try {
@@ -44,6 +45,27 @@ export const getProposalDiscussionMessages = async (
       query: GetDiscussionMessageDocument,
       variables: {
         id: discussionId,
+      },
+    });
+
+    return data.discussion.messages;
+  } catch (err) {
+    logger.log(
+      'Error while trying to get discussionMessage: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
+
+export const getProposalDiscussionMessages = async (
+  proposalId: string,
+): Promise<IDiscussionMessageEntity[]> => {
+  try {
+    const {data} = await apollo.query({
+      query: GetDiscussionMessageDocument,
+      variables: {
+        id: proposalId,
       },
     });
 

@@ -98,7 +98,7 @@ export const GetDiscussionDocument = gql`
       title: topic
       message: description
       messageCount
-      createTime: createdAt
+      createdAt
       ownerId: userId
       owner {
         photoURL: photo
@@ -108,7 +108,18 @@ export const GetDiscussionDocument = gql`
         country
       }
       lastMessage: latestMessage
-      createdAt
+      messages {
+        owner {
+          id
+        }
+        id
+        createdAt
+        updatedAt
+        message
+        type
+        flag
+        userId
+      }
     }
   }
 `;

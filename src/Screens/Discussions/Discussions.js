@@ -22,7 +22,6 @@ import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
-import {db} from '../../Firebase';
 import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
@@ -132,10 +131,11 @@ const Discussions = ({
       inputRef.current.clear();
       Keyboard.dismiss();
       try {
-        await createDiscussionMessage({
+        const {data} = await createDiscussionMessage({
           discussionId,
           message,
         });
+        console.log('createDiscussionMessage', data.createDiscussionMessage);
         Toast.success('Done');
       } catch (error) {
         Toast.error(error);

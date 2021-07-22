@@ -5,6 +5,7 @@ import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {DiscussionMessage} from './DiscussionMessage';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
@@ -34,6 +35,9 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
   owner: IUserEntity;
 
+  @observable
+  messages: DiscussionMessage[];
+
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
@@ -50,5 +54,6 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.isExpanded = isExpanded;
     this.owner = new UserModel(newDiscussionInfo.owner);
+    this.messages = newDiscussionInfo.messages?.map((message: any) => new DiscussionMessage(message))
   }
 }

@@ -9,10 +9,21 @@ import {gql} from '@apollo/client';
   Scalars,
 } from '~/Graphql';*/
 
-const gqlDiscussionMessageProps = `
-	id
-  createdAt
+/*
+createdAt
+  id
   updatedAt
+  type
+  message
+  discussionId
+  proposalId
+  userId
+ */
+
+const gqlDiscussionMessageProps = `
+  id
+  updatedAt
+  createdAt
   type
   message
   discussionId
@@ -24,7 +35,7 @@ export const CreateDiscussionMessageDocumant = gql`
   mutation CreateDiscussionMessage(
     $discussionMessage: CreateDiscussionMessageInput!
   ) {
-    CreateDiscussion(input: $discussionMessage) {
+    createDiscussionMessage(input: $discussionMessage) {
       ${gqlDiscussionMessageProps}
     }
   }
