@@ -5,7 +5,7 @@ import {
   ICommonLink,
   CommonMemberType,
   CommonRule,
-  ContributionType
+  ContributionType,
 } from '~/Graphql/Common/CommonType';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 import {BaseModel} from './BaseModel';
