@@ -1,6 +1,6 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 
-export interface IVoteEntity extends IBaseEntity {
+export interface IVoteEntity extends BaseType {
   /**
    * The id of the user who created this vote
    */

@@ -1,6 +1,6 @@
-export interface IBaseEntity {
+export interface BaseType {
   /**
-   * The main identifier of the common
+   * The main identifier
    */
   id: string;
 

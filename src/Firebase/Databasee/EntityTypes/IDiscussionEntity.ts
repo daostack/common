@@ -1,7 +1,7 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-export interface IDiscussionEntity extends IBaseEntity {
+export interface IDiscussionEntity extends BaseType {
   /**
    * Title of the discussion
    */

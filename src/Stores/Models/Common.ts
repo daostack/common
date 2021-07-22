@@ -1,15 +1,16 @@
 import {observable, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
-  ICommonEntity,
+  CommonType,
   ICommonLink,
-  ICommonMember,
-  ICommonRule,
-} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+  CommonMemberType,
+  CommonRule,
+  ContributionType,
+} from '~/Graphql/Common/CommonType';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 import {BaseModel} from './BaseModel';
 
-export class Common extends BaseModel<ICommonEntity> {
+export class Common extends BaseModel<CommonType> {
   @observable
   id: string;
 
@@ -32,10 +33,10 @@ export class Common extends BaseModel<ICommonEntity> {
   raised: number;
 
   @observable
-  members: ICommonMember[];
+  members: CommonMemberType[];
 
   @observable
-  rules: ICommonRule[];
+  rules: CommonRule[];
 
   @observable
   links: ICommonLink[];
@@ -47,7 +48,7 @@ export class Common extends BaseModel<ICommonEntity> {
   whitelisted: boolean;
 
   @observable
-  fundingType: string;
+  fundingType: ContributionType;
 
   @observable
   action: string;
@@ -59,9 +60,9 @@ export class Common extends BaseModel<ICommonEntity> {
   description: string;
 
   @observable
-  founderId: string | undefined;
+  founderId: string;
 
-  constructor(newCommonInfo: ICommonEntity) {
+  constructor(newCommonInfo: CommonType) {
     super(newCommonInfo);
     this.id = newCommonInfo.id;
     this.createdAt = newCommonInfo.createdAt;
@@ -70,7 +71,9 @@ export class Common extends BaseModel<ICommonEntity> {
     this.image = newCommonInfo.image;
     this.balance = newCommonInfo.balance;
     this.raised = newCommonInfo.raised;
-    this.members = newCommonInfo.members.map((member: ICommonMember) => member);
+    this.members = newCommonInfo.members.map(
+      (member: CommonMemberType) => member,
+    );
     this.rules = newCommonInfo.rules || [];
     this.links = newCommonInfo.links || [];
     this.fundingMinimumAmount = newCommonInfo.fundingMinimumAmount;

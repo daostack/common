@@ -1,8 +1,8 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {firebase} from '~/Firebase';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 
-export interface ICommonEntity extends IBaseEntity {
+export interface CommonType extends BaseType {
   /**
    * The name of the common showed in the app and
    * other places (email, notification etc.)
@@ -30,13 +30,13 @@ export interface ICommonEntity extends IBaseEntity {
   /**
    * List of all users, that are members of this common
    */
-  members: ICommonMember[];
+  members: CommonMemberType[];
 
   /**
    * List of the rules, that a member must agree
    * to be a part if the common
    */
-  rules: ICommonRule[];
+  rules: CommonRule[];
 
   /**
    * List of links, that the common provided
@@ -75,7 +75,7 @@ export interface ICommonEntity extends IBaseEntity {
   description: string;
 }
 
-export interface ICommonRule {
+export interface CommonRule {
   /**
    * The title for the rule
    */
@@ -106,7 +106,7 @@ export interface ICommonLink {
 
 export type ContributionType = 'one-time' | 'monthly';
 
-export interface ICommonMember {
+export interface CommonMemberType {
   userId: string;
   joinedAt?: firebase.firestore.Timestamp;
   roles: Array<PERMISSIONS_GRAPHQL>;

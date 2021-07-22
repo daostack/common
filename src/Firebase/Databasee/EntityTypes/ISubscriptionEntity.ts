@@ -1,8 +1,8 @@
 import {firebase} from '~/Firebase';
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {PaymentStatus} from './IPaymentEntity';
 
-export interface ISubscriptionEntity extends IBaseEntity {
+export interface ISubscriptionEntity extends BaseType {
   /**
    * Link to the current funding card
    */

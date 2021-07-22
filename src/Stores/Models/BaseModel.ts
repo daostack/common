@@ -1,7 +1,7 @@
 import {observable} from 'mobx';
-import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 
-export class BaseModel<IEntity extends IBaseEntity> implements IBaseEntity {
+export class BaseModel<IEntity extends BaseType> implements BaseType {
   @observable
   id: string;
 

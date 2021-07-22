@@ -2,9 +2,9 @@ import {Common} from '~/Stores/Models/Common';
 import {Discussion} from '~/Stores/Models/Discussion';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {UserModel} from '~/Stores/Models/UserModel';
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 
-export interface INotificationEntity extends IBaseEntity {
+export interface INotificationEntity extends BaseType {
   eventObjectId: string;
   eventType: string;
 

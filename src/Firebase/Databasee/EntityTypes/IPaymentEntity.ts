@@ -1,4 +1,4 @@
-import {IBaseEntity} from './IBaseEntity';
+import {BaseType} from '~/Graphql/BaseType';
 import {Nullable} from '../../types';
 
 export type PaymentType = 'one-time' | 'subscription';
@@ -19,7 +19,7 @@ export type PaymentFailureResponseCodes =
   | 'payment_stopped_by_issuer'
   | 'card_account_ineligible';
 
-interface IPaymentEntityBase extends IBaseEntity {
+interface IPaymentEntityBase extends BaseType {
   /**
    * Whether the payment was one-time payment or result of
    * a subscription
