@@ -1,8 +1,8 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
@@ -13,7 +13,7 @@ import {Discussion} from '../../Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
-  updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
+  updatedDiscussionsList: IFirebaseSnapshot<DiscussionType>,
 ) => void;
 
 export const subscribeToCommonDiscussions = (
@@ -60,7 +60,7 @@ export const updateDiscussionLastMessage = async (
 
 export const fetchDiscussionId = async (
   discussionId: string,
-): Promise<IFirebaseDoc<IDiscussionEntity>> => {
+): Promise<IFirebaseDoc<DiscussionType>> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
@@ -94,6 +94,6 @@ getDiscussionsVariable): Promise<Discussion[]> => {
   });
 
   return data.discussions.map(
-    (item: IDiscussionEntity) => new Discussion(item, false),
+    (item: DiscussionType) => new Discussion(item, false),
   ) as Discussion[];
 };

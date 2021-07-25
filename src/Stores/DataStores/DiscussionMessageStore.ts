@@ -17,7 +17,7 @@ import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
 import {ProposalEntity} from '~/Graphql/Proposal';
 import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {DiscussionType} from '~/Graphql/Discussion';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
@@ -53,6 +53,15 @@ export default class DiscussionMessageStore extends BaseStore<
   }
 
   @action
+  loadDiscussionMessages = (discussionMessages: DiscussionMessage[]) => {
+    this.discussionMessages.clear;
+    discussionMessages.map((message, i) => {
+      console.log('map message', message);
+      this.discussionMessages.set(message.id, message);
+    });
+  };
+
+  @action
   loadProposalMessaages = (proposal: ProposalEntity) => {
     if (proposal.discussions.length > 0) {
       this.proposalDiscussionId = proposal.discussions[0].id;
@@ -70,7 +79,7 @@ export default class DiscussionMessageStore extends BaseStore<
         description: 'Linking discussion',
         commonId: proposal.commonId,
         proposalId: proposal.id,
-      }).then((discussion: IDiscussionEntity) => {
+      }).then((discussion: DiscussionType) => {
         this.proposalMessages.clear();
         this.proposalDiscussionId = discussion.id;
       });

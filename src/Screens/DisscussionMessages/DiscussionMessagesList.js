@@ -28,6 +28,8 @@ const DiscussionMessagesList = ({
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
+  // get proposal messages when its a proposal
+  const messageList = discussionMessageStore.getDiscussionMessages;
 
   const [viewerPermission, setViewerPermission] = useState();
   useEffect(() => {
@@ -40,7 +42,7 @@ const DiscussionMessagesList = ({
     })();
   }, [commonId]);
 
-  const msgGroups = discussionMessageStore.getProposalMessages
+  const msgGroups = messageList
     .map((msg) => ({
       date: moment(msg.createdAt).format('YYYY-MM-DD'),
       data: msg,

@@ -1,7 +1,8 @@
 import {BaseType} from '~/Graphql/BaseType';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
 
-export interface IDiscussionEntity extends BaseType {
+export interface DiscussionType extends BaseType {
   /**
    * Title of the discussion
    */
@@ -41,4 +42,6 @@ export interface IDiscussionEntity extends BaseType {
   isModerationHidden: boolean;
 
   isExpanded: boolean;
+
+  messages: DiscussionMessage[];
 }

@@ -56,7 +56,7 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  const dataState = discussionStore.getDiscussionById(discussionId);
+  const [dataState] = useState(discussionStore.getDiscussionById(discussionId));
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
@@ -82,6 +82,13 @@ const Discussions = ({
   const isMember =
     authStore.userInfo &&
     (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
+
+  useEffect(() => {
+    // load messages to message store
+    rootStore.discussionMessageStore.loadDiscussionMessages(
+      dataState?.messages,
+    );
+  }, [dataState]);
 
   useEffect(() => {
     (async () => {
@@ -145,67 +152,12 @@ const Discussions = ({
     }
   };
 
-  const headerImages = () => (
-    <>
-      {dataState.images ? (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
-          <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {dataState.images.map((currImage, currIndex) => (
-              <View key={`proposalImg_${currIndex}`}>
-                <TouchableOpacity
-                  onPress={() => setImageGalleryIndex(currIndex)}>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: width * 0.8},
-                    }}
-                    resizeMode="cover"
-                    source={{uri: currImage.value}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-            <View style={{width: 20}} />
-          </View>
-        </ScrollView>
-      ) : null}
-    </>
-  );
-
-  const headerFiles = () => (
-    <>
-      {dataState.files &&
-        dataState.files.map((f, index) => (
-          <View style={styles.adRow} key={`discussion_file_${index}`}>
-            <Icon name="file" color={colors.mainBlue} size={16} />
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Browser', {
-                  url: f.value,
-                })
-              }>
-              <Text style={styles.adsText}>{fileName(f.value)}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-    </>
-  );
-
-  const fileName = (url) => {
-    url = url.split('_');
-    return url[url.length - 2];
-  };
-
   const navigateBack = () =>
     fromNotificationItem && !redirectBack
       ? navigation.replace('CommonProfile', {commonId})
       : navigation.pop();
 
+  // remove header expansion
   const header = () => (
     // <SafeAreaView flex={1}>
     <>
@@ -281,9 +233,6 @@ const Discussions = ({
                     <Text style={styles.message}>{dataState.message}</Text>
                   </Hyperlink>
                 </View>
-
-                {headerImages()}
-                {headerFiles()}
               </ScrollView>
 
               <TouchableOpacity
