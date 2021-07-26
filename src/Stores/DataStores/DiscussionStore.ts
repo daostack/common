@@ -4,9 +4,11 @@ import {
   subscribeToDiscussionById,
   fetchDiscussionId,
   fetchDiscussions,
+  createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
+import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
@@ -94,10 +96,22 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @action
+  createCommonDiscussion = async (
+    discussion: CreateDiscussionInput,
+  ): Promise<void> => {
+    await createDiscussion(discussion);
+    this.loadCommonDiscussions(discussion.commonId);
+  };
+
+  @action
   loadCommonDiscussions = async (
     commonId: string,
     page: number = 0,
   ): Promise<void> => {
+    if (page === 0) {
+      this.discussions.clear();
+    }
+
     const discussions = await fetchDiscussions({
       where: {
         commonId,
@@ -108,7 +122,9 @@ export default class DiscussionStore extends BaseStore<
       },
     });
 
-    const discussionsMap = new Map<string, DiscussionModel>();
+    const discussionsMap = new Map<string, DiscussionModel>(
+      this.discussions.toJS(),
+    );
 
     discussions.forEach((item) => {
       if (!this.discussions.has(item.id)) {

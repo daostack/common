@@ -36,11 +36,6 @@ const DiscussionList = ({
     rootStore.discussionStore.loadCommonDiscussions(commonId);
   }, []);
 
-  async function loadMoreDiscussions() {
-    await rootStore.discussionStore.loadCommonDiscussions(commonId, page);
-    setPage(page + 1);
-  }
-
   return (
     <>
       {list?.length > 0 ? (
@@ -58,8 +53,6 @@ const DiscussionList = ({
               }
               isMember={isMember}
               viewerPermission={viewerPermission}
-              onEndReachedThreshold={0}
-              onEndReached={loadMoreDiscussions}
             />
           )}
         />
