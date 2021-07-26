@@ -84,6 +84,7 @@ export type DiscussionWhereInput = {
   commonId?: Scalars['String'];
   commonMemberId?: Scalars['String'];
   userId?: Scalars['String'];
+  discussionId?: Scalars['String'];
 };
 
 export type getDiscussionsVariable = {
@@ -94,6 +95,39 @@ export type getDiscussionsVariable = {
 export const GetDiscussionDocument = gql`
   query GetDiscussions($where: DiscussionWhereInput) {
     discussions(where: $where) {
+      id
+      title: topic
+      message: description
+      messageCount
+      createdAt
+      ownerId: userId
+      owner {
+        photoURL: photo
+        email
+        firstName
+        lastName
+        country
+      }
+      lastMessage: latestMessage
+      messages {
+        owner {
+          id
+        }
+        id
+        createdAt
+        updatedAt
+        message
+        type
+        flag
+        userId
+      }
+    }
+  }
+`;
+
+export const GetDiscussionDocumentById = gql`
+  query GetDiscussionById($where: DiscussionWhereInput) {
+    discussion(where: $where) {
       id
       title: topic
       message: description

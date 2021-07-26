@@ -221,7 +221,8 @@ const Discussions = ({
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {moment(dataState.createTime.toDate()).fromNow()}
+                      {console.log('dataState', dataState)}
+                      {moment(dataState.createdAt.toDate()).fromNow()}
                     </Text>
                   </View>
                 </View>

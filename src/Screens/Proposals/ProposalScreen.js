@@ -128,7 +128,10 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    discussionMessageStore.loadProposalMessaages(proposalInfo);
+    console.log('proposalInfo', proposalInfo)
+    /*discussionMessageStore.loadProposalMessaages(
+      proposalInfo.discussions[0].messages,
+    );*/
 
     // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
     //   proposalId,
@@ -1030,6 +1033,7 @@ const ProposalScreen = ({
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
+                  isProposal
                 />
               )}
             </View>

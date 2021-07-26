@@ -8,6 +8,7 @@ import {
   CreateDiscussionDocument,
   GetDiscussionDocument,
   getDiscussionsVariable,
+  GetDiscussionDocumentById,
 } from '~/Graphql/Discussion';
 import {Discussion} from '../../Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -88,6 +89,22 @@ export const fetchDiscussions = async ({
 getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
+    variables: {
+      where,
+    },
+  });
+
+  return data.discussions.map(
+    (item: DiscussionType) => new Discussion(item, false),
+  ) as Discussion[];
+};
+
+export const fetchDiscussionById = async ({
+  where,
+}: // paginate, TODO: Add after fix react-native-parallax
+getDiscussionsVariable): Promise<Discussion[]> => {
+  const {data} = await apollo.query({
+    query: GetDiscussionDocumentById,
     variables: {
       where,
     },

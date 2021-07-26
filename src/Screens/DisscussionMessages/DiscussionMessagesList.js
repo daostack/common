@@ -25,12 +25,14 @@ const DiscussionMessagesList = ({
   commonId,
   openMessageOptions,
   isMember,
+  isProposal,
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
   // get proposal messages when its a proposal
-  const messageList = discussionMessageStore.getDiscussionMessages;
-
+  const messageList = isProposal
+    ? discussionMessageStore.getProposalMessages
+    : discussionMessageStore.getDiscussionMessages;
   const [viewerPermission, setViewerPermission] = useState();
   useEffect(() => {
     (async () => {
@@ -76,6 +78,7 @@ const DiscussionMessagesList = ({
 
   return (
     <View style={styles.viewContainer}>
+      {console.log('messageGroup', msgGroups)}
       {msgGroups.length > 0 ? (
         <SectionList
           inverted

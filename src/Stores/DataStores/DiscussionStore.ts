@@ -2,8 +2,9 @@ import BaseStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
-  fetchDiscussionId,
+  fetchDiscussionId, // to remove
   fetchDiscussions,
+  fetchDiscussionById,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
@@ -31,7 +32,7 @@ export default class DiscussionStore extends BaseStore<
     return this.toDataArray(this.discussions);
   }
 
-  // Data consuming methods
+  // Data consuming methods TO REMOVE
   getDiscussionById = (id: string): DiscussionModel | undefined => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
@@ -117,5 +118,33 @@ export default class DiscussionStore extends BaseStore<
     });
 
     this.discussions = observable.map(discussionsMap);
+  };
+
+  @action
+  loadProposalDiscussion = async (
+    discussionId: string,
+    page: number = 0,
+  ): Promise<void> => {
+    const proposalDiscussion = await fetchDiscussionById({
+      where: {
+        discussionId,
+      },
+      paginate: {
+        skip: page * 10,
+        take: 10,
+      },
+    });
+
+    this.proposalDiscussion = observable(proposalDiscussion);
+
+    /*const discussionsMap = new Map<string, DiscussionModel>();
+
+    discussions.forEach((item) => {
+      if (!this.discussions.has(item.id)) {
+        discussionsMap.set(item.id, item);
+      }
+    });
+
+    this.discussions = observable.map(discussionsMap);*/
   };
 }

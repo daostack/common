@@ -18,6 +18,7 @@ import {showBackendError} from '~/Util';
 import {ProposalEntity} from '~/Graphql/Proposal';
 import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
 import {DiscussionType} from '~/Graphql/Discussion';
+import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
@@ -55,17 +56,24 @@ export default class DiscussionMessageStore extends BaseStore<
   @action
   loadDiscussionMessages = (discussionMessages: DiscussionMessage[]) => {
     this.discussionMessages.clear;
-    discussionMessages.map((message, i) => {
-      console.log('map message', message);
+
+    discussionMessages.sort((a, b) => {
+      const [aDate, bDate] = [moment(a.createdAt), moment(b.createdAt)]
+      return aDate.isBefore(bDate) ? a : b;
+    });
+
+    discussionMessages.map((message) => {
       this.discussionMessages.set(message.id, message);
     });
   };
 
   @action
-  loadProposalMessaages = (proposal: ProposalEntity) => {
-    if (proposal.discussions.length > 0) {
-      this.proposalDiscussionId = proposal.discussions[0].id;
-      getProposalDiscussionMessages(proposal.discussions[0].id).then(
+  loadProposalMessaages = (proposalMessages: DiscussionMessage[]) => {
+    //console.log('loadProposalMessaages proposalMessages', proposalMessages);
+    
+    /*if (proposalMessages.length > 0) {
+      this.proposalDiscussionId = proposalMessages[0].id;
+      getProposalDiscussionMessages(proposalMessages[0].id).then(
         (disscussionMessages: IDiscussionMessageEntity[]) => {
           this.proposalMessages.clear();
           this.proposalMessages.merge(
@@ -83,7 +91,7 @@ export default class DiscussionMessageStore extends BaseStore<
         this.proposalMessages.clear();
         this.proposalDiscussionId = discussion.id;
       });
-    }
+    }*/
   };
 
   // Data consuming methods
