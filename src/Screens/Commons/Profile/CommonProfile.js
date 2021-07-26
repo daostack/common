@@ -44,7 +44,6 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
-import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';

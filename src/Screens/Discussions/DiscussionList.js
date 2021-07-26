@@ -16,7 +16,6 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
-  const [page, setPage] = useState(0);
   const list = rootStore.discussionStore.commonDiscussions;
 
   const [viewerPermission, setViewerPermission] = useState();

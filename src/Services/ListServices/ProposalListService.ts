@@ -23,7 +23,6 @@ import {
   ProposalWhereInput,
   ProposalEntity,
 } from '~/Graphql/Proposal';
-import {Pagination} from '~/Graphql';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
