@@ -26,7 +26,7 @@ import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+//import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';

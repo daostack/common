@@ -78,7 +78,6 @@ const DiscussionMessagesList = ({
 
   return (
     <View style={styles.viewContainer}>
-      {console.log('messageGroup', msgGroups)}
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -143,6 +142,7 @@ DiscussionMessagesList.propTypes = {
   action: func,
   openMessageOptions: func,
   isMember: bool,
+  isProposal: bool,
 };
 
 const styles = StyleSheet.create({

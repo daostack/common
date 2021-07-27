@@ -1,7 +1,7 @@
 import BaseStore from './BaseStore';
 import {
   fetchDiscussionMessageById,
-  getProposalDiscussionMessages,
+  //getProposalDiscussionMessages,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
@@ -15,9 +15,9 @@ import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscus
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
-import {ProposalEntity} from '~/Graphql/Proposal';
-import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-import {DiscussionType} from '~/Graphql/Discussion';
+//import {ProposalEntity} from '~/Graphql/Proposal';
+//import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
+//import {DiscussionType} from '~/Graphql/Discussion';
 import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
