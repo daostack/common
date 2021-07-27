@@ -1,24 +1,4 @@
 import {gql} from '@apollo/client';
-/*import {
-  Exact,
-  FileInput,
-  ImageInput,
-  LinkInput,
-  Maybe,
-  Mutation,
-  Scalars,
-} from '~/Graphql';*/
-
-/*
-createdAt
-  id
-  updatedAt
-  type
-  message
-  discussionId
-  proposalId
-  userId
- */
 
 const gqlDiscussionMessageProps = `
   id
