@@ -10,7 +10,7 @@ import {
   getDiscussionsVariable,
   GetDiscussionDocumentById,
 } from '~/Graphql/Discussion';
-import {Discussion} from '../../Stores/Models/Discussion';
+import {Discussion} from '~/Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
@@ -99,18 +99,13 @@ getDiscussionsVariable): Promise<Discussion[]> => {
   ) as Discussion[];
 };
 
-export const fetchDiscussionById = async ({
-  where,
-}: // paginate, TODO: Add after fix react-native-parallax
-getDiscussionsVariable): Promise<Discussion[]> => {
+export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocumentById,
     variables: {
-      where,
+      id,
     },
   });
 
-  return data.discussions.map(
-    (item: DiscussionType) => new Discussion(item, false),
-  ) as Discussion[];
+  return data.discussion as Discussion;
 };

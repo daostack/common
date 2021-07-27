@@ -27,9 +27,20 @@ export default class DiscussionStore extends BaseStore<
     {},
   );
 
+  @observable
+  private proposalDiscussion: DiscussionModel; /*ObservableMap<
+    string,
+    DiscussionModel
+  > = observable.map({});*/
+
   @computed
   get commonDiscussions() {
     return this.toDataArray(this.discussions);
+  }
+
+  @computed
+  get proposalDiscussions() {
+    return this.proposalDiscussion;
   }
 
   // Data consuming methods TO REMOVE
@@ -120,31 +131,6 @@ export default class DiscussionStore extends BaseStore<
     this.discussions = observable.map(discussionsMap);
   };
 
-  @action
-  loadProposalDiscussion = async (
-    discussionId: string,
-    page: number = 0,
-  ): Promise<void> => {
-    const proposalDiscussion = await fetchDiscussionById({
-      where: {
-        discussionId,
-      },
-      paginate: {
-        skip: page * 10,
-        take: 10,
-      },
-    });
-
-    this.proposalDiscussion = observable(proposalDiscussion);
-
-    /*const discussionsMap = new Map<string, DiscussionModel>();
-
-    discussions.forEach((item) => {
-      if (!this.discussions.has(item.id)) {
-        discussionsMap.set(item.id, item);
-      }
-    });
-
-    this.discussions = observable.map(discussionsMap);*/
-  };
+  getProposalDiscussionById = async (id: string): Promise<DiscussionModel> =>
+    await fetchDiscussionById(id);
 }

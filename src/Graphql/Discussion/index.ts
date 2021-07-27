@@ -84,7 +84,6 @@ export type DiscussionWhereInput = {
   commonId?: Scalars['String'];
   commonMemberId?: Scalars['String'];
   userId?: Scalars['String'];
-  discussionId?: Scalars['String'];
 };
 
 export type getDiscussionsVariable = {
@@ -126,9 +125,8 @@ export const GetDiscussionDocument = gql`
 `;
 
 export const GetDiscussionDocumentById = gql`
-  query GetDiscussionById($where: DiscussionWhereInput) {
-    discussion(where: $where) {
-      id
+  query GetDiscussionById($id: ID!) {
+    discussion(id: $id) {
       title: topic
       message: description
       messageCount

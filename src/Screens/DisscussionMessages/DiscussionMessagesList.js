@@ -29,11 +29,11 @@ const DiscussionMessagesList = ({
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
-  // get proposal messages when its a proposal
   const messageList = isProposal
     ? discussionMessageStore.getProposalMessages
     : discussionMessageStore.getDiscussionMessages;
   const [viewerPermission, setViewerPermission] = useState();
+
   useEffect(() => {
     (async () => {
       const permission = await rootStore.authStore.getPermission(

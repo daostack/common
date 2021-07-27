@@ -119,6 +119,8 @@ const ProposalScreen = ({
 
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
+  const [discussion, setDiscussion] = useState(null);
+
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
@@ -128,27 +130,18 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    console.log('proposalInfo', proposalInfo)
-    /*discussionMessageStore.loadProposalMessaages(
-      proposalInfo.discussions[0].messages,
-    );*/
-
-    // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-    //   proposalId,
-    // );
-
-    // let unsubscribeFromProposalById = null;
-    // unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-    //   proposalId
-    // );
-
-    // return () => {
-    //   unsubscribeFromProposalDiscussionMessages &&
-    //     unsubscribeFromProposalDiscussionMessages();
-
-    //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
-    // };
+    (async () => {
+      const proposalDiscussion = await rootStore.discussionStore.getProposalDiscussionById(
+        proposalInfo?.discussions[0]?.id,
+      );
+      setDiscussion(proposalDiscussion);
+    })();
   }, [proposalId]);
+
+  useEffect(() => {
+    discussion &&
+      discussionMessageStore.loadProposalMessages(discussion.messages);
+  }, [discussion]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
@@ -255,7 +248,7 @@ const ProposalScreen = ({
         inputRef.current.clear();
         try {
           createDiscussionMessage({
-            discussionId: discussionMessageStore.proposalDiscussionId,
+            discussionId: proposalInfo.discussions[0].id,
             message: message,
           });
         } catch (error) {

@@ -58,7 +58,7 @@ export default class DiscussionMessageStore extends BaseStore<
     this.discussionMessages.clear;
 
     discussionMessages.sort((a, b) => {
-      const [aDate, bDate] = [moment(a.createdAt), moment(b.createdAt)]
+      const [aDate, bDate] = [moment(a.createdAt), moment(b.createdAt)];
       return aDate.isBefore(bDate) ? a : b;
     });
 
@@ -68,30 +68,11 @@ export default class DiscussionMessageStore extends BaseStore<
   };
 
   @action
-  loadProposalMessaages = (proposalMessages: DiscussionMessage[]) => {
-    //console.log('loadProposalMessaages proposalMessages', proposalMessages);
-    
-    /*if (proposalMessages.length > 0) {
-      this.proposalDiscussionId = proposalMessages[0].id;
-      getProposalDiscussionMessages(proposalMessages[0].id).then(
-        (disscussionMessages: IDiscussionMessageEntity[]) => {
-          this.proposalMessages.clear();
-          this.proposalMessages.merge(
-            this.toEntityModelArr(disscussionMessages),
-          );
-        },
-      );
-    } else {
-      createDiscussion({
-        topic: 'linking discussion',
-        description: 'Linking discussion',
-        commonId: proposal.commonId,
-        proposalId: proposal.id,
-      }).then((discussion: DiscussionType) => {
-        this.proposalMessages.clear();
-        this.proposalDiscussionId = discussion.id;
-      });
-    }*/
+  loadProposalMessages = (proposalMessages: DiscussionMessage[]) => {
+    this.proposalMessages.clear;
+    proposalMessages.map((message) => {
+      this.proposalMessages.set(message.id, message);
+    });
   };
 
   // Data consuming methods
