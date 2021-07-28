@@ -10,7 +10,6 @@ import {
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {CreateDiscussionInput} from '~/Graphql/Discussion';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
