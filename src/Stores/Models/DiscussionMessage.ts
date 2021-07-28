@@ -6,16 +6,15 @@ import {
 import {BaseModel} from './BaseModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 
-
 export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   @observable
   discussionId: string;
 
   @observable
-  userId: string;
+  proposalId: string | undefined;
 
   @observable
-  ownerName: string;
+  userId: string;
 
   @observable
   message: string;
@@ -35,7 +34,6 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
     super(newDiscussionMessageInfo);
     this.discussionId = newDiscussionMessageInfo.discussionId;
     this.userId = newDiscussionMessageInfo.userId;
-    this.ownerName = newDiscussionMessageInfo.ownerName;
     this.message = newDiscussionMessageInfo.message;
     this.createdAt = newDiscussionMessageInfo.createdAt;
     this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;

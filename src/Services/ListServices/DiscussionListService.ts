@@ -1,19 +1,20 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
   GetDiscussionDocument,
   getDiscussionsVariable,
+  GetDiscussionDocumentById,
 } from '~/Graphql/Discussion';
-import {Discussion} from '../../Stores/Models/Discussion';
+import {Discussion} from '~/Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionsListLoadCallbackFn = (
-  updatedDiscussionsList: IFirebaseSnapshot<IDiscussionEntity>,
+  updatedDiscussionsList: IFirebaseSnapshot<DiscussionType>,
 ) => void;
 
 export const subscribeToCommonDiscussions = (
@@ -60,7 +61,7 @@ export const updateDiscussionLastMessage = async (
 
 export const fetchDiscussionId = async (
   discussionId: string,
-): Promise<IFirebaseDoc<IDiscussionEntity>> => {
+): Promise<IFirebaseDoc<DiscussionType>> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
@@ -95,6 +96,17 @@ export const fetchDiscussions = async ({
   });
 
   return data.discussions.map(
-    (item: IDiscussionEntity) => new Discussion(item, false),
+    (item: DiscussionType) => new Discussion(item, false),
   ) as Discussion[];
+};
+
+export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
+  const {data} = await apollo.query({
+    query: GetDiscussionDocumentById,
+    variables: {
+      id,
+    },
+  });
+
+  return data.discussion as Discussion;
 };

@@ -101,7 +101,7 @@ export const GetDiscussionDocument = gql`
       title: topic
       message: description
       messageCount
-      createTime: createdAt
+      createdAt
       ownerId: userId
       owner {
         photoURL: photo
@@ -111,7 +111,50 @@ export const GetDiscussionDocument = gql`
         country
       }
       lastMessage: latestMessage
+      messages {
+        owner {
+          id
+        }
+        id
+        createdAt
+        updatedAt
+        message
+        type
+        flag
+        userId
+      }
+    }
+  }
+`;
+
+export const GetDiscussionDocumentById = gql`
+  query GetDiscussionById($id: ID!) {
+    discussion(id: $id) {
+      title: topic
+      message: description
+      messageCount
       createdAt
+      ownerId: userId
+      owner {
+        photoURL: photo
+        email
+        firstName
+        lastName
+        country
+      }
+      lastMessage: latestMessage
+      messages {
+        owner {
+          id
+        }
+        id
+        createdAt
+        updatedAt
+        message
+        type
+        flag
+        userId
+      }
     }
   }
 `;

@@ -25,11 +25,15 @@ const DiscussionMessagesList = ({
   commonId,
   openMessageOptions,
   isMember,
+  isProposal,
 }) => {
   const chatRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
-
+  const messageList = isProposal
+    ? discussionMessageStore.getProposalMessages
+    : discussionMessageStore.getDiscussionMessages;
   const [viewerPermission, setViewerPermission] = useState();
+
   useEffect(() => {
     (async () => {
       const permission = await rootStore.authStore.getPermission(
@@ -40,7 +44,7 @@ const DiscussionMessagesList = ({
     })();
   }, [commonId]);
 
-  const msgGroups = discussionMessageStore.getProposalMessages
+  const msgGroups = messageList
     .map((msg) => ({
       date: moment(msg.createdAt).format('YYYY-MM-DD'),
       data: msg,
@@ -138,6 +142,7 @@ DiscussionMessagesList.propTypes = {
   action: func,
   openMessageOptions: func,
   isMember: bool,
+  isProposal: bool,
 };
 
 const styles = StyleSheet.create({

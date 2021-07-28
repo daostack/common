@@ -2,7 +2,7 @@ import {gql} from '@apollo/client';
 import {Exact, Scalars} from '~/Graphql';
 
 export type CreateDiscussionMessageInput = {
-  discussionId: Scalars['ID'];
+  discussionId: Scalars['String'];
   message: Scalars['String'];
 };
 
@@ -16,11 +16,11 @@ export type CreateDiscussionMessageVariables = Exact<{
 }>;
 
 export const CreateDiscussionMessageDocument = gql`
-  mutation CreateDiscussionMessage(
+  mutation createDiscussionMessage(
     $discussionMessage: CreateDiscussionMessageInput!
   ) {
     createDiscussionMessage(input: $discussionMessage) {
-      id
+      discussionId
       message
     }
   }

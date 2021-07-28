@@ -22,12 +22,11 @@ import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
-import {db} from '../../Firebase';
 import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+//import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
@@ -35,6 +34,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
+import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -56,7 +56,7 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  const dataState = discussionStore.getDiscussionById(discussionId);
+  const [dataState] = useState(discussionStore.getDiscussionById(discussionId));
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
@@ -74,13 +74,21 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
     authStore.userInfo &&
     (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
+
+  useEffect(() => {
+    // load messages to message store
+    rootStore.discussionMessageStore.loadDiscussionMessages(
+      dataState?.messages,
+    );
+  }, [dataState]);
 
   useEffect(() => {
     (async () => {
@@ -99,10 +107,9 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
+      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+        discussionId,
+      );
     }
 
     return () => {
@@ -129,86 +136,20 @@ const Discussions = ({
     const message = inputText;
     if (!isEmptyMessage()) {
       inputRef.current.clear();
-
-      db.collection('discussionMessage')
-        .doc()
-        .set({
-          text: message,
-          createTime: new Date(),
-          ownerId: currentUser.uid,
-          commonId: commonId,
-          discussionId: discussionId,
-        })
-        .then(async (msg) => {
-          Keyboard.dismiss();
-          setInputText('');
-          await updateDiscussionLastMessage(discussionId, currentUser.uid);
-        })
-        .catch((error) => {
-          Toast.error(error);
-        })
-        .finally(() => {
-          setIsSending(false);
+      Keyboard.dismiss();
+      try {
+        const {data} = await createDiscussionMessage({
+          discussionId,
+          message,
         });
+        console.log('createDiscussionMessage', data.createDiscussionMessage);
+        Toast.success('Done');
+      } catch (error) {
+        Toast.error(error);
+      }
     } else {
       setIsSending(false);
     }
-  };
-
-  const headerImages = () => (
-    <>
-      {dataState.images ? (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
-          <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {dataState.images.map((currImage, currIndex) => (
-              <View key={`proposalImg_${currIndex}`}>
-                <TouchableOpacity
-                  onPress={() => setImageGalleryIndex(currIndex)}>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: width * 0.8},
-                    }}
-                    resizeMode="cover"
-                    source={{uri: currImage.value}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-            <View style={{width: 20}} />
-          </View>
-        </ScrollView>
-      ) : null}
-    </>
-  );
-
-  const headerFiles = () => (
-    <>
-      {dataState.files &&
-        dataState.files.map((f, index) => (
-          <View style={styles.adRow} key={`discussion_file_${index}`}>
-            <Icon name="file" color={colors.mainBlue} size={16} />
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Browser', {
-                  url: f.value,
-                })
-              }>
-              <Text style={styles.adsText}>{fileName(f.value)}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-    </>
-  );
-
-  const fileName = (url) => {
-    url = url.split('_');
-    return url[url.length - 2];
   };
 
   const navigateBack = () =>
@@ -216,6 +157,7 @@ const Discussions = ({
       ? navigation.replace('CommonProfile', {commonId})
       : navigation.pop();
 
+  // remove header expansion
   const header = () => (
     // <SafeAreaView flex={1}>
     <>
@@ -279,7 +221,8 @@ const Discussions = ({
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {moment(dataState.createTime.toDate()).fromNow()}
+                      {console.log('dataState', dataState)}
+                      {moment(dataState.createdAt.toDate()).fromNow()}
                     </Text>
                   </View>
                 </View>
@@ -291,9 +234,6 @@ const Discussions = ({
                     <Text style={styles.message}>{dataState.message}</Text>
                   </Hyperlink>
                 </View>
-
-                {headerImages()}
-                {headerFiles()}
               </ScrollView>
 
               <TouchableOpacity
