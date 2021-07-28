@@ -3,12 +3,11 @@ import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscus
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
-CreateDiscussionMessageInput,
-CreateDiscussionMessageDocument,
-GetDiscussionMessageDocument,
+  CreateDiscussionMessageInput,
+  CreateDiscussionMessageDocument,
+  GetDiscussionMessageDocument,
 } from '~/Graphql/Message';
 
-import ApolloClient from '~/Services/util/ApolloClient';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -17,39 +16,68 @@ export type commonDiscussionMessagesListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
 ) => void;
 
-
-// Create Proposals
-export const createDiscussionMessage = async (formData: CreateDiscussionMessageInput) => {
+export const createDiscussionMessage = async (
+  formData: CreateDiscussionMessageInput,
+) => {
   try {
-    return await ApolloClient.getInstance().mutate({
+    const data = await apollo.mutate({
       mutation: CreateDiscussionMessageDocument,
       variables: {
         discussionMessage: formData,
       },
     });
+    console.log('data', data);
+    return data;
   } catch (err) {
-    logger.log('Error while trying to create a new Funding Proposal: ', getGQLErrorObject(err));
+    logger.log(
+      'Error while trying to create a new discussion message ',
+      getGQLErrorObject(err),
+    );
     throw err;
   }
 };
 
-export const getProposalDiscussionMessages = async (discussionId: string): Promise<IDiscussionMessageEntity[]> => {
+export const getDiscussionMessages = async (
+  discussionId: string,
+): Promise<IDiscussionMessageEntity[]> => {
   try {
     const {data} = await apollo.query({
       query: GetDiscussionMessageDocument,
       variables: {
-         id: discussionId,
+        id: discussionId,
       },
     });
 
     return data.discussion.messages;
   } catch (err) {
-    logger.log('Error while trying to get Proposal discussion: ', getGQLErrorObject(err));
+    logger.log(
+      'Error while trying to get discussionMessage: ',
+      getGQLErrorObject(err),
+    );
     throw err;
   }
 };
 
+export const getProposalDiscussionMessages = async (
+  proposalId: string,
+): Promise<IDiscussionMessageEntity[]> => {
+  try {
+    const {data} = await apollo.query({
+      query: GetDiscussionMessageDocument,
+      variables: {
+        id: proposalId,
+      },
+    });
 
+    return data.discussion.messages;
+  } catch (err) {
+    logger.log(
+      'Error while trying to get discussionMessage: ',
+      getGQLErrorObject(err),
+    );
+    throw err;
+  }
+};
 
 //OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (

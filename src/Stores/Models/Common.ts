@@ -18,12 +18,6 @@ export class Common extends BaseModel<CommonType> {
   name: string;
 
   @observable
-  createdAt: Date;
-
-  @observable
-  updatedAt: Date;
-
-  @observable
   image: string;
 
   @observable

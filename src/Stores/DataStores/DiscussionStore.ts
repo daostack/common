@@ -2,20 +2,21 @@ import BaseStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
-  fetchDiscussionId,
+  fetchDiscussionId, // to remove
   fetchDiscussions,
+  fetchDiscussionById,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
 import {Discussion} from '~/Graphql/Discussion';
+import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 
 export default class DiscussionStore extends BaseStore<
   DiscussionModel,
-  IDiscussionEntity
+  DiscussionType
 > {
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -26,19 +27,30 @@ export default class DiscussionStore extends BaseStore<
     {},
   );
 
+  @observable
+  private proposalDiscussion: DiscussionModel; /*ObservableMap<
+    string,
+    DiscussionModel
+  > = observable.map({});*/
+
   @computed
   get commonDiscussions() {
     return this.toDataArray(this.discussions);
   }
 
-  // Data consuming methods
+  @computed
+  get proposalDiscussions() {
+    return this.proposalDiscussion;
+  }
+
+  // Data consuming methods TO REMOVE
   getDiscussionById = (id: string): DiscussionModel | undefined => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
       fetchDiscussionId(id)
-        .then((discussion: IFirebaseDoc<IDiscussionEntity>) => {
+        .then((discussion: IFirebaseDoc<DiscussionType>) => {
           if (discussion.exists) {
             runInAction(() => {
               this.setData(
@@ -59,7 +71,7 @@ export default class DiscussionStore extends BaseStore<
 
   getCommonDiscussions = (
     commonId: string,
-  ): Array<IDiscussionEntity> | undefined =>
+  ): Array<DiscussionType> | undefined =>
     this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
@@ -89,7 +101,7 @@ export default class DiscussionStore extends BaseStore<
   };
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionEntity): DiscussionModel {
+  getEntityModel(entity: DiscussionType): DiscussionModel {
     return new DiscussionModel(entity, this.getIsExpanded(entity.id));
   }
 
@@ -118,4 +130,7 @@ export default class DiscussionStore extends BaseStore<
 
     this.discussions = observable.map(discussionsMap);
   };
+
+  getProposalDiscussionById = async (id: string): Promise<DiscussionModel> =>
+    await fetchDiscussionById(id);
 }
