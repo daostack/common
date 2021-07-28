@@ -8,14 +8,13 @@ import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
-import {authStorePropTypes} from '~/Types/propTypes';
-import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const CreateDiscussionForm = ({
-  authStore,
   navigation,
   onFormSubmit,
   commonId,
+  rootStore,
   ...otherProps
 }) => {
   const [createDiscussionStore] = useState(new CreateDiscussionStore());
@@ -31,7 +30,7 @@ const CreateDiscussionForm = ({
         logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         try {
-          await createDiscussion({
+          await rootStore.discussionStore.createDiscussion({
             topic: changedFields[TITLE],
             description: changedFields[MESSAGE],
             commonId,
@@ -106,7 +105,7 @@ CreateDiscussionForm.propTypes = {
     getChangedFormFieldsJson: func,
     form: object,
   }),
-  authStore: authStorePropTypes,
+  rootStore: rootStorePropTypes,
   commonId: string,
   onFormSubmit: func,
   onFormClose: func,

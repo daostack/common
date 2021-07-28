@@ -233,12 +233,19 @@ export const onProposalChange = (proposalId: string) => {
 };
 
 // Fetch proposals
-const getProposals = async (proposalsWhere: ProposalWhereInput) => {
+const getProposals = async (
+  proposalsWhere: ProposalWhereInput,
+  page: number = 0,
+) => {
   try {
     return await apollo.query({
       query: getProposalsDocument,
       variables: {
         where: proposalsWhere,
+        paginate: {
+          skip: page * 10,
+          take: 10,
+        },
       },
       //fetchPolicy: 'cache-first',
     });
@@ -250,52 +257,68 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
 
 export const getCommonActiveProposals = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.FUNDING_REQUEST,
-    state: ProposalState.COUNTDOWN,
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      state: ProposalState.COUNTDOWN,
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonHistoryProposals = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.FUNDING_REQUEST,
-    OR: proposalsStateFilterQueryPart([
-      ProposalState.ACCEPTED,
-      ProposalState.FINALIZING,
-      ProposalState.REJECTED,
-    ]),
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      OR: proposalsStateFilterQueryPart([
+        ProposalState.ACCEPTED,
+        ProposalState.FINALIZING,
+        ProposalState.REJECTED,
+      ]),
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonPendingReqToJoins = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.JOIN_REQUEST,
-    state: ProposalState.COUNTDOWN,
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      state: ProposalState.COUNTDOWN,
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonHistoryReqToJoins = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.JOIN_REQUEST,
-    OR: proposalsStateFilterQueryPart([
-      ProposalState.ACCEPTED,
-      ProposalState.FINALIZING,
-      ProposalState.REJECTED,
-    ]),
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      OR: proposalsStateFilterQueryPart([
+        ProposalState.ACCEPTED,
+        ProposalState.FINALIZING,
+        ProposalState.REJECTED,
+      ]),
+    },
+    page,
+  );
   return data.proposals;
 };

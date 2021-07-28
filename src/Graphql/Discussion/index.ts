@@ -92,8 +92,11 @@ export type getDiscussionsVariable = {
 };
 
 export const GetDiscussionDocument = gql`
-  query GetDiscussions($where: DiscussionWhereInput) {
-    discussions(where: $where) {
+  query GetDiscussions(
+    $where: DiscussionWhereInput
+    $paginate: PaginateInput! = {take: 10, skip: 0}
+  ) {
+    discussions(where: $where, paginate: $paginate) {
       id
       title: topic
       message: description

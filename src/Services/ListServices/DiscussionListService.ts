@@ -85,12 +85,13 @@ export const createDiscussion = async (
 
 export const fetchDiscussions = async ({
   where,
-}: // paginate, TODO: Add after fix react-native-parallax
-getDiscussionsVariable): Promise<Discussion[]> => {
+  paginate,
+}: getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
     query: GetDiscussionDocument,
     variables: {
       where,
+      paginate,
     },
   });
 
