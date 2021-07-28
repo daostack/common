@@ -22,6 +22,7 @@ import {
   ProposalType,
   ProposalWhereInput,
   ProposalEntity,
+  getProposalDocument,
 } from '~/Graphql/Proposal';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -127,15 +128,23 @@ export const subscribeToProposalList = (
   );
 };
 
-export const fetchProposalById = async (
-  proposalId: string,
-): Promise<IFirebaseDoc<ProposalEntity>> => {
+export const fetchProposalById = async (proposalId: string) => {
   if (!proposalId) {
     throw new Error(
       'Proposal Id (proposalId) is required parameter, but it was not provided',
     );
   }
-  return await ProposalsCollection.doc(proposalId).get();
+
+  const {data} = await apollo.query({
+    query: getProposalDocument,
+    variables: {
+      where: {
+        id: proposalId,
+      },
+    },
+  });
+
+  return data;
 };
 
 // Create Proposals

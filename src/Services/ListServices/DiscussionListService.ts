@@ -2,12 +2,13 @@ import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/Discussion
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
-  GetDiscussionDocument,
+  GetDiscussionsDocument,
   getDiscussionsVariable,
+  GetDiscussionByIdDocument,
 } from '~/Graphql/Discussion';
 import {Discussion} from '../../Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -60,13 +61,21 @@ export const updateDiscussionLastMessage = async (
 
 export const fetchDiscussionId = async (
   discussionId: string,
-): Promise<IFirebaseDoc<IDiscussionEntity>> => {
+): Promise<Discussion> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
-  return await DiscussionsCollection.doc(discussionId).get();
+
+  const {data} = await apollo.query({
+    query: GetDiscussionByIdDocument,
+    variables: {
+      id: discussionId,
+    },
+  });
+
+  return new Discussion(data, false);
 };
 
 export const createDiscussion = async (
@@ -87,7 +96,7 @@ export const fetchDiscussions = async ({
 }: // paginate, TODO: Add after fix react-native-parallax
 getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
-    query: GetDiscussionDocument,
+    query: GetDiscussionsDocument,
     variables: {
       where,
     },

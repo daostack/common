@@ -48,7 +48,14 @@ const ProposalCard = ({
   const commonStore = rootStore.commonStore;
   const authStore = rootStore.authStore;
 
-  const proposalInfo = proposalStore.getProposalById(proposalId);
+  const [proposalInfo, setProposalInfo] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const proposal = await proposalStore.getProposalById(proposalId);
+      setProposalInfo(proposal);
+    })();
+  }, [proposalId]);
 
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
@@ -57,28 +64,31 @@ const ProposalCard = ({
   const [hasPermission, setHasPermission] = useState();
   useEffect(() => {
     (async () => {
-      const permission = authStore.getPermission(
-        proposalInfo.commonId,
-        authStore?.userInfo?.uid,
-      );
-      setHasPermission(permission);
+      if (proposalInfo?.commonId) {
+        const permission = authStore.getPermission(
+          proposalInfo.commonId,
+          authStore?.userInfo?.uid,
+        );
+        setHasPermission(permission);
+      }
     })();
-  }, [proposalInfo.commonId, authStore?.userInfo]);
+  }, [proposalInfo?.commonId, authStore?.userInfo]);
 
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(proposalInfo.userId);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo?.userId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -108,7 +118,7 @@ const ProposalCard = ({
     } else {
       let currCommonInfo = {...commonInfo};
 
-      if (!currCommonInfo) {
+      if (!currCommonInfo && proposalInfo?.commonId) {
         currCommonInfo = await commonStore.getCommonById(
           proposalInfo?.commonId,
         );

@@ -32,28 +32,21 @@ export default class DiscussionStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): DiscussionModel | undefined => {
+  getDiscussionById = async (id: string): Promise<DiscussionModel | void> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
-    } catch (errr) {
+    } catch (err) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      fetchDiscussionId(id)
-        .then((discussion: IFirebaseDoc<IDiscussionEntity>) => {
-          if (discussion.exists) {
-            runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(discussion)),
-              );
-            });
-          }
+      return fetchDiscussionId(id)
+        .then((discussion: DiscussionModel) => {
+          this.discussions.set(id, discussion);
+          return discussion;
         })
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           });
         });
-      return undefined;
     }
   };
 

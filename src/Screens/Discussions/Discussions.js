@@ -56,7 +56,14 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  const dataState = discussionStore.getDiscussionById(discussionId);
+  const [dataState, setDataState] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const discussion = await discussionStore.getDiscussionById(discussionId);
+      setDataState(discussion);
+    })();
+  }, [discussionId]);
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
