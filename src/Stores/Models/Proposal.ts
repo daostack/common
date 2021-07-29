@@ -70,47 +70,6 @@ export class Proposal extends BaseModel<ProposalEntity> {
   @observable
   moderation?: IModerationEntity | undefined;
 
-  /* @observable
-  imagesPromised = promisedComputed(
-    [],
-    async (): Promise<IUIProposalImage[]> => {
-      const tempImages: IUIProposalImage[] = [];
-      if (this.images?.length) {
-        await Promise.all(
-          this.images.map(async (currImage: IProposalImage) => {
-            if (currImage.value) {
-              let currImageEntity: IUIProposalImage | null = null;
-              try {
-                const {width, height} = await ImageSize.getSize(
-                  currImage.value,
-                );
-                currImageEntity = {
-                  title: currImage.title,
-                  widthRatio: (width / height) * 220,
-                  uri: currImage.value,
-                } as IUIProposalImage;
-              } catch (err) {
-                Logger.warn(
-                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
-                  err,
-                );
-              }
-              if (currImageEntity) {
-                tempImages.push(currImageEntity);
-              }
-            }
-          }),
-        );
-      }
-      return tempImages;
-    },
-  );*/
-
-  /*@computed
-  get images() {
-    return this.imagesPromised.value;
-  }*/
-
   @computed
   get isJoinRequest() {
     return this.type === ProposalType.JOIN_REQUEST;
@@ -145,7 +104,8 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get votesCount() {
-    return this.votesFor + this.votesAgainst;
+    return this.votes.length;
+    //return this.votesFor + this.votesAgainst;
   }
 
   @computed
@@ -159,6 +119,18 @@ export class Proposal extends BaseModel<ProposalEntity> {
       this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
       this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
     );
+  }
+
+  @computed
+  get votesForCount() {
+    return this.votes.filter((vote) => vote.outcome === 'Approve').length;
+  }
+
+  @computed
+  get votesAgainstCount() {
+    const a = this.votes.filter((vote) => vote.outcome === 'Condemn');
+    console.log('votesAgainst', a)
+    return this.votes.map((vote) => vote.outcome === 'Condemn').length;
   }
 
   constructor(newProposalInfo: ProposalEntity) {

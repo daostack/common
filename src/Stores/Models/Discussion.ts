@@ -5,7 +5,7 @@ import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {DiscussionMessage} from './DiscussionMessage';
-import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
+import {DiscussionType, DiscussionTypes} from '~/Graphql/Discussion/DiscussionType';
 
 export class Discussion extends BaseModel<DiscussionType> {
   @observable
@@ -38,6 +38,9 @@ export class Discussion extends BaseModel<DiscussionType> {
   @observable
   messages: DiscussionMessage[];
 
+  @observable
+  type: DiscussionTypes;
+
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
@@ -54,6 +57,7 @@ export class Discussion extends BaseModel<DiscussionType> {
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.isExpanded = isExpanded;
     this.owner = new UserModel(newDiscussionInfo.owner);
+    this.type = newDiscussionInfo.type;
     this.messages = newDiscussionInfo.messages?.map(
       (message: any) => new DiscussionMessage(message),
     );

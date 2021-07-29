@@ -48,6 +48,11 @@ export enum ProposalType {
   JOIN_REQUEST = 'JoinRequest',
 }
 
+export enum VoteOutcome {
+  APPROVE = 'Approve',
+  CONDEMN = 'Condemn',
+}
+
 interface BaseProposal {
   id: string;
   userId: string;
@@ -233,6 +238,7 @@ const gqlProposalProps = `
   votesAgainst
   votes {
     voterId
+    outcome
   }
   discussions {
     id

@@ -28,7 +28,6 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {createProposalVote} from '~/Services/ListServices/ProposalListService';
 import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
-import {VoteOutcome} from '~/Graphql/Proposal/index';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
@@ -58,7 +57,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import {ProposalState} from '~/Graphql/Proposal';
+import {ProposalState, VoteOutcome} from '~/Graphql/Proposal';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -163,7 +162,7 @@ const ProposalScreen = ({
       const common = await commonStore.getCommonById(proposalInfo.commonId);
       setProposalCommon(common);
     })();
-  }, [proposalInfo, proposalInfo.commonId]);
+  }, [proposalInfo, proposalInfo?.commonId]);
   const proposedUser = proposalInfo ? proposalInfo.user : null;
 
   const showDebtInfo =
@@ -335,7 +334,7 @@ const ProposalScreen = ({
     setIsApprovalBottomModalVisible(true);
   };
 
-  const closeApprovalSheet = (e) => {
+  const closeApprovalSheet = () => {
     setIsApprovalBottomModalVisible(false);
   };
 
@@ -413,6 +412,7 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => {
+    console.log('renderVotingButtons proposalInfo', proposalInfo)
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalInfo?.state) && (
@@ -429,13 +429,13 @@ const ProposalScreen = ({
           </Text>
           <View style={layout.flexRow}>
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
+              onPress={() => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
               <Icon name="approved-24" color={colors.lightishGreen} size={24} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
+              onPress={() => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
               <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
@@ -932,7 +932,7 @@ const ProposalScreen = ({
                         style={layout.marginRightXS}
                       />
                       <Text style={text.lightishGreenText}>
-                        {proposalInfo.votesFor}
+                        {proposalInfo.votesForCount}
                       </Text>
                     </View>
 
@@ -951,7 +951,7 @@ const ProposalScreen = ({
                         padding: 0,
                       }}>
                       <Text style={text.againstText}>
-                        {proposalInfo.votesAgainst}
+                        {proposalInfo.votesAgainstCount}
                       </Text>
                       <Icon
                         name="user-rejected"

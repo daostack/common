@@ -44,4 +44,11 @@ export interface DiscussionType extends BaseType {
   isExpanded: boolean;
 
   messages: DiscussionMessage[];
+
+  type: DiscussionTypes;
+}
+
+export enum DiscussionTypes {
+  PROPOSAL_DISCUSSION = 'ProposalDiscussion',
+  COMMON_DISCUSSION = 'CommonDiscussion',
 }
