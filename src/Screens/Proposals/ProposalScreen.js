@@ -116,6 +116,8 @@ const ProposalScreen = ({
 
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
 
+  const [discussion, setDiscussion] = useState(null);
+
   // Top voting buttons ref
   const topVotingButtonsRef = useRef(null);
 
@@ -129,6 +131,11 @@ const ProposalScreen = ({
     (async () => {
       const proposal = await proposalStore.getProposalById(proposalId);
       setProposalInfo(proposal);
+      
+      const proposalDiscussion = await rootStore.discussionStore.getProposalDiscussionById(
+        proposal?.discussions[0]?.id,
+      );
+      setDiscussion(proposalDiscussion);
       discussionMessageStore.loadProposalMessaages(proposal);
     })();
 
@@ -148,6 +155,11 @@ const ProposalScreen = ({
     //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
     // };
   }, [proposalId]);
+
+  useEffect(() => {
+    discussion &&
+      discussionMessageStore.loadProposalMessages(discussion.messages);
+  }, [discussion]);
 
   const [viewerPermission, setViewerPermission] = useState();
   useEffect(() => {
@@ -252,7 +264,7 @@ const ProposalScreen = ({
         inputRef.current.clear();
         try {
           createDiscussionMessage({
-            discussionId: discussionMessageStore.proposalDiscussionId,
+            discussionId: proposalInfo.discussions[0].id,
             message: message,
           });
         } catch (error) {
@@ -1030,6 +1042,7 @@ const ProposalScreen = ({
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
+                  isProposal
                 />
               )}
             </View>

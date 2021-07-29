@@ -2,21 +2,25 @@ import BaseStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
-  fetchDiscussionId,
+  fetchDiscussionId, // to remove
   fetchDiscussions,
+  fetchDiscussionById,
+  createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import Logger from '~/Services/Logger';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
 import {Discussion} from '~/Graphql/Discussion';
+import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 
 export default class DiscussionStore extends BaseStore<
   DiscussionModel,
-  IDiscussionEntity
+  DiscussionType
 > {
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -27,13 +31,24 @@ export default class DiscussionStore extends BaseStore<
     {},
   );
 
+  @observable
+  private proposalDiscussion: DiscussionModel; /*ObservableMap<
+    string,
+    DiscussionModel
+  > = observable.map({});*/
+
   @computed
   get commonDiscussions() {
     return this.toDataArray(this.discussions);
   }
 
+  @computed
+  get proposalDiscussions() {
+    return this.proposalDiscussion;
+  }
+
   // Data consuming methods
-  getDiscussionById = async (id: string): Promise<DiscussionModel | void> => {
+  getDiscussionById = (id: string): Promise<DiscussionModel | void> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (err) {
@@ -54,7 +69,7 @@ export default class DiscussionStore extends BaseStore<
 
   getCommonDiscussions = (
     commonId: string,
-  ): Array<IDiscussionEntity> | undefined =>
+  ): Array<DiscussionType> | undefined =>
     this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
@@ -84,15 +99,27 @@ export default class DiscussionStore extends BaseStore<
   };
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionEntity): DiscussionModel {
+  getEntityModel(entity: DiscussionType): DiscussionModel {
     return new DiscussionModel(entity, this.getIsExpanded(entity.id));
   }
+
+  @action
+  createCommonDiscussion = async (
+    discussion: CreateDiscussionInput,
+  ): Promise<void> => {
+    await createDiscussion(discussion);
+    this.loadCommonDiscussions(discussion.commonId);
+  };
 
   @action
   loadCommonDiscussions = async (
     commonId: string,
     page: number = 0,
   ): Promise<void> => {
+    if (page === 0) {
+      this.discussions.clear();
+    }
+
     const discussions = await fetchDiscussions({
       where: {
         commonId,
@@ -103,7 +130,9 @@ export default class DiscussionStore extends BaseStore<
       },
     });
 
-    const discussionsMap = new Map<string, DiscussionModel>();
+    const discussionsMap = new Map<string, DiscussionModel>(
+      this.discussions.toJS(),
+    );
 
     discussions.forEach((item) => {
       if (!this.discussions.has(item.id)) {
@@ -113,4 +142,7 @@ export default class DiscussionStore extends BaseStore<
 
     this.discussions = observable.map(discussionsMap);
   };
+
+  getProposalDiscussionById = async (id: string): Promise<DiscussionModel> =>
+    await fetchDiscussionById(id);
 }

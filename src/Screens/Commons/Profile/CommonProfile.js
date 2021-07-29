@@ -81,6 +81,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const proposalStore = rootStore.proposalStore;
   const userStore = rootStore.userStore;
 
+  const [previousScrollHeight, setPreviousScrollHeight] = useState();
+  const [nestedDiscussionListPage, setNestedDiscussionListPage] = useState(0);
+  const [nestedProposalListPage, setNestedProposalListPage] = useState(0);
+  const [nestedProposalHistoryListPage, setNestedProposalHistoryListPage] =
+    useState(0);
+  const [scrollIsFetching, setScrollIsFetching] = useState(false);
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
@@ -92,6 +98,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const {refreshFeed} = params;
 
   const [index, setIndex] = useState(0);
+
   const [routes] = useState([
     {
       index: 0,
@@ -146,6 +153,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
+  const parallaxScrollRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
   const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
     useState(false);
@@ -328,6 +336,42 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         return History();
       default:
         return null;
+    }
+  };
+
+  const onEndReached = async (scrollHeight) => {
+    if (scrollHeight !== previousScrollHeight) {
+      switch (index) {
+        case 0: {
+          await rootStore.discussionStore.loadCommonDiscussions(
+            commonId,
+            nestedDiscussionListPage + 1,
+          );
+          setNestedDiscussionListPage(nestedDiscussionListPage + 1);
+          setScrollIsFetching(false);
+          break;
+        }
+        case 1: {
+          await proposalStore.loadCommonActiveProposals(
+            commonId,
+            nestedProposalListPage + 1,
+          );
+          setNestedProposalListPage(nestedProposalListPage + 1);
+          setScrollIsFetching(false);
+          break;
+        }
+        case 2: {
+          await proposalStore.loadCommonHistoryProposals(
+            commonId,
+            nestedProposalHistoryListPage + 1,
+          );
+          setNestedProposalHistoryListPage(nestedProposalHistoryListPage + 1);
+          setScrollIsFetching(false);
+          break;
+        }
+        default:
+          return null;
+      }
     }
   };
 
@@ -823,6 +867,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           </TouchableOpacity>
 
           <ParallaxScrollView
+            ref={parallaxScrollRef}
             contentContainerStyle={{position: 'relative', zIndex: 99}}
             backgroundColor="white"
             showsVerticalScrollIndicator={false}
@@ -845,7 +890,18 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
               </FastImage>
             )}
+            scrollEventThrottle={400}
             scrollEvent={(e) => {
+              const scrollOffset =
+                e.nativeEvent.layoutMeasurement.height +
+                e.nativeEvent.contentOffset.y;
+              const scrollHeight = e.nativeEvent.contentSize.height;
+
+              if (scrollOffset === scrollHeight && scrollIsFetching === false) {
+                setScrollIsFetching(true);
+                onEndReached(scrollHeight);
+                setPreviousScrollHeight(scrollHeight);
+              }
               setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
               upperRequestToJoinBtnRef?.current?.measure(
                 (fx, fy, mWidth, height, px, py) => {

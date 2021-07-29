@@ -1,7 +1,7 @@
 import BaseStore from './BaseStore';
 import {
   fetchDiscussionMessageById,
-  getProposalDiscussionMessages,
+  //getProposalDiscussionMessages,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
@@ -15,9 +15,10 @@ import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscus
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
-import {ProposalEntity} from '~/Graphql/Proposal';
-import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+//import {ProposalEntity} from '~/Graphql/Proposal';
+//import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
+//import {DiscussionType} from '~/Graphql/Discussion';
+import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
@@ -49,28 +50,25 @@ export default class DiscussionMessageStore extends BaseStore<
   }
 
   @action
-  loadProposalMessaages = (proposal: ProposalEntity) => {
-    if (proposal.discussions.length > 0) {
-      this.proposalDiscussionId = proposal.discussions[0].id;
-      getProposalDiscussionMessages(proposal.discussions[0].id).then(
-        (disscussionMessages: IDiscussionMessageEntity[]) => {
-          this.proposalMessages.clear();
-          this.proposalMessages.merge(
-            this.toEntityModelArr(disscussionMessages),
-          );
-        },
-      );
-    } else {
-      createDiscussion({
-        topic: 'linking discussion',
-        description: 'Linking discussion',
-        commonId: proposal.commonId,
-        proposalId: proposal.id,
-      }).then((discussion: IDiscussionEntity) => {
-        this.proposalMessages.clear();
-        this.proposalDiscussionId = discussion.id;
-      });
-    }
+  loadDiscussionMessages = (discussionMessages: DiscussionMessage[]) => {
+    this.discussionMessages.clear;
+
+    discussionMessages.sort((a, b) => {
+      const [aDate, bDate] = [moment(a.createdAt), moment(b.createdAt)];
+      return aDate.isBefore(bDate) ? a : b;
+    });
+
+    discussionMessages.map((message) => {
+      this.discussionMessages.set(message.id, message);
+    });
+  };
+
+  @action
+  loadProposalMessages = (proposalMessages: DiscussionMessage[]) => {
+    this.proposalMessages.clear;
+    proposalMessages.map((message) => {
+      this.proposalMessages.set(message.id, message);
+    });
   };
 
   // Data consuming methods

@@ -194,7 +194,7 @@ DiscussionCard.propTypes = {
     id: string.isRequired,
     ownerId: string.isRequired,
     title: string.isRequired,
-    createTime: object.isRequired,
+    createdAt: object,
     message: string.isRequired,
   }),
   commonId: string,

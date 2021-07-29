@@ -73,10 +73,6 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   private commonPendingReqToJoins: ObservableMap<string, Proposal> =
     observable.map({});
 
-  @observable
-  private commonHistoryReqToJoins: ObservableMap<string, Proposal> =
-    observable.map({});
-
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
@@ -144,34 +140,42 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   //getCommonProposals = (
 
   @action
-  loadCommonActiveProposals = (commonId: string) => {
-    getCommonActiveProposals(commonId).then((proposals: ProposalEntity[]) => {
-      this.commonActiveProposals.clear();
-      this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
-    });
+  loadCommonActiveProposals = (commonId: string, page: number) => {
+    getCommonActiveProposals(commonId, page).then(
+      (proposals: ProposalEntity[]) => {
+        this.commonActiveProposals.clear();
+        this.commonActiveProposals.merge(this.toEntityModelArr(proposals));
+      },
+    );
   };
 
   @action
-  loadCommonHistoryProposals = (commonId: string) => {
-    getCommonHistoryProposals(commonId).then((proposals: ProposalEntity[]) => {
-      this.commonHistoryProposals.clear();
-      this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
-    });
+  loadCommonHistoryProposals = (commonId: string, page: number) => {
+    getCommonHistoryProposals(commonId, page).then(
+      (proposals: ProposalEntity[]) => {
+        this.commonHistoryProposals.clear();
+        this.commonHistoryProposals.merge(this.toEntityModelArr(proposals));
+      },
+    );
   };
   @action
-  loadCommonMembersPendingProposals = (commonId: string) => {
-    getCommonPendingReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
-      this.commonPendingReqToJoins.clear();
-      this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
-    });
+  loadCommonMembersPendingProposals = (commonId: string, page: number) => {
+    getCommonPendingReqToJoins(commonId, page).then(
+      (proposals: ProposalEntity[]) => {
+        this.commonPendingReqToJoins.clear();
+        this.commonPendingReqToJoins.merge(this.toEntityModelArr(proposals));
+      },
+    );
   };
 
   @action
-  loadCommonMembersHistoryProposals = (commonId: string) => {
-    getCommonHistoryReqToJoins(commonId).then((proposals: ProposalEntity[]) => {
-      this.commonHistoryReqToJoins.clear();
-      this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
-    });
+  loadCommonMembersHistoryProposals = (commonId: string, page: number) => {
+    getCommonHistoryReqToJoins(commonId, page).then(
+      (proposals: ProposalEntity[]) => {
+        this.commonHistoryReqToJoins.clear();
+        this.commonHistoryReqToJoins.merge(this.toEntityModelArr(proposals));
+      },
+    );
   };
 
   @action

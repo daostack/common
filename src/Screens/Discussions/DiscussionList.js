@@ -16,7 +16,6 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
-  const [page, setPage] = useState(0);
   const list = rootStore.discussionStore.commonDiscussions;
 
   const [viewerPermission, setViewerPermission] = useState();
@@ -36,11 +35,6 @@ const DiscussionList = ({
     rootStore.discussionStore.loadCommonDiscussions(commonId);
   }, []);
 
-  async function loadMoreDiscussions() {
-    await rootStore.discussionStore.loadCommonDiscussions(commonId, page);
-    setPage(page + 1);
-  }
-
   return (
     <>
       {list?.length > 0 ? (
@@ -58,8 +52,6 @@ const DiscussionList = ({
               }
               isMember={isMember}
               viewerPermission={viewerPermission}
-              onEndReachedThreshold={0}
-              onEndReached={loadMoreDiscussions}
             />
           )}
         />
