@@ -13,6 +13,7 @@ import {UserModel} from './Models/UserModel';
 import RootStore from './RootStore';
 import {apollo} from '~/Util/helpers/apolloHelper';
 import AuthService from '~/Services/AuthService';
+import {User} from '~/Graphql/Auth';
 
 type SignInErrorWithCode = any;
 
@@ -62,8 +63,7 @@ class AuthStore {
     }
   };
 
-  // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
-  onAuthStateChanged = (user: any) => {
+  onAuthStateChanged = (user: User) => {
     logger.log(
       'AUTH STATE CHANGED:',
       user?.uid,
