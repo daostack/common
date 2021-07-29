@@ -17,6 +17,7 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes} from '~/Types/propTypes';
+import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 
 const AUTOFILL = {
   ios: {
@@ -111,6 +112,8 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           backgroundColor: 'white',
         }}>
         <RequestStepHeaderTitle title="Billing Details" subtitle={subtitle} />
+
+        <PurpleBoxMessage message="Please note: cuttently, credit cards issued by Mastercard are not supported." />
 
         <TextInputField
           editable
