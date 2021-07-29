@@ -3,7 +3,16 @@ import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import TextInputField from './TextInputField';
 import {text, layout, colors, sizeL} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {string, bool, object, number, shape, oneOfType, func} from 'prop-types';
+import {
+  string,
+  bool,
+  object,
+  number,
+  shape,
+  oneOfType,
+  func,
+  array,
+} from 'prop-types';
 import {LINK_VALIDATION_RULES} from '~/FormStores/ValidationRules/linkRules';
 
 const RemoveLinkBtn = ({onFieldDeleted}) => (
@@ -113,10 +122,14 @@ const MultiTitleValueField = (props) => {
           name: `${currIndex}_value`,
           multiName: props.validation.name,
           validateRule:
-            validation?.validateRule?.value || LINK_VALIDATION_RULES.LINKS || validation.validateRule,
+            validation?.validateRule?.value ||
+            LINK_VALIDATION_RULES.LINKS ||
+            validation.validateRule,
           invisibleContainer: true,
           immediateValidation: true,
-          customErrorMessage: `${link ? 'Link format is invalid' : 'Rule description is required' }`,
+          customErrorMessage: `${
+            link ? 'Link format is invalid' : 'Rule description is required'
+          }`,
         };
 
         const currTitleItemValidation = {
@@ -208,10 +221,7 @@ MultiTitleValueField.propTypes = {
   link: bool,
   rule: bool,
   onFieldDeleted: func,
-  currRules: shape({
-    title: string,
-    value: string,
-  }),
+  currRules: array,
   onChangeText: func,
 };
 

@@ -1,14 +1,12 @@
 import React from 'react';
 import {InferProps, object} from 'prop-types';
 import {observer} from 'mobx-react';
-import {rootStorePropTypes} from '~/Types/propTypes';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
   navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
 };
 
 const WelcomeNotification: React.FC<InferProps<typeof props>> = ({
@@ -16,6 +14,7 @@ const WelcomeNotification: React.FC<InferProps<typeof props>> = ({
   navigation,
 }) => {
   const notificationData = {
+    createdAt: item.createdAt,
     missingData: false,
     descriptionBold: "We're excited to have you with us",
     description: ' Looking for the first Common to join? Browse now.',

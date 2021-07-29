@@ -22,7 +22,7 @@ const moderationActionSuccessModalProps = {
   type: string,
   visible: bool,
   setShowModerationSuccessModal: func,
-  action: func,
+  action: string,
 };
 
 ModerationActionSuccessModal.propTypes = moderationActionSuccessModalProps;

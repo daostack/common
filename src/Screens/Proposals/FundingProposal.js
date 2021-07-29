@@ -71,8 +71,7 @@ const FundingProposal = ({
 
           navigation.pop();
 
-          // @question Is it good UX to show the ID to the user. Doesn't it look kinda scary to the end user?
-          Toast.done(`Funding Proposal with id ${proposalId} created!`);
+          Toast.done('Your proposal was created!');
 
           const navigate = CommonActions.navigate({
             name: 'CommonProfile',

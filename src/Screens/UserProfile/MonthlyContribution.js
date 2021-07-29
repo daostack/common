@@ -5,11 +5,12 @@ import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
-import {colors} from '../../Theme';
+import {colors, font} from '../../Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
+import {PaymentFailureMessageBox} from '../../Components/Subscriptions/PaymentFailureMessageBox';
 import {
   ACTIVE,
   CANCELED_BY_PAYMENT,
@@ -17,12 +18,20 @@ import {
   cancelSubscription,
   getSubscription,
   PAYMENT_FAILED,
+  expirationPeriod,
 } from '~/Services/SubscriptionService';
 import {formatCurrency, formatDate} from '../../Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {getPaymentById} from '~/Services/PaymentsService';
+import _ from 'lodash';
 
 const MonthlyContribution = ({navigation, route, uiStore}) => {
-  const [subscription, setSubscription] = React.useState(null);
+  const [subscription, setSubscription] = React.useState(
+    route.params?.subscription,
+  );
+  const [payment, setPayment] = React.useState(null);
+  const [expDate, setExpDate] = React.useState(null);
+  const [isExpired, setIsExpired] = React.useState(false);
 
   const onCancelClick = () => {
     uiStore.bottomSheetStore.showBottomSheet(
@@ -54,15 +63,43 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
 
   React.useEffect(() => {
     (async () => {
-      await getSubscription(route.params?.subscription?.id, (snap) => {
-        setSubscription(snap?.data());
-      });
+      if (subscription?.paymentFailures) {
+        //@question will the last payment be the last element in the array?
+        setPayment(
+          await getPaymentById(
+            _.last(subscription?.paymentFailures)?.paymentId,
+          ),
+        );
+      }
     })();
+    setExpDate(getExpDate());
+  }, []);
+
+  React.useEffect(() => {
+    if (!subscription) {
+      (async () => {
+        await getSubscription(route.params?.subscription?.id, (snap) => {
+          setSubscription(snap?.data());
+        });
+      })();
+    }
   }, [route.params?.subscription?.id]);
+
+  const getExpDate = () => {
+    const expirationDate = subscription?.dueDate.toDate();
+    if (subscription?.paymentFailures) {
+      expirationDate?.setSeconds(
+        expirationDate?.getSeconds() + expirationPeriod,
+      );
+    }
+
+    setIsExpired(expirationDate < new Date());
+    return formatDate(expirationDate);
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
+      <View style={{...styles.row, borderBottomWidth: 0}}>
         <Text>Status</Text>
 
         {subscription ? (
@@ -78,11 +115,17 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
           </View>
         )}
       </View>
+      {subscription.paymentFailures && (
+        <View style={styles.circleMessageBox}>
+          <Text style={styles.circleText}>
+            {payment?.failure?.errorDescription || 'Loading...'}
+          </Text>
+        </View>
+      )}
 
       <View style={styles.row}>
         <Text>
-          {subscription?.status === CANCELED_BY_USER &&
-          subscription?.dueDate.toDate() > new Date()
+          {subscription?.status === CANCELED_BY_USER && isExpired
             ? 'Cancels on'
             : subscription?.status === ACTIVE
             ? 'Next payment'
@@ -91,13 +134,12 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
 
         {subscription ? (
           <Text>
-            {(subscription.status === CANCELED_BY_USER &&
-              subscription?.dueDate.toDate() < new Date()) ||
-            subscription.status === CANCELED_BY_PAYMENT
+            {(subscription?.status === CANCELED_BY_USER && isExpired) ||
+            subscription?.status === CANCELED_BY_PAYMENT
               ? formatDate(subscription.lastChargedAt.toDate())
-              : subscription.dueDate.toDate() < new Date()
+              : isExpired
               ? 'In the following days'
-              : formatDate(subscription.dueDate.toDate())}
+              : formatDate(subscription?.dueDate.toDate())}
           </Text>
         ) : (
           <View style={{width: 100}}>
@@ -112,7 +154,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         <Text>Amount</Text>
 
         {subscription ? (
-          <Text>{formatCurrency(subscription.amount)}</Text>
+          <Text>{formatCurrency(subscription?.amount)}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -126,7 +168,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         <Text>Subscribed at</Text>
 
         {subscription ? (
-          <Text>{formatDate(subscription.createdAt.toDate())}</Text>
+          <Text>{formatDate(subscription?.createdAt.toDate())}</Text>
         ) : (
           <View style={{width: 100}}>
             <Placeholder Animation={Fade}>
@@ -136,33 +178,37 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
         )}
       </View>
 
-      {subscription && subscription.status === CANCELED_BY_PAYMENT && (
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.descriptionText}>
-            We couldn't charge your credit card and collect your monthly
-            contribution. You are no longer a member of the Common, but you can
-            always request to join again!
-          </Text>
-        </View>
+      {subscription?.paymentFailures && (
+        <PaymentFailureMessageBox
+          subscription={subscription}
+          isExpired={isExpired}
+          expDate={expDate}
+        />
       )}
 
       {subscription && (
         <React.Fragment>
           {[ACTIVE, PAYMENT_FAILED].some(
-            (status) => status === subscription.status,
+            (status) => status === subscription?.status,
           ) && (
-            <TouchableOpacity style={styles.button} onPress={onCancelClick}>
-              <Text style={styles.stayText}>Cancel monthly payment</Text>
+            <TouchableOpacity
+              style={{...styles.button, ...styles.cancelButton}}
+              onPress={onCancelClick}>
+              <Text style={styles.buttonText}>Cancel monthly payment</Text>
             </TouchableOpacity>
           )}
 
           {[CANCELED_BY_PAYMENT, CANCELED_BY_USER].some(
-            (status) => status === subscription.status,
+            (status) => status === subscription?.status,
           ) &&
-            subscription.dueDate.toDate() < new Date() &&
-            subscription.revoked && (
-              <TouchableOpacity style={styles.button} onPress={onJoinClick}>
-                <Text style={styles.stayText}>Request to join again</Text>
+            isExpired &&
+            subscription?.revoked && (
+              <TouchableOpacity
+                style={{...styles.button, backgroundColor: colors.mainBlue}}
+                onPress={onJoinClick}>
+                <Text style={{...styles.buttonText, color: colors.white}}>
+                  Request to join again
+                </Text>
               </TouchableOpacity>
             )}
         </React.Fragment>
@@ -206,11 +252,31 @@ const styles = {
     ...layout.btnOutline,
     width: Dimensions.get('window').width * 0.9,
     textAlign: 'center',
-    maxHeight: 48,
+    maxHeight: 54,
     alignSelf: 'center',
+    marginTop: 20,
+  },
+  cancelButton: {
     marginTop: 'auto',
     marginBottom: 30,
-    color: colors.black,
+  },
+  buttonText: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+  },
+  circleMessageBox: {
+    width: Dimensions.get('window').width * 0.9,
+    paddingVertical: 25,
+    backgroundColor: colors.blueGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+  },
+  circleText: {
+    alignSelf: 'center',
+    color: colors.greyText,
+    fontSize: 15,
+    textAlign: 'center',
   },
 };
 

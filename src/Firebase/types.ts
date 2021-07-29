@@ -16,3 +16,5 @@ export interface IFirebaseDoc<Entity> {
 export interface IFirebaseDocChange<Entity> {
   doc: IFirebaseDoc<Entity>;
 }
+
+export type Nullable<T> = null | undefined | T;

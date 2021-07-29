@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
-import {string, func, InferProps, shape, bool} from 'prop-types';
+import {string, func, InferProps, shape} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {TITLES} from '~/Components/Moderation/constants';
@@ -34,7 +34,7 @@ const reportProps = {
     isFormValid: func.isRequired,
   }).isRequired,
   onReportContent: func,
-  hasPermission: bool,
+  hasPermission: string,
 };
 
 const Report: React.FC<InferProps<typeof reportProps>> = ({
@@ -95,6 +95,9 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
     setIsValid(formStore.isFormValid(true));
   };
 
+  const isValidNote = (note: string) =>
+    setIsValid(note ? formStore.isFormValid(true) : false);
+
   return (
     <View style={styles.root}>
       <View style={styles.view}>
@@ -117,14 +120,16 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
             label={hasPermission ? 'Moderator note' : 'Add note:'}
             placeholderText="This note is public and will be shown to all members."
             multiline={true}
+            infoLabel="Required"
             value={
               formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
                 ?.value
             }
+            onChangeText={(noteText: string) => isValidNote(noteText)}
             validation={{
               name: 'moderatorNote',
               formStore: formStore,
-              validateRule: 'string',
+              validateRule: 'string|required',
               displayName: 'moderator note',
             }}
           />

@@ -11,7 +11,7 @@ type Props = {
 const MinimumContribution: FC<Props> = ({minFeeToJoin, contributionType}) => (
   <View>
     <Text style={styles.text}>
-      {`${minFeeToJoin}$ `}
+      {`$${minFeeToJoin} `}
       <Text style={[styles.text, styles.bold]}>{contributionType}</Text>{' '}
       contribution
     </Text>
