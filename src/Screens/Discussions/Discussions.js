@@ -91,13 +91,15 @@ const Discussions = ({
 
   useEffect(() => {
     (async () => {
-      const common = await commonStore.getCommonById(commonId);
-      const permission = await authStore.getPermission(
-        commonId,
-        authStore?.userInfo?.uid,
-      );
-      setHasPermission(permission);
-      setCurrCommon(common);
+      if (commonId) {
+        const common = await commonStore.getCommonById(commonId);
+        const permission = await authStore.getPermission(
+          commonId,
+          authStore?.userInfo?.uid,
+        );
+        setHasPermission(permission);
+        setCurrCommon(common);
+      }
     })();
   }, [commonId, authStore?.userInfo]);
 

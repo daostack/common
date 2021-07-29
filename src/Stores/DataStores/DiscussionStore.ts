@@ -7,6 +7,7 @@ import {
 } from '~/Services/ListServices/DiscussionListService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
+import Logger from '~/Services/Logger';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
@@ -43,6 +44,7 @@ export default class DiscussionStore extends BaseStore<
           return discussion;
         })
         .catch(() => {
+          Logger.info('getDiscussionById-error ~>', id);
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           });

@@ -44,7 +44,6 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
-import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
@@ -117,8 +116,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  Logger.log('Common id ->', params.currCommon);
-
   const [currCommon, setCurrCommon] = useState({});
 
   useEffect(() => {
@@ -190,9 +187,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
-      const proposal = await proposalStore.getProposalById(
-        userPendingProposalId,
-      );
       let userPendingProposalId = null;
 
       // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
@@ -202,17 +196,22 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           userPendingProposalId = pendingProposal.id;
         }
       });
+      if (userPendingProposalId) {
+        const proposal = await proposalStore.getProposalById(
+          userPendingProposalId,
+        );
 
-      setPendingProposalsData({
-        pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
-        usersPendingProposal: userPendingProposalId ? proposal : false,
-      });
+        setPendingProposalsData({
+          pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+          usersPendingProposal: userPendingProposalId ? proposal : false,
+        });
 
-      const userHasPendingProposal = userPendingProposalId !== null;
-      animateNextStateRender();
-      setShowRequestToJoin(!userHasPendingProposal);
-      if (!userHasPendingProposal) {
-        setShowPending(true);
+        const userHasPendingProposal = userPendingProposalId !== null;
+        animateNextStateRender();
+        setShowRequestToJoin(!userHasPendingProposal);
+        if (!userHasPendingProposal) {
+          setShowPending(true);
+        }
       }
     })();
   }, [

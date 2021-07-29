@@ -24,16 +24,12 @@ export default class DiscussionMessageStore extends BaseStore<
   IDiscussionMessageEntity
 > {
   @observable
-  private proposalMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private proposalMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
-  private discussionMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private discussionMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
   proposalDiscussionId: String | null = null;
