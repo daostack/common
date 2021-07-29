@@ -111,7 +111,10 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   // }
 
   // Data consuming methods
-  getProposalById = async (id: string): Promise<Proposal | void> => {
+  getProposalById = async (
+    id: string,
+    showError = true,
+  ): Promise<Proposal | void> => {
     try {
       return this.getDataByIdAndCollections(id, [
         this.fetchedProposal,
@@ -128,9 +131,11 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
         })
         .catch(() => {
           Logger.info('getProposalById-error ~>', id);
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
+          if (showError) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            });
+          }
         });
     }
   };

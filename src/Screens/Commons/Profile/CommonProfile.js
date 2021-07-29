@@ -187,6 +187,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
+      const proposal = await proposalStore.getProposalById(
+        userPendingProposalId,
+        false,
+      );
       let userPendingProposalId = null;
 
       // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
@@ -196,22 +200,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           userPendingProposalId = pendingProposal.id;
         }
       });
-      if (userPendingProposalId) {
-        const proposal = await proposalStore.getProposalById(
-          userPendingProposalId,
-        );
+      setPendingProposalsData({
+        pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+        usersPendingProposal: userPendingProposalId ? proposal : false,
+      });
 
-        setPendingProposalsData({
-          pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
-          usersPendingProposal: userPendingProposalId ? proposal : false,
-        });
-
-        const userHasPendingProposal = userPendingProposalId !== null;
-        animateNextStateRender();
-        setShowRequestToJoin(!userHasPendingProposal);
-        if (!userHasPendingProposal) {
-          setShowPending(true);
-        }
+      const userHasPendingProposal = userPendingProposalId !== null;
+      animateNextStateRender();
+      setShowRequestToJoin(!userHasPendingProposal);
+      if (!userHasPendingProposal) {
+        setShowPending(true);
       }
     })();
   }, [
