@@ -2,17 +2,11 @@ import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {colors, font, sizeM} from '~/Theme';
 
-export const PurpleBoxMessage = ({
-  message,
-}: {
-  message: string;
-}) => <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            {message}
-          </Text>
-        </View>
-;
-
+export const PurpleBoxMessage = ({message}: {message: string}) => (
+  <View style={styles.textContainer}>
+    <Text style={styles.text}>{message}</Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   textContainer: {
