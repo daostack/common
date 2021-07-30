@@ -73,6 +73,10 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   private commonPendingReqToJoins: ObservableMap<string, Proposal> =
     observable.map({});
 
+  @observable
+  private commonHistoryReqToJoins: ObservableMap<string, Proposal> =
+    observable.map({});
+
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
@@ -117,6 +121,7 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
         this.commonActiveProposals,
         this.commonHistoryProposals,
         this.commonPendingReqToJoins,
+        this.commonHistoryReqToJoins,
       ]);
     } catch (err) {
       return fetchProposalById(id)
