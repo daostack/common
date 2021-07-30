@@ -64,7 +64,7 @@ const IntroductionStep = ({
           subtitle="Let the Common members learn more about you and how you relate to the cause."
         />
 
-        <PurpleBoxMessage message="Please note: currently, credit cards issued by Mastercard are not supported." />
+        <PurpleBoxMessage message="Please note: cuttently, credit cards issued by Mastercard are not supported." />
 
         <View
           style={{
