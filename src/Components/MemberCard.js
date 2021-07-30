@@ -109,7 +109,7 @@ const MemberCard = ({
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
-        {proposalInfo && (
+        {proposalInfo && proposalInfo.createdAt && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
             {moment.unix(proposalInfo.createdAt.getTime() / 1000).fromNow()}
           </Text>

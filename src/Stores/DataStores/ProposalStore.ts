@@ -117,7 +117,6 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
         this.commonActiveProposals,
         this.commonHistoryProposals,
         this.commonPendingReqToJoins,
-        this.commonHistoryReqToJoins,
       ]);
     } catch (err) {
       return fetchProposalById(id)

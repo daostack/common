@@ -1,11 +1,7 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {PROPOSAL_TYPE} from '~/Config';
 
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
   CreateFundingProposalDocument,
@@ -24,6 +20,7 @@ import {
   ProposalEntity,
   getProposalDocument,
 } from '~/Graphql/Proposal';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
@@ -144,7 +141,7 @@ export const fetchProposalById = async (proposalId: string) => {
     },
   });
 
-  return data;
+  return new Proposal(data.proposal);
 };
 
 // Create Proposals
