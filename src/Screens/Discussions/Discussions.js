@@ -91,9 +91,11 @@ const Discussions = ({
 
   useEffect(() => {
     // load messages to message store
-    rootStore.discussionMessageStore.loadDiscussionMessages(
-      dataState?.messages,
-    );
+    if (dataState?.messages) {
+      rootStore.discussionMessageStore.loadDiscussionMessages(
+        dataState.messages,
+      );
+    }
   }, [dataState]);
 
   useEffect(() => {

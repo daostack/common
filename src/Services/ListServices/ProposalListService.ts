@@ -141,6 +141,9 @@ export const fetchProposalById = async (proposalId: string) => {
     },
   });
 
+  if (!data.proposal) {
+    return data;
+  }
   return new Proposal(data.proposal);
 };
 

@@ -129,8 +129,8 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
           this.fetchedProposal.set(id, proposal);
           return proposal;
         })
-        .catch(() => {
-          Logger.info('getProposalById-error ~>', id);
+        .catch((error) => {
+          Logger.info('getProposalById-error ~>', error, id);
           if (showError) {
             showBackendError({
               bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
