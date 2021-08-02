@@ -110,7 +110,7 @@ export const fetchDiscussions = async ({
 
 export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
   const {data} = await apollo.query({
-    query: GetDiscussionDocumentById,
+    query: GetDiscussionByIdDocument,
     variables: {
       id,
     },

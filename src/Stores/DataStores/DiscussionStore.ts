@@ -7,13 +7,12 @@ import {
   fetchDiscussionById,
   createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import Logger from '~/Services/Logger';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
-import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
 import {Discussion} from '~/Graphql/Discussion';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
@@ -48,12 +47,12 @@ export default class DiscussionStore extends BaseStore<
   }
 
   // Data consuming methods
-  getDiscussionById = (id: string): Promise<DiscussionModel | void> => {
+  getDiscussionById = async (id: string): Promise<DiscussionModel | void> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (err) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      return fetchDiscussionId(id)
+      return await fetchDiscussionId(id)
         .then((discussion: DiscussionModel) => {
           this.discussions.set(id, discussion);
           return discussion;

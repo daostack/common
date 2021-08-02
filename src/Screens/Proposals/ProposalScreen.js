@@ -131,10 +131,11 @@ const ProposalScreen = ({
     (async () => {
       const proposal = await proposalStore.getProposalById(proposalId);
       setProposalInfo(proposal);
-      
-      const proposalDiscussion = await rootStore.discussionStore.getProposalDiscussionById(
-        proposal?.discussions[0]?.id,
-      );
+
+      const proposalDiscussion =
+        await rootStore.discussionStore.getProposalDiscussionById(
+          proposal?.discussions[0]?.id,
+        );
       setDiscussion(proposalDiscussion);
       discussionMessageStore.loadProposalMessaages(proposal);
     })();

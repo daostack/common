@@ -149,7 +149,7 @@ const Discussions = ({
       inputRef.current.clear();
       Keyboard.dismiss();
       try {
-        const {data} = await createDiscussionMessage({
+        await createDiscussionMessage({
           discussionId,
           message,
         });
