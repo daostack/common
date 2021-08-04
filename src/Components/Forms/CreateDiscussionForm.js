@@ -23,14 +23,13 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, authStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
         logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         try {
-          await rootStore.discussionStore.createDiscussion({
+          await rootStore.discussionStore.createCommonDiscussion({
             topic: changedFields[TITLE],
             description: changedFields[MESSAGE],
             commonId,
