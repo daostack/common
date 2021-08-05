@@ -1,14 +1,14 @@
 import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
-  GetDiscussionDocument,
+  GetDiscussionsDocument,
   getDiscussionsVariable,
-  GetDiscussionDocumentById,
+  GetDiscussionByIdDocument,
 } from '~/Graphql/Discussion';
 import {Discussion} from '~/Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -61,13 +61,21 @@ export const updateDiscussionLastMessage = async (
 
 export const fetchDiscussionId = async (
   discussionId: string,
-): Promise<IFirebaseDoc<DiscussionType>> => {
+): Promise<Discussion> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
-  return await DiscussionsCollection.doc(discussionId).get();
+
+  const {data} = await apollo.query({
+    query: GetDiscussionByIdDocument,
+    variables: {
+      id: discussionId,
+    },
+  });
+
+  return new Discussion(data, false);
 };
 
 export const createDiscussion = async (
@@ -88,7 +96,7 @@ export const fetchDiscussions = async ({
   paginate,
 }: getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
-    query: GetDiscussionDocument,
+    query: GetDiscussionsDocument,
     variables: {
       where,
       paginate,
@@ -102,7 +110,7 @@ export const fetchDiscussions = async ({
 
 export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
   const {data} = await apollo.query({
-    query: GetDiscussionDocumentById,
+    query: GetDiscussionByIdDocument,
     variables: {
       id,
     },

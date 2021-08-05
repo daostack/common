@@ -58,24 +58,28 @@ export type CreateDiscussionMutationVariables = Exact<{
   discussion: CreateDiscussionInput;
 }>;
 
+const gqlDiscussionProps = `
+  id
+  title: topic
+  message: description
+  messageCount
+  createTime: createdAt
+  ownerId: userId
+  owner {
+    photoURL: photo
+    email
+    firstName
+    lastName
+    country
+  }
+  lastMessage: latestMessage
+  createdAt
+`;
+
 export const CreateDiscussionDocument = gql`
   mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
     createDiscussion(input: $discussion) {
-      id
-      title: topic
-      message: description
-      messageCount
-      createTime: createdAt
-      ownerId: userId
-      owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
-      }
-      lastMessage: latestMessage
-      createdAt
+      ${gqlDiscussionProps}
     }
   }
 `;
@@ -91,70 +95,18 @@ export type getDiscussionsVariable = {
   paginate: Pagination;
 };
 
-export const GetDiscussionDocument = gql`
-  query GetDiscussions(
-    $where: DiscussionWhereInput
-    $paginate: PaginateInput! = {take: 10, skip: 0}
-  ) {
-    discussions(where: $where, paginate: $paginate) {
-      id
-      title: topic
-      message: description
-      messageCount
-      createdAt
-      ownerId: userId
-      owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
-      }
-      lastMessage: latestMessage
-      messages {
-        owner {
-          id
-        }
-        id
-        createdAt
-        updatedAt
-        message
-        type
-        flag
-        userId
-      }
+export const GetDiscussionByIdDocument = gql`
+  query GetDiscussionById($id: ID!) {
+    discussion(id: $id) {
+      ${gqlDiscussionProps}
     }
   }
 `;
 
-export const GetDiscussionDocumentById = gql`
-  query GetDiscussionById($id: ID!) {
-    discussion(id: $id) {
-      title: topic
-      message: description
-      messageCount
-      createdAt
-      ownerId: userId
-      owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
-      }
-      lastMessage: latestMessage
-      messages {
-        owner {
-          id
-        }
-        id
-        createdAt
-        updatedAt
-        message
-        type
-        flag
-        userId
-      }
+export const GetDiscussionsDocument = gql`
+  query GetDiscussions($where: DiscussionWhereInput) {
+    discussions(where: $where) {
+      ${gqlDiscussionProps}
     }
   }
 `;
