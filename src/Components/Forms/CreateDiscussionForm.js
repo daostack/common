@@ -30,7 +30,7 @@ const CreateDiscussionForm = ({
         logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         try {
-          await rootStore.discussionStore.createDiscussion({
+          await rootStore.discussionStore.createCommonDiscussion({
             topic: changedFields[TITLE],
             description: changedFields[MESSAGE],
             commonId,

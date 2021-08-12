@@ -8,6 +8,7 @@ import {
   User,
   Pagination,
 } from '~/Graphql';
+import {gqlUserProps} from '~/Graphql/User';
 
 export enum DiscussionMessageType {
   Message = 'Message',
@@ -68,11 +69,7 @@ export const CreateDiscussionDocument = gql`
       createTime: createdAt
       ownerId: userId
       owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
+        ${gqlUserProps}
       }
       lastMessage: latestMessage
       createdAt
@@ -91,38 +88,51 @@ export type getDiscussionsVariable = {
   paginate: Pagination;
 };
 
+const gqlDiscussionProps = `
+id
+title: topic
+message: description
+messageCount
+createdAt
+ownerId: userId
+owner {
+  ${gqlUserProps}
+}
+lastMessage: latestMessage
+messages {
+  owner {
+    ${gqlUserProps}
+  }
+  id
+  createdAt
+  updatedAt
+  message
+  type
+  flag
+  userId
+  reports {
+    id
+    reporter: reporterId
+    reporterInfo: reporter {
+      ${gqlUserProps}
+    }
+    moderator: reviewerId
+    moderatorInfo: reviewer {
+      ${gqlUserProps}
+    }
+    note
+    updatedAt
+    for
+  }
+}`;
+
 export const GetDiscussionDocument = gql`
   query GetDiscussions(
     $where: DiscussionWhereInput
     $paginate: PaginateInput! = {take: 10, skip: 0}
   ) {
     discussions(where: $where, paginate: $paginate) {
-      id
-      title: topic
-      message: description
-      messageCount
-      createdAt
-      ownerId: userId
-      owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
-      }
-      lastMessage: latestMessage
-      messages {
-        owner {
-          id
-        }
-        id
-        createdAt
-        updatedAt
-        message
-        type
-        flag
-        userId
-      }
+      ${gqlDiscussionProps}
     }
   }
 `;
@@ -130,31 +140,7 @@ export const GetDiscussionDocument = gql`
 export const GetDiscussionDocumentById = gql`
   query GetDiscussionById($id: ID!) {
     discussion(id: $id) {
-      title: topic
-      message: description
-      messageCount
-      createdAt
-      ownerId: userId
-      owner {
-        photoURL: photo
-        email
-        firstName
-        lastName
-        country
-      }
-      lastMessage: latestMessage
-      messages {
-        owner {
-          id
-        }
-        id
-        createdAt
-        updatedAt
-        message
-        type
-        flag
-        userId
-      }
+      ${gqlDiscussionProps}
     }
   }
 `;

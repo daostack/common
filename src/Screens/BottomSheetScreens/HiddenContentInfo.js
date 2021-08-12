@@ -6,7 +6,7 @@ import {Bold} from '~/Components/Text/Bold';
 import {string, array, bool} from 'prop-types';
 
 const getReasons = (reasonArr) => {
-  if (reasonArr.length) {
+  if (reasonArr?.length) {
     const clone = reasonArr.slice();
     const last = clone.splice(-1, 1);
     return (

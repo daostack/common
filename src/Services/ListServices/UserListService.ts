@@ -7,6 +7,7 @@ import {
 } from '~/Firebase/types';
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {User, GetUserInfoDocument} from '~/Graphql';
+import {UserModel} from '~/Stores/Models/UserModel';
 
 export type userListLoadCallbackFn = (
   updatedUserList: IFirebaseSnapshot<IUserEntity>,
@@ -75,7 +76,7 @@ export const updateUser = async (
   return await UsersCollection.doc(userId).update(user);
 };
 
-export const getUserById = async (userId: string): Promise<User> => {
+export const getUserById = async (userId: string): Promise<UserModel> => {
   const {data} = await apollo.query({
     query: GetUserInfoDocument,
     variables: {
@@ -85,5 +86,5 @@ export const getUserById = async (userId: string): Promise<User> => {
     },
   });
 
-  return data.user as User;
+  return new UserModel(data.user);
 };

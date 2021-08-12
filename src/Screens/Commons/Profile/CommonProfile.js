@@ -52,6 +52,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast.js';
 import {TITLES, ACTIONS, FLAGS} from '~/Components/Moderation/constants';
+import {REPORT_TYPE} from '~/Graphql/Report';
 
 import {
   IntroduceYourselfFormStore,
@@ -264,10 +265,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonId={currCommon.id}
         openCommonOptions={(discussion) =>
-          openCommonOptions(discussion, TITLES.discussion)
+          openCommonOptions(discussion, REPORT_TYPE.DiscussionReport)
         }
         showHiddenNote={(hiddenDiscussion) =>
-          showHiddenNote(hiddenDiscussion, TITLES.discussion)
+          showHiddenNote(hiddenDiscussion, REPORT_TYPE.DiscussionReport)
         }
         isMember={isMember}
       />
@@ -290,10 +291,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, REPORT_TYPE.ProposalReport)
         }
         showHiddenNote={(hiddenProposal) =>
-          showHiddenNote(hiddenProposal, TITLES.proposalText)
+          showHiddenNote(hiddenProposal, REPORT_TYPE.ProposalReport)
         }
         isMember={isMember}
       />
@@ -515,9 +516,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       : resp && setShowModerationSuccessModal(true);
   };
 
-  const membershipRequestType = (itemTitle) =>
-    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
-
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
@@ -534,8 +532,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: item
-          ? (actionType) =>
-              onModerate(actionType, membershipRequestType(itemType), item.id)
+          ? (actionType) => onModerate(actionType, itemType, item.id)
           : (type) => onEdit(type),
         hasPermission,
         moderatorOptions: {
@@ -550,11 +547,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.getInstance().report(
-      membershipRequestType(moderationType).toLowerCase(),
-      commonId,
-      moderationFormStore.getFormFieldsJson(),
-    );
+    await ModerationService.getInstance().report({
+      type: moderationType,
+      moderationData: moderationFormStore.getFormFieldsJson(),
+    });
     Toast.hide();
     Toast.success('Done');
     setShowModerationSuccessModal(true);
@@ -566,9 +562,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
-        date: timeReported(moderation.updatedAt),
-        reasons: moderation.reasons,
+        userName: reporterName(userStore.getUserById(moderation?.moderator)),
+        date: timeReported(moderation?.updatedAt),
+        reasons: moderation?.reasons,
         moderatorNote: moderation?.moderatorNote,
         type,
         isModerator,

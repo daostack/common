@@ -10,7 +10,7 @@ import {
 import {Notification, NotificationItemState} from '../Models/Notification';
 import {action, computed, observable} from 'mobx';
 import Logger from '~/Services/Logger';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
 import {Discussion} from '../Models/Discussion';
 import {Proposal} from '../Models/Proposal';
 import {showBackendError} from '~/Util';
@@ -174,7 +174,7 @@ export default class NotificationStore extends BaseStore<
   }
 
   getParentDiscussion(
-    message: IDiscussionMessageEntity,
+    message: DiscussionMessageType,
   ): Discussion | Proposal {
     return (
       (this.rootStore.discussionStore.getDiscussionById(

@@ -11,7 +11,7 @@ import {
   IFirebaseDocChange,
 } from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
@@ -22,19 +22,15 @@ import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
-  IDiscussionMessageEntity
+  DiscussionMessageType
 > {
   @observable
-  private proposalMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private proposalMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
-  private discussionMessages: ObservableMap<
-    string,
-    DiscussionMessage
-  > = observable.map({});
+  private discussionMessages: ObservableMap<string, DiscussionMessage> =
+    observable.map({});
 
   @observable
   proposalDiscussionId: String | null = null;
@@ -82,7 +78,7 @@ export default class DiscussionMessageStore extends BaseStore<
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
       fetchDiscussionMessageById(id)
-        .then((discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
+        .then((discussion: IFirebaseDoc<DiscussionMessageType>) => {
           if (discussion.exists) {
             runInAction(() => {
               this.setData(
@@ -133,13 +129,13 @@ export default class DiscussionMessageStore extends BaseStore<
     subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
 
   // Overriden methods
-  getEntityModel(entity: IDiscussionMessageEntity): DiscussionMessage {
+  getEntityModel(entity: DiscussionMessageType): DiscussionMessage {
     return new DiscussionMessage(entity);
   }
 
   firestoreDocChangeToEntity(
-    firebaseDoc: IFirebaseDocChange<IDiscussionMessageEntity>,
-  ): IDiscussionMessageEntity {
+    firebaseDoc: IFirebaseDocChange<DiscussionMessageType>,
+  ): DiscussionMessageType {
     const entity = super.firestoreDocChangeToEntity(firebaseDoc);
     return {
       ...entity,

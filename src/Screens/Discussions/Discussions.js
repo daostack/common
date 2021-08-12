@@ -33,6 +33,7 @@ import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {REPORT_TYPE} from '~/Graphql/Report';
 import Loader from '~/Components/Loader';
 import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 const {width} = Dimensions.get('window');
@@ -74,9 +75,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -107,9 +107,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -138,11 +139,10 @@ const Discussions = ({
       inputRef.current.clear();
       Keyboard.dismiss();
       try {
-        const {data} = await createDiscussionMessage({
+        await createDiscussionMessage({
           discussionId,
           message,
         });
-        console.log('createDiscussionMessage', data.createDiscussionMessage);
         Toast.success('Done');
       } catch (error) {
         Toast.error(error);
@@ -322,11 +322,10 @@ const Discussions = ({
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
-      TITLES.discussionMessage,
-      commonId,
-      moderationFormStore.getFormFieldsJson(),
-    );
+    await ModerationService.getInstance().report({
+      moderationData: moderationFormStore.getFormFieldsJson(),
+      type: REPORT_TYPE.MessageReport,
+    });
     Toast.hide();
     Toast.success('Done');
     setShowModerationSuccessModal(true);

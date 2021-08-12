@@ -1,12 +1,11 @@
 import {observable, computed} from 'mobx';
-import {
-  IDiscussionMessageEntity,
-  IModerationEntity,
-} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {ModerationType} from '~/Graphql/Report';
+import {User} from '~/Graphql';
 import {BaseModel} from './BaseModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 
-export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
+export class DiscussionMessage extends BaseModel<DiscussionMessageType> {
   @observable
   discussionId: string;
 
@@ -23,20 +22,27 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
   ownerAvatar: string;
 
   @observable
-  moderation?: IModerationEntity;
+  owner: User;
+
+  @observable
+  moderation: ModerationType;
 
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
-  constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
+  constructor(newDiscussionMessageInfo: DiscussionMessageType) {
     super(newDiscussionMessageInfo);
     this.discussionId = newDiscussionMessageInfo.discussionId;
     this.userId = newDiscussionMessageInfo.userId;
     this.message = newDiscussionMessageInfo.message;
     this.createdAt = newDiscussionMessageInfo.createdAt;
-    this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
-    this.moderation = newDiscussionMessageInfo.moderation;
+    this.ownerAvatar = newDiscussionMessageInfo.owner.photoURL;
+    this.owner = newDiscussionMessageInfo.owner;
+    this.moderation = {
+      reports: newDiscussionMessageInfo.reports,
+      flag: newDiscussionMessageInfo.flag,
+    };
   }
 }
