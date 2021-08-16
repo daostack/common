@@ -1,7 +1,6 @@
 import BaseStore from './BaseStore';
 import {
   subscribeToCommonDiscussions,
-  subscribeToDiscussionById,
   fetchDiscussionId, // to remove
   fetchDiscussions,
   fetchDiscussionById,
@@ -83,10 +82,6 @@ export default class DiscussionStore extends BaseStore<
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     subscribeToCommonDiscussions(commonId, this.updateStoreData);
-
-  //Actions
-  subscribeToDiscussionById = (discussionId: string): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionById(discussionId, this.updateStoreData);
 
   // helper function
   // if discussion already exists in database,

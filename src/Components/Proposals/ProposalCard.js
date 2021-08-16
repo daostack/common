@@ -19,7 +19,7 @@ import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, func} from 'prop-types';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {REPORT_FLAG} from '~/Graphql/Report';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -73,12 +73,13 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -141,7 +142,7 @@ const ProposalCard = ({
             //proposalInfo?.moderation?.updatedAt.seconds ||
             proposalInfo?.expiresAt?.getTime() / 1000
           }
-          isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
+          isReported={proposalInfo.moderation?.flag !== REPORT_FLAG.Clear}
           moderation={proposalInfo.moderation}
           reporter={getReporter()}
           hasPermission={hasPermission}
