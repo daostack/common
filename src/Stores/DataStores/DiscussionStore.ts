@@ -1,18 +1,14 @@
 import BaseStore from './BaseStore';
 import {
-  subscribeToCommonDiscussions,
-  fetchDiscussionId, // to remove
   fetchDiscussions,
   fetchDiscussionById,
   createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
-import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
-import {Discussion} from '~/Graphql/Discussion';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 
 export default class DiscussionStore extends BaseStore<
@@ -29,10 +25,8 @@ export default class DiscussionStore extends BaseStore<
   );
 
   @observable
-  private proposalDiscussion: DiscussionModel; /*ObservableMap<
-    string,
-    DiscussionModel
-  > = observable.map({});*/
+  private proposalDiscussions: ObservableMap<string, DiscussionModel> =
+    observable.map({});
 
   @computed
   get commonDiscussions() {
@@ -40,48 +34,29 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @computed
-  get proposalDiscussions() {
-    return this.proposalDiscussion;
+  get proposalDiscussionsArray() {
+    return this.toDataArray(this.proposalDiscussions);
   }
 
   // Data consuming methods TO REMOVE
-  getDiscussionById = (id: string): DiscussionModel | undefined => {
+  @action
+  getDiscussionById = async (
+    id: string,
+  ): Promise<DiscussionModel | undefined> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
-    } catch (errr) {
-      // Temporary logic for fetching Discussion in case it's not in the store.
-      fetchDiscussionId(id)
-        .then((discussion: IFirebaseDoc<DiscussionType>) => {
-          if (discussion.exists) {
-            runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(discussion)),
-              );
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
+    } catch (err) {
+      try {
+        const discussion = await fetchDiscussionById(id);
+        this.discussions = observable.map(this.toEntityModelArr([discussion]));
+        return discussion;
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
         });
-      return undefined;
+      }
     }
   };
-
-  getCommonDiscussions = (
-    commonId: string,
-  ): Array<DiscussionType> | undefined =>
-    this.getDataArray
-      ?.filter((discussion: Discussion) => discussion.commonId === commonId)
-      .sort(
-        (discussion: Discussion, prevDiscussion: Discussion) =>
-          prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
-      );
-  //Actions
-  subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToCommonDiscussions(commonId, this.updateStoreData);
 
   // helper function
   // if discussion already exists in database,
@@ -142,6 +117,23 @@ export default class DiscussionStore extends BaseStore<
     this.discussions = observable.map(discussionsMap);
   };
 
-  getProposalDiscussionById = async (id: string): Promise<DiscussionModel> =>
-    await fetchDiscussionById(id);
+  getProposalDiscussionById = async (
+    id: string,
+  ): Promise<DiscussionModel | undefined> => {
+    try {
+      return this.getDataByIdAndCollections(id, [this.discussions]);
+    } catch (err) {
+      try {
+        const discussion = await fetchDiscussionById(id);
+        this.proposalDiscussions = observable.map(
+          this.toEntityModelArr([discussion]),
+        );
+        return discussion;
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        });
+      }
+    }
+  };
 }

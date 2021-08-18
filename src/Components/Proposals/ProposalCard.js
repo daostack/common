@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import {Proposal} from '~/Stores/Models/Proposal';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -48,7 +49,14 @@ const ProposalCard = ({
   const commonStore = rootStore.commonStore;
   const authStore = rootStore.authStore;
 
-  const proposalInfo = proposalStore.getProposalById(proposalId);
+  const [proposalInfo, setProposalInfo] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const proposal = await proposalStore.getProposalById(proposalId);
+      setProposalInfo(proposal);
+    })();
+  }, [proposalId]);
 
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
@@ -63,7 +71,7 @@ const ProposalCard = ({
       );
       setHasPermission(permission);
     })();
-  }, [proposalInfo.commonId, authStore?.userInfo]);
+  }, [proposalInfo?.commonId, authStore?.userInfo]);
 
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.userId);

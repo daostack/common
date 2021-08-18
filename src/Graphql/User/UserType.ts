@@ -1,6 +1,6 @@
 import {BaseType} from '~/Graphql/BaseType';
 
-export interface IUserEntity extends BaseType {
+export type UserType = BaseType & {
   uid: string;
 
   email: string;
@@ -9,5 +9,5 @@ export interface IUserEntity extends BaseType {
   firstName: string;
   lastName: string;
   country: string;
-  displayName?: string;
-}
+  displayName: string;
+};

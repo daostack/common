@@ -4,7 +4,7 @@ import {BaseModel} from './BaseModel';
 //import ImageSize from 'react-native-image-size';
 //import {promisedComputed} from 'computed-async-mobx';
 //import Logger from '~/Services/Logger';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
+import {ModerationType} from '~/Graphql/Report';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
 import {
@@ -68,7 +68,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
   discussions: Discussion[];
 
   @observable
-  moderation?: IModerationEntity | undefined;
+  moderation?: ModerationType;
 
   /* @observable
   imagesPromised = promisedComputed(
@@ -155,10 +155,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get countdown() {
-    return (
-      this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
-      this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
-    );
+    return this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0);
   }
 
   constructor(newProposalInfo: ProposalEntity) {

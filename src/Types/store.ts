@@ -1,4 +1,7 @@
 import {ReactElement} from 'react';
+import {ProposalEntity} from '~/Graphql/Proposal';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {IProposalFilter} from '~/Stores/DataStores/ProposalStore';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
 
 export type BottomSheetStore = {
@@ -39,9 +42,34 @@ export type AuthStore = {
   isDaoMember: (members: CommonMemberType[]) => boolean;
 };
 
+export type ProposalStore = {
+  getCommonActiveProposals: Proposal[];
+  getCommonHistoryProposals: Proposal[];
+  getCommonPendingReqToJoins: Proposal[];
+  getCommonHistoryReqToJoins: Proposal[];
+  getEntityModel: (entity: ProposalEntity) => Proposal;
+  getProposalById: (id: string) => Promise<Proposal | undefined>;
+  loadCommonActiveProposals: (commonId: string, page: number) => void;
+  loadCommonHistoryProposals: (commonId: string, page: number) => void;
+  loadCommonMembersPendingProposals: (commonId: string, page: number) => void;
+  loadCommonMembersHistoryProposals: (commonId: string, page: number) => void;
+  subscribeToProposalById: (proposalId: string) => void;
+  myActiveProposals: Proposal[];
+  myActiveMembershipRequests: Proposal[];
+  getUserProposals: (
+    userId: string,
+    proposalFilter: IProposalFilter,
+  ) => Proposal[];
+  getCommonProposals: (
+    commonId: string,
+    proposalFilter: IProposalFilter,
+  ) => Proposal[];
+};
+
 export type rootStore = {
   uiStore: UiStore;
   authStore: AuthStore;
+  proposalStore: ProposalStore;
 };
 // TODO: Add all Store types
 export type AppRootStore = {rootStore: rootStore};

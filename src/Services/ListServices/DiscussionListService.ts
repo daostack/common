@@ -17,18 +17,6 @@ export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<DiscussionType>,
 ) => void;
 
-export const subscribeToCommonDiscussions = (
-  commonId: string,
-  listChangeCallback: commonDiscussionsListLoadCallbackFn,
-) => {
-  const unsubscribe = DiscussionsCollection.where('commonId', '==', commonId)
-    .orderBy('lastMessage', 'desc')
-    .onSnapshot((snapshot: any) => {
-      listChangeCallback(snapshot);
-    });
-  return unsubscribe;
-};
-
 export const updateDiscussionLastMessage = async (
   discussionId: string,
   messageOwner: string,

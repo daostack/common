@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {Discussion} from '~/Stores/Models/Discussion';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
@@ -19,16 +20,23 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
 }) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
-  const discussion = rootStore.discussionStore.getDiscussionById(
-    item.eventObjectId,
-  );
+  const [discussion, setDiscussion] = useState<Discussion>();
+
+  useEffect(() => {
+    (async () => {
+      const discussionData = await rootStore.discussionStore.getDiscussionById(
+        item.eventObjectId,
+      );
+      setDiscussion(discussionData);
+    })();
+  }, [item.eventObjectId]);
 
   useEffect(() => {
     (async () => {
       if (discussion) {
-        const reporter = rootStore.userStore.getUserById(discussion.ownerId);
+        const reporter = rootStore.userStore.getUserById(discussion?.ownerId);
 
-        if (discussion && discussion.commonId) {
+        if (discussion && discussion?.commonId) {
           const common = rootStore.commonStore.getCommonById(
             discussion.commonId,
           );

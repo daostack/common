@@ -12,7 +12,7 @@ import {
 import {fetchCommonById} from './ListServices/CommonListService';
 import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
-import {fetchDiscussionId} from './ListServices/DiscussionListService';
+import {fetchDiscussionById} from './ListServices/DiscussionListService';
 import {getUserById} from './ListServices/UserListService';
 
 export const TODELETE = 'To Delete';
@@ -138,7 +138,7 @@ export default class NotificationService {
                 case EventTypeState.messageCreated:
                   const message = await fetchMessageById(data.eventObjectId);
                   if (message) {
-                    const discussion = await fetchDiscussionId(
+                    const discussion = await fetchDiscussionById(
                       message.discussionId,
                     );
                     user = await getUserById(message.ownerId);

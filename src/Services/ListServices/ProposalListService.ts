@@ -1,11 +1,7 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {PROPOSAL_TYPE} from '~/Config';
 
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
   CreateFundingProposalDocument,
@@ -22,7 +18,9 @@ import {
   ProposalType,
   ProposalWhereInput,
   ProposalEntity,
+  getProposalDocumentById,
 } from '~/Graphql/Proposal';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
@@ -125,17 +123,6 @@ export const subscribeToProposalList = (
       listChangeCallback(snapshot);
     },
   );
-};
-
-export const fetchProposalById = async (
-  proposalId: string,
-): Promise<IFirebaseDoc<ProposalEntity>> => {
-  if (!proposalId) {
-    throw new Error(
-      'Proposal Id (proposalId) is required parameter, but it was not provided',
-    );
-  }
-  return await ProposalsCollection.doc(proposalId).get();
 };
 
 // Create Proposals
@@ -321,4 +308,24 @@ export const getCommonHistoryReqToJoins = async (
     page,
   );
   return data.proposals;
+};
+
+export const fetchProposalById = async (
+  proposalId: string,
+): Promise<Proposal> => {
+  if (!proposalId) {
+    throw new Error(
+      'Proposal Id (proposalId) is required parameter, but it was not provided',
+    );
+  }
+
+  const {data} = await apollo.query({
+    query: getProposalDocumentById,
+    variables: {
+      where: {
+        id: proposalId,
+      },
+    },
+  });
+  return new Proposal(data.proposal);
 };

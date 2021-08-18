@@ -2,7 +2,7 @@ import {BaseType} from '~/Graphql/BaseType';
 import {User} from '~/Graphql';
 import {ModerationType, MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
-export interface DiscussionMessageType extends BaseType {
+export type DiscussionMessageType = BaseType & {
   /**
    * ID of the parent discussion of this message, could be a Discussion ID, or a Proposal ID
    */
@@ -35,4 +35,4 @@ export interface DiscussionMessageType extends BaseType {
   flag: REPORT_FLAG;
 
   owner: User;
-}
+};

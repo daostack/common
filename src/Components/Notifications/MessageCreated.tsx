@@ -28,8 +28,10 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
       if (message) {
         let data = {} as NotificationItemData;
         const objectData =
-          rootStore.discussionStore.getDiscussionById(message.discussionId) ||
-          rootStore.proposalStore.getProposalById(message.discussionId);
+          (await rootStore.discussionStore.getDiscussionById(
+            message.discussionId,
+          )) ||
+          (await rootStore.proposalStore.getProposalById(message.discussionId));
 
         const user = rootStore.userStore.getUserById(message.ownerId);
 

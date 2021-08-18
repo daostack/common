@@ -22,16 +22,15 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
   navigation,
   rootStore,
 }) => {
-  const [
-    notificationData,
-    setNotificationData,
-  ] = useState<NotificationItemData>({missingData: true});
+  const [notificationData, setNotificationData] =
+    useState<NotificationItemData>({missingData: true});
 
   useEffect(() => {
     (async () => {
-      const proposalNotificationData = await rootStore.notificationStore.getProposalNotificationData(
-        item.eventObjectId,
-      );
+      const proposalNotificationData =
+        await rootStore.notificationStore.getProposalNotificationData(
+          item.eventObjectId,
+        );
       if (proposalNotificationData) {
         const {proposal, user, common} = proposalNotificationData;
         let data = {} as NotificationItemData;

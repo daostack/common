@@ -13,8 +13,7 @@ import {
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
 import {UserModel} from '~/Stores/Models/UserModel';
-
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
+import {ModerationType} from '~/Graphql/Report';
 
 export enum ProposalState {
   ACCEPTED = 'Accepted',
@@ -67,7 +66,7 @@ interface BaseProposal {
   votesAgainst: number;
   votes: Vote[];
   discussions: Discussion[];
-  moderation?: IModerationEntity | undefined;
+  moderation?: ModerationType;
 }
 
 export interface FundingProposalEntity extends BaseProposal {
@@ -248,7 +247,7 @@ export const onProposalChangeDocument = gql`
 `;
 
 export const finalizeProposalDocument = gql`
-  mutation($proposalId: ID!) {
+  mutation ($proposalId: ID!) {
     finalizeProposal(proposalId: $proposalId)
   }
 `;
@@ -256,6 +255,14 @@ export const finalizeProposalDocument = gql`
 export const getProposalsDocument = gql`
   query getProposalsDocument($where: ProposalWhereInput!) {
     proposals(where: $where) {
+      ${gqlProposalProps}
+    }
+  }
+`;
+
+export const getProposalDocumentById = gql`
+  query getProposalDocumentById($where: ProposalWhereUniqueInput!) {
+    proposal(where: $where) {
       ${gqlProposalProps}
     }
   }

@@ -101,30 +101,3 @@ export const subscribeToProposalDiscussionMessages = (
       callback(snapshot);
     });
 
-export const subscribeToDiscussionsMessages = (
-  discussionIds: Array<string>,
-  callback: commonDiscussionMessagesListLoadCallbackFn,
-) => {
-  const chunkSize = 10;
-  const unsubscribeArr = [];
-  if (discussionIds?.length > 0) {
-    for (let index = 0; index < discussionIds.length; index += chunkSize) {
-      const currDiscussionIdsChunk = discussionIds.slice(
-        index,
-        index + chunkSize,
-      );
-      unsubscribeArr.push(
-        DiscussionMessagesCollection.where(
-          'discussionId',
-          'in',
-          currDiscussionIdsChunk,
-        )
-          .orderBy('createTime', 'desc')
-          .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
-            callback(snapshot);
-          }),
-      );
-    }
-  }
-  return unsubscribeArr;
-};

@@ -5,6 +5,7 @@ import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {Proposal} from '~/Stores/Models/Proposal';
 import {PROPOSAL_TYPE} from '~/Config';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
@@ -22,7 +23,16 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
   let eventType = item.eventType;
-  const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
+  const [proposal, setProposal] = useState<Proposal>();
+
+  useEffect(() => {
+    (async () => {
+      const proposalData = await rootStore.proposalStore.getProposalById(
+        item.eventObjectId,
+      );
+      setProposal(proposalData);
+    })();
+  }, [item.eventObjectId]);
 
   useEffect(() => {
     (async () => {

@@ -195,29 +195,34 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
 
   useEffect(() => {
-    let userPendingProposalId = null;
+    (async () => {
+      let userPendingProposalId = null;
 
-    // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
-    // On the other hand we already have all pending proposals loaded so, not really sure.
-    proposalStore.getCommonPendingReqToJoins.filter((pendingProposal) => {
-      if (pendingProposal.userId === authStore.userInfo?.uid) {
-        userPendingProposalId = pendingProposal.id;
+      // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
+      // On the other hand we already have all pending proposals loaded so, not really sure.
+      proposalStore.getCommonPendingReqToJoins.filter((pendingProposal) => {
+        if (pendingProposal.userId === authStore.userInfo?.uid) {
+          userPendingProposalId = pendingProposal.id;
+        }
+      });
+
+      let proposal = false;
+      if (userPendingProposalId) {
+        proposal = await proposalStore.getProposalById(userPendingProposalId);
       }
-    });
 
-    setPendingProposalsData({
-      pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
-      usersPendingProposal: userPendingProposalId
-        ? proposalStore.getProposalById(userPendingProposalId)
-        : false,
-    });
+      setPendingProposalsData({
+        pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
+        usersPendingProposal: proposal,
+      });
 
-    const userHasPendingProposal = userPendingProposalId !== null;
-    animateNextStateRender();
-    setShowRequestToJoin(!userHasPendingProposal);
-    if (!userHasPendingProposal) {
-      setShowPending(true);
-    }
+      const userHasPendingProposal = userPendingProposalId !== null;
+      animateNextStateRender();
+      setShowRequestToJoin(!userHasPendingProposal);
+      if (!userHasPendingProposal) {
+        setShowPending(true);
+      }
+    })();
   }, [
     commonId,
     isMember,

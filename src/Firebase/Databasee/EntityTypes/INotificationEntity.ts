@@ -4,6 +4,8 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {BaseType} from '~/Graphql/BaseType';
 
+// TODO: After migrate Notifications move types to Graphql/Notification folder
+
 export interface INotificationEntity extends BaseType {
   eventObjectId: string;
   eventType: string;

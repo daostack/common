@@ -6,6 +6,7 @@ import {
   getCommonPendingReqToJoins,
   getCommonHistoryReqToJoins,
   onProposalChange,
+  fetchProposalById,
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
@@ -22,6 +23,7 @@ import {subscribeToProposalList} from '~/Services/ListServices/ProposalListServi
 
 import {ProposalState, ProposalType, ProposalEntity} from '~/Graphql/Proposal';
 import Logger from '~/Services/Logger';
+import {showErrorPopUp} from '~/Util';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -73,6 +75,9 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   private commonHistoryReqToJoins: ObservableMap<string, Proposal> =
     observable.map({});
 
+  @observable
+  private loadedProposals: ObservableMap<string, Proposal> = observable.map({});
+
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
@@ -107,18 +112,26 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   // }
 
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => {
+  @action
+  getProposalById = async (id: string): Promise<Proposal | undefined> => {
     try {
       return this.getDataByIdAndCollections(id, [
         this.commonActiveProposals,
         this.commonHistoryProposals,
         this.commonPendingReqToJoins,
         this.commonHistoryReqToJoins,
+        this.loadedProposals,
       ]);
-    } catch (errr) {
-      // fetchProposalById(id)
-      // TODO: consider adding direct fetch from gql by id in order to confirm missing data
-      return undefined;
+    } catch (err) {
+      try {
+        const proposal = await fetchProposalById(id);
+        this.loadedProposals = observable.map(
+          this.toEntityModelArr([proposal]),
+        );
+        return proposal;
+      } catch (error) {
+        showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, error);
+      }
     }
   };
 

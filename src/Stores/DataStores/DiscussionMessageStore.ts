@@ -1,8 +1,6 @@
 import BaseStore from './BaseStore';
 import {
   fetchDiscussionMessageById,
-  //getProposalDiscussionMessages,
-  subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
 import {
@@ -117,11 +115,6 @@ export default class DiscussionMessageStore extends BaseStore<
       return;
     }
   };
-  //Actions
-  subscribeToDiscussionsMessages = (
-    discussionIds: Array<string>,
-  ): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionsMessages(discussionIds, this.updateStoreData);
 
   subscribeToProposalDiscussionMessages = (
     proposalId: string,
