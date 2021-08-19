@@ -1,29 +1,42 @@
 import moment from 'moment';
-import {default as React} from 'react';
-import {inject, observer} from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import {observer} from 'mobx-react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import Icon from '~/Assets/iconfont/Icon';
 import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
+import {Proposal} from '~/Stores/Models/Proposal';
 import {colors, layout, text} from '~/Theme';
+import {ProposalStore} from '~/Types/store';
 
 interface Props {
-  userPendingPropDiscCount: any;
-  pendingProposalsData: any;
+  userPendingPropDiscCount: number;
+  pendingProposalsData: {
+    pendingProposalCount: number;
+    usersPendingProposal: Proposal;
+  } | null;
   openProposalScreen: () => void;
-  proposalStore: any;
+  proposalStore: ProposalStore;
 }
 
-const renderPendingApproval = observer(
+export const CommonPendingApproval = observer(
   ({
     userPendingPropDiscCount,
     pendingProposalsData,
     openProposalScreen,
     proposalStore,
   }: Props) => {
-    const proposalInfo = proposalStore.getProposalById(
-      pendingProposalsData?.usersPendingProposal?.id,
-    );
+    const [proposalInfo, setProposalInfo] = useState<Proposal>();
+
+    useEffect(() => {
+      (async (): Promise<void> => {
+        const proposal = await proposalStore.getProposalById(
+          pendingProposalsData?.usersPendingProposal?.id,
+        );
+        setProposalInfo(proposal);
+      })();
+    }, [pendingProposalsData?.usersPendingProposal?.id]);
+
     const remainingSeconds = proposalInfo?.countdown - moment().unix();
 
     return (
@@ -53,14 +66,14 @@ const renderPendingApproval = observer(
             <ProposalApprovalTag
               iconName="approved"
               value={Number(
-                pendingProposalsData.usersPendingProposal.votesFor || 0,
+                pendingProposalsData?.usersPendingProposal.votesFor || 0,
               )}
               isMarked={true}
             />
             <ProposalApprovalTag
               iconName="declined"
               value={Number(
-                pendingProposalsData.usersPendingProposal.votesAgainst || 0,
+                pendingProposalsData?.usersPendingProposal.votesAgainst || 0,
               )}
               isMarked={false}
             />
@@ -88,5 +101,3 @@ const renderPendingApproval = observer(
     );
   },
 );
-
-export default inject('rootStore')(observer(renderPendingApproval));

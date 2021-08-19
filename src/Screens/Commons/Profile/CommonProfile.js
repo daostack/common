@@ -25,6 +25,7 @@ import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
+import {CommonPendingApproval} from './CommonPendingApproval';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
@@ -642,74 +643,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const renderPendingApproval = () => {
-    const proposalInfo = proposalStore.getProposalById(
-      pendingProposalsData?.usersPendingProposal?.id,
-    );
-    const remainingSeconds = proposalInfo?.countdown - moment().unix();
-
-    return (
-      <TouchableOpacity
-        onPress={openProposalScreen}
-        style={{
-          ...layout.content,
-          paddingVertical: 15,
-          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
-        }}>
-        <View
-          style={{
-            ...layout.content,
-            ...layout.flexRow,
-            ...{padding: 0},
-          }}>
-          <Icon name="clcok" size={16} style={layout.marginRightXS} />
-          <Text style={text.smallBoldGreyText}>Pending Approval</Text>
-        </View>
-        <View
-          style={{
-            ...layout.flexRow,
-            ...layout.marginTopS,
-            ...{width: '100%', justifyContent: 'space-between'},
-          }}>
-          <View style={layout.flexRow}>
-            <ProposalApprovalTag
-              iconName="approved"
-              value={Number(
-                pendingProposalsData.usersPendingProposal.votesFor || 0,
-              )}
-              isMarked={true}
-            />
-            <ProposalApprovalTag
-              iconName="declined"
-              value={Number(
-                pendingProposalsData.usersPendingProposal.votesAgainst || 0,
-              )}
-              isMarked={false}
-            />
-            <ProposalApprovalTag
-              iconName="discussion"
-              value={Number(userPendingPropDiscCount || 0)}
-              isMarked={false}
-            />
-          </View>
-          <View>
-            <CountDown
-              digitTxtStyle={text.smallGreyText}
-              separatorStyle={text.smallGreyText}
-              timeLabels={false}
-              showSeparator={true}
-              digitStyle={{
-                height: 'auto',
-                width: 'auto',
-              }}
-              until={remainingSeconds}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   const loadingPlaceholder = () => (
     <ScrollView
       contentContainerStyle={{
@@ -972,8 +905,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             renderFixedHeader={fixedHeaderHeight}>
             {showPending && !isPendingHidden && (
               <React.Fragment>
-                {pendingProposalsData?.usersPendingProposal &&
-                  renderPendingApproval()}
+                {pendingProposalsData?.usersPendingProposal && (
+                  <CommonPendingApproval
+                    proposalStore={proposalStore}
+                    userPendingPropDiscCount={userPendingPropDiscCount}
+                    openProposalScreen={openProposalScreen}
+                    pendingProposalsData={pendingProposalsData}
+                  />
+                )}
               </React.Fragment>
             )}
             <View style={{paddingVertical: sizeS}}>
