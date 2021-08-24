@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {colors, font, sizeM} from '~/Theme';
+import {colors, sizeM} from '~/Theme';
 
 export const PurpleBoxMessage = ({message}: {message: string}) => (
   <View style={styles.textContainer}>
@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lighterBlue,
     marginBottom: sizeM,
     justifyContent: 'center',
-    padding: 10,
+    padding: 15,
   },
   text: {
     fontSize: 14,
-    ...font.lineHeight(0),
+    lineHeight: 20,
     color: colors.slate,
     paddingHorizontal: 5,
   },
