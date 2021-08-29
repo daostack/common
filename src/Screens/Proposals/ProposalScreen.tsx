@@ -182,7 +182,7 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
+    !proposalInfo.votes.some((vote) => vote?.voter?.user?.id === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
@@ -412,7 +412,6 @@ const ProposalScreen = ({
   };
 
   const renderVotingButtons = (reference) => {
-    console.log('renderVotingButtons proposalInfo', proposalInfo)
     LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
     return (
       PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalInfo?.state) && (

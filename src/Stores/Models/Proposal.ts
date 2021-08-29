@@ -105,7 +105,6 @@ export class Proposal extends BaseModel<ProposalEntity> {
   @computed
   get votesCount() {
     return this.votes.length;
-    //return this.votesFor + this.votesAgainst;
   }
 
   @computed
@@ -123,14 +122,12 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get votesForCount() {
-    return this.votes.filter((vote) => vote.outcome === 'Approve').length;
+    return this.votesFor;
   }
 
   @computed
   get votesAgainstCount() {
-    const a = this.votes.filter((vote) => vote.outcome === 'Condemn');
-    console.log('votesAgainst', a)
-    return this.votes.map((vote) => vote.outcome === 'Condemn').length;
+    return this.votesAgainst;
   }
 
   constructor(newProposalInfo: ProposalEntity) {
@@ -145,8 +142,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    this.votesFor = newProposalInfo.votesFor;
-    this.votesAgainst = newProposalInfo.votesAgainst;
+    [this.votesFor, this.votesAgainst] = [this.countVotes('Approve'), this.countVotes('Condemn')];
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;
@@ -161,5 +157,9 @@ export class Proposal extends BaseModel<ProposalEntity> {
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;
+  }
+
+  countVotes(state: string) {
+    return this.votes.filter((vote) => vote.outcome === state).length;
   }
 }

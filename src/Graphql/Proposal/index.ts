@@ -239,6 +239,12 @@ const gqlProposalProps = `
   votes {
     voterId
     outcome
+    voter {
+      id
+      user {
+        id
+      }
+    }
   }
   discussions {
     id
