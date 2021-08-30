@@ -50,7 +50,7 @@ import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {rootStoreType} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
@@ -76,8 +76,8 @@ const ProposalScreen = ({
     },
   },
 } : {
-  navigation: object,
-  rootStore: typeof rootStorePropTypes,
+  navigation: any,
+  rootStore: rootStoreType,
   route: {
     params: {
       commonId: string,
@@ -193,7 +193,7 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo.votes.some((vote) => vote?.voter?.user?.id === userInfo.uid);
+    !proposalInfo.votes.some((vote: any) => vote?.voter?.user?.id === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
@@ -588,7 +588,7 @@ const ProposalScreen = ({
     }
   };
 
-  const openMessageOptions = (message, itemType) => {
+  const openMessageOptions = (message: any) => {
     if (message) {
       moderationFormStore.registerFormField(
         ModerationForm.ITEM_ID,
@@ -599,7 +599,7 @@ const ProposalScreen = ({
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: (actionType) => onModerate(actionType, message.id),
+        onAction: (actionType: string) => onModerate(actionType, message.id),
         hasPermission,
         moderatorOptions: {
           item: message,
@@ -701,7 +701,7 @@ const ProposalScreen = ({
           backgroundColor: colors.white,
         }}>
         {showStickyTabBar && (
-          <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <Animated.View style={{...stickyTabBarStyle, ...slideUp}}>
             <TabBarRenderer
               navigationState={{index, routes}}
               jumpTo={originTabBarRef.current?.props?.jumpTo}

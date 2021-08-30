@@ -58,6 +58,7 @@ export type authStoreType = {
     firstName: string,
     lastName: string,
     intro: string,
+    uid: string,
   },
   setIsLoading: func,
   setSignedInUser: func,
@@ -77,6 +78,13 @@ export const commonStorePropTypes = shape({
   updateCommonInfo: func.isRequired,
 });
 
+export type commonStoreType = {
+  subscribeToAllCommons: func,
+  getCommonById: func,
+  myCommons: array,
+  updateCommonInfo: func,
+};
+
 export const proposalStorePropTypes = shape({
   getProposalById: func.isRequired,
   getCommonProposals: func.isRequired,
@@ -93,11 +101,24 @@ export const discussionStorePropTypes = shape({
   getDiscussionById: func.isRequired,
 });
 
+export type discussionStoreType = {
+  subscribeToCommonDiscussions: func,
+  getCommonDiscussions: func,
+  getDiscussionById: func,
+};
+
 export const discussionMessageStorePropTypes = shape({
   subscribeToDiscussionsMessages: func.isRequired,
   getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });
+
+export type discussionMessageStoreType = {
+  subscribeToDiscussionsMessages: func,
+  getDiscussionMessagesByDiscussionId: func,
+  getDiscussionMessageById: func,
+  proposalDiscussionId: string,
+};
 
 export const notificationStorePropTypes = shape({
   getNotificationById: func.isRequired,
@@ -128,10 +149,10 @@ export const rootStorePropTypes = shape({
 export type rootStoreType = {
   authStore: authStoreType,
   userStore: typeof userStorePropTypes,
-  commonStore: typeof commonStorePropTypes,
+  commonStore: commonStoreType,
   proposalStore: typeof proposalStorePropTypes,
-  discussionStore: typeof discussionStorePropTypes,
-  discussionMessageStore: typeof discussionMessageStorePropTypes,
+  discussionStore: discussionStoreType,
+  discussionMessageStore: discussionMessageStoreType,
   notificationStore: typeof notificationStorePropTypes,
   uiStore: uiStoreType,
 };
