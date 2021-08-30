@@ -210,7 +210,7 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo.votes.some((vote: any) => vote?.voter?.user?.id === userInfo.uid);
+    !proposalInfo?.votes?.some((vote: any) => vote?.voter?.user?.id === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
@@ -378,7 +378,7 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VoteOutcome.APPROVE : VoteOutcome.REJECT,
+        outcome: isApproved ? VoteOutcome.APPROVE : VoteOutcome.CONDEMN,
         proposalId: proposalId || proposalInfo.id,
       };
 
@@ -579,7 +579,7 @@ const ProposalScreen = ({
         Toast.loading('Loading...');
         await ModerationService.getInstance().show(
           messageId,
-          proposalInfo.commonId,
+          commonId,
           'discussionMessage',
         );
         Toast.hide();
@@ -591,7 +591,7 @@ const ProposalScreen = ({
         await ModerationService.getInstance().hide(
           messageId,
           'discussionMessage',
-          proposalInfo.commonId,
+          commonId,
         );
         Toast.hide();
         Toast.success('Done');
@@ -629,7 +629,7 @@ const ProposalScreen = ({
     bottomSheetStore.hideBottomSheet();
     await ModerationService.getInstance().report(
       'discussionMessage',
-      proposalInfo.commonId,
+      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
