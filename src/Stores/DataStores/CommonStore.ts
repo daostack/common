@@ -14,6 +14,7 @@ import BaseStore from './BaseStore';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
 import {CommonType} from '~/Graphql/Common/CommonType';
 import {showErrorPopUp} from '~/Util';
+import Logger from '~/Services/Logger';
 
 export default class CommonStore extends BaseStore<Common, CommonType> {
   @observable
@@ -108,6 +109,7 @@ export default class CommonStore extends BaseStore<Common, CommonType> {
         this.loadedCommons = observable.map(this.toEntityModelArr([common]));
         return common;
       } catch (err) {
+        Logger.info('getCommonById-error ~>', id, error);
         showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, err);
       }
     }

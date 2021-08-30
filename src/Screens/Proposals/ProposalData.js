@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -22,8 +22,17 @@ import {HyperText} from '~/Components/Text/HyperText';
 
 const ProposalData = ({proposalId, rootStore}) => {
   const navigation = useNavigation();
-  const proposalInfoState = rootStore.proposalStore.getProposalById(proposalId);
+  const [proposalInfoState, setProposalInfoState] = useState();
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
+
+  useEffect(() => {
+    (async () => {
+      const proposal = await rootStore.proposalStore.getProposalById(
+        proposalId,
+      );
+      setProposalInfoState(proposal);
+    })();
+  }, [proposalId]);
 
   const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>

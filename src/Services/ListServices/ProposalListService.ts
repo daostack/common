@@ -1,11 +1,7 @@
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {PROPOSAL_TYPE} from '~/Config';
 
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseSnapshot,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
   CreateFundingProposalDocument,
@@ -22,7 +18,9 @@ import {
   ProposalType,
   ProposalWhereInput,
   ProposalEntity,
+  getProposalDocument,
 } from '~/Graphql/Proposal';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
@@ -127,15 +125,26 @@ export const subscribeToProposalList = (
   );
 };
 
-export const fetchProposalById = async (
-  proposalId: string,
-): Promise<IFirebaseDoc<ProposalEntity>> => {
+export const fetchProposalById = async (proposalId: string) => {
   if (!proposalId) {
     throw new Error(
       'Proposal Id (proposalId) is required parameter, but it was not provided',
     );
   }
-  return await ProposalsCollection.doc(proposalId).get();
+
+  const {data} = await apollo.query({
+    query: getProposalDocument,
+    variables: {
+      where: {
+        id: proposalId,
+      },
+    },
+  });
+
+  if (!data.proposal) {
+    return data;
+  }
+  return new Proposal(data.proposal);
 };
 
 // Create Proposals
@@ -233,12 +242,19 @@ export const onProposalChange = (proposalId: string) => {
 };
 
 // Fetch proposals
-const getProposals = async (proposalsWhere: ProposalWhereInput) => {
+const getProposals = async (
+  proposalsWhere: ProposalWhereInput,
+  page: number = 0,
+) => {
   try {
     return await apollo.query({
       query: getProposalsDocument,
       variables: {
         where: proposalsWhere,
+        paginate: {
+          skip: page * 10,
+          take: 10,
+        },
       },
       //fetchPolicy: 'cache-first',
     });
@@ -250,52 +266,68 @@ const getProposals = async (proposalsWhere: ProposalWhereInput) => {
 
 export const getCommonActiveProposals = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.FUNDING_REQUEST,
-    state: ProposalState.COUNTDOWN,
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      state: ProposalState.COUNTDOWN,
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonHistoryProposals = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.FUNDING_REQUEST,
-    OR: proposalsStateFilterQueryPart([
-      ProposalState.ACCEPTED,
-      ProposalState.FINALIZING,
-      ProposalState.REJECTED,
-    ]),
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.FUNDING_REQUEST,
+      OR: proposalsStateFilterQueryPart([
+        ProposalState.ACCEPTED,
+        ProposalState.FINALIZING,
+        ProposalState.REJECTED,
+      ]),
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonPendingReqToJoins = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.JOIN_REQUEST,
-    state: ProposalState.COUNTDOWN,
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      state: ProposalState.COUNTDOWN,
+    },
+    page,
+  );
   return data.proposals;
 };
 
 export const getCommonHistoryReqToJoins = async (
   commonId: string,
+  page: number = 0,
 ): Promise<ProposalEntity[]> => {
-  const {data} = await getProposals({
-    commonId: commonId,
-    type: ProposalType.JOIN_REQUEST,
-    OR: proposalsStateFilterQueryPart([
-      ProposalState.ACCEPTED,
-      ProposalState.FINALIZING,
-      ProposalState.REJECTED,
-    ]),
-  });
+  const {data} = await getProposals(
+    {
+      commonId: commonId,
+      type: ProposalType.JOIN_REQUEST,
+      OR: proposalsStateFilterQueryPart([
+        ProposalState.ACCEPTED,
+        ProposalState.FINALIZING,
+        ProposalState.REJECTED,
+      ]),
+    },
+    page,
+  );
   return data.proposals;
 };

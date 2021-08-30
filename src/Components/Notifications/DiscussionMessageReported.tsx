@@ -41,7 +41,7 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
         const objectData =
           rootStore.notificationStore.getParentDiscussion(messageReportedData);
 
-        if (objectData) {
+        if (objectData && objectData.commonId) {
           const common = rootStore.commonStore.getCommonById(
             objectData.commonId,
           );

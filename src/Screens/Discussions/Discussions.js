@@ -56,7 +56,14 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  const [dataState] = useState(discussionStore.getDiscussionById(discussionId));
+  const [dataState, setDataState] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const discussion = await discussionStore.getDiscussionById(discussionId);
+      setDataState(discussion);
+    })();
+  }, [discussionId]);
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
@@ -74,9 +81,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -85,20 +91,24 @@ const Discussions = ({
 
   useEffect(() => {
     // load messages to message store
-    rootStore.discussionMessageStore.loadDiscussionMessages(
-      dataState?.messages,
-    );
+    if (dataState?.messages) {
+      rootStore.discussionMessageStore.loadDiscussionMessages(
+        dataState.messages,
+      );
+    }
   }, [dataState]);
 
   useEffect(() => {
     (async () => {
-      const common = await commonStore.getCommonById(commonId);
-      const permission = await authStore.getPermission(
-        commonId,
-        authStore?.userInfo?.uid,
-      );
-      setHasPermission(permission);
-      setCurrCommon(common);
+      if (commonId) {
+        const common = await commonStore.getCommonById(commonId);
+        const permission = await authStore.getPermission(
+          commonId,
+          authStore?.userInfo?.uid,
+        );
+        setHasPermission(permission);
+        setCurrCommon(common);
+      }
     })();
   }, [commonId, authStore?.userInfo]);
 
@@ -107,9 +117,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -138,11 +149,10 @@ const Discussions = ({
       inputRef.current.clear();
       Keyboard.dismiss();
       try {
-        const {data} = await createDiscussionMessage({
+        await createDiscussionMessage({
           discussionId,
           message,
         });
-        console.log('createDiscussionMessage', data.createDiscussionMessage);
         Toast.success('Done');
       } catch (error) {
         Toast.error(error);
@@ -221,7 +231,6 @@ const Discussions = ({
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {console.log('dataState', dataState)}
                       {moment(dataState.createdAt.toDate()).fromNow()}
                     </Text>
                   </View>

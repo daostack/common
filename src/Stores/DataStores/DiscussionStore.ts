@@ -5,11 +5,14 @@ import {
   fetchDiscussionId, // to remove
   fetchDiscussions,
   fetchDiscussionById,
+  createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
-import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
+import Logger from '~/Services/Logger';
+import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
-import {runInAction, action, computed, observable, ObservableMap} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
 import {Discussion} from '~/Graphql/Discussion';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
@@ -43,29 +46,23 @@ export default class DiscussionStore extends BaseStore<
     return this.proposalDiscussion;
   }
 
-  // Data consuming methods TO REMOVE
-  getDiscussionById = (id: string): DiscussionModel | undefined => {
+  // Data consuming methods
+  getDiscussionById = async (id: string): Promise<DiscussionModel | void> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
-    } catch (errr) {
+    } catch (err) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      fetchDiscussionId(id)
-        .then((discussion: IFirebaseDoc<DiscussionType>) => {
-          if (discussion.exists) {
-            runInAction(() => {
-              this.setData(
-                id,
-                this.getEntityModel(this.firestoreDocToEntity(discussion)),
-              );
-            });
-          }
+      return await fetchDiscussionId(id)
+        .then((discussion: DiscussionModel) => {
+          this.discussions.set(id, discussion);
+          return discussion;
         })
         .catch(() => {
+          Logger.info('getDiscussionById-error ~>', id);
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           });
         });
-      return undefined;
     }
   };
 
@@ -106,10 +103,22 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @action
+  createCommonDiscussion = async (
+    discussion: CreateDiscussionInput,
+  ): Promise<void> => {
+    await createDiscussion(discussion);
+    this.loadCommonDiscussions(discussion.commonId);
+  };
+
+  @action
   loadCommonDiscussions = async (
     commonId: string,
     page: number = 0,
   ): Promise<void> => {
+    if (page === 0) {
+      this.discussions.clear();
+    }
+
     const discussions = await fetchDiscussions({
       where: {
         commonId,
@@ -120,7 +129,9 @@ export default class DiscussionStore extends BaseStore<
       },
     });
 
-    const discussionsMap = new Map<string, DiscussionModel>();
+    const discussionsMap = new Map<string, DiscussionModel>(
+      this.discussions.toJS(),
+    );
 
     discussions.forEach((item) => {
       if (!this.discussions.has(item.id)) {

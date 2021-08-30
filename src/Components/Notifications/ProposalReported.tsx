@@ -22,19 +22,25 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
   let eventType = item.eventType;
-  const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
+  const [proposal, setProposal] = useState();
 
   useEffect(() => {
     (async () => {
-      if (proposal) {
-        const proposer = proposal.user;
-        const isJoin = proposal.type === PROPOSAL_TYPE.Join;
+      const proposalResponse = await rootStore.proposalStore.getProposalById(
+        item.eventObjectId,
+      );
+      setProposal(proposalResponse);
+      if (proposalResponse) {
+        const proposer = proposalResponse.user;
+        const isJoin = proposalResponse.type === PROPOSAL_TYPE.Join;
 
         if (isJoin) {
           eventType = EventTypeState.membershipRequestReported;
         }
-        if (proposal && proposal.commonId) {
-          const common = rootStore.commonStore.getCommonById(proposal.commonId);
+        if (proposal && proposalResponse.commonId) {
+          const common = rootStore.commonStore.getCommonById(
+            proposalResponse.commonId,
+          );
 
           const data = {
             createdAt: item.createdAt,
@@ -49,7 +55,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
         }
       }
     })();
-  }, [proposal]);
+  }, [item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || proposal?.isModerationHidden) {

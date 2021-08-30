@@ -110,17 +110,14 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -139,21 +136,41 @@ const ProposalScreen = ({
   // Values for vote param required from the blockchain
   let currTabViewScroll = 0;
 
+  const [proposalInfo, setProposalInfo] = useState();
   useEffect(() => {
     (async () => {
-      const proposalDiscussion = await rootStore.discussionStore.getProposalDiscussionById(
-        proposalInfo?.discussions[0]?.id,
-      );
+      const proposal = await proposalStore.getProposalById(proposalId);
+      setProposalInfo(proposal);
+
+      const proposalDiscussion =
+        await rootStore.discussionStore.getProposalDiscussionById(
+          proposal?.discussions[0]?.id,
+        );
       setDiscussion(proposalDiscussion);
+      discussionMessageStore.loadProposalMessaages(proposal);
     })();
+
+    // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+    //   proposalId,
+    // );
+
+    // let unsubscribeFromProposalById = null;
+    // unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+    //   proposalId
+    // );
+
+    // return () => {
+    //   unsubscribeFromProposalDiscussionMessages &&
+    //     unsubscribeFromProposalDiscussionMessages();
+
+    //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
+    // };
   }, [proposalId]);
 
   useEffect(() => {
     discussion &&
       discussionMessageStore.loadProposalMessages(discussion.messages);
   }, [discussion]);
-
-  const proposalInfo = proposalStore.getProposalById(proposalId);
 
   const [viewerPermission, setViewerPermission] = useState();
   useEffect(() => {
@@ -208,10 +225,8 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
+  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
+    useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
