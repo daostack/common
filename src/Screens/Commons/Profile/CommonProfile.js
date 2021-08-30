@@ -587,6 +587,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: params.createdProposalId,
+      commonId: currCommon.id,
     });
 
     setShowRequestSentModal(false);
@@ -599,6 +600,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
+      commonId: currCommon.id,
     });
   };
 

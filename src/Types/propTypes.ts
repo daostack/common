@@ -1,5 +1,6 @@
 import {func, string, object, shape, number, array, bool} from 'prop-types';
 
+//TODO replace this with uiStoreType everywhere
 export const uiStorePropTypes = shape({
   bottomSheetStore: shape({
     showBottomSheet: func.isRequired,
@@ -17,6 +18,25 @@ export const uiStorePropTypes = shape({
   conversionRate: number.isRequired,
 });
 
+export type uiStoreType = {
+  bottomSheetStore: {
+    showBottomSheet: func,
+    hideBottomSheet: func,
+    topSnap: number,
+    template: object,
+    increaseTopSnap: func,
+    decreaseTopSnap: func,
+  },
+  appLoaderStore: {
+    isLoading: bool,
+    showLoader: func,
+    hideLoader: func,
+  },
+  conversionRate: number,
+};
+
+
+// TODO replace this with authStoreType everywhere
 export const authStorePropTypes = shape({
   userInfo: shape({
     photoURL: string,
@@ -30,6 +50,20 @@ export const authStorePropTypes = shape({
   isDaoMember: func.isRequired,
   getPermission: func.isRequired,
 });
+
+export type authStoreType = {
+  userInfo: {
+    photoURL: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    intro: string,
+  },
+  setIsLoading: func,
+  setSignedInUser: func,
+  isDaoMember: func,
+  getPermission: func,
+};
 
 export const userStorePropTypes = shape({
   subscribeToAllUsers: func.isRequired,
@@ -78,6 +112,8 @@ export const notificationStorePropTypes = shape({
   hasNewNotifications: bool.isRequired,
 });
 
+
+// TODO replace with rootStoreType everywhere
 export const rootStorePropTypes = shape({
   authStore: authStorePropTypes.isRequired,
   userStore: userStorePropTypes.isRequired,
@@ -88,3 +124,14 @@ export const rootStorePropTypes = shape({
   notificationStore: notificationStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
 });
+
+export type rootStoreType = {
+  authStore: authStoreType,
+  userStore: typeof userStorePropTypes,
+  commonStore: typeof commonStorePropTypes,
+  proposalStore: typeof proposalStorePropTypes,
+  discussionStore: typeof discussionStorePropTypes,
+  discussionMessageStore: typeof discussionMessageStorePropTypes,
+  notificationStore: typeof notificationStorePropTypes,
+  uiStore: uiStoreType,
+};

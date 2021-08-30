@@ -33,7 +33,6 @@ import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
-import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -66,16 +65,28 @@ const PROPOSAL_STAGES_ACTIVE = [ProposalState.COUNTDOWN];
 
 const ProposalScreen = ({
   navigation,
+  rootStore,
   route: {
     params: {
       commonId,
       proposalId,
       tabIndex = 0,
       hasPermission,
-      fromNotificationItem,
+      //fromNotificationItem,
     },
   },
-  rootStore,
+} : {
+  navigation: object,
+  rootStore: typeof rootStorePropTypes,
+  route: {
+    params: {
+      commonId: string,
+      proposalId: string,
+      tabIndex: number,
+      hasPermission: boolean,
+      //fromNotificationItem: boolean
+    }
+  }
 }) => {
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
@@ -159,10 +170,10 @@ const ProposalScreen = ({
 
   useEffect(() => {
     (async () => {
-      const common = await commonStore.getCommonById(proposalInfo.commonId);
+      const common = await commonStore.getCommonById(commonId);
       setProposalCommon(common);
     })();
-  }, [proposalInfo, proposalInfo?.commonId]);
+  }, [commonId]);
   const proposedUser = proposalInfo ? proposalInfo.user : null;
 
   const showDebtInfo =
@@ -1022,7 +1033,7 @@ const ProposalScreen = ({
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
                   hasPermission={hasPermission}
-                  commonId={proposalInfo.commonId}
+                  commonId={commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
                   isProposal
@@ -1056,16 +1067,6 @@ const ProposalScreen = ({
       </BottomSheetModal>
     </React.Fragment>
   );
-};
-
-ProposalScreen.propTypes = {
-  navigation: object,
-  route: shape({
-    params: shape({
-      proposalId: string,
-    }),
-  }),
-  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
