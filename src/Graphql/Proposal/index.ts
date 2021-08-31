@@ -224,7 +224,9 @@ const gqlProposalProps = `
   files
   images
   flag
-  ${gqlReportProps}
+  reports {
+    ${gqlReportProps}
+  }
   funding {
     amount
   }

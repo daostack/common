@@ -100,7 +100,9 @@ owner {
   ${gqlUserProps}
 }
 flag
-${gqlReportProps}
+reports {
+  ${gqlReportProps}
+}
 lastMessage: latestMessage
 messages {
   owner {
@@ -113,7 +115,9 @@ messages {
   type
   flag
   userId
-  ${gqlReportProps}
+  reports {
+    ${gqlReportProps}
+  }
 }`;
 
 export const GetDiscussionDocument = gql`

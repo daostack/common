@@ -5,7 +5,6 @@ import {gqlUserProps} from '~/Graphql/User';
 import {Scalars} from '../';
 
 export const gqlReportProps = `
-reports {
   id
   reporter: reporterId
   reporterInfo: reporter {
@@ -18,7 +17,7 @@ reports {
   note
   updatedAt
   for
-}`;
+`;
 
 export const gqlDiscussionMessageProps = `
   id
