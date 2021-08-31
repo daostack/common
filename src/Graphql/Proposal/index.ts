@@ -9,6 +9,8 @@ import {
   Mutation,
   Scalars,
 } from '~/Graphql';
+import {MessageReport, REPORT_FLAG, gqlReportProps} from '~/Graphql/Report';
+import {gqlUserProps} from '~/Graphql/User';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
@@ -67,7 +69,8 @@ interface BaseProposal {
   votesAgainst: number;
   votes: Vote[];
   discussions: Discussion[];
-  moderation?: IModerationEntity | undefined;
+  reports: MessageReport[];
+  flag: REPORT_FLAG;
 }
 
 export interface FundingProposalEntity extends BaseProposal {
@@ -220,6 +223,8 @@ const gqlProposalProps = `
   links
   files
   images
+  flag
+  ${gqlReportProps}
   funding {
     amount
   }
@@ -248,7 +253,7 @@ export const onProposalChangeDocument = gql`
 `;
 
 export const finalizeProposalDocument = gql`
-  mutation($proposalId: ID!) {
+  mutation ($proposalId: ID!) {
     finalizeProposal(proposalId: $proposalId)
   }
 `;

@@ -100,5 +100,5 @@ export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
     },
   });
 
-  return data.discussion as Discussion;
+  return new Discussion(data.discussion, false);
 };

@@ -319,7 +319,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
         }
-        sMember={isMember}
+        isMember={isMember}
       />
     </View>
   );
@@ -507,8 +507,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     const resp = await ModerationService.getInstance().onModerate(
       actionType,
       itemId,
-      commonId,
-      itemType.toLowerCase(),
+      itemType,
     );
 
     resp === ACTIONS.report
@@ -543,18 +542,21 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const onReportContent = async () => {
-    setShowModerationModal(false);
-    bottomSheetStore.hideBottomSheet();
-    Toast.loading('Reporting content...');
-
-    await ModerationService.getInstance().report({
-      type: moderationType,
-      moderationData: moderationFormStore.getFormFieldsJson(),
-    });
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
-    moderationFormStore.clearFormStoreState();
+    try {
+      setShowModerationModal(false);
+      bottomSheetStore.hideBottomSheet();
+      Toast.loading('Reporting content...');
+      await ModerationService.getInstance().report({
+        type: moderationType,
+        moderationData: moderationFormStore.getFormFieldsJson(),
+      });
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+      moderationFormStore.clearFormStoreState();
+    } catch (err) {
+      Toast.error('Could not Report content');
+    }
   };
 
   const showHiddenNote = ({hiddenItem, isModerator = false}, type) => {

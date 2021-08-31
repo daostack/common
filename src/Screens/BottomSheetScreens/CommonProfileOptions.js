@@ -8,6 +8,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
+import {REPORT_FLAG} from '~/Graphql/Report';
 import {inject, observer} from 'mobx-react';
 import {object, func, string} from 'prop-types';
 
@@ -24,7 +25,7 @@ const CommonProfileOptions = ({
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
-        if (item?.moderation?.flag === 'hidden') {
+        if (item?.moderation?.flag === REPORT_FLAG.Hidden) {
           setActions(['Show']);
           setIconName('show');
         }

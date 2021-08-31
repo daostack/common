@@ -6,7 +6,6 @@ import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer, inject} from 'mobx-react';
 import {Reported} from '~/Components/Moderation/Reported';
-import {FLAGS} from '~/Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
@@ -78,7 +77,6 @@ const ProposalCardHeader = ({
   onPress,
   isReported,
   moderation,
-  reporter,
   hasPermission,
   rootStore,
   viewerPermission,
@@ -158,7 +156,6 @@ const ProposalCardHeader = ({
       {isReported && !!moderation && (
         <Reported
           moderation={moderation}
-          reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
           viewerPermission={viewerPermission}
         />

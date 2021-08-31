@@ -61,7 +61,8 @@ const DiscussionMessage = ({
   }
   const moderatorInfo = getLastReport(data.moderation);
 
-  const moderatorName = reporterName(moderatorInfo, currentUserUid);
+  const moderatorName = reporterName(currentUserUid, moderatorInfo);
+
   useEffect(() => {
     (async () => {
       const userPermission = await authStore.getPermission(

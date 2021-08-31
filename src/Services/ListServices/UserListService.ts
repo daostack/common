@@ -6,7 +6,7 @@ import {
   IFirebaseSnapshot,
 } from '~/Firebase/types';
 import {apollo} from '~/Util/helpers/apolloHelper';
-import {User, GetUserInfoDocument} from '~/Graphql';
+import {GetUserInfoDocument} from '~/Graphql';
 import {UserModel} from '~/Stores/Models/UserModel';
 
 export type userListLoadCallbackFn = (

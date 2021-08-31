@@ -1,9 +1,8 @@
 import {observable, computed} from 'mobx';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
-import {FLAGS} from '~/Components/Moderation/constants';
 import {DiscussionMessage} from './DiscussionMessage';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 
@@ -27,7 +26,7 @@ export class Discussion extends BaseModel<DiscussionType> {
   lastMessage: Date;
 
   @observable
-  moderation?: IModerationEntity;
+  moderation?: ModerationType;
 
   @observable
   isExpanded: boolean;
@@ -40,7 +39,7 @@ export class Discussion extends BaseModel<DiscussionType> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
+    return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
   }
 
   constructor(newDiscussionInfo: DiscussionType, isExpanded: boolean) {
@@ -54,6 +53,10 @@ export class Discussion extends BaseModel<DiscussionType> {
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.isExpanded = isExpanded;
     this.owner = new UserModel(newDiscussionInfo.owner);
+    this.moderation = {
+      reports: newDiscussionInfo.reports,
+      flag: newDiscussionInfo.flag,
+    };
     this.messages = newDiscussionInfo.messages?.map(
       (message: any) => new DiscussionMessage(message),
     );

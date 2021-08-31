@@ -221,7 +221,6 @@ const Discussions = ({
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                     <Text style={styles.date}>
-                      {console.log('dataState', dataState)}
                       {moment(dataState.createdAt.toDate()).fromNow()}
                     </Text>
                   </View>
@@ -296,8 +295,7 @@ const Discussions = ({
     const resp = await ModerationService.getInstance().onModerate(
       actionType,
       messageId,
-      commonId,
-      TITLES.discussionMessage,
+      REPORT_TYPE.MessageReport,
     );
 
     resp === ACTIONS.report
@@ -319,17 +317,21 @@ const Discussions = ({
   };
 
   const onReportContent = async () => {
-    setShowModerationModal(false);
-    Toast.loading('Reporting content...');
-    bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report({
-      moderationData: moderationFormStore.getFormFieldsJson(),
-      type: REPORT_TYPE.MessageReport,
-    });
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
-    moderationFormStore.clearFormStoreState();
+    try {
+      setShowModerationModal(false);
+      Toast.loading('Reporting content...');
+      bottomSheetStore.hideBottomSheet();
+      await ModerationService.getInstance().report({
+        moderationData: moderationFormStore.getFormFieldsJson(),
+        type: REPORT_TYPE.MessageReport,
+      });
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+      moderationFormStore.clearFormStoreState();
+    } catch (err) {
+      Toast.error('Could not Report content');
+    }
   };
 
   if (!dataState) {

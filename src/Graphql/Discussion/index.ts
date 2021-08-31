@@ -9,6 +9,7 @@ import {
   Pagination,
 } from '~/Graphql';
 import {gqlUserProps} from '~/Graphql/User';
+import {gqlReportProps} from '~/Graphql/Report';
 
 export enum DiscussionMessageType {
   Message = 'Message',
@@ -98,6 +99,8 @@ ownerId: userId
 owner {
   ${gqlUserProps}
 }
+flag
+${gqlReportProps}
 lastMessage: latestMessage
 messages {
   owner {
@@ -110,20 +113,7 @@ messages {
   type
   flag
   userId
-  reports {
-    id
-    reporter: reporterId
-    reporterInfo: reporter {
-      ${gqlUserProps}
-    }
-    moderator: reviewerId
-    moderatorInfo: reviewer {
-      ${gqlUserProps}
-    }
-    note
-    updatedAt
-    for
-  }
+  ${gqlReportProps}
 }`;
 
 export const GetDiscussionDocument = gql`

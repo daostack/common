@@ -5,7 +5,7 @@ import {BaseType} from '~/Graphql/BaseType';
 import {User} from '~/Graphql';
 import {ModerationType, MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
-const gqlDiscussionMessageProps = `
+export const gqlDiscussionMessageProps = `
   id
   updatedAt
   createdAt

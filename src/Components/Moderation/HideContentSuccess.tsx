@@ -9,14 +9,19 @@ import {
 import React from 'react';
 import {text, colors, font, layout} from '~/Theme';
 import {observer} from 'mobx-react';
+import {REPORT_TITLES, REPORT_TYPE} from '~/Graphql/Report';
 import {string, func, InferProps} from 'prop-types';
-import {ACTIONS, TITLES} from './constants';
+import {ACTIONS} from './constants';
 const {width} = Dimensions.get('window');
 
 const getType = (type: string) => {
   switch (type) {
-    case TITLES.discussion:
-      return TITLES.post;
+    case REPORT_TYPE.DiscussionReport:
+      return REPORT_TITLES.Discussion;
+    case REPORT_TYPE.MessageReport:
+      return REPORT_TITLES.Post;
+    case REPORT_TYPE.ProposalReport:
+      return REPORT_TITLES.Proposal;
     default:
       return type;
   }
