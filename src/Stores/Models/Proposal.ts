@@ -4,7 +4,7 @@ import {BaseModel} from './BaseModel';
 //import ImageSize from 'react-native-image-size';
 //import {promisedComputed} from 'computed-async-mobx';
 //import Logger from '~/Services/Logger';
-import {ModerationType} from '~/Graphql/Report';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
 import {
@@ -150,7 +150,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
+    return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
   }
 
   @computed
