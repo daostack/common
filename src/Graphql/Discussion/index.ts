@@ -60,35 +60,6 @@ export type CreateDiscussionMutationVariables = Exact<{
   discussion: CreateDiscussionInput;
 }>;
 
-export const CreateDiscussionDocument = gql`
-  mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
-    createDiscussion(input: $discussion) {
-      id
-      title: topic
-      message: description
-      messageCount
-      createTime: createdAt
-      ownerId: userId
-      owner {
-        ${gqlUserProps}
-      }
-      lastMessage: latestMessage
-      createdAt
-    }
-  }
-`;
-
-export type DiscussionWhereInput = {
-  commonId?: Scalars['String'];
-  commonMemberId?: Scalars['String'];
-  userId?: Scalars['String'];
-};
-
-export type getDiscussionsVariable = {
-  where: DiscussionWhereInput;
-  paginate: Pagination;
-};
-
 const gqlDiscussionProps = `
 id
 title: topic
@@ -119,6 +90,35 @@ messages {
     ${gqlReportProps}
   }
 }`;
+
+export const CreateDiscussionDocument = gql`
+  mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
+    createDiscussion(input: $discussion) {
+      id
+      title: topic
+      message: description
+      messageCount
+      createTime: createdAt
+      ownerId: userId
+      owner {
+        ${gqlUserProps}
+      }
+      lastMessage: latestMessage
+      createdAt
+    }
+  }
+`;
+
+export type DiscussionWhereInput = {
+  commonId?: Scalars['String'];
+  commonMemberId?: Scalars['String'];
+  userId?: Scalars['String'];
+};
+
+export type getDiscussionsVariable = {
+  where: DiscussionWhereInput;
+  paginate: Pagination;
+};
 
 export const GetDiscussionDocument = gql`
   query GetDiscussions(

@@ -19,18 +19,21 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
 }) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
-  const discussion = rootStore.discussionStore.getDiscussionById(
-    item.eventObjectId,
-  );
+  const [discussion, setDiscussion] = useState();
 
   useEffect(() => {
     (async () => {
-      if (discussion) {
-        const reporter = rootStore.userStore.getUserById(discussion.ownerId);
+      const discussionResponse =
+        await rootStore.discussionStore.getDiscussionById(item.eventObjectId);
+      setDiscussion(discussionResponse);
+      if (discussionResponse) {
+        const reporter = rootStore.userStore.getUserById(
+          discussionResponse.ownerId,
+        );
 
-        if (discussion && discussion.commonId) {
+        if (discussionResponse && discussionResponse.commonId) {
           const common = rootStore.commonStore.getCommonById(
-            discussion.commonId,
+            discussionResponse.commonId,
           );
 
           const data = {
@@ -45,7 +48,7 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
         }
       }
     })();
-  }, [discussion, discussion?.ownerId, discussion?.commonId]);
+  }, [item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || discussion?.isModerationHidden) {

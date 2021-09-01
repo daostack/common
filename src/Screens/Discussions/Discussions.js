@@ -57,7 +57,14 @@ const Discussions = ({
 
   const currentUser = auth().currentUser;
 
-  const [dataState] = useState(discussionStore.getDiscussionById(discussionId));
+  const [dataState, setDataState] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const discussion = await discussionStore.getDiscussionById(discussionId);
+      setDataState(discussion);
+    })();
+  }, [discussionId]);
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
@@ -85,20 +92,24 @@ const Discussions = ({
 
   useEffect(() => {
     // load messages to message store
-    rootStore.discussionMessageStore.loadDiscussionMessages(
-      dataState?.messages,
-    );
+    if (dataState?.messages) {
+      rootStore.discussionMessageStore.loadDiscussionMessages(
+        dataState.messages,
+      );
+    }
   }, [dataState]);
 
   useEffect(() => {
     (async () => {
-      const common = await commonStore.getCommonById(commonId);
-      const permission = await authStore.getPermission(
-        commonId,
-        authStore?.userInfo?.uid,
-      );
-      setHasPermission(permission);
-      setCurrCommon(common);
+      if (commonId) {
+        const common = await commonStore.getCommonById(commonId);
+        const permission = await authStore.getPermission(
+          commonId,
+          authStore?.userInfo?.uid,
+        );
+        setHasPermission(permission);
+        setCurrCommon(common);
+      }
     })();
   }, [commonId, authStore?.userInfo]);
 

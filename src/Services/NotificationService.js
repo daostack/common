@@ -83,18 +83,20 @@ export default class NotificationService {
             if (data.eventObjectId) {
               switch (data.eventType) {
                 case EventTypeState.commonWhitelisted:
-                  common = await fetchCommonById(data.eventObjectId);
-                  if (common) {
-                    user = await getUserById(common.members[0].userId);
-                    if (user) {
-                      data = {
-                        ...data,
-                        descriptionBold: `"${common.name}"`,
-                        description: ' - You might want to check it out.',
-                        ownerAvatar: user.photoURL,
-                        common,
-                      };
-                      dataProperlyLoaded = true;
+                  if (data.eventObjectId) {
+                    common = await fetchCommonById(data.eventObjectId);
+                    if (common) {
+                      user = await getUserById(common.members[0].userId);
+                      if (user) {
+                        data = {
+                          ...data,
+                          descriptionBold: `"${common.name}"`,
+                          description: ' - You might want to check it out.',
+                          ownerAvatar: user.photoURL,
+                          common,
+                        };
+                        dataProperlyLoaded = true;
+                      }
                     }
                   }
 
@@ -105,7 +107,7 @@ export default class NotificationService {
                 case EventTypeState.fundingRequestExecuted:
                 case EventTypeState.fundingRequestRejected:
                   proposal = await fetchProposalById(data.eventObjectId);
-                  if (proposal) {
+                  if (proposal && proposal.commonId) {
                     common = await fetchCommonById(proposal.commonId);
                     user = proposal.user;
                     if (common && user) {

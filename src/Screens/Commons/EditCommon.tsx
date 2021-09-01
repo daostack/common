@@ -65,7 +65,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   useEffect(() => {
     (async () => {
       const response = (await commonStore.getCommonById(
-        route.params.currCommon.id,
+        route.params.currCommon?.id,
       )) as CommonType;
       setCurrCommon(response);
     })();

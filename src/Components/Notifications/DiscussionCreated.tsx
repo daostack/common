@@ -19,38 +19,45 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
 }) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
-  const discussion = rootStore.discussionStore.getDiscussionById(
-    item.eventObjectId,
-  );
+  const [discussion, setDiscussion] = useState();
 
   useEffect(() => {
-    if (discussion) {
-      const user = rootStore.userStore.getUserById(discussion.ownerId);
-      let data = {} as NotificationItemData;
-      if (discussion && user) {
-        data = {
-          missingData: false,
-          createdAt: item.createdAt,
-          descriptionBold: ` by ${user.firstName} ${user.lastName}`,
-          ownerAvatar: user.photoURL,
-          discussion: discussion,
-        };
-      }
-
-      if (discussion && discussion.commonId) {
-        const common = rootStore.commonStore.getCommonById(discussion.commonId);
-
-        if (common && common.name) {
+    (async (): Promise<void> => {
+      const discussionResponse =
+        await rootStore.discussionStore.getDiscussionById(item.eventObjectId);
+      setDiscussion(discussionResponse);
+      if (discussionResponse) {
+        const user = rootStore.userStore.getUserById(
+          discussionResponse.ownerId,
+        );
+        let data = {} as NotificationItemData;
+        if (discussionResponse && user) {
           data = {
-            ...data,
-            headerBold: `${discussion.title}`,
-            common,
+            missingData: false,
+            createdAt: item.createdAt,
+            descriptionBold: ` by ${user.firstName} ${user.lastName}`,
+            ownerAvatar: user.photoURL,
+            discussion: discussionResponse,
           };
         }
+
+        if (discussionResponse && discussionResponse.commonId) {
+          const common = rootStore.commonStore.getCommonById(
+            discussionResponse.commonId,
+          );
+
+          if (common && common.name) {
+            data = {
+              ...data,
+              headerBold: `${discussionResponse.title}`,
+              common,
+            };
+          }
+        }
+        setNotificationData(data);
       }
-      setNotificationData(data);
-    }
-  }, [discussion]);
+    })();
+  }, [item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || discussion?.isModerationHidden) {

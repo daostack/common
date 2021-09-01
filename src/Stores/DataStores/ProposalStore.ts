@@ -6,6 +6,7 @@ import {
   getCommonPendingReqToJoins,
   getCommonHistoryReqToJoins,
   onProposalChange,
+  fetchProposalById,
 } from '~/Services/ListServices/ProposalListService';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
@@ -58,6 +59,9 @@ export const isProposalHistory = (proposal: Proposal) =>
 
 export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   @observable
+  private fetchedProposal: ObservableMap<string, Proposal> = observable.map({});
+
+  @observable
   private commonActiveProposals: ObservableMap<string, Proposal> =
     observable.map({});
 
@@ -107,18 +111,32 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   // }
 
   // Data consuming methods
-  getProposalById = (id: string): Proposal | undefined => {
+  getProposalById = async (
+    id: string,
+    showError = true,
+  ): Promise<Proposal | void> => {
     try {
       return this.getDataByIdAndCollections(id, [
+        this.fetchedProposal,
         this.commonActiveProposals,
         this.commonHistoryProposals,
         this.commonPendingReqToJoins,
         this.commonHistoryReqToJoins,
       ]);
-    } catch (errr) {
-      // fetchProposalById(id)
-      // TODO: consider adding direct fetch from gql by id in order to confirm missing data
-      return undefined;
+    } catch (err) {
+      return fetchProposalById(id)
+        .then((proposal: Proposal) => {
+          this.fetchedProposal.set(id, proposal);
+          return proposal;
+        })
+        .catch((error) => {
+          Logger.info('getProposalById-error ~>', error, id);
+          if (showError) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            });
+          }
+        });
     }
   };
 

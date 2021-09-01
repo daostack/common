@@ -84,17 +84,16 @@ export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
 
 export const getGQLErrorObject = (gqlError) => {
   try {
-    if ( gqlError.graphQLErrors.length > 0 ) {
+    if (gqlError.graphQLErrors.length > 0) {
       const errorObj = gqlError.graphQLErrors[0];
       return {
         errorMessage: errorObj.message,
         errorId: errorObj.extensions.exception.errorId,
-        errorObj: errorObj.extensions.exception ,
+        errorObj: errorObj.extensions.exception,
       };
     } else {
       throw Error(gqlError);
     }
-
   } catch (e) {
     logger.error('Something went wrong trying to parse the error object', e);
     logger.error('Error object: ', gqlError);

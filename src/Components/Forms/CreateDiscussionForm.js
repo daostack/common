@@ -23,7 +23,6 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, authStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();

@@ -154,8 +154,10 @@ export default class NotificationStore extends BaseStore<
   ): Promise<IProposalNotificationData | null> {
     let user = null;
     let common = null;
-    let proposal = this.rootStore.proposalStore.getProposalById(eventObjectId);
-    if (proposal) {
+    let proposal = await this.rootStore.proposalStore.getProposalById(
+      eventObjectId,
+    );
+    if (proposal && proposal.commonId && proposal.user) {
       common = await this.rootStore.commonStore.getCommonById(
         proposal.commonId,
       );
@@ -173,16 +175,19 @@ export default class NotificationStore extends BaseStore<
     }
   }
 
-  getParentDiscussion(
+  async getParentDiscussion(
     message: DiscussionMessageType,
-  ): Discussion | Proposal {
-    return (
-      (this.rootStore.discussionStore.getDiscussionById(
-        message.discussionId,
-      ) as Discussion) ||
-      (this.rootStore.proposalStore.getProposalById(
-        message.discussionId,
-      ) as Proposal)
+  ): Promise<Discussion | Proposal> {
+    const discussion = await this.rootStore.discussionStore.getDiscussionById(
+      message.discussionId,
     );
+    if (discussion) {
+      return discussion as Discussion;
+    }
+    const proposal = await this.rootStore.proposalStore.getProposalById(
+      message.discussionId,
+    );
+
+    return proposal as Proposal;
   }
 }

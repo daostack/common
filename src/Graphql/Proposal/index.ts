@@ -260,6 +260,14 @@ export const finalizeProposalDocument = gql`
   }
 `;
 
+export const getProposalDocument = gql`
+  query getProposalDocument($where: ProposalWhereUniqueInput!) {
+    proposal(where: $where) {
+      ${gqlProposalProps}
+    }
+  }
+`;
+
 export const getProposalsDocument = gql`
   query getProposalsDocument($where: ProposalWhereInput!) {
     proposals(where: $where) {

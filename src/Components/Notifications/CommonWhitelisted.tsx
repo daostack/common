@@ -24,20 +24,22 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
   useEffect(() => {
     (async () => {
       try {
-        const common = await rootStore.commonStore.getCommonById(
-          item.eventObjectId,
-        );
+        if (item.eventObjectId) {
+          const common = await rootStore.commonStore.getCommonById(
+            item.eventObjectId,
+          );
 
-        if (common) {
-          const data = {
-            missingData: false,
-            descriptionBold: `"${common.name}"`,
-            description: ' - You might want to check it out.',
-            ownerAvatar: common?.image,
-            createdAt: item.createdAt,
-            common,
-          };
-          setNotificationData(data);
+          if (common) {
+            const data = {
+              missingData: false,
+              descriptionBold: `"${common.name}"`,
+              description: ' - You might want to check it out.',
+              ownerAvatar: common?.image,
+              createdAt: item.createdAt,
+              common,
+            };
+            setNotificationData(data);
+          }
         }
       } catch (error) {
         Logger.warn('Not found data');
