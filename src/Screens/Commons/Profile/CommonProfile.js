@@ -16,6 +16,7 @@ import Share from 'react-native-share';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
+import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -47,6 +48,7 @@ import {BlurView} from '~/Components';
 import moment from 'moment';
 import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {getLastReporterInfo, getLastReport} from '~/Util/report';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
@@ -80,7 +82,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
-  const userStore = rootStore.userStore;
 
   const [previousScrollHeight, setPreviousScrollHeight] = useState();
   const [nestedDiscussionListPage, setNestedDiscussionListPage] = useState(0);
@@ -561,13 +562,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const showHiddenNote = ({hiddenItem, isModerator = false}, type) => {
     const {moderation} = hiddenItem;
+    const moderatorInfo = getLastReporterInfo(moderation);
+    const lastReport = getLastReport(moderation);
+    const currentUserUid = auth().currentUser.uid;
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation?.moderator)),
-        date: timeReported(moderation?.updatedAt),
-        reasons: moderation?.reasons,
-        moderatorNote: moderation?.moderatorNote,
+        userName: reporterName(currentUserUid, moderatorInfo),
+        date: timeReported(lastReport?.updatedAt),
+        reasons: lastReport?.for,
+        moderatorNote: lastReport?.note,
         type,
         isModerator,
       },

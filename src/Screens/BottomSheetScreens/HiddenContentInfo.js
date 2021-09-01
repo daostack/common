@@ -4,6 +4,7 @@ import {text, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {Bold} from '~/Components/Text/Bold';
 import {string, array, bool} from 'prop-types';
+import {getType} from '~/Components/Moderation/HideContentSuccess';
 
 const getReasons = (reasonArr) => {
   if (reasonArr?.length) {
@@ -34,9 +35,9 @@ const HiddenContentInfo = ({
   <View style={styles.root}>
     <ScrollView contentContainerStyle={{paddingBottom: 100}}>
       <View style={{...styles.body, height: moderatorNote ? '90%' : '60%'}}>
-        <Text style={styles.title}>Hidden {type}</Text>
+        <Text style={styles.title}>Hidden {getType(type)}</Text>
         <Text style={styles.text}>
-          This {type} was hidden
+          This {getType(type)} was hidden
           {isModerator ? ' by ' : ''}
           <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
           <Bold boldText={date} /> {getReasons(reasons)}

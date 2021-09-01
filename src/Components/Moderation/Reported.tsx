@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text} from 'react-native';
-import {getLastReport} from '~/Util/report';
+import {getLastReporterInfo} from '~/Util/report';
 import {string, object, shape} from 'prop-types';
 import {colors, text} from '~/Theme';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
@@ -19,7 +19,7 @@ export const Reported = ({
   currentUID,
   viewerPermission,
 }: ReportedProps) => {
-  const moderatorInfo = getLastReport(moderation);
+  const moderatorInfo = getLastReporterInfo(moderation);
   const reporterUserName =
     viewerPermission === PERMISSIONS.MODERATOR
       ? ` by ${reporterName(currentUID, moderatorInfo)}`
@@ -43,7 +43,7 @@ export const Reported = ({
 };
 
 export const timeReported = (updatedAt: Date) =>
-  updatedAt?.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
+  moment(updatedAt).format('MMMM D');
 
 export const reporterName = (
   currentUID: string,

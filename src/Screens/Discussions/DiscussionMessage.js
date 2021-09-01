@@ -18,7 +18,7 @@ import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
-import {getLastReport} from '~/Util/report';
+import {getLastReporterInfo} from '~/Util/report';
 import {reporterName} from '../../Components/Moderation/Reported';
 import {REPORT_FLAG} from '~/Graphql/Report';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
@@ -59,7 +59,7 @@ const DiscussionMessage = ({
       ownerInfo,
     });
   }
-  const moderatorInfo = getLastReport(data.moderation);
+  const moderatorInfo = getLastReporterInfo(data.moderation);
 
   const moderatorName = reporterName(currentUserUid, moderatorInfo);
 

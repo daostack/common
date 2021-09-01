@@ -14,7 +14,7 @@ import {string, func, InferProps} from 'prop-types';
 import {ACTIONS} from './constants';
 const {width} = Dimensions.get('window');
 
-const getType = (type: string) => {
+export const getType = (type: string) => {
   switch (type) {
     case REPORT_TYPE.DiscussionReport:
       return REPORT_TITLES.Discussion;
