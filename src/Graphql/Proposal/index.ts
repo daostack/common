@@ -10,13 +10,10 @@ import {
   Scalars,
 } from '~/Graphql';
 import {MessageReport, REPORT_FLAG, gqlReportProps} from '~/Graphql/Report';
-import {gqlUserProps} from '~/Graphql/User';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
 import {UserModel} from '~/Stores/Models/UserModel';
-
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export enum ProposalState {
   ACCEPTED = 'Accepted',

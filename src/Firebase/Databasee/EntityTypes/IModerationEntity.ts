@@ -1,5 +1,4 @@
 import {BaseType} from '~/Graphql/BaseType';
-import {firebase} from '~/Firebase';
 
 export interface IModerationEntity extends BaseType {
   /**

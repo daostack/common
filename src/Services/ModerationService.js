@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {moderationUrl} from '~/Config';
-import {auth} from '~/Firebase';
 import {ACTIONS} from '~/Components/Moderation/constants';
 import {CreateReportDocument, REPORT_FLAG, REPORT_TYPE} from '~/Graphql/Report';
 import {

@@ -5,7 +5,6 @@ import {BaseModel} from './BaseModel';
 //import {promisedComputed} from 'computed-async-mobx';
 //import Logger from '~/Services/Logger';
 import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
-import {FLAGS} from '~/Components/Moderation/constants';
 import {UserModel} from './UserModel';
 import {
   ProposalType,
