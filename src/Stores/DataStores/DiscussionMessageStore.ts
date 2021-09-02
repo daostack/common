@@ -72,17 +72,17 @@ export default class DiscussionMessageStore extends BaseStore<
   };
 
   // Data consuming methods
-  getDiscussionMessageById = (id: string): DiscussionMessage | undefined => {
+  getDiscussionMessageById = (discussionId: string): DiscussionMessage | undefined => {
     try {
-      return this.getDataById(id);
+      return this.getDataById(discussionId);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchDiscussionMessageById(id)
+      fetchDiscussionMessageById(discussionId)
         .then((discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
           if (discussion.exists) {
             runInAction(() => {
               this.setData(
-                id,
+                discussionId,
                 this.getEntityModel(this.firestoreDocToEntity(discussion)),
               );
             });

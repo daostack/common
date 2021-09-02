@@ -14,6 +14,7 @@ import {
   ProposalFunding,
   JoinRequestEntity,
   FundingProposalEntity,
+  VoteOutcome,
 } from '~/Graphql/Proposal';
 import {Vote} from '~/Graphql/Votes';
 import {Discussion} from '~/Graphql/Discussion';
@@ -142,7 +143,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    [this.votesFor, this.votesAgainst] = [this.countVotes('Approve'), this.countVotes('Condemn')];
+    [this.votesFor, this.votesAgainst] = [this.countVotes(VoteOutcome.APPROVE), this.countVotes(VoteOutcome.CONDEMN)];
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = newProposalInfo.moderation;

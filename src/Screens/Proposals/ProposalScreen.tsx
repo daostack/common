@@ -50,13 +50,15 @@ import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
-import {rootStoreType} from '~/Types/propTypes';
+import {rootStore as rootStoreType} from '~/Types/store';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {ProposalState, VoteOutcome} from '~/Graphql/Proposal';
+import {Vote} from '~/Graphql/Votes';
+import {Message} from '~/Graphql/Message';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -72,7 +74,7 @@ const ProposalScreen = ({
       proposalId,
       tabIndex = 0,
       hasPermission,
-      //fromNotificationItem,
+      // TODO fromNotificationItem,
     },
   },
 } : {
@@ -84,7 +86,7 @@ const ProposalScreen = ({
       proposalId: string,
       tabIndex: number,
       hasPermission: boolean,
-      //fromNotificationItem: boolean
+      // TODO fromNotificationItem: boolean
     }
   }
 }) => {
@@ -210,7 +212,7 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo?.votes?.some((vote: any) => vote?.voter?.user?.id === userInfo.uid);
+    !proposalInfo?.votes?.some((vote: Vote) => vote?.voter?.user?.id === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
@@ -603,7 +605,7 @@ const ProposalScreen = ({
     }
   };
 
-  const openMessageOptions = (message: any) => {
+  const openMessageOptions = (message: Message) => {
     if (message) {
       moderationFormStore.registerFormField(
         ModerationForm.ITEM_ID,

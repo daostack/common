@@ -1,5 +1,21 @@
 import {gql} from '@apollo/client';
-import {Exact, Scalars} from '~/Graphql';
+import {Exact, Scalars, User, Report} from '~/Graphql';
+
+export enum DiscussionMessageType {
+  message
+}
+
+export type Message = {
+  id: string;
+  owner: User;
+  createdAt: Scalars['Date'];
+  updatedAt?: Scalars['Date'];
+  message: string;
+  type: DiscussionMessageType;
+  userId: string;
+  discussionId: string;
+  reports: [Report];
+}
 
 export type CreateDiscussionMessageInput = {
   discussionId: Scalars['String'];
