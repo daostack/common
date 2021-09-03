@@ -22,12 +22,12 @@ export type BaseEntity = {
 
 export enum ReportFor {
   Nudity = 'Nudity',
-  Violance = 'Violance',
+  Violence = 'Violence',
   Harassment = 'Harassment',
-  FalseNews = 'FalseNews',
+  FalseNews = 'False News',
   Spam = 'Spam',
-  Hate = 'Hate',
-  Other = 'Other',
+  HateSpeech = 'Hate Speech',
+  SomethingElse = 'Something Else',
 }
 
 enum ReportStatus {
