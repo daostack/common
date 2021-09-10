@@ -15,8 +15,8 @@ enum QUERY_TYPE {
   SUBSCRIPTION = 'subscription',
   OPERATION_DEFINITION = 'OperationDefinition',
 }
-const APOLLO_URL = getGraphqlApiUrl();
-const APOLLO_URL_USE_SSL = isGraphqlApiUseSsl();
+const APOLLO_URL = 'localhost:4000'; //getGraphqlApiUrl();
+const APOLLO_URL_USE_SSL = false; // isGraphqlApiUseSsl();
 
 export const createApolloClient = (gqlUri: string, token?: string) => {
   const baseLink = new HttpLink({

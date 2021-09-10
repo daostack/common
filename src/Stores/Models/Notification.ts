@@ -1,5 +1,9 @@
 import {observable} from 'mobx';
-import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  NotificationType,
+  NotificationSeenStatus,
+} from '~/Graphql/Notification/NotificationType';
+import {getNotificationSeenStatus} from '~/Util/NotificationStatus';
 import {BaseModel} from './BaseModel';
 
 export interface NotificationItemState {
@@ -7,7 +11,7 @@ export interface NotificationItemState {
   opened: boolean;
 }
 
-export class Notification extends BaseModel<INotificationEntity> {
+export class Notification extends BaseModel<NotificationType> {
   @observable
   id: string;
 
@@ -18,21 +22,21 @@ export class Notification extends BaseModel<INotificationEntity> {
   eventType: string;
 
   @observable
-  userFilter: Array<string>;
-
-  @observable
   notificationItemState: NotificationItemState;
 
-  constructor(
-    newNotificationInfo: INotificationEntity,
-    notificationItemState: NotificationItemState,
-  ) {
+  constructor(newNotificationInfo: NotificationType) {
     super(newNotificationInfo);
-
     this.id = newNotificationInfo.id;
-    this.eventObjectId = newNotificationInfo.eventObjectId;
+    this.createdAt = newNotificationInfo.createdAt;
+    this.updatedAt = newNotificationInfo.updatedAt;
+    this.eventObjectId =
+      newNotificationInfo.discussionId ||
+      newNotificationInfo.proposalId ||
+      newNotificationInfo.commonId;
     this.eventType = newNotificationInfo.eventType;
-    this.userFilter = newNotificationInfo.userFilter;
-    this.notificationItemState = notificationItemState;
+    this.notificationItemState = {
+      opened: NotificationSeenStatus.Done === newNotificationInfo.seenStatus,
+      seen: getNotificationSeenStatus(newNotificationInfo.seenStatus),
+    };
   }
 }

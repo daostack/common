@@ -1,5 +1,10 @@
 import {ReactElement} from 'react';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
+import {ObservableMap} from 'mobx';
+import {
+  Notification,
+  NotificationItemState,
+} from '~/Stores/Models/Notification';
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -39,9 +44,26 @@ export type AuthStore = {
   isDaoMember: (members: CommonMemberType[]) => boolean;
 };
 
+export type NotificationStore = {
+  notifications: ObservableMap<string, Notification>;
+  myNotificationsValues: Notification[];
+  hasNewNotifications: boolean;
+  loggedUserNotifications: Notification[] | undefined;
+  setNotificationItemState: (
+    notificationId: string,
+    newState: Partial<NotificationItemState>,
+  ) => void;
+  removeSeenStateForNewNotifications: () => void;
+  addWelcomeNotification: () => void;
+  deleteUserNotifications: () => void;
+  loadNotifications: (page?: number) => Promise<void>;
+  getNotificationById: (id: string) => Promise<Notification>;
+};
+
 export type rootStore = {
   uiStore: UiStore;
   authStore: AuthStore;
+  notificationStore: NotificationStore;
 };
 // TODO: Add all Store types
 export type AppRootStore = {rootStore: rootStore};

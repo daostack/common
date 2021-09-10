@@ -2,6 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
+import {NotificationSeenStatus} from '~/Graphql/Notification';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
@@ -39,9 +40,10 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   const navigateToDetail = () => {
     let navigate;
 
-    notificationStore.setNotificationItemState(item.id, {
-      opened: true,
-    });
+    notificationStore.setNotificationItemState(
+      item.id,
+      NotificationSeenStatus.Done,
+    );
 
     if (notificationData.proposal) {
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {

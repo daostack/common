@@ -4,9 +4,21 @@ import {Proposal} from '~/Stores/Models/Proposal';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {BaseType} from '~/Graphql/BaseType';
 
-export interface INotificationEntity extends BaseType {
-  eventObjectId: string;
+export enum NotificationSeenStatus {
+  NotSeen = 'NotSeen',
+  Seen = 'Seen',
+  Done = 'Done',
+}
+
+
+export interface NotificationType extends BaseType {
+  commonId: string;
+  proposalId: string;
+  discussionId: string;
+  userId: string;
   eventType: string;
+  show: boolean;
+  seenStatus: NotificationSeenStatus;
 }
 
 export interface BadgeProps {
@@ -37,30 +49,31 @@ export interface NotificationItemData {
 }
 
 export const EventTypeState = {
-  creationReqToJoin: 'creationReqToJoin',
-  requestToJoinCreated: 'requestToJoinCreated',
-  requestToJoinExecuted: 'requestToJoinExecuted',
-  requestToJoinRejected: 'requestToJoinRejected',
-  requestToJoinAccepted: 'requestToJoinAccepted',
-  subscriptionPaymentConfirmed: 'subscriptionPaymentConfirmed',
-  subscriptionCanceledByUser: 'subscriptionCanceledByUser',
-  fundingRequestAccepted: 'fundingRequestAccepted',
-  fundingRequestCreated: 'fundingRequestCreated',
-  fundingRequestExecuted: 'fundingRequestExecuted',
-  fundingRequestRejected: 'fundingRequestRejected',
-  voteCreated: 'voteCreated',
-  cardCreated: 'cardCreated',
-  paymentFailed: 'paymentFailed',
-  messageCreated: 'messageCreated',
-  commonCreated: 'CommonCreated',
-  commonWhitelisted: 'commonWhitelisted',
-  commonMemberAdded: 'commonMemberAdded',
-  welcomeNotification: 'welcomeNotification',
-  discussionCreated: 'discussionCreated',
-  discussionMessageReported: 'discussionMessageReported',
-  proposalReported: 'proposalReported',
-  discussionReported: 'discussionReported',
-  membershipRequestReported: 'membershipRequestReported',
+  // general: 'General', // -
+  creationReqToJoin: 'creationReqToJoin', // -
+  requestToJoinCreated: 'requestToJoinCreated', // +
+  requestToJoinExecuted: 'requestToJoinExecuted', // -
+  requestToJoinRejected: 'requestToJoinRejected', // +
+  requestToJoinAccepted: 'requestToJoinAccepted', //-
+  subscriptionPaymentConfirmed: 'subscriptionPaymentConfirmed', // -
+  subscriptionCanceledByUser: 'subscriptionCanceledByUser', // -
+  fundingRequestAccepted: 'fundingRequestAccepted', // +
+  fundingRequestCreated: 'fundingRequestCreated', // +
+  fundingRequestExecuted: 'fundingRequestExecuted', // +
+  fundingRequestRejected: 'fundingRequestRejected', // +
+  voteCreated: 'voteCreated', // -
+  cardCreated: 'cardCreated', // -
+  paymentFailed: 'paymentFailed', // -
+  messageCreated: 'messageCreated', // +
+  commonCreated: 'commonCreated', // +
+  commonWhitelisted: 'commonWhitelisted', // +
+  commonMemberAdded: 'commonMemberAdded', // +
+  welcomeNotification: 'welcomeNotification', // +
+  discussionCreated: 'discussionCreated', // +
+  discussionMessageReported: 'discussionMessageReported', // +
+  proposalReported: 'proposalReported', // +
+  discussionReported: 'discussionReported', // +
+  membershipRequestReported: 'membershipRequestReported', // -
 };
 
 export const EventTitleState = {
