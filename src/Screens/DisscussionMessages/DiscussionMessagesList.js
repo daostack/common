@@ -15,7 +15,8 @@ import moment from 'moment';
 import logger from '../../Services/Logger';
 import PropTypes, {string, bool, func} from 'prop-types';
 import {discussionStorePropTypes} from '~/Types/propTypes';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {rootStore as rootStoreType} from '~/Types/store';
+
 
 const DiscussionMessagesList = ({
   discussionId,
@@ -136,7 +137,7 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
-  rootStore: rootStorePropTypes.isRequired,
+  rootStore: rootStoreType.isRequired,
   hasPermission: string,
   commonId: string,
   action: func,
