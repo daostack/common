@@ -65,8 +65,6 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPro
       if ((props.error as any).isAxiosError) {
         const errorData = (props.error as AxiosError).response?.data;
 
-        console.log(errorData);
-
         setFormattedError({
           errorId: errorData?.errorId,
           errorName: errorData?.errorName,

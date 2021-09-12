@@ -1,6 +1,7 @@
 import {BaseType} from '~/Graphql/BaseType';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
+import {MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
 export interface DiscussionType extends BaseType {
   /**
@@ -44,4 +45,7 @@ export interface DiscussionType extends BaseType {
   isExpanded: boolean;
 
   messages: DiscussionMessage[];
+
+  reports: MessageReport[];
+  flag: REPORT_FLAG;
 }

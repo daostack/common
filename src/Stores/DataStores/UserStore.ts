@@ -1,24 +1,27 @@
+import {observable, ObservableMap, runInAction} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {UserModel} from '../Models/UserModel';
-import BaseStore from './BaseStore';
-import {
-  subscribeToAllUsers,
-  fetchUserById,
-} from '~/Services/ListServices/UserListService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
   IFirebaseDocChange,
 } from '~/Firebase/types';
-import RootStore from '../RootStore';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
+import {
+  fetchUserById,
+  getUserById,
+  subscribeToAllUsers,
+} from '~/Services/ListServices/UserListService';
 import {showBackendError} from '~/Util';
-import {runInAction} from 'mobx';
+import {UserModel} from '../Models/UserModel';
+import RootStore from '../RootStore';
+import BaseStore from './BaseStore';
 
 export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
+  @observable
+  private users: ObservableMap<string, UserModel> = observable.map({});
 
   // Data consuming methods
   getUserById = (uid: string): UserModel | undefined => {
@@ -42,6 +45,23 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
           });
         });
       return {} as UserModel;
+    }
+  };
+
+  // Data consuming methods
+  getGraphqlUserById = async (uid: string): Promise<UserModel | void> => {
+    try {
+      return this.getDataByIdAndCollections(uid, [this.users]);
+    } catch (err) {
+      try {
+        const user = await getUserById(uid);
+        this.users.merge(this.toEntityModelArr([user as IUserEntity]));
+        return new UserModel(user as IUserEntity);
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        });
+      }
     }
   };
 

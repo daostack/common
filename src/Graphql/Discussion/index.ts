@@ -8,6 +8,8 @@ import {
   User,
   Pagination,
 } from '~/Graphql';
+import {gqlUserProps} from '~/Graphql/User';
+import {gqlReportProps} from '~/Graphql/Report';
 
 export enum DiscussionMessageType {
   Message = 'Message',
@@ -59,27 +61,50 @@ export type CreateDiscussionMutationVariables = Exact<{
 }>;
 
 const gqlDiscussionProps = `
-  id
-  title: topic
-  message: description
-  messageCount
-  createTime: createdAt
-  ownerId: userId
+id
+title: topic
+message: description
+messageCount
+createdAt
+ownerId: userId
+owner {
+  ${gqlUserProps}
+}
+flag
+reports {
+  ${gqlReportProps}
+}
+lastMessage: latestMessage
+messages {
   owner {
-    photoURL: photo
-    email
-    firstName
-    lastName
-    country
+    ${gqlUserProps}
   }
-  lastMessage: latestMessage
+  id
   createdAt
-`;
+  updatedAt
+  message
+  type
+  flag
+  userId
+  reports {
+    ${gqlReportProps}
+  }
+}`;
 
 export const CreateDiscussionDocument = gql`
   mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
     createDiscussion(input: $discussion) {
-      ${gqlDiscussionProps}
+      id
+      title: topic
+      message: description
+      messageCount
+      createTime: createdAt
+      ownerId: userId
+      owner {
+        ${gqlUserProps}
+      }
+      lastMessage: latestMessage
+      createdAt
     }
   }
 `;
@@ -95,17 +120,20 @@ export type getDiscussionsVariable = {
   paginate: Pagination;
 };
 
-export const GetDiscussionByIdDocument = gql`
-  query GetDiscussionById($id: ID!) {
-    discussion(id: $id) {
+export const GetDiscussionDocument = gql`
+  query GetDiscussions(
+    $where: DiscussionWhereInput
+    $paginate: PaginateInput! = {take: 10, skip: 0}
+  ) {
+    discussions(where: $where, paginate: $paginate) {
       ${gqlDiscussionProps}
     }
   }
 `;
 
-export const GetDiscussionsDocument = gql`
-  query GetDiscussions($where: DiscussionWhereInput) {
-    discussions(where: $where) {
+export const GetDiscussionDocumentById = gql`
+  query GetDiscussionById($id: ID!) {
+    discussion(id: $id) {
       ${gqlDiscussionProps}
     }
   }

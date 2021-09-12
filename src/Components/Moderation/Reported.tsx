@@ -1,25 +1,32 @@
 import React from 'react';
-import {firebase} from '~/Firebase';
 import {Text} from 'react-native';
-import {string, object, InferProps, shape} from 'prop-types';
+import {getLastReporterInfo} from '~/Util/report';
+import {string, object, shape} from 'prop-types';
 import {colors, text} from '~/Theme';
-import {MESSAGE_STATUSES, PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import moment from 'moment';
-const _ = require('lodash');
+import {upperFirst} from 'lodash';
 
-export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
+interface ReportedProps {
+  moderation: ModerationType;
+  currentUID: string;
+  viewerPermission: string;
+}
+
+export const Reported = ({
   moderation,
-  reporter,
   currentUID,
   viewerPermission,
-}) => {
+}: ReportedProps) => {
+  const moderatorInfo = getLastReporterInfo(moderation);
   const reporterUserName =
     viewerPermission === PERMISSIONS.MODERATOR
-      ? ` by ${reporterName(reporter, currentUID)}`
+      ? ` by ${reporterName(currentUID, moderatorInfo)}`
       : '';
 
   if (
-    moderation?.flag === MESSAGE_STATUSES.REPORTED &&
+    moderation?.flag === REPORT_FLAG.Reported &&
     viewerPermission !== PERMISSIONS.MODERATOR
   ) {
     return <></>;
@@ -28,19 +35,19 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   return (
     <Text
       style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
-      {`${_.upperFirst(moderation?.flag)}${reporterUserName} on ${timeReported(
-        moderation?.updatedAt,
-      )}`}
+      {`${upperFirst(moderation?.flag)}${reporterUserName} ${
+        moderation?.updatedAt ? `on ${timeReported(moderation?.updatedAt)}` : ''
+      }`}
     </Text>
   );
 };
 
-export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
-  updatedAt.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
+export const timeReported = (updatedAt: Date) =>
+  moment(updatedAt).format('MMMM D');
 
 export const reporterName = (
-  user: {firstName: string; lastName: string; uid: string},
   currentUID: string,
+  user?: {firstName: string; lastName: string; uid: string},
 ) =>
   user?.uid === currentUID
     ? 'you'

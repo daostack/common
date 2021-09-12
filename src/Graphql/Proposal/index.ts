@@ -9,12 +9,11 @@ import {
   Mutation,
   Scalars,
 } from '~/Graphql';
+import {MessageReport, REPORT_FLAG, gqlReportProps} from '~/Graphql/Report';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
 import {UserModel} from '~/Stores/Models/UserModel';
-
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export enum ProposalState {
   ACCEPTED = 'Accepted',
@@ -67,7 +66,8 @@ interface BaseProposal {
   votesAgainst: number;
   votes: Vote[];
   discussions: Discussion[];
-  moderation?: IModerationEntity | undefined;
+  reports: MessageReport[];
+  flag: REPORT_FLAG;
 }
 
 export interface FundingProposalEntity extends BaseProposal {
@@ -220,6 +220,10 @@ const gqlProposalProps = `
   links
   files
   images
+  flag
+  reports {
+    ${gqlReportProps}
+  }
   funding {
     amount
   }

@@ -16,6 +16,7 @@ import Share from 'react-native-share';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
+import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -47,11 +48,13 @@ import {BlurView} from '~/Components';
 import moment from 'moment';
 import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {getLastReporterInfo, getLastReport} from '~/Util/report';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast.js';
 import {TITLES, ACTIONS, FLAGS} from '~/Components/Moderation/constants';
+import {REPORT_TYPE} from '~/Graphql/Report';
 
 import {
   IntroduceYourselfFormStore,
@@ -79,7 +82,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const proposalStore = rootStore.proposalStore;
-  const userStore = rootStore.userStore;
 
   const [previousScrollHeight, setPreviousScrollHeight] = useState();
   const [nestedDiscussionListPage, setNestedDiscussionListPage] = useState(0);
@@ -267,10 +269,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonId={currCommon.id}
         openCommonOptions={(discussion) =>
-          openCommonOptions(discussion, TITLES.discussion)
+          openCommonOptions(discussion, REPORT_TYPE.DiscussionReport)
         }
         showHiddenNote={(hiddenDiscussion) =>
-          showHiddenNote(hiddenDiscussion, TITLES.discussion)
+          showHiddenNote(hiddenDiscussion, REPORT_TYPE.DiscussionReport)
         }
         isMember={isMember}
       />
@@ -293,10 +295,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, REPORT_TYPE.ProposalReport)
         }
         showHiddenNote={(hiddenProposal) =>
-          showHiddenNote(hiddenProposal, TITLES.proposalText)
+          showHiddenNote(hiddenProposal, REPORT_TYPE.ProposalReport)
         }
         isMember={isMember}
       />
@@ -321,7 +323,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
         }
-        sMember={isMember}
+        isMember={isMember}
       />
     </View>
   );
@@ -509,17 +511,13 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     const resp = await ModerationService.getInstance().onModerate(
       actionType,
       itemId,
-      commonId,
-      itemType.toLowerCase(),
+      itemType,
     );
 
     resp === ACTIONS.report
       ? setShowModerationModal(true)
       : resp && setShowModerationSuccessModal(true);
   };
-
-  const membershipRequestType = (itemTitle) =>
-    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
 
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
@@ -537,8 +535,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: item
-          ? (actionType) =>
-              onModerate(actionType, membershipRequestType(itemType), item.id)
+          ? (actionType) => onModerate(actionType, itemType, item.id)
           : (type) => onEdit(type),
         hasPermission,
         moderatorOptions: {
@@ -549,30 +546,35 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const onReportContent = async () => {
-    setShowModerationModal(false);
-    bottomSheetStore.hideBottomSheet();
-    Toast.loading('Reporting content...');
-
-    await ModerationService.getInstance().report(
-      membershipRequestType(moderationType).toLowerCase(),
-      commonId,
-      moderationFormStore.getFormFieldsJson(),
-    );
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
-    moderationFormStore.clearFormStoreState();
+    try {
+      setShowModerationModal(false);
+      bottomSheetStore.hideBottomSheet();
+      Toast.loading('Reporting content...');
+      await ModerationService.getInstance().report({
+        type: moderationType,
+        moderationData: moderationFormStore.getFormFieldsJson(),
+      });
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+      moderationFormStore.clearFormStoreState();
+    } catch (err) {
+      Toast.error('Could not Report content');
+    }
   };
 
   const showHiddenNote = ({hiddenItem, isModerator = false}, type) => {
     const {moderation} = hiddenItem;
+    const moderatorInfo = getLastReporterInfo(moderation);
+    const lastReport = getLastReport(moderation);
+    const currentUserUid = auth().currentUser.uid;
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
-        date: timeReported(moderation.updatedAt),
-        reasons: moderation.reasons,
-        moderatorNote: moderation?.moderatorNote,
+        userName: reporterName(currentUserUid, moderatorInfo),
+        date: timeReported(lastReport?.updatedAt),
+        reasons: lastReport?.for,
+        moderatorNote: lastReport?.note,
         type,
         isModerator,
       },

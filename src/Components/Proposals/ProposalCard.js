@@ -19,7 +19,7 @@ import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, func} from 'prop-types';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {REPORT_FLAG} from '~/Graphql/Report';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -131,10 +131,6 @@ const ProposalCard = ({
     }
   };
 
-  const getReporter = () =>
-    proposalInfo.moderation?.reporter &&
-    userStore.getUserById(proposalInfo.moderation?.reporter);
-
   return proposalInfo ? (
     <Animated.View
       style={[
@@ -151,9 +147,8 @@ const ProposalCard = ({
             //proposalInfo?.moderation?.updatedAt.seconds ||
             proposalInfo?.expiresAt?.getTime() / 1000
           }
-          isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
+          isReported={proposalInfo.moderation?.flag !== REPORT_FLAG.Clear}
           moderation={proposalInfo.moderation}
-          reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
         />

@@ -182,7 +182,7 @@ const ProposalScreen = ({
         setProposalCommon(common);
       }
     })();
-  }, [proposalInfo, proposalInfo.commonId]);
+  }, [proposalInfo, proposalInfo?.commonId]);
   const proposedUser = proposalInfo ? proposalInfo.user : null;
 
   const showDebtInfo =

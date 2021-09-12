@@ -4,8 +4,7 @@ import {BaseModel} from './BaseModel';
 //import ImageSize from 'react-native-image-size';
 //import {promisedComputed} from 'computed-async-mobx';
 //import Logger from '~/Services/Logger';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
-import {FLAGS} from '~/Components/Moderation/constants';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {UserModel} from './UserModel';
 import {
   ProposalType,
@@ -68,7 +67,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
   discussions: Discussion[];
 
   @observable
-  moderation?: IModerationEntity | undefined;
+  moderation?: ModerationType;
 
   /* @observable
   imagesPromised = promisedComputed(
@@ -150,14 +149,14 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
+    return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
   }
 
   @computed
   get countdown() {
     return (
-      this.moderation?.updatedAt.seconds + this.moderation?.expiresAt ||
-      this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0)
+      this.moderation?.updatedAt + this.moderation?.expiresAt ||
+      this.createdAt + (this?.expiresAt || 0)
     );
   }
 
@@ -177,7 +176,10 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
-    this.moderation = newProposalInfo.moderation;
+    this.moderation = {
+      reports: newProposalInfo.reports,
+      flag: newProposalInfo.flag,
+    };
     //this.images = newProposalInfo.images;
     if (this.type === ProposalType.JOIN_REQUEST) {
       this.paymentState = (newProposalInfo as JoinRequestEntity).paymentState;

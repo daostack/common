@@ -150,7 +150,8 @@ class AuthStore {
       const memberObj = currCommon?.members.find(
         (member) => member.userId === userId,
       );
-      if (currCommon?.founderId === userId || memberObj?.permission) {
+
+      if (currCommon?.founderId === userId || memberObj?.roles.length) {
         return PERMISSIONS.MODERATOR;
       }
     } catch (error) {
