@@ -1,8 +1,14 @@
 import axios from 'axios';
 import {moderationUrl} from '~/Config';
-import {auth} from '~/Firebase';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {ACTIONS} from '~/Components/Moderation/constants';
+import {CreateReportDocument, REPORT_FLAG, REPORT_TYPE} from '~/Graphql/Report';
+import {
+  changeDiscussionMessageFlag,
+  changeProposalFlag,
+  changeDiscussionFlag,
+} from './ListServices/ReportService';
 import Toast from '~/Util/Toast.js';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export default class ModerationService {
   static serviceInstance = null;
@@ -27,68 +33,76 @@ export default class ModerationService {
     return this.serviceInstance;
   };
 
-  hide = async (itemId, type, commonId) => {
+  hide = async (itemId, type) => {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.hide,
-        {
-          itemId,
-          commonId,
-          type,
-        },
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
+      switch (type) {
+        case REPORT_TYPE.DiscussionReport:
+          return await changeDiscussionFlag(itemId, REPORT_FLAG.Hidden);
+        case REPORT_TYPE.MessageReport:
+          return await changeDiscussionMessageFlag(itemId, REPORT_FLAG.Hidden);
+        case REPORT_TYPE.ProposalReport:
+          return await changeProposalFlag(itemId, REPORT_FLAG.Hidden);
+      }
+
+      return Promise.reject();
     } catch (error) {
       throw error;
     }
   };
 
-  report = async (type, commonId, moderationData) =>
-    await this.axiosClient.post(
-      this.endpoints.report,
-      {
-        moderationData,
-        commonId,
-        type,
-      },
-      {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      },
-    );
+  report = async ({type, moderationData}) => {
+    const reportData = {
+      type,
+      for: moderationData.reasons.replace(/ /g, '').split(','),
+      note: moderationData.moderatorNote,
+      ...(type === REPORT_TYPE.DiscussionReport && {
+        discussionId: moderationData.itemId,
+      }),
+      ...(type === REPORT_TYPE.ProposalReport && {
+        proposalId: moderationData.itemId,
+      }),
+      ...(type === REPORT_TYPE.MessageReport && {
+        messageId: moderationData.itemId,
+      }),
+    };
 
-  show = async (itemId, commonId, type) =>
-    await this.axiosClient.post(
-      this.endpoints.show,
-      {
-        itemId,
-        commonId,
-        type,
-      },
-      {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      },
-    );
+    const {data} = await apollo.mutate({
+      mutation: CreateReportDocument,
+      variables: {input: reportData},
+    });
 
-  onModerate = async (actionType, itemId, commonId, itemType) => {
+    return data.createReport;
+  };
+
+  show = async (itemId, type) => {
+    try {
+      switch (type) {
+        case REPORT_TYPE.DiscussionReport:
+          return await changeDiscussionFlag(itemId, REPORT_FLAG.Clear);
+        case REPORT_TYPE.MessageReport:
+          return await changeDiscussionMessageFlag(itemId, REPORT_FLAG.Clear);
+        case REPORT_TYPE.ProposalReport:
+          return await changeProposalFlag(itemId, REPORT_FLAG.Clear);
+      }
+
+      return Promise.reject();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  onModerate = async (actionType, itemId, itemType) => {
     try {
       switch (actionType) {
         case ACTIONS.show:
           Toast.loading('Loading...');
-          await this.show(itemId, commonId, itemType);
+          await this.show(itemId, itemType);
           Toast.hide();
           Toast.success('Done');
           return true;
         case ACTIONS.hide:
           Toast.loading('Hiding content...');
-          await this.hide(itemId, itemType, commonId);
+          await this.hide(itemId, itemType);
           Toast.hide();
           Toast.success('Done');
           return true;

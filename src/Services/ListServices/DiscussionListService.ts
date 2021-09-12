@@ -8,7 +8,7 @@ import {
   CreateDiscussionDocument,
   GetDiscussionsDocument,
   getDiscussionsVariable,
-  GetDiscussionByIdDocument,
+  GetDiscussionDocumentById,
 } from '~/Graphql/Discussion';
 import {Discussion} from '~/Stores/Models/Discussion';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -28,14 +28,6 @@ export const subscribeToCommonDiscussions = (
     });
   return unsubscribe;
 };
-
-export const subscribeToDiscussionById = (
-  discussionId: string,
-  listChangeCallback: commonDiscussionsListLoadCallbackFn,
-) =>
-  DiscussionsCollection.doc(discussionId).onSnapshot((snapshot: any) => {
-    listChangeCallback(snapshot);
-  });
 
 export const updateDiscussionLastMessage = async (
   discussionId: string,
@@ -57,25 +49,6 @@ export const updateDiscussionLastMessage = async (
   } catch (error) {
     throw error;
   }
-};
-
-export const fetchDiscussionId = async (
-  discussionId: string,
-): Promise<Discussion> => {
-  if (!discussionId) {
-    throw new Error(
-      'Discussion Id (discussionId) is required parameter, but it was not provided',
-    );
-  }
-
-  const {data} = await apollo.query({
-    query: GetDiscussionByIdDocument,
-    variables: {
-      id: discussionId,
-    },
-  });
-
-  return new Discussion(data, false);
 };
 
 export const createDiscussion = async (
@@ -108,13 +81,21 @@ export const fetchDiscussions = async ({
   ) as Discussion[];
 };
 
-export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
+export const fetchDiscussionById = async (
+  discussionId: string,
+): Promise<Discussion> => {
+  if (!discussionId) {
+    throw new Error(
+      'Discussion Id (discussionId) is required parameter, but it was not provided',
+    );
+  }
+
   const {data} = await apollo.query({
-    query: GetDiscussionByIdDocument,
+    query: GetDiscussionDocumentById,
     variables: {
-      id,
+      id: discussionId,
     },
   });
 
-  return data.discussion as Discussion;
+  return new Discussion(data.discussion, false);
 };

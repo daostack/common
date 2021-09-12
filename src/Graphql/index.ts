@@ -22,12 +22,12 @@ export type BaseEntity = {
 
 export enum ReportFor {
   Nudity = 'Nudity',
-  Violance = 'Violance',
+  Violence = 'Violence',
   Harassment = 'Harassment',
-  FalseNews = 'FalseNews',
+  FalseNews = 'False News',
   Spam = 'Spam',
-  Hate = 'Hate',
-  Other = 'Other',
+  HateSpeech = 'Hate Speech',
+  SomethingElse = 'Something Else',
 }
 
 enum ReportStatus {
@@ -166,13 +166,13 @@ export type SubscriptionMetadataCommon = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['ID'];
-  displayName?: Scalars['String'];
-  firstName?: Scalars['String'];
-  lastName?: Scalars['String'];
-  email?: Scalars['String'];
-  photo?: Scalars['String'];
-  createdAt?: Maybe<Scalars['Date']>;
+  uid: Scalars['ID'];
+  displayName: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
+  photoURL: Scalars['String'];
+  joinedAt: Maybe<Scalars['Date']>;
   tokens?: Maybe<Array<Maybe<Scalars['String']>>>;
   permissions?: Array<Scalars['String']>;
   proposals?: Maybe<Array<Maybe<Proposal>>>;
@@ -421,23 +421,15 @@ export type GetUserInfoQueryVariables = Exact<{
 export const GetUserInfoDocument = gql`
   query getUserInfo($where: UserWhereUniqueInput!) {
     user(where: $where) {
-      id
-      createTime: createdAt
-      messages(take: 10, skip: 0) {
-        id
-        owner {
-          displayName
-        }
-      }
-      topic
-      description
-      userId
-      owner {
-        firstName
-        lastName
-        displayName
-        photo
-      }
+      uid: id
+      email
+      photoURL: photo
+      firstName
+      lastName
+      displayName
+      country
+      intro
+      joinedAt: createdAt
     }
   }
 `;

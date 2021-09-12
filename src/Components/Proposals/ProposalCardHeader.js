@@ -6,13 +6,12 @@ import {string, number, bool, func, object} from 'prop-types';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {observer, inject} from 'mobx-react';
 import {Reported} from '~/Components/Moderation/Reported';
-import {FLAGS} from '~/Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
+import {REPORT_FLAG} from '~/Graphql/Report';
 
 import {ProposalState} from '~/Graphql/Proposal';
-
 
 const TITLES = {
   APPROVED: 'Approved',
@@ -78,7 +77,6 @@ const ProposalCardHeader = ({
   onPress,
   isReported,
   moderation,
-  reporter,
   hasPermission,
   rootStore,
   viewerPermission,
@@ -87,9 +85,9 @@ const ProposalCardHeader = ({
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
   const showCountdown =
     !moderation?.flag ||
-    moderation?.flag === FLAGS.visible ||
-    (moderation?.flag !== FLAGS.hidden &&
-      moderation?.flag === FLAGS.reported &&
+    moderation?.flag === REPORT_FLAG.Clear ||
+    (moderation?.flag !== REPORT_FLAG.Hidden &&
+      moderation?.flag === REPORT_FLAG.Reported &&
       viewerPermission !== PERMISSIONS.MODERATOR);
 
   return isScreenHeader ? (
@@ -158,7 +156,6 @@ const ProposalCardHeader = ({
       {isReported && !!moderation && (
         <Reported
           moderation={moderation}
-          reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
           viewerPermission={viewerPermission}
         />

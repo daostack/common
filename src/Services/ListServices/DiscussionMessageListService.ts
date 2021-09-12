@@ -1,5 +1,5 @@
 import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 import {
@@ -13,7 +13,7 @@ import logger from '~/Services/Logger';
 import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (
-  updatedDiscussionsList: IFirebaseSnapshot<IDiscussionMessageEntity>,
+  updatedDiscussionsList: IFirebaseSnapshot<DiscussionMessageType>,
 ) => void;
 
 export const createDiscussionMessage = async (
@@ -23,9 +23,10 @@ export const createDiscussionMessage = async (
     const data = await apollo.mutate({
       mutation: CreateDiscussionMessageDocument,
       variables: {
-        discussionMessage: formData,
+        discussionMessage: {...formData},
       },
     });
+
     return data;
   } catch (err) {
     logger.log(
@@ -38,7 +39,7 @@ export const createDiscussionMessage = async (
 
 export const getDiscussionMessages = async (
   discussionId: string,
-): Promise<IDiscussionMessageEntity[]> => {
+): Promise<DiscussionMessageType[]> => {
   try {
     const {data} = await apollo.query({
       query: GetDiscussionMessageDocument,
@@ -59,7 +60,7 @@ export const getDiscussionMessages = async (
 
 export const getProposalDiscussionMessages = async (
   proposalId: string,
-): Promise<IDiscussionMessageEntity[]> => {
+): Promise<DiscussionMessageType[]> => {
   try {
     const {data} = await apollo.query({
       query: GetDiscussionMessageDocument,
@@ -81,7 +82,7 @@ export const getProposalDiscussionMessages = async (
 //OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (
   messageId: string,
-): Promise<IFirebaseDoc<IDiscussionMessageEntity>> => {
+): Promise<IFirebaseDoc<DiscussionMessageType>> => {
   if (!messageId) {
     throw new Error(
       'Message Id (messageId) is required parameter, but it was not provided',
@@ -96,7 +97,7 @@ export const subscribeToProposalDiscussionMessages = (
 ) =>
   DiscussionMessagesCollection.where('discussionId', '==', proposalId)
     .orderBy('createTime', 'desc')
-    .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
+    .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
       callback(snapshot);
     });
 
@@ -119,11 +120,9 @@ export const subscribeToDiscussionsMessages = (
           currDiscussionIdsChunk,
         )
           .orderBy('createTime', 'desc')
-          .onSnapshot(
-            (snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
-              callback(snapshot);
-            },
-          ),
+          .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
+            callback(snapshot);
+          }),
       );
     }
   }

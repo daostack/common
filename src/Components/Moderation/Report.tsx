@@ -18,7 +18,7 @@ const {width} = Dimensions.get('window');
 
 const reasons = [
   ['Nudity', 'Violence', 'Harassment'],
-  ['False News', 'Spam', 'Hate speech'],
+  ['False News', 'Spam', 'Hate Speech'],
   ['Something Else'],
 ];
 
