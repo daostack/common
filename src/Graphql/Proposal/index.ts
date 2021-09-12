@@ -209,6 +209,12 @@ export const CreateProposalVoteDocument = gql`
   }
 `;
 
+
+/* TODO add this when backend is updated with reports
+  reports {
+    ${gqlReportProps}
+  }
+ */
 const gqlProposalProps = `
   id
   userId
@@ -226,9 +232,6 @@ const gqlProposalProps = `
   files
   images
   flag
-  reports {
-    ${gqlReportProps}
-  }
   funding {
     amount
   }
