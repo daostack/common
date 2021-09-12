@@ -137,7 +137,7 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
-  rootStore: rootStoreType.isRequired,
+  rootStore: rootStoreType,
   hasPermission: string,
   commonId: string,
   action: func,
