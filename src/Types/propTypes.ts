@@ -36,7 +36,6 @@ export type uiStoreType = {
 };
 
 
-// TODO replace this with authStoreType everywhere
 export const authStorePropTypes = shape({
   userInfo: shape({
     photoURL: string,
@@ -51,21 +50,6 @@ export const authStorePropTypes = shape({
   getPermission: func.isRequired,
 });
 
-export type authStoreType = {
-  userInfo: {
-    photoURL: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    intro: string,
-    uid: string,
-  },
-  setIsLoading: func,
-  setSignedInUser: func,
-  isDaoMember: func,
-  getPermission: func,
-};
-
 export const userStorePropTypes = shape({
   subscribeToAllUsers: func.isRequired,
   getUserById: func.isRequired,
@@ -77,13 +61,6 @@ export const commonStorePropTypes = shape({
   myCommons: array.isRequired,
   updateCommonInfo: func.isRequired,
 });
-
-export type commonStoreType = {
-  subscribeToAllCommons: func,
-  getCommonById: func,
-  myCommons: array,
-  updateCommonInfo: func,
-};
 
 export const proposalStorePropTypes = shape({
   getProposalById: func.isRequired,
@@ -101,24 +78,11 @@ export const discussionStorePropTypes = shape({
   getDiscussionById: func.isRequired,
 });
 
-export type discussionStoreType = {
-  subscribeToCommonDiscussions: func,
-  getCommonDiscussions: func,
-  getDiscussionById: func,
-};
-
 export const discussionMessageStorePropTypes = shape({
   subscribeToDiscussionsMessages: func.isRequired,
   getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });
-
-export type discussionMessageStoreType = {
-  subscribeToDiscussionsMessages: func,
-  getDiscussionMessagesByDiscussionId: func,
-  getDiscussionMessageById: func,
-  proposalDiscussionId: string,
-};
 
 export const notificationStorePropTypes = shape({
   getNotificationById: func.isRequired,
@@ -134,7 +98,6 @@ export const notificationStorePropTypes = shape({
 });
 
 
-// TODO replace with rootStoreType everywhere
 export const rootStorePropTypes = shape({
   authStore: authStorePropTypes.isRequired,
   userStore: userStorePropTypes.isRequired,
@@ -145,14 +108,3 @@ export const rootStorePropTypes = shape({
   notificationStore: notificationStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
 });
-
-export type rootStoreType = {
-  authStore: authStoreType,
-  userStore: typeof userStorePropTypes,
-  commonStore: commonStoreType,
-  proposalStore: typeof proposalStorePropTypes,
-  discussionStore: discussionStoreType,
-  discussionMessageStore: discussionMessageStoreType,
-  notificationStore: typeof notificationStorePropTypes,
-  uiStore: uiStoreType,
-};
