@@ -9,7 +9,7 @@ import {
   Mutation,
   Scalars,
 } from '~/Graphql';
-import {MessageReport, REPORT_FLAG, gqlReportProps} from '~/Graphql/Report';
+import {MessageReport, REPORT_FLAG/*, gqlReportProps*/} from '~/Graphql/Report';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
