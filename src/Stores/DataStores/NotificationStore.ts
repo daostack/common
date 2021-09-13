@@ -4,6 +4,7 @@ import {
   fetchNotifications,
   fetchNotificationById,
   changeNotificationSeenStatus,
+  markAsSeenNotifications,
 } from '~/Services/ListServices/NotificationListService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
@@ -13,7 +14,6 @@ import {
 import RootStore from '../RootStore';
 import {
   EventTypeState,
-  INotificationEntity,
   IProposalNotificationData,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {Notification} from '../Models/Notification';
@@ -132,9 +132,13 @@ export default class NotificationStore extends BaseStore<
   };
 
   @action
-  removeSeenStateForNewNotifications = () => {
+  removeSeenStateForNewNotifications = async (): Promise<void> => {
+    const ids: string[] = [];
     const updatedNotification = new Map<string, Notification>();
     this.notifications.forEach((value, key) => {
+      if (!value.notificationItemState.seen) {
+        ids.push(key);
+      }
       updatedNotification.set(key, {
         ...value,
         notificationItemState: {
@@ -143,8 +147,8 @@ export default class NotificationStore extends BaseStore<
         },
       });
     });
-    console.log('--updatedNotification', updatedNotification);
     this.notifications = observable.map(updatedNotification);
+    await markAsSeenNotifications(ids);
   };
 
   //Actions
@@ -162,44 +166,33 @@ export default class NotificationStore extends BaseStore<
   };
 
   @action
-  addWelcomeNotification = () => {
-    const welcomeNotification = {
-      id: EventTypeState.welcomeNotification,
-      createdAt: this.rootStore.authStore.userInfo?.createdAt,
-      updatedAt: this.rootStore.authStore.userInfo?.createdAt,
-      eventObjectId: '',
-      userFilter: [],
-      eventType: EventTypeState.welcomeNotification,
-    } as INotificationEntity;
+  addWelcomeNotification = (userId?: string) => {
+    if (userId) {
+      const welcomeNotification = {
+        id: EventTypeState.welcomeNotification,
+        createdAt: this.rootStore.authStore.userInfo?.createdAt,
+        updatedAt: this.rootStore.authStore.userInfo?.createdAt,
+        eventObjectId: '',
+        userFilter: [],
+        eventType: EventTypeState.welcomeNotification,
+        commonId: null,
+        proposalId: null,
+        discussionId: null,
+        userId,
+        show: true,
+        seenStatus: NotificationSeenStatus.Done,
+      } as NotificationType;
 
-    this.setData(
-      EventTypeState.welcomeNotification,
-      this.getEntityModel(welcomeNotification),
-    );
+      this.notifications.set(
+        EventTypeState.welcomeNotification,
+        this.getEntityModel(welcomeNotification),
+      );
+    }
   };
 
   // Overriden methods
-  getEntityModel(entity: INotificationEntity): Notification {
-    const defaultNotificationItemState = {
-      seen: false,
-      opened: false,
-    };
-
-    let notificationItemState = defaultNotificationItemState;
-
-    if (this.rootStore.notificationStore.exists(entity.id)) {
-      const notificationFromStore =
-        this.rootStore.notificationStore.getNotificationById(entity.id);
-      // It's possible to have undefined notificationItemState for existing Notification in the store,
-      // because of old notifications, before the implementation of the feature with the dot indicator.
-      // So, we are setting a default state to such of prorposals for safety.
-      notificationItemState =
-        notificationFromStore?.notificationItemState ||
-        defaultNotificationItemState;
-    }
-
-    const newNotif = new Notification(entity, notificationItemState);
-    return newNotif;
+  getEntityModel(entity: NotificationType): Notification {
+    return new Notification(entity);
   }
 
   async getProposalNotificationData(

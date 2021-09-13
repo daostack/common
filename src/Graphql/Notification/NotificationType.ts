@@ -10,11 +10,10 @@ export enum NotificationSeenStatus {
   Done = 'Done',
 }
 
-
 export interface NotificationType extends BaseType {
-  commonId: string;
-  proposalId: string;
-  discussionId: string;
+  commonId: string | null;
+  proposalId: string | null;
+  discussionId: string | null;
   userId: string;
   eventType: string;
   show: boolean;

@@ -58,20 +58,11 @@ const NotificationList = ({
     }
   }, [notificationStore.hasNewNotifications]);
 
-  const notificationList: Array<Notification> =
-    notificationStore.loggedUserNotifications;
-
   useEffect(() => {
     (async () => {
-      try {
-        setLoading(true);
-        console.log('qweqw');
-        await initialLoad();
-        console.log('-er1', isLoading);
-        setLoading(false);
-      } catch (err) {
-        console.log('-er', err);
-      }
+      setLoading(true);
+      await initialLoad();
+      setLoading(false);
     })();
   }, []);
 
@@ -88,10 +79,7 @@ const NotificationList = ({
     setPage(page + 1);
   };
 
-  console.log('---notificationList', notificationList);
-
   const renderNotificationItem = ({item}: {item: Notification}) => {
-    console.log('---item', item);
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
@@ -149,10 +137,15 @@ const NotificationList = ({
     return unsubscribe;
   }, [navigation]);
 
-  console.log(
-    '===notificationStore.myNotificationsValues',
-    notificationStore.myNotificationsValues,
-  );
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      setTimeout(() => {
+        setPage(0);
+      }, 5000);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <>

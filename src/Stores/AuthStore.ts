@@ -131,7 +131,7 @@ class AuthStore {
     this.userInfo = userModel;
     if (isUserChanged) {
       this.signedInUser = userModel?.uid || null;
-      this.rootStore.notificationStore.addWelcomeNotification();
+      this.rootStore.notificationStore.addWelcomeNotification(userModel?.uid);
     }
   };
 

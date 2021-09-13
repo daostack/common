@@ -4,6 +4,7 @@ import {
   GetNotificationsDocument,
   GetNotificationsByIdDocument,
   ChangeOpenedNotificationStatusDocument,
+  MarkAsSeenNotificationsDocument,
   NotificationType,
   NotificationSeenStatus,
 } from '~/Graphql/Notification';
@@ -60,9 +61,9 @@ export const fetchNotifications = async (page = 0): Promise<Notification[]> => {
           take: 10,
         },
       },
+      fetchPolicy: 'no-cache',
     });
 
-    console.log('---data,data', data);
     return (
       data?.notifications.map(
         (item: NotificationType) => new Notification(item),
@@ -118,6 +119,24 @@ export const changeNotificationSeenStatus = async (
   } catch (err) {
     logger.log(
       `Error while trying to change notification seen status by id: ${id}`,
+      getGQLErrorObject(err),
+    );
+  }
+};
+
+export const markAsSeenNotifications = async (ids: string[]): Promise<void> => {
+  try {
+    await apollo.mutate({
+      mutation: MarkAsSeenNotificationsDocument,
+      variables: {
+        input: {
+          ids,
+        },
+      },
+    });
+  } catch (err) {
+    logger.log(
+      `Error while trying to mark as seen notifications with ids: ${ids}`,
       getGQLErrorObject(err),
     );
   }

@@ -37,3 +37,9 @@ mutation ChangeOpenedNotificationStatus($input: UpdateNotificationStatusInput!) 
     }
   }
 `;
+
+export const MarkAsSeenNotificationsDocument = gql`
+  mutation MarkAsSeenNotifications($input: EntitiesIds!) {
+    markAsSeenNotifications(input: $input)
+  }
+`;
