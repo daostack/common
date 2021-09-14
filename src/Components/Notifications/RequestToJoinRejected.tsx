@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {NotificationItemData} from '~/Graphql/Notification/NotificationType';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';

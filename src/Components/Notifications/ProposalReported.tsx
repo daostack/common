@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  NotificationItemData,
+  EventTypeState,
+} from '~/Graphql/Notification/NotificationType';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PROPOSAL_TYPE} from '~/Config';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const props = {
   item: notificationItemPropTypes.isRequired,

@@ -1,6 +1,5 @@
 import BaseStore from './BaseStore';
 import {
-  subscribeToUserNotifications,
   fetchNotifications,
   fetchNotificationById,
   changeNotificationSeenStatus,
@@ -14,7 +13,7 @@ import RootStore from '../RootStore';
 import {
   EventTypeState,
   IProposalNotificationData,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Graphql/Notification/NotificationType';
 import {Notification} from '../Models/Notification';
 import {action, computed, observable, ObservableMap} from 'mobx';
 import Logger from '~/Services/Logger';

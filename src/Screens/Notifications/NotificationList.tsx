@@ -17,7 +17,7 @@ import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
 import {NotificationStore} from '~/Types/store';
 import {Notification} from '~/Stores/Models/Notification';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {EventTypeState} from '~/Graphql/Notification/NotificationType';
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingRequest from '~/Components/Notifications/FundingRequest';
