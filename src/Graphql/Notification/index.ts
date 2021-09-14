@@ -31,7 +31,7 @@ export const GetNotificationsByIdDocument = gql`
 `;
 
 export const ChangeOpenedNotificationStatusDocument = gql`
-mutation ChangeOpenedNotificationStatus($input: UpdateNotificationStatusInput!) {
+mutation ChangeOpenedNotificationStatus($input: UpdateOpenedNotificationStatusInput!) {
   changeOpenedNotificationStatus(input: $input) {
       ${gqlNotificationProps}
     }

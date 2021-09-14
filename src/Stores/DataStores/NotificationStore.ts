@@ -148,7 +148,9 @@ export default class NotificationStore extends BaseStore<
       });
     });
     this.notifications = observable.map(updatedNotification);
-    await markAsSeenNotifications(ids);
+    if (ids.length > 0) {
+      await markAsSeenNotifications(ids);
+    }
   };
 
   //Actions

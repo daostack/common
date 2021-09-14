@@ -115,7 +115,7 @@ export const changeNotificationSeenStatus = async (
       },
     });
 
-    return new Notification(data.notification);
+    return new Notification(data.changeOpenedNotificationStatus);
   } catch (err) {
     logger.log(
       `Error while trying to change notification seen status by id: ${id}`,
