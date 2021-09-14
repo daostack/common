@@ -67,8 +67,6 @@ export const discussionMessageStorePropTypes = shape({
 
 export const notificationStorePropTypes = shape({
   getNotificationById: func.isRequired,
-  loggedUserNotifications: array.isRequired,
-  subscribeToLoggedUserNotifications: func.isRequired,
   deleteUserNotifications: func.isRequired,
   setNotificationItemState: func.isRequired,
   removeSeenStateForNewNotifications: func.isRequired,

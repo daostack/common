@@ -48,7 +48,6 @@ export type NotificationStore = {
   notifications: ObservableMap<string, Notification>;
   myNotificationsValues: Notification[];
   hasNewNotifications: boolean;
-  loggedUserNotifications: Notification[] | undefined;
   setNotificationItemState: (
     notificationId: string,
     newState: Partial<NotificationItemState>,

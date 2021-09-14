@@ -6,7 +6,6 @@ import {
   changeNotificationSeenStatus,
   markAsSeenNotifications,
 } from '~/Services/ListServices/NotificationListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
   NotificationSeenStatus,
   NotificationType,
@@ -88,22 +87,6 @@ export default class NotificationStore extends BaseStore<
   };
 
   @computed
-  get loggedUserNotifications(): Array<Notification> | undefined {
-    try {
-      const notif = this.getDataArray
-        ?.filter(() => true)
-        .sort(
-          (notification: Notification, prevNotification: Notification) =>
-            new Date(prevNotification.createdAt).valueOf() -
-            new Date(notification.createdAt).valueOf(),
-        );
-      return notif;
-    } catch (error) {
-      return [];
-    }
-  }
-
-  @computed
   get hasNewNotifications() {
     return (
       (this.toDataArray(this.notifications)?.filter(
@@ -153,18 +136,9 @@ export default class NotificationStore extends BaseStore<
     }
   };
 
-  //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
-    this.rootStore.authStore.signedInUser
-      ? subscribeToUserNotifications(
-          this.rootStore.authStore.signedInUser,
-          this.updateStoreData,
-        )
-      : null;
-
   @action
   deleteUserNotifications = () => {
-    this.data = observable.map({});
+    this.notifications.clear();
   };
 
   @action
