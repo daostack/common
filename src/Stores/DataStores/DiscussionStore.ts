@@ -5,7 +5,6 @@ import {
   createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
 import RootStore from '../RootStore';
-import Logger from '~/Services/Logger';
 import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {action, computed, observable, ObservableMap} from 'mobx';

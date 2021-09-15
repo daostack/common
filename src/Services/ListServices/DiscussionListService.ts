@@ -1,4 +1,3 @@
-import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseSnapshot} from '~/Firebase/types';
