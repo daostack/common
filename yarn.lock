@@ -1531,6 +1531,14 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
+"@types/react-native-countdown-component@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-countdown-component/-/react-native-countdown-component-2.7.0.tgz#04d09923780eef3573fed9aa2ade8b49dda5985a"
+  integrity sha512-xkYhYbMJ42sQ4xrFOLArDrRBxqrvVfTXTArofeF0CEteR3u/tLJImBpj8PBAujCFoDVZmJIry/JhUHXCsWTDgQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native-navbar@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@types/react-native-navbar/-/react-native-navbar-2.1.2.tgz#c06495b330b1f6c9c9e7f33533b23ffaeff76d84"

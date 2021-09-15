@@ -1,8 +1,10 @@
 import axios from 'axios';
 import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {ACTIONS} from '~/Components/Moderation/constants';
+import {CreateReportDocument, REPORT_TYPE} from '~/Graphql/Report';
 import Toast from '~/Util/Toast.js';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export default class ModerationService {
   static serviceInstance = null;
@@ -47,20 +49,26 @@ export default class ModerationService {
     }
   };
 
-  report = async (type, commonId, moderationData) =>
-    await this.axiosClient.post(
-      this.endpoints.report,
-      {
-        moderationData,
-        commonId,
-        type,
-      },
-      {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      },
-    );
+  report = async ({type, moderationData}) => {
+    const reportData = {
+      type,
+      for: moderationData.reasons,
+      note: moderationData.moderatorNote,
+      ...(type === REPORT_TYPE.ProposalReport && {
+        proposalId: moderationData.itemId,
+      }),
+      ...(type === REPORT_TYPE.MessageReport && {
+        messageId: moderationData.itemId,
+      }),
+    };
+
+    const {data} = await apollo.mutate({
+      mutation: CreateReportDocument,
+      variables: {input: reportData},
+    });
+
+    return data.createReport;
+  };
 
   show = async (itemId, commonId, type) =>
     await this.axiosClient.post(

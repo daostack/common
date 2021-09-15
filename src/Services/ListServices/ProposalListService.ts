@@ -333,3 +333,23 @@ export const getCommonHistoryReqToJoins = async (
   );
   return data.proposals;
 };
+
+export const fetchProposalById = async (
+  proposalId: string,
+): Promise<Proposal> => {
+  if (!proposalId) {
+    throw new Error(
+      'Proposal Id (proposalId) is required parameter, but it was not provided',
+    );
+  }
+
+  const {data} = await apollo.query({
+    query: getProposalDocumentById,
+    variables: {
+      where: {
+        id: proposalId,
+      },
+    },
+  });
+  return new Proposal(data.proposal);
+};

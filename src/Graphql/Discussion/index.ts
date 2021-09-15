@@ -8,6 +8,7 @@ import {
   User,
   Pagination,
 } from '~/Graphql';
+import {gqlUserProps} from '~/Graphql/User';
 
 export enum DiscussionMessageType {
   Message = 'Message',

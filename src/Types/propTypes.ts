@@ -37,7 +37,6 @@ export const userStorePropTypes = shape({
 });
 
 export const commonStorePropTypes = shape({
-  subscribeToAllCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
   updateCommonInfo: func.isRequired,
@@ -54,13 +53,10 @@ export const proposalStorePropTypes = shape({
 });
 
 export const discussionStorePropTypes = shape({
-  subscribeToCommonDiscussions: func.isRequired,
-  getCommonDiscussions: func.isRequired,
   getDiscussionById: func.isRequired,
 });
 
 export const discussionMessageStorePropTypes = shape({
-  subscribeToDiscussionsMessages: func.isRequired,
   getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });

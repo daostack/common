@@ -1,11 +1,11 @@
 import {observable, computed} from 'mobx';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {UserType} from '~/Graphql/User';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {DiscussionMessage} from './DiscussionMessage';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
+import {ModerationType} from '~/Graphql/Report';
 
 export class Discussion extends BaseModel<DiscussionType> {
   @observable
@@ -27,13 +27,13 @@ export class Discussion extends BaseModel<DiscussionType> {
   lastMessage: Date;
 
   @observable
-  moderation?: IModerationEntity;
+  moderation?: ModerationType;
 
   @observable
   isExpanded: boolean;
 
   @observable
-  owner: IUserEntity;
+  owner: UserType;
 
   @observable
   messages: DiscussionMessage[];

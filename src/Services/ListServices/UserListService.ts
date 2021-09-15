@@ -1,22 +1,24 @@
 import {UsersCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {UserType} from '~/Graphql/User';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
 import {apollo} from '~/Util/helpers/apolloHelper';
-import {User, GetUserInfoDocument} from '~/Graphql';
+import {GetUserInfoDocument} from '~/Graphql';
+import {UserModel} from '~/Stores/Models/UserModel';
 
 export type userListLoadCallbackFn = (
-  updatedUserList: IFirebaseSnapshot<IUserEntity>,
+  updatedUserList: IFirebaseSnapshot<UserType>,
 ) => void;
-export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
+export type userLoadCallbackFn = (updatedUserList: UserType | null) => void;
 
 export const subscribeToAllUsers = (
   callback: userListLoadCallbackFn,
 ): FirestoreUnsubscribeFn =>
-  UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<IUserEntity>) => {
+  UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<UserType>) => {
+    console.log('---snapshot', snapshot);
     callback(snapshot);
   });
 
@@ -25,14 +27,14 @@ export const subscribeToUser = (
   callback: userListLoadCallbackFn,
 ) =>
   UsersCollection.doc(uid).onSnapshot(
-    (snapshot: IFirebaseSnapshot<IUserEntity>) => {
+    (snapshot: IFirebaseSnapshot<UserType>) => {
       callback(snapshot);
     },
   );
 
 export const fetchUserById = async (
   userId: string,
-): Promise<IFirebaseDoc<IUserEntity>> => {
+): Promise<IFirebaseDoc<UserType>> => {
   if (!userId) {
     throw new Error(
       'User Id (userId) is required parameter, but it was not provided',
@@ -41,30 +43,9 @@ export const fetchUserById = async (
   return await UsersCollection.doc(userId).get();
 };
 
-// TODO: Move addUser and updateUser function in the clould functions project.
-export const addUser = async (
-  userId: string,
-  newUser: IUserEntity,
-): Promise<void> => {
-  if (!userId) {
-    throw new Error(
-      'User Id (userId) is required parameter, but was not provided.',
-    );
-  }
-
-  const userSnapshot = await UsersCollection.doc(userId).get();
-  if (userSnapshot.exists) {
-    throw new Error(
-      `User with id ${userId} already exists in users collection.`,
-    );
-  }
-
-  return await UsersCollection.doc(userId).set(newUser);
-};
-
 export const updateUser = async (
   userId: string,
-  user: IUserEntity,
+  user: UserType,
 ): Promise<void> => {
   if (!userId) {
     throw new Error(
@@ -75,7 +56,7 @@ export const updateUser = async (
   return await UsersCollection.doc(userId).update(user);
 };
 
-export const getUserById = async (userId: string): Promise<User> => {
+export const getUserById = async (userId: string): Promise<UserModel> => {
   const {data} = await apollo.query({
     query: GetUserInfoDocument,
     variables: {
@@ -85,5 +66,5 @@ export const getUserById = async (userId: string): Promise<User> => {
     },
   });
 
-  return data.user as User;
+  return new UserModel(data.user);
 };

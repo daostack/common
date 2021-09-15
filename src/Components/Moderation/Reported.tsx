@@ -36,7 +36,7 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
 };
 
 export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
-  updatedAt.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
+  updatedAt?.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
 
 export const reporterName = (
   user: {firstName: string; lastName: string; uid: string},

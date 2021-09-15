@@ -33,6 +33,7 @@ import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {REPORT_TYPE} from '~/Graphql/Report';
 import Loader from '~/Components/Loader';
 import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
 const {width} = Dimensions.get('window');
@@ -331,11 +332,10 @@ const Discussions = ({
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
-      TITLES.discussionMessage,
-      commonId,
-      moderationFormStore.getFormFieldsJson(),
-    );
+    await ModerationService.getInstance().report({
+      moderationData: moderationFormStore.getFormFieldsJson(),
+      type: REPORT_TYPE.MessageReport,
+    });
     Toast.hide();
     Toast.success('Done');
     setShowModerationSuccessModal(true);

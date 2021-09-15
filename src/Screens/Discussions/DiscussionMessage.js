@@ -18,8 +18,9 @@ import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
+import {getLastReport} from '~/Util/report';
 import {reporterName} from '../../Components/Moderation/Reported';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {REPORT_FLAG} from '~/Graphql/Report';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import Icon from '~/Assets/iconfont/Icon';
 import _ from 'lodash';
@@ -36,13 +37,13 @@ const DiscussionMessage = ({
   viewerPermission,
 }) => {
   let currentUserUid = null;
-  const isHidden = false; // TODO: data.moderation?.flag === FLAGS.hidden;
-  const flag = ''; // TODO: data.moderation?.flag || '';
+  const isHidden = data.moderation?.flag === REPORT_FLAG.Hidden;
+  const flag = data.moderation?.flag || '';
   const [permission, setPermission] = useState('');
-  const userStore = rootStore.userStore;
+  const ownerInfo = data.owner;
   const authStore = rootStore.authStore;
-  const isFlagged = !!flag && flag !== FLAGS.visible;
-  const isOwner = authStore.isCurrentlyLogged(data.userId);
+  const isFlagged = !!flag && flag !== REPORT_FLAG.Clear;
+  const isMessageOwner = authStore.isCurrentlyLogged(data.userId);
 
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
@@ -51,20 +52,15 @@ const DiscussionMessage = ({
   }
 
   const navigation = useNavigation();
-  const ownerInfo = userStore.getUserById(data.userId);
 
   function goToUserProfile() {
     navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
-      userId: ownerInfo.id,
+      userId: ownerInfo?.id,
       ownerInfo,
     });
   }
-  // TODO: implement moderation for messages
-  const moderatorInfo =
-    data.moderation &&
-    userStore.getUserById(
-      data?.moderation?.moderator || data?.moderation?.reporter,
-    );
+  const moderatorInfo = getLastReport(data.moderation);
+
   const moderatorName = reporterName(moderatorInfo, currentUserUid);
   useEffect(() => {
     (async () => {
@@ -110,7 +106,7 @@ const DiscussionMessage = ({
       onLongPress={() =>
         (!isHidden || viewerPermission) &&
         isMember &&
-        !isOwner &&
+        !isMessageOwner &&
         openMessageOptions()
       }>
       {currentUserUid === data.userId ? (

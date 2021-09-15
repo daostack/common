@@ -23,6 +23,7 @@ import {subscribeToProposalList} from '~/Services/ListServices/ProposalListServi
 
 import {ProposalState, ProposalType, ProposalEntity} from '~/Graphql/Proposal';
 import Logger from '~/Services/Logger';
+import {showErrorPopUp} from '~/Util';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -59,9 +60,6 @@ export const isProposalHistory = (proposal: Proposal) =>
 
 export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   @observable
-  private fetchedProposal: ObservableMap<string, Proposal> = observable.map({});
-
-  @observable
   private commonActiveProposals: ObservableMap<string, Proposal> =
     observable.map({});
 
@@ -76,6 +74,9 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   @observable
   private commonHistoryReqToJoins: ObservableMap<string, Proposal> =
     observable.map({});
+
+  @observable
+  private loadedProposals: ObservableMap<string, Proposal> = observable.map({});
 
   constructor(rootStore: RootStore) {
     super(rootStore);
@@ -111,32 +112,25 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   // }
 
   // Data consuming methods
-  getProposalById = async (
-    id: string,
-    showError = true,
-  ): Promise<Proposal | undefined> => {
+  @action
+  getProposalById = async (id: string): Promise<Proposal | undefined> => {
     try {
       return this.getDataByIdAndCollections(id, [
-        this.fetchedProposal,
         this.commonActiveProposals,
         this.commonHistoryProposals,
         this.commonPendingReqToJoins,
         this.commonHistoryReqToJoins,
+        this.loadedProposals,
       ]);
     } catch (err) {
       try {
         const proposal = await fetchProposalById(id);
-        if (proposal) {
-          this.fetchedProposal.set(id, proposal);
-        }
+        this.loadedProposals = observable.map(
+          this.toEntityModelArr([proposal]),
+        );
         return proposal;
       } catch (error) {
-        Logger.info('getProposalById-error ~>', error, id);
-        if (showError) {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
-        }
+        showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, error);
       }
     }
   };

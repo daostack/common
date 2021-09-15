@@ -17,7 +17,7 @@ import {
 import {Notification} from '../Models/Notification';
 import {action, computed, observable, ObservableMap} from 'mobx';
 import Logger from '~/Services/Logger';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
 import {Discussion} from '../Models/Discussion';
 import {Proposal} from '../Models/Proposal';
 import {showBackendError} from '~/Util';

@@ -1,5 +1,5 @@
 import {BaseType} from '~/Graphql/BaseType';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {UserType} from '~/Graphql/User';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
 
 export interface DiscussionType extends BaseType {
@@ -32,7 +32,7 @@ export interface DiscussionType extends BaseType {
    * Owner info
    */
 
-  owner: IUserEntity;
+  owner: UserType;
 
   /**
    * When was the last message sent in this discussion

@@ -1,7 +1,5 @@
 import {computed, observable, ObservableMap, action} from 'mobx';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
-  subscribeToAllCommons,
   updateCommon,
   fetchUserCommons,
   fetchUserPendingCommons,
@@ -119,10 +117,6 @@ export default class CommonStore extends BaseStore<Common, CommonType> {
   getEntityModel(entity: CommonType): Common {
     return new Common(entity);
   }
-
-  //Actions
-  subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
-    subscribeToAllCommons(this.updateStoreData);
 
   updateCommonInfo = async (updateCommonInfo: UpdateCommonInfoInput) => {
     try {

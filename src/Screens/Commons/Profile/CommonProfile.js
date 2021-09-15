@@ -25,6 +25,7 @@ import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
+import {CommonPendingApproval} from './CommonPendingApproval';
 import {inject, observer} from 'mobx-react';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
@@ -52,6 +53,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast.js';
 import {TITLES, ACTIONS, FLAGS} from '~/Components/Moderation/constants';
+import {REPORT_TYPE} from '~/Graphql/Report';
 
 import {
   IntroduceYourselfFormStore,
@@ -267,10 +269,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         navigation={navigation}
         commonId={currCommon.id}
         openCommonOptions={(discussion) =>
-          openCommonOptions(discussion, TITLES.discussion)
+          openCommonOptions(discussion, REPORT_TYPE.DiscussionReport)
         }
         showHiddenNote={(hiddenDiscussion) =>
-          showHiddenNote(hiddenDiscussion, TITLES.discussion)
+          showHiddenNote(hiddenDiscussion, REPORT_TYPE.DiscussionReport)
         }
         isMember={isMember}
       />
@@ -293,10 +295,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: ProposalType.FUNDING_REQUEST,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, REPORT_TYPE.ProposalReport)
         }
         showHiddenNote={(hiddenProposal) =>
-          showHiddenNote(hiddenProposal, TITLES.proposalText)
+          showHiddenNote(hiddenProposal, REPORT_TYPE.ProposalReport)
         }
         isMember={isMember}
       />
@@ -518,9 +520,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       : resp && setShowModerationSuccessModal(true);
   };
 
-  const membershipRequestType = (itemTitle) =>
-    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
-
   // consider adding itemId to edit (?)
   const openCommonOptions = (item = null, itemType = '') => {
     if (item) {
@@ -537,8 +536,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: item
-          ? (actionType) =>
-              onModerate(actionType, membershipRequestType(itemType), item.id)
+          ? (actionType) => onModerate(actionType, itemType, item.id)
           : (type) => onEdit(type),
         hasPermission,
         moderatorOptions: {
@@ -553,11 +551,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.getInstance().report(
-      membershipRequestType(moderationType).toLowerCase(),
-      commonId,
-      moderationFormStore.getFormFieldsJson(),
-    );
+    await ModerationService.getInstance().report({
+      type: moderationType,
+      moderationData: moderationFormStore.getFormFieldsJson(),
+    });
     Toast.hide();
     Toast.success('Done');
     setShowModerationSuccessModal(true);
@@ -569,9 +566,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
-        date: timeReported(moderation.updatedAt),
-        reasons: moderation.reasons,
+        userName: reporterName(userStore.getUserById(moderation?.moderator)),
+        date: timeReported(moderation?.updatedAt),
+        reasons: moderation?.reasons,
         moderatorNote: moderation?.moderatorNote,
         type,
         isModerator,
@@ -642,74 +639,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
     });
-  };
-
-  const renderPendingApproval = () => {
-    const proposalInfo = proposalStore.getProposalById(
-      pendingProposalsData?.usersPendingProposal?.id,
-    );
-    const remainingSeconds = proposalInfo?.countdown - moment().unix();
-
-    return (
-      <TouchableOpacity
-        onPress={openProposalScreen}
-        style={{
-          ...layout.content,
-          paddingVertical: 15,
-          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
-        }}>
-        <View
-          style={{
-            ...layout.content,
-            ...layout.flexRow,
-            ...{padding: 0},
-          }}>
-          <Icon name="clcok" size={16} style={layout.marginRightXS} />
-          <Text style={text.smallBoldGreyText}>Pending Approval</Text>
-        </View>
-        <View
-          style={{
-            ...layout.flexRow,
-            ...layout.marginTopS,
-            ...{width: '100%', justifyContent: 'space-between'},
-          }}>
-          <View style={layout.flexRow}>
-            <ProposalApprovalTag
-              iconName="approved"
-              value={Number(
-                pendingProposalsData.usersPendingProposal.votesFor || 0,
-              )}
-              isMarked={true}
-            />
-            <ProposalApprovalTag
-              iconName="declined"
-              value={Number(
-                pendingProposalsData.usersPendingProposal.votesAgainst || 0,
-              )}
-              isMarked={false}
-            />
-            <ProposalApprovalTag
-              iconName="discussion"
-              value={Number(userPendingPropDiscCount || 0)}
-              isMarked={false}
-            />
-          </View>
-          <View>
-            <CountDown
-              digitTxtStyle={text.smallGreyText}
-              separatorStyle={text.smallGreyText}
-              timeLabels={false}
-              showSeparator={true}
-              digitStyle={{
-                height: 'auto',
-                width: 'auto',
-              }}
-              until={remainingSeconds}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   const loadingPlaceholder = () => (
@@ -974,8 +903,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             renderFixedHeader={fixedHeaderHeight}>
             {showPending && !isPendingHidden && (
               <React.Fragment>
-                {pendingProposalsData?.usersPendingProposal &&
-                  renderPendingApproval()}
+                {pendingProposalsData?.usersPendingProposal && (
+                  <CommonPendingApproval
+                    proposalStore={proposalStore}
+                    userPendingPropDiscCount={userPendingPropDiscCount}
+                    openProposalScreen={openProposalScreen}
+                    pendingProposalsData={pendingProposalsData}
+                  />
+                )}
               </React.Fragment>
             )}
             <View style={{paddingVertical: sizeS}}>

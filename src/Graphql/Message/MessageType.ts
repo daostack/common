@@ -1,7 +1,8 @@
 import {BaseType} from '~/Graphql/BaseType';
-import {IModerationEntity} from './IModerationEntity';
+import {User} from '~/Graphql';
+import {ModerationType, MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
-export interface IDiscussionMessageEntity extends BaseType {
+export type DiscussionMessageType = BaseType & {
   /**
    * ID of the parent discussion of this message, could be a Discussion ID, or a Proposal ID
    */
@@ -25,7 +26,13 @@ export interface IDiscussionMessageEntity extends BaseType {
   /**
    * The moderation object that handles hiding/showing proposals
    */
-  moderation?: IModerationEntity;
+  moderation: ModerationType;
+
+  reports: MessageReport[];
 
   type: string;
-}
+
+  flag: REPORT_FLAG;
+
+  owner: User;
+};
