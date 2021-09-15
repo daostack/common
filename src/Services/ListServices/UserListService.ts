@@ -18,7 +18,6 @@ export const subscribeToAllUsers = (
   callback: userListLoadCallbackFn,
 ): FirestoreUnsubscribeFn =>
   UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<UserType>) => {
-    console.log('---snapshot', snapshot);
     callback(snapshot);
   });
 

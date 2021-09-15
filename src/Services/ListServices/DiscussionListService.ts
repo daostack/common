@@ -88,7 +88,9 @@ export const fetchDiscussions = async ({
   ) as Discussion[];
 };
 
-export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
+export const fetchDiscussionById = async (
+  id: string,
+): Promise<DiscussionType> => {
   const {data} = await apollo.query({
     query: GetDiscussionByIdDocument,
     variables: {
@@ -96,5 +98,5 @@ export const fetchDiscussionById = async (id: string): Promise<Discussion> => {
     },
   });
 
-  return data.discussion as Discussion;
+  return data.discussion as DiscussionType;
 };

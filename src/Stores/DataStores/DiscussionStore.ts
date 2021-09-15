@@ -126,10 +126,12 @@ export default class DiscussionStore extends BaseStore<
     } catch (err) {
       try {
         const discussion = await fetchDiscussionById(id);
-        this.proposalDiscussions = observable.map(
-          this.toEntityModelArr([discussion]),
-        );
-        return discussion;
+        if (discussion) {
+          this.proposalDiscussions = observable.map(
+            this.toEntityModelArr([discussion]),
+          );
+          return new DiscussionModel(discussion, false);
+        }
       } catch (error) {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,

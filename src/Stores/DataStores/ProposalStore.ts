@@ -125,10 +125,12 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
     } catch (err) {
       try {
         const proposal = await fetchProposalById(id);
-        this.loadedProposals = observable.map(
-          this.toEntityModelArr([proposal]),
-        );
-        return proposal;
+        if (proposal) {
+          this.loadedProposals = observable.map(
+            this.toEntityModelArr([proposal]),
+          );
+          return new Proposal(proposal);
+        }
       } catch (error) {
         showErrorPopUp(this.rootStore.uiStore.bottomSheetStore, error);
       }

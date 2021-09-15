@@ -6,16 +6,14 @@ import {CommonMemberType} from '~/Graphql/Common/CommonType';
 import {ObservableMap} from 'mobx';
 import {Notification} from '~/Stores/Models/Notification';
 import {UserModel} from '~/Stores/Models/UserModel';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
 import {Common} from '~/Stores/Models/Common';
 import {Discussion} from '~/Stores/Models/Discussion';
-import {Proposal} from '~/Stores/Models/Proposal';
 import {
   NotificationSeenStatus,
   IProposalNotificationData,
 } from '~/Graphql/Notification';
-import ProposalStore from '~/Stores/DataStores/ProposalStore';
+import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -72,7 +70,7 @@ export type NotificationStore = {
     eventObjectId: string,
   ) => Promise<IProposalNotificationData | null>;
   getParentDiscussion: (
-    message: IDiscussionMessageEntity,
+    message: DiscussionMessage,
   ) => Promise<Discussion | Proposal>;
 };
 
@@ -112,7 +110,7 @@ export type ProposalStore = {
   ) => Proposal[];
 };
 
-export type RootStore = { = {
+export type RootStore = {
   uiStore: UiStore;
   authStore: AuthStore;
   notificationStore: NotificationStore;

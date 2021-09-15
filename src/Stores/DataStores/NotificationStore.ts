@@ -17,7 +17,7 @@ import {
 import {Notification} from '../Models/Notification';
 import {action, computed, observable, ObservableMap} from 'mobx';
 import Logger from '~/Services/Logger';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {Discussion} from '../Models/Discussion';
 import {Proposal} from '../Models/Proposal';
 import {showBackendError} from '~/Util';
@@ -197,7 +197,7 @@ export default class NotificationStore extends BaseStore<
   }
 
   async getParentDiscussion(
-    message: IDiscussionMessageEntity,
+    message: DiscussionMessage,
   ): Promise<Discussion | Proposal> {
     const discussion = await this.rootStore.discussionStore.getDiscussionById(
       message.discussionId,
