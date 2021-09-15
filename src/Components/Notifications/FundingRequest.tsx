@@ -1,27 +1,16 @@
-import React, {useState, useEffect} from 'react';
-import {InferProps, object} from 'prop-types';
+import {inject, observer} from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import {PROPOSAL_TYPE} from '~/Config';
 import {
   EventTypeState,
   NotificationItemData,
 } from '~/Graphql/Notification/NotificationType';
-import {inject, observer} from 'mobx-react';
+import {FundingProposalEntity, JoinRequestEntity} from '~/Graphql/Proposal';
+import {STORE_KEYS} from '~/Util/constants/storeKeys';
 import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {PROPOSAL_TYPE} from '~/Config';
-import {JoinRequestEntity, FundingProposalEntity} from '~/Graphql/Proposal';
+import {NotificationProps} from './props';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const FundingRequest: React.FC<InferProps<typeof props>> = ({
-  item,
-  navigation,
-  rootStore,
-}) => {
+const FundingRequest = ({item, rootStore}: NotificationProps) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
 
@@ -77,15 +66,11 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
     return null;
   }
 
-  return (
-    <NotificationItem
-      item={item}
-      notificationData={notificationData}
-      navigation={navigation}
-    />
-  );
+  return <NotificationItem item={item} notificationData={notificationData} />;
 };
 
-FundingRequest.propTypes = props;
-
-export default inject('rootStore')(observer(FundingRequest));
+export default inject('rootStore')(
+  observer((props: Omit<NotificationProps, STORE_KEYS>) => (
+    <FundingRequest {...(props as NotificationProps)} />
+  )),
+);

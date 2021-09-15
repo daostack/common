@@ -83,41 +83,39 @@ const NotificationList = ({
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
-        return <CommonWhitelisted item={item} navigation={navigation} />;
+        return <CommonWhitelisted item={item} />;
 
       case EventTypeState.fundingRequestCreated:
       case EventTypeState.fundingRequestAccepted:
       case EventTypeState.fundingRequestExecuted:
       case EventTypeState.fundingRequestRejected:
-        return <FundingRequest item={item} navigation={navigation} />;
+        return <FundingRequest item={item} />;
 
       case EventTypeState.messageCreated:
-        return <MessageCreated item={item} navigation={navigation} />;
+        return <MessageCreated item={item} />;
 
       case EventTypeState.commonMemberAdded:
-        return <CommonMemberAdded item={item} navigation={navigation} />;
+        return <CommonMemberAdded item={item} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <RequestToJoinCreated item={item} navigation={navigation} />;
+        return <RequestToJoinCreated item={item} />;
 
       case EventTypeState.requestToJoinRejected:
-        return <RequestToJoinRejected item={item} navigation={navigation} />;
+        return <RequestToJoinRejected item={item} />;
 
       case EventTypeState.discussionCreated:
-        return <DiscussionCreated item={item} navigation={navigation} />;
+        return <DiscussionCreated item={item} />;
 
       case EventTypeState.proposalReported:
-        return <ProposalReported item={item} navigation={navigation} />;
+        return <ProposalReported item={item} />;
 
       case EventTypeState.discussionReported:
-        return <DiscussionReported item={item} navigation={navigation} />;
+        return <DiscussionReported item={item} />;
 
       case EventTypeState.discussionMessageReported:
-        return (
-          <DiscussionMessageReported item={item} navigation={navigation} />
-        );
+        return <DiscussionMessageReported item={item} />;
       case EventTypeState.welcomeNotification:
-        return <WelcomeNotification item={item} navigation={navigation} />;
+        return <WelcomeNotification item={item} />;
 
       default:
         Logger.warn(

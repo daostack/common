@@ -1,46 +1,34 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
-import {layout, colors, text, font} from '~/Theme';
-import FastImage from 'react-native-fast-image';
-import {NotificationSeenStatus} from '~/Graphql/Notification';
-import NotificationBadge from './NotificationBadge';
-import {CommonActions} from '@react-navigation/native';
-import {InferProps, object, shape, string, bool, func} from 'prop-types';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
-import {EventTypeState} from '~/Graphql/Notification/NotificationType';
-import {notificationStorePropTypes} from '~/Types/propTypes';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
-import {notificationDataPropTypes} from './propType';
+import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {
+  NotificationItemData,
+  NotificationSeenStatus,
+} from '~/Graphql/Notification';
+import {EventTypeState} from '~/Graphql/Notification/NotificationType';
+import {Notification} from '~/Stores/Models/Notification';
+import {colors, font, layout, text} from '~/Theme';
+import {NotificationStore} from '~/Types/store';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {formatNotificationDate} from '~/Util/DateUtil';
+import NotificationBadge from './NotificationBadge';
 
-const props = {
-  item: shape({
-    id: string.isRequired,
-    eventType: string.isRequired,
-    createdAt: object.isRequired,
-    notificationItemState: shape({
-      seen: bool.isRequired,
-      opened: bool.isRequired,
-    }).isRequired,
-  }).isRequired,
-  notificationData: notificationDataPropTypes.isRequired,
-  navigation: shape({
-    navigate: func.isRequired,
-    dispatch: func.isRequired,
-  }).isRequired,
-  notificationStore: notificationStorePropTypes.isRequired,
-};
+interface Props {
+  item: Notification;
+  notificationData: NotificationItemData;
+  notificationStore?: NotificationStore;
+}
 
-const NotificationItem: React.FC<InferProps<typeof props>> = ({
-  item,
-  notificationData,
-  navigation,
-  notificationStore,
-}) => {
+const NotificationItem = ({item, notificationData, ...props}: Props) => {
+  const navigation = useNavigation();
+  const notificationStore = props.notificationStore;
+
   const navigateToDetail = () => {
     let navigate;
 
-    notificationStore.setNotificationItemState(
+    notificationStore!.setNotificationItemState(
       item.id,
       NotificationSeenStatus.Done,
     );
@@ -49,7 +37,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       navigation.navigate(NAVIGATION_SCREENS.PROPOSAL_SCREEN, {
         proposalId: notificationData.proposal.id,
         fromNotificationItem: true,
-        tabIndex: notificationData.tabIndex || 0,
+        tabIndex: notificationData?.tabIndex || 0,
       });
     } else if (notificationData.discussion) {
       navigation.navigate(NAVIGATION_SCREENS.DISCUSSIONS, {
@@ -155,8 +143,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
     </TouchableOpacity>
   );
 };
-
-NotificationItem.propTypes = props;
 
 const styles = StyleSheet.create({
   userImage: {

@@ -45,6 +45,7 @@ export interface NotificationItemData {
   common?: Common;
   commonId?: string;
   proposal?: Proposal;
+  tabIndex?: number;
 }
 
 export const EventTypeState = {
@@ -64,7 +65,7 @@ export const EventTypeState = {
   cardCreated: 'cardCreated', // -
   paymentFailed: 'paymentFailed', // -
   messageCreated: 'messageCreated', // +
-  commonCreated: 'commonCreated', // +
+  commonCreated: 'CommonCreated', // +
   commonWhitelisted: 'commonWhitelisted', // +
   commonMemberAdded: 'commonMemberAdded', // +
   welcomeNotification: 'welcomeNotification', // +

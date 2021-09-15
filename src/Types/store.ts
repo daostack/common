@@ -1,10 +1,18 @@
 import {ReactElement} from 'react';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
 import {ObservableMap} from 'mobx';
+import {Notification} from '~/Stores/Models/Notification';
+import {UserModel} from '~/Stores/Models/UserModel';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {UpdateCommonInfoInput} from '~/Graphql/Common';
+import {Common} from '~/Stores/Models/Common';
+import {Discussion} from '~/Stores/Models/Discussion';
+import {Proposal} from '~/Stores/Models/Proposal';
 import {
-  Notification,
-  NotificationItemState,
-} from '~/Stores/Models/Notification';
+  NotificationSeenStatus,
+  IProposalNotificationData,
+} from '~/Graphql/Notification';
+import ProposalStore from '~/Stores/DataStores/ProposalStore';
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -50,19 +58,52 @@ export type NotificationStore = {
   hasNewNotifications: boolean;
   setNotificationItemState: (
     notificationId: string,
-    newState: Partial<NotificationItemState>,
+    newState: NotificationSeenStatus,
   ) => void;
   removeSeenStateForNewNotifications: () => void;
   addWelcomeNotification: () => void;
   deleteUserNotifications: () => void;
   loadNotifications: (page?: number) => Promise<void>;
   getNotificationById: (id: string) => Promise<Notification>;
+  getProposalNotificationData: (
+    eventObjectId: string,
+  ) => Promise<IProposalNotificationData | null>;
+  getParentDiscussion: (
+    message: IDiscussionMessageEntity,
+  ) => Promise<Discussion | Proposal>;
 };
 
-export type rootStore = {
+export type CommonStore = {
+  subscribeToAllCommons: () => void;
+  getCommonById: (id: string) => Common;
+  updateCommonInfo: (
+    updateCommonInfo: UpdateCommonInfoInput,
+  ) => Promise<Common>;
+};
+
+export type UserStore = {
+  getUserById: (uid: string) => UserModel;
+};
+
+export type proposalStore = {
+  getProposalById: () => void;
+  getCommonProposals: () => void;
+  getUserProposals: () => void;
+  getCommonActiveProposals: () => void;
+  getCommonHistoryProposals: () => void;
+  getCommonPendingReqToJoins: () => void;
+  getCommonHistoryReqToJoins: () => void;
+};
+
+export type RootStore = {
   uiStore: UiStore;
   authStore: AuthStore;
   notificationStore: NotificationStore;
+  commonStore: CommonStore;
+  discussionMessageStore: any;
+  discussionStore: any;
+  userStore: UserStore;
+  proposalStore: ProposalStore;
 };
 // TODO: Add all Store types
-export type AppRootStore = {rootStore: rootStore};
+export type AppRootStore = {rootStore: RootStore};

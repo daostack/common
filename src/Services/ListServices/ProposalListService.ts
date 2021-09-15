@@ -125,7 +125,9 @@ export const subscribeToProposalList = (
   );
 };
 
-export const fetchProposalById = async (proposalId: string) => {
+export const fetchProposalById = async (
+  proposalId: string,
+): Promise<Proposal | undefined> => {
   if (!proposalId) {
     throw new Error(
       'Proposal Id (proposalId) is required parameter, but it was not provided',

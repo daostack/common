@@ -1,25 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Graphql/Notification/NotificationType';
 import {inject, observer} from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import {NotificationItemData} from '~/Graphql/Notification/NotificationType';
+import {STORE_KEYS} from '~/Util/constants/storeKeys';
+import {Discussion} from '~/Stores/Models/Discussion';
 import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {NotificationProps} from './props';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
-  item,
-  navigation,
-  rootStore,
-}) => {
+const DiscussionCreated = ({item, rootStore}: NotificationProps) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
-  const [discussion, setDiscussion] = useState();
+  const [discussion, setDiscussion] = useState<Discussion>();
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -64,15 +54,11 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
     return null;
   }
 
-  return (
-    <NotificationItem
-      item={item}
-      notificationData={notificationData}
-      navigation={navigation}
-    />
-  );
+  return <NotificationItem item={item} notificationData={notificationData} />;
 };
 
-DiscussionCreated.propTypes = props;
-
-export default inject('rootStore')(observer(DiscussionCreated));
+export default inject('rootStore')(
+  observer((props: Omit<NotificationProps, STORE_KEYS>) => (
+    <DiscussionCreated {...(props as NotificationProps)} />
+  )),
+);

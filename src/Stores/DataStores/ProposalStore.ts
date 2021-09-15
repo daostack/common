@@ -114,7 +114,7 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
   getProposalById = async (
     id: string,
     showError = true,
-  ): Promise<Proposal | void> => {
+  ): Promise<Proposal | undefined> => {
     try {
       return this.getDataByIdAndCollections(id, [
         this.fetchedProposal,
@@ -124,19 +124,20 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
         this.commonHistoryReqToJoins,
       ]);
     } catch (err) {
-      return fetchProposalById(id)
-        .then((proposal: Proposal) => {
+      try {
+        const proposal = await fetchProposalById(id);
+        if (proposal) {
           this.fetchedProposal.set(id, proposal);
-          return proposal;
-        })
-        .catch((error) => {
-          Logger.info('getProposalById-error ~>', error, id);
-          if (showError) {
-            showBackendError({
-              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            });
-          }
-        });
+        }
+        return proposal;
+      } catch (error) {
+        Logger.info('getProposalById-error ~>', error, id);
+        if (showError) {
+          showBackendError({
+            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          });
+        }
+      }
     }
   };
 

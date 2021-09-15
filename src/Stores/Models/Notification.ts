@@ -29,10 +29,9 @@ export class Notification extends BaseModel<NotificationType> {
     this.id = newNotificationInfo.id;
     this.createdAt = newNotificationInfo.createdAt;
     this.updatedAt = newNotificationInfo.updatedAt;
-    this.eventObjectId =
-      newNotificationInfo.discussionId ||
+    this.eventObjectId = (newNotificationInfo.discussionId ||
       newNotificationInfo.proposalId ||
-      newNotificationInfo.commonId;
+      newNotificationInfo.commonId) as string;
     this.eventType = newNotificationInfo.eventType;
     this.notificationItemState = {
       opened: NotificationSeenStatus.Done === newNotificationInfo.seenStatus,
