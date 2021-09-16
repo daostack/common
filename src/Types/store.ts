@@ -3,17 +3,42 @@ import {ProposalEntity} from '~/Graphql/Proposal';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {IProposalFilter} from '~/Stores/DataStores/ProposalStore';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
-import {ObservableMap} from 'mobx';
 import {Notification} from '~/Stores/Models/Notification';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {UpdateCommonInfoInput} from '~/Graphql/Common';
 import {Common} from '~/Stores/Models/Common';
 import {Discussion} from '~/Stores/Models/Discussion';
+import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {
   NotificationSeenStatus,
   IProposalNotificationData,
 } from '~/Graphql/Notification';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
+
+export type AuthStore = {
+  userInfo: UserInfo;
+  setIsLoading: (loading: boolean) => void;
+  setSignedInUser: (newUserInfo: UserInfo) => void;
+  setUserToken: (token: string | null) => void;
+  isDaoMember: (members: CommonMemberType[]) => boolean;
+  isProposer: (proposal: ProposalEntity) => boolean;
+  isLoginInProgressExists: (uid: string) => boolean;
+  isCurrentlyLogged: (userId: string) => boolean;
+  onIdTokenChanged: (user: any) => void;
+  onAuthStateChanged: (user: any) => void;
+  getPermission: (
+    commonId: string,
+    userId: string,
+  ) => Promise<string | undefined>;
+  _processUser: () => Promise<void>;
+  syncMigrationUsers: () => Promise<void>;
+};
+
+export type AppLoaderStore = {
+  showLoader: () => void;
+  hideLoader: () => void;
+  isLoading: boolean;
+};
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -24,10 +49,37 @@ export type BottomSheetStore = {
   decreaseTopSnap: () => void;
 };
 
-export type AppLoaderStore = {
-  showLoader: () => void;
-  hideLoader: () => void;
-  isLoading: boolean;
+export type CommonStore = {
+  loadMyCommons: () => Promise<void>;
+  loadPendingCommons: () => Promise<void>;
+  myCommonsValues: Common[];
+  pendingCommonsValues: Common[];
+  featuredCommonsValues: Common[];
+  loadFeaturedCommons: (page: number) => Promise<void>;
+  getCommonById: (id: string) => Common;
+  updateCommonInfo: (
+    updateCommonInfo: UpdateCommonInfoInput,
+  ) => Promise<Common>;
+};
+
+export type DiscussionStore = {
+  commonDiscussions: Discussion[];
+  proposalDiscussionsArray: Discussion[];
+  getDiscussionById: (id: string) => Promise<Discussion | undefined>;
+  getIsExpanded: (discussionId: string) => boolean;
+  createCommonDiscussion: (discussion: CreateDiscussionInput) => Promise<void>;
+  loadCommonDiscussions: (commonId: string, page: number) => Promise<void>;
+  getProposalDiscussionById: (id: string) => Promise<Discussion | undefined>;
+};
+
+export type DiscussionMessageStore = {
+  getProposalMessages: DiscussionMessage[];
+  getDiscussionMessages: DiscussionMessage[];
+  loadDiscussionMessages: (discussionMessages: DiscussionMessage[]) => void;
+  getDiscussionMessagesByDiscussionId: (
+    discussionId: string,
+  ) => DiscussionMessage | undefined;
+  getDiscussionMessageById: (id: string) => DiscussionMessage | undefined;
 };
 
 export type UiStore = {
@@ -46,15 +98,7 @@ export type UserInfo = {
   country?: string;
 };
 
-export type AuthStore = {
-  userInfo: UserInfo;
-  setIsLoading: (loading: boolean) => void;
-  setSignedInUser: (newUserInfo: UserInfo) => void;
-  isDaoMember: (members: CommonMemberType[]) => boolean;
-};
-
 export type NotificationStore = {
-  notifications: ObservableMap<string, Notification>;
   myNotificationsValues: Notification[];
   hasNewNotifications: boolean;
   setNotificationItemState: (
@@ -74,16 +118,12 @@ export type NotificationStore = {
   ) => Promise<Discussion | Proposal>;
 };
 
-export type CommonStore = {
-  subscribeToAllCommons: () => void;
-  getCommonById: (id: string) => Common;
-  updateCommonInfo: (
-    updateCommonInfo: UpdateCommonInfoInput,
-  ) => Promise<Common>;
-};
-
 export type UserStore = {
   getUserById: (uid: string) => UserModel;
+  getGraphqlUserById: (uid: string) => Promise<UserModel | void>;
+  getCommonUsersByMembersArray: (
+    members: CommonMemberType[],
+  ) => UserModel[] | undefined;
 };
 
 export type ProposalStore = {
@@ -115,8 +155,8 @@ export type RootStore = {
   authStore: AuthStore;
   notificationStore: NotificationStore;
   commonStore: CommonStore;
-  discussionMessageStore: any;
-  discussionStore: any;
+  discussionMessageStore: DiscussionMessageStore;
+  discussionStore: DiscussionStore;
   userStore: UserStore;
   proposalStore: ProposalStore;
 };
