@@ -59,6 +59,7 @@ import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {ProposalState, VoteOutcome} from '~/Graphql/Proposal';
 import {Vote} from '~/Graphql/Votes';
 import {Message} from '~/Graphql/Message';
+import {WithNavigation} from '~/Types/navigation';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -78,7 +79,7 @@ const ProposalScreen = ({
     },
   },
 } : {
-  navigation: any,
+  navigation: WithNavigation,
   rootStore: rootStoreType,
   route: {
     params: {

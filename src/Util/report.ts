@@ -15,8 +15,8 @@ export function getLastReporterInfo(
 export function getLastReport(
   moderation?: ModerationType,
 ): MessageReport | undefined {
-  if (moderation?.reports?.length) {
-    return last(moderation?.reports);
+  if (moderation?.reports.length) {
+    return last(moderation.reports);
   }
   return;
 }
