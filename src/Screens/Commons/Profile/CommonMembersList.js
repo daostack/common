@@ -35,7 +35,7 @@ const CommonMembersList = ({
   }, [commonId]);
 
   const showUserProfile = (userInfo) => {
-    navigation.navigate('Profile', {userId: userInfo.uid, userInfo});
+    navigation.navigate('Profile', {userId: userInfo.userId, userInfo});
   };
 
   const limitCommonMembers = (commonMembers) =>

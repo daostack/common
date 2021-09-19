@@ -245,7 +245,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     setIsPendingHidden(
-      pendingProposalsData?.usersPendingProposal.moderation?.flag ===
+      pendingProposalsData?.usersPendingProposal?.moderation?.flag ===
         FLAGS.hidden,
     );
   }, [
@@ -949,7 +949,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 commonInfo={{
                   logo: currCommon?.avatar,
                   name: currCommon?.name,
-                  description: currCommon?.description,
                   byline: currCommon?.byline,
                   cover: currCommon?.image,
                 }}
