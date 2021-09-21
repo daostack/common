@@ -5,7 +5,9 @@ import {
   MarkAsSeenNotificationsDocument,
   NotificationSeenStatus,
   NotificationType,
+  onNotificationCreatedDocument,
 } from '~/Graphql/Notification';
+import {ObservableSubscription} from '@apollo/client';
 import logger from '~/Services/Logger';
 import {Notification} from '~/Stores/Models/Notification';
 import {getGQLErrorObject} from '~/Util';
@@ -97,6 +99,30 @@ export const markAsSeenNotifications = async (ids: string[]): Promise<void> => {
   } catch (err) {
     logger.log(
       `Error while trying to mark as seen notifications with ids: ${ids}`,
+      getGQLErrorObject(err),
+    );
+  }
+};
+
+export const onNotificationCreated = (
+  callback: (value: any) => void,
+): ObservableSubscription | undefined => {
+  try {
+    const notificationSubscription = apollo.subscribe({
+      query: onNotificationCreatedDocument,
+    });
+
+    const subscription: ObservableSubscription =
+      notificationSubscription.subscribe(({data}) => {
+        callback(
+          new Notification(data.notificationCreated as NotificationType),
+        );
+      });
+
+    return subscription;
+  } catch (err) {
+    logger.log(
+      'Error while trying to subscribe to notification creation:',
       getGQLErrorObject(err),
     );
   }

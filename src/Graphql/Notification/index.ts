@@ -43,3 +43,11 @@ export const MarkAsSeenNotificationsDocument = gql`
     markAsSeenNotifications(input: $input)
   }
 `;
+
+export const onNotificationCreatedDocument = gql`
+  subscription onNotificationCreated {
+    notificationCreated {
+      ${gqlNotificationProps}
+    }
+  }
+`;

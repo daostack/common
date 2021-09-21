@@ -1,9 +1,11 @@
 import BaseStore from './BaseStore';
+import {ObservableSubscription} from '@apollo/client';
 import {
   fetchNotifications,
   fetchNotificationById,
   changeNotificationSeenStatus,
   markAsSeenNotifications,
+  onNotificationCreated,
 } from '~/Services/ListServices/NotificationListService';
 import {
   NotificationSeenStatus,
@@ -43,6 +45,14 @@ export default class NotificationStore extends BaseStore<
   get myNotificationsValues() {
     return this.toDataArray(this.notifications);
   }
+
+  @action
+  setNewNotification = (value: Notification): void => {
+    this.notifications.set(value.id, value);
+  };
+
+  subscribeToNewNotifications = (): ObservableSubscription | undefined =>
+    onNotificationCreated(this.setNewNotification);
 
   @action
   loadNotifications = async (page: number = 0): Promise<void> => {

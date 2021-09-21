@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import {useSubscription} from '@apollo/client';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {
   StyleSheet,
@@ -73,6 +74,7 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import {onNotificationCreatedDocument} from '~/Graphql/Notification';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -93,6 +95,7 @@ const App = ({rootStore, navigation}) => {
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const notificationStore = rootStore.notificationStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -102,8 +105,15 @@ const App = ({rootStore, navigation}) => {
   const navigationRef = useRef();
 
   useEffect(() => {
+    const subscription = notificationStore.subscribeToNewNotifications();
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, []);
 
   useEffect(
