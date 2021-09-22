@@ -9,6 +9,7 @@ import {setContext} from 'apollo-link-context';
 import {auth} from '~/Firebase';
 import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from '@apollo/client/utilities';
+import {SubscriptionClient} from 'subscriptions-transport-ws';
 import {getGraphqlApiUrl, isGraphqlApiUseSsl} from '~/Config';
 
 enum QUERY_TYPE {
@@ -34,15 +35,19 @@ export const createApolloClient = (gqlUri: string, token?: string) => {
 
   const httpLink = withToken.concat(baseLink as any) as any;
 
-  const wsLink = new WebSocketLink({
-    uri: `ws://${gqlUri}/graphql`,
-    options: {
-      reconnect: true,
-      // connectionParams: {
-      //   authToken: authToken,
-      // },
+  const subscriptionClient = new SubscriptionClient(`ws://${gqlUri}/graphql`, {
+    lazy: true,
+    reconnect: true,
+    connectionParams: async () => {
+      const fireToken = await auth().currentUser?.getIdToken(true);
+
+      return {
+        authorization: fireToken || token,
+      };
     },
   });
+
+  const webSocketLink = new WebSocketLink(subscriptionClient);
 
   const splitLink = split(
     ({query}) => {
@@ -52,7 +57,7 @@ export const createApolloClient = (gqlUri: string, token?: string) => {
         definition.operation === QUERY_TYPE.SUBSCRIPTION
       );
     },
-    wsLink,
+    webSocketLink,
     httpLink,
   );
 
