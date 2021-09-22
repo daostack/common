@@ -130,10 +130,7 @@ const NotificationItem = ({item, notificationData, ...props}: Props) => {
           <Text style={styles.dateStyle}>
             {/* There are broken records on staging and for some documents therre is no a valid createdAt date, so we need the check */}
             {notificationData.createdAt &&
-              formatNotificationDate(
-                notificationData.createdAt.toDate &&
-                  notificationData.createdAt.toDate(),
-              )}
+              formatNotificationDate(notificationData.createdAt)}
             {notificationData.common && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}
