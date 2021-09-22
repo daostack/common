@@ -110,13 +110,16 @@ const App = ({rootStore, navigation}) => {
       notificationSubscription =
         notificationStore.subscribeToNewNotifications();
     }
-    Text.defaultProps = Text.defaultProps || {};
-    Text.defaultProps.maxFontSizeMultiplier = 1.1;
     return () => {
       if (notificationSubscription) {
         notificationSubscription.unsubscribe();
       }
     };
+  }, [authStore.userInfo?.uid]);
+
+  useEffect(() => {
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
   useEffect(
