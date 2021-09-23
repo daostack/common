@@ -43,7 +43,10 @@ export default class NotificationStore extends BaseStore<
 
   @computed
   get myNotificationsValues() {
-    return this.toDataArray(this.notifications);
+    return (this.toDataArray(this.notifications) as Array<Notification>).sort(
+      (a: Notification, b: Notification) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
   }
 
   @action
