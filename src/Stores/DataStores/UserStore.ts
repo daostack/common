@@ -1,15 +1,10 @@
 import {observable, ObservableMap, runInAction} from 'mobx';
-import {UserType} from '~/Graphql/User';
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseDocChange,
-} from '~/Firebase/types';
+import {IFirebaseDoc} from '~/Firebase/types';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
+import {UserType} from '~/Graphql/User';
 import {
   fetchUserById,
   getUserById,
-  subscribeToAllUsers,
 } from '~/Services/ListServices/UserListService';
 import {showBackendError} from '~/Util';
 import {UserModel} from '../Models/UserModel';
@@ -86,23 +81,8 @@ export default class UserStore extends BaseStore<UserModel, UserType> {
     }
   };
 
-  //Actions
-  subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(this.updateStoreData);
-
   // Overriden methods
   getEntityModel(entity: UserType): UserModel {
     return new UserModel(entity);
-  }
-
-  firestoreDocChangeToEntity(
-    firebaseDoc: IFirebaseDocChange<UserType>,
-  ): UserType {
-    const userDoc = super.firestoreDocChangeToEntity(firebaseDoc);
-    // TODO: remove firestoreDocChangeToEntity method overriding when we replace uid with id in user document
-    return {
-      ...userDoc,
-      id: userDoc.uid,
-    };
   }
 }
