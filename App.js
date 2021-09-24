@@ -73,7 +73,6 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-import {onNotificationCreatedDocument} from '~/Graphql/Notification';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -90,7 +89,6 @@ if (Platform.OS === 'android') {
 
 const App = ({rootStore, navigation}) => {
   const authStore = rootStore.authStore;
-  const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
