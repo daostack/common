@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {useSubscription} from '@apollo/client';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {
   StyleSheet,
