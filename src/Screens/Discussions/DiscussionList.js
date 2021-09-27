@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import {string, object, bool, func} from 'prop-types';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {rootStore as rootStoreType} from '~/Types/store';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const DiscussionList = ({
@@ -70,7 +70,7 @@ DiscussionList.propTypes = {
   navigation: object.isRequired,
   openCommonOptions: func,
   showHiddenNote: func,
-  rootStore: rootStorePropTypes,
+  rootStore: rootStoreType,
   isMember: bool,
 };
 

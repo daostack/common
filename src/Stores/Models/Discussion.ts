@@ -4,7 +4,7 @@ import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {DiscussionMessage} from './DiscussionMessage';
-import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
+import {DiscussionType, DiscussionTypes} from '~/Graphql/Discussion/DiscussionType';
 
 export class Discussion extends BaseModel<DiscussionType> {
   @observable
@@ -37,6 +37,9 @@ export class Discussion extends BaseModel<DiscussionType> {
   @observable
   messages: DiscussionMessage[];
 
+  @observable
+  type: DiscussionTypes;
+
   @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
@@ -57,6 +60,7 @@ export class Discussion extends BaseModel<DiscussionType> {
       reports: newDiscussionInfo.reports,
       flag: newDiscussionInfo.flag,
     };
+    this.type = newDiscussionInfo.type;
     this.messages = newDiscussionInfo.messages?.map(
       (message: any) => new DiscussionMessage(message),
     );

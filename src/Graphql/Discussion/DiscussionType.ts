@@ -48,4 +48,11 @@ export interface DiscussionType extends BaseType {
 
   reports: MessageReport[];
   flag: REPORT_FLAG;
+
+  type: DiscussionTypes;
+}
+
+export enum DiscussionTypes {
+  PROPOSAL_DISCUSSION = 'ProposalDiscussion',
+  COMMON_DISCUSSION = 'CommonDiscussion',
 }

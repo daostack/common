@@ -245,7 +245,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     setIsPendingHidden(
-      pendingProposalsData?.usersPendingProposal.moderation?.flag ===
+      pendingProposalsData?.usersPendingProposal?.moderation?.flag ===
         FLAGS.hidden,
     );
   }, [
@@ -631,6 +631,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const viewProposal = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: params.createdProposalId,
+      commonId: currCommon.id,
     });
 
     setShowRequestSentModal(false);
@@ -643,6 +644,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const openProposalScreen = () => {
     navigation.navigate('ProposalScreen', {
       proposalId: pendingProposalsData.usersPendingProposal?.id,
+      commonId: currCommon.id,
     });
   };
 
@@ -947,7 +949,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 commonInfo={{
                   logo: currCommon?.avatar,
                   name: currCommon?.name,
-                  description: currCommon?.description,
                   byline: currCommon?.byline,
                   cover: currCommon?.image,
                 }}

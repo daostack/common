@@ -21,7 +21,7 @@ export const Reported = ({
 }: ReportedProps) => {
   const moderatorInfo = getLastReporterInfo(moderation);
   const reporterUserName =
-    viewerPermission === PERMISSIONS.MODERATOR
+    moderatorInfo && viewerPermission === PERMISSIONS.MODERATOR
       ? ` by ${reporterName(currentUID, moderatorInfo)}`
       : '';
 

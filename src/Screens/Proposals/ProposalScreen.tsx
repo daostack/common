@@ -28,13 +28,11 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {createProposalVote} from '~/Services/ListServices/ProposalListService';
 import {createDiscussionMessage} from '~/Services/ListServices/DiscussionMessageListService';
-import {VoteOutcome} from '~/Graphql/Proposal/index';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
-import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -52,13 +50,16 @@ import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {rootStore as rootStoreType} from '~/Types/store';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import {ProposalState} from '~/Graphql/Proposal';
+import {ProposalState, VoteOutcome} from '~/Graphql/Proposal';
+import {Vote} from '~/Graphql/Votes';
+import {Message} from '~/Graphql/Message';
+import {WithNavigation} from '~/Types/navigation';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -67,16 +68,28 @@ const PROPOSAL_STAGES_ACTIVE = [ProposalState.COUNTDOWN];
 
 const ProposalScreen = ({
   navigation,
+  rootStore,
   route: {
     params: {
       commonId,
       proposalId,
       tabIndex = 0,
       hasPermission,
-      fromNotificationItem,
+      // TODO fromNotificationItem,
     },
   },
-  rootStore,
+} : {
+  navigation: WithNavigation,
+  rootStore: rootStoreType,
+  route: {
+    params: {
+      commonId: string,
+      proposalId: string,
+      tabIndex: number,
+      hasPermission: boolean,
+      // TODO fromNotificationItem: boolean
+    }
+  }
 }) => {
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
@@ -177,12 +190,10 @@ const ProposalScreen = ({
 
   useEffect(() => {
     (async () => {
-      if (proposalInfo.commonId) {
-        const common = await commonStore.getCommonById(proposalInfo.commonId);
-        setProposalCommon(common);
-      }
+      const common = await commonStore.getCommonById(commonId);
+      setProposalCommon(common);
     })();
-  }, [proposalInfo, proposalInfo?.commonId]);
+  }, [commonId]);
   const proposedUser = proposalInfo ? proposalInfo.user : null;
 
   const showDebtInfo =
@@ -202,7 +213,7 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
+    !proposalInfo?.votes?.some((vote: Vote) => vote?.voter?.user?.id === userInfo.uid);
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
@@ -352,7 +363,7 @@ const ProposalScreen = ({
     setIsApprovalBottomModalVisible(true);
   };
 
-  const closeApprovalSheet = (e) => {
+  const closeApprovalSheet = () => {
     setIsApprovalBottomModalVisible(false);
   };
 
@@ -370,7 +381,7 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VoteOutcome.APPROVE : VoteOutcome.REJECT,
+        outcome: isApproved ? VoteOutcome.APPROVE : VoteOutcome.CONDEMN,
         proposalId: proposalId || proposalInfo.id,
       };
 
@@ -446,13 +457,13 @@ const ProposalScreen = ({
           </Text>
           <View style={layout.flexRow}>
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
+              onPress={() => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
               <Icon name="approved-24" color={colors.lightishGreen} size={24} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
+              onPress={() => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
               <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
@@ -571,7 +582,7 @@ const ProposalScreen = ({
         Toast.loading('Loading...');
         await ModerationService.getInstance().show(
           messageId,
-          proposalInfo.commonId,
+          commonId,
           'discussionMessage',
         );
         Toast.hide();
@@ -583,7 +594,7 @@ const ProposalScreen = ({
         await ModerationService.getInstance().hide(
           messageId,
           'discussionMessage',
-          proposalInfo.commonId,
+          commonId,
         );
         Toast.hide();
         Toast.success('Done');
@@ -595,7 +606,7 @@ const ProposalScreen = ({
     }
   };
 
-  const openMessageOptions = (message, itemType) => {
+  const openMessageOptions = (message: Message) => {
     if (message) {
       moderationFormStore.registerFormField(
         ModerationForm.ITEM_ID,
@@ -606,7 +617,7 @@ const ProposalScreen = ({
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
       {
-        onAction: (actionType) => onModerate(actionType, message.id),
+        onAction: (actionType: string) => onModerate(actionType, message.id),
         hasPermission,
         moderatorOptions: {
           item: message,
@@ -621,7 +632,7 @@ const ProposalScreen = ({
     bottomSheetStore.hideBottomSheet();
     await ModerationService.getInstance().report(
       'discussionMessage',
-      proposalInfo.commonId,
+      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -708,7 +719,7 @@ const ProposalScreen = ({
           backgroundColor: colors.white,
         }}>
         {showStickyTabBar && (
-          <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <Animated.View style={{...stickyTabBarStyle, ...slideUp}}>
             <TabBarRenderer
               navigationState={{index, routes}}
               jumpTo={originTabBarRef.current?.props?.jumpTo}
@@ -949,7 +960,7 @@ const ProposalScreen = ({
                         style={layout.marginRightXS}
                       />
                       <Text style={text.lightishGreenText}>
-                        {proposalInfo.votesFor}
+                        {proposalInfo.votesForCount}
                       </Text>
                     </View>
 
@@ -968,7 +979,7 @@ const ProposalScreen = ({
                         padding: 0,
                       }}>
                       <Text style={text.againstText}>
-                        {proposalInfo.votesAgainst}
+                        {proposalInfo.votesAgainstCount}
                       </Text>
                       <Icon
                         name="user-rejected"
@@ -1040,7 +1051,7 @@ const ProposalScreen = ({
                   inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
                   hasPermission={hasPermission}
-                  commonId={proposalInfo.commonId}
+                  commonId={commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
                   isProposal
@@ -1074,16 +1085,6 @@ const ProposalScreen = ({
       </BottomSheetModal>
     </React.Fragment>
   );
-};
-
-ProposalScreen.propTypes = {
-  navigation: object,
-  route: shape({
-    params: shape({
-      proposalId: string,
-    }),
-  }),
-  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
