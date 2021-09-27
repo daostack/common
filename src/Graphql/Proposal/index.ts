@@ -9,12 +9,14 @@ import {
   Mutation,
   Scalars,
 } from '~/Graphql';
-import {MessageReport, REPORT_FLAG/*, gqlReportProps*/} from '~/Graphql/Report';
+import {
+  MessageReport,
+  REPORT_FLAG /*, gqlReportProps*/,
+} from '~/Graphql/Report';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
 import {UserModel} from '~/Stores/Models/UserModel';
-import {ModerationType} from '~/Graphql/Report';
 
 export enum ProposalState {
   ACCEPTED = 'Accepted',
@@ -209,7 +211,6 @@ export const CreateProposalVoteDocument = gql`
     }
   }
 `;
-
 
 /* TODO add this when backend is updated with reports
   reports {

@@ -3,7 +3,7 @@ import {User} from '~/Graphql';
 import {ModerationType, MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
 export enum DiscussionMessageType {
-  message
+  message,
 }
 
 export interface MessageType extends BaseType {

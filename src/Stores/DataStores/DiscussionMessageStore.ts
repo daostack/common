@@ -3,24 +3,19 @@ import {
   fetchDiscussionMessageById,
   subscribeToProposalDiscussionMessages,
 } from '~/Services/ListServices/DiscussionMessageListService';
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseDocChange,
-} from '~/Firebase/types';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {MessageType} from '~/Graphql/Message/MessageType';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
 //import {ProposalEntity} from '~/Graphql/Proposal';
 //import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-import {DiscussionType} from '~/Graphql/Discussion';
 import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
-  DiscussionMessageType
+  MessageType
 > {
   @observable
   private proposalMessages: ObservableMap<string, DiscussionMessage> =
@@ -70,13 +65,15 @@ export default class DiscussionMessageStore extends BaseStore<
   };
 
   // Not in use anyways, TODO to be removed
-  getDiscussionMessageById = (discussionId: string): DiscussionMessage | undefined => {
+  getDiscussionMessageById = (
+    discussionId: string,
+  ): DiscussionMessage | undefined => {
     try {
       return this.getDataById(discussionId);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
       fetchDiscussionMessageById(id)
-        .then((discussion: IFirebaseDoc<DiscussionMessageType>) => {
+        .then((discussion: IFirebaseDoc<MessageType>) => {
           if (discussion.exists) {
             runInAction(() => {
               this.setData(
@@ -122,17 +119,7 @@ export default class DiscussionMessageStore extends BaseStore<
     subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
 
   // Overriden methods
-  getEntityModel(entity: DiscussionMessageType): DiscussionMessage {
+  getEntityModel(entity: MessageType): DiscussionMessage {
     return new DiscussionMessage(entity);
-  }
-
-  firestoreDocChangeToEntity(
-    firebaseDoc: IFirebaseDocChange<DiscussionMessageType>,
-  ): DiscussionMessageType {
-    const entity = super.firestoreDocChangeToEntity(firebaseDoc);
-    return {
-      ...entity,
-      createdAt: entity.createTime,
-    };
   }
 }
