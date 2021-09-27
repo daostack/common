@@ -1,7 +1,6 @@
 import {UsersCollection} from '~/Firebase/Databasee/Collections/UsersCollection';
 import {UserType} from '~/Graphql/User';
 import {
-  FirestoreUnsubscribeFn,
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
@@ -14,12 +13,6 @@ export type userListLoadCallbackFn = (
 ) => void;
 export type userLoadCallbackFn = (updatedUserList: UserType | null) => void;
 
-export const subscribeToAllUsers = (
-  callback: userListLoadCallbackFn,
-): FirestoreUnsubscribeFn =>
-  UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<UserType>) => {
-    callback(snapshot);
-  });
 
 export const subscribeToUser = (
   uid: string,

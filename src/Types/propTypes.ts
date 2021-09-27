@@ -51,7 +51,6 @@ export const authStorePropTypes = shape({
 });
 
 export const userStorePropTypes = shape({
-  subscribeToAllUsers: func.isRequired,
   getUserById: func.isRequired,
 });
 

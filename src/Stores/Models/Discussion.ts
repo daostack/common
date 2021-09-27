@@ -4,8 +4,10 @@ import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {DiscussionMessage} from './DiscussionMessage';
-import {DiscussionType, DiscussionTypes} from '~/Graphql/Discussion/DiscussionType';
-import {ModerationType} from '~/Graphql/Report';
+import {
+  DiscussionType,
+  DiscussionEntityType,
+} from '~/Graphql/Discussion/DiscussionType';
 
 export class Discussion extends BaseModel<DiscussionType> {
   @observable
@@ -39,7 +41,7 @@ export class Discussion extends BaseModel<DiscussionType> {
   messages: DiscussionMessage[];
 
   @observable
-  type: DiscussionTypes;
+  type: DiscussionEntityType;
 
   @computed
   get isModerationHidden() {

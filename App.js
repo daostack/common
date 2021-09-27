@@ -88,6 +88,7 @@ if (Platform.OS === 'android') {
 }
 
 const App = ({rootStore, navigation}) => {
+  const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
@@ -136,7 +137,6 @@ const App = ({rootStore, navigation}) => {
 
   // Initialize Mobx Stores
   useEffect(() => {
-    const unsubscribeUsers = userStore.subscribeToAllUsers();
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
@@ -144,7 +144,6 @@ const App = ({rootStore, navigation}) => {
       );
     }
     return () => {
-      unsubscribeUsers && unsubscribeUsers();
       unsubscribeProposals && unsubscribeProposals();
     };
   }, [authStore.userInfo?.uid]);
