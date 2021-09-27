@@ -2,7 +2,11 @@ import {BaseType} from '~/Graphql/BaseType';
 import {User} from '~/Graphql';
 import {ModerationType, MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
-export type DiscussionMessageType = BaseType & {
+export enum DiscussionMessageType {
+  message
+}
+
+export interface MessageType extends BaseType {
   /**
    * ID of the parent discussion of this message, could be a Discussion ID, or a Proposal ID
    */
@@ -30,9 +34,9 @@ export type DiscussionMessageType = BaseType & {
 
   reports: MessageReport[];
 
-  type: string;
+  type: DiscussionMessageType;
 
   flag: REPORT_FLAG;
 
   owner: User;
-};
+}

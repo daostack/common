@@ -306,8 +306,7 @@ const Discussions = ({
     const resp = await ModerationService.getInstance().onModerate(
       actionType,
       messageId,
-      commonId,
-      TITLES.discussionMessage,
+      REPORT_TYPE.MessageReport,
     );
 
     resp === ACTIONS.report
@@ -329,17 +328,21 @@ const Discussions = ({
   };
 
   const onReportContent = async () => {
-    setShowModerationModal(false);
-    Toast.loading('Reporting content...');
-    bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report({
-      moderationData: moderationFormStore.getFormFieldsJson(),
-      type: REPORT_TYPE.MessageReport,
-    });
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
-    moderationFormStore.clearFormStoreState();
+    try {
+      setShowModerationModal(false);
+      Toast.loading('Reporting content...');
+      bottomSheetStore.hideBottomSheet();
+      await ModerationService.getInstance().report({
+        moderationData: moderationFormStore.getFormFieldsJson(),
+        type: REPORT_TYPE.MessageReport,
+      });
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+      moderationFormStore.clearFormStoreState();
+    } catch (err) {
+      Toast.error('Could not Report content');
+    }
   };
 
   if (!dataState) {

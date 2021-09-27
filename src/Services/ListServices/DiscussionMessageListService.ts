@@ -26,6 +26,7 @@ export const createDiscussionMessage = async (
         discussionMessage: {...formData},
       },
     });
+
     return data;
   } catch (err) {
     logger.log(

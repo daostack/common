@@ -16,7 +16,7 @@ import {colors, font, sizeM, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {REPORT_FLAG} from '~/Graphql/Report';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 
 const {width} = Dimensions.get('window');
@@ -48,11 +48,12 @@ const DiscussionCard = ({
   }, [commonId, authStore?.userInfo]);
 
   const showHeader =
-    data.moderation?.flag === FLAGS.hidden ||
-    (data.moderation?.flag === FLAGS.reported &&
+    data.moderation?.flag === REPORT_FLAG.Hidden ||
+    (data.moderation?.flag === REPORT_FLAG.Reported &&
       viewerPermission === PERMISSIONS.MODERATOR);
 
-  const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
+  const isVisible =
+    data.moderation?.flag !== REPORT_FLAG.Hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
@@ -88,7 +89,7 @@ const DiscussionCard = ({
         <View style={styles.containerView}>
           {showHeader && (
             <DiscussionCardHeader
-              isReported={data.moderation?.flag !== FLAGS.visible}
+              isReported={data.moderation?.flag !== REPORT_FLAG.Clear}
               moderation={data.moderation}
               reporter={getReporter()}
               hasPermission={hasPermission}

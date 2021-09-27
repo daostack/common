@@ -134,10 +134,6 @@ const ProposalCard = ({
     }
   };
 
-  const getReporter = () =>
-    proposalInfo.moderation?.reporter &&
-    userStore.getUserById(proposalInfo.moderation?.reporter);
-
   return proposalInfo ? (
     <Animated.View
       style={[
@@ -156,7 +152,6 @@ const ProposalCard = ({
           }
           isReported={proposalInfo.moderation?.flag !== REPORT_FLAG.Clear}
           moderation={proposalInfo.moderation}
-          reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
         />

@@ -14,6 +14,7 @@ import {
   IProposalNotificationData,
 } from '~/Graphql/Notification';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
+import {Message} from '~/Graphql/Message';
 
 export type AuthStore = {
   userInfo: UserInfo;
@@ -127,10 +128,6 @@ export type UserStore = {
 };
 
 export type ProposalStore = {
-  getCommonActiveProposals: Proposal[];
-  getCommonHistoryProposals: Proposal[];
-  getCommonPendingReqToJoins: Proposal[];
-  getCommonHistoryReqToJoins: Proposal[];
   getEntityModel: (entity: ProposalEntity) => Proposal;
   getProposalById: (id: string) => Promise<Proposal | undefined>;
   loadCommonActiveProposals: (commonId: string, page: number) => void;

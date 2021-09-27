@@ -1,5 +1,6 @@
 import {func, string, object, shape, number, array, bool} from 'prop-types';
 
+//TODO replace this with uiStoreType everywhere
 export const uiStorePropTypes = shape({
   bottomSheetStore: shape({
     showBottomSheet: func.isRequired,
@@ -16,6 +17,24 @@ export const uiStorePropTypes = shape({
   }),
   conversionRate: number.isRequired,
 });
+
+export type uiStoreType = {
+  bottomSheetStore: {
+    showBottomSheet: func,
+    hideBottomSheet: func,
+    topSnap: number,
+    template: object,
+    increaseTopSnap: func,
+    decreaseTopSnap: func,
+  },
+  appLoaderStore: {
+    isLoading: bool,
+    showLoader: func,
+    hideLoader: func,
+  },
+  conversionRate: number,
+};
+
 
 export const authStorePropTypes = shape({
   userInfo: shape({
@@ -71,6 +90,7 @@ export const notificationStorePropTypes = shape({
   addWelcomeNotification: func.isRequired,
   hasNewNotifications: bool.isRequired,
 });
+
 
 export const rootStorePropTypes = shape({
   authStore: authStorePropTypes.isRequired,

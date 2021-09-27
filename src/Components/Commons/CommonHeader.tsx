@@ -34,7 +34,7 @@ const props = {
 const CommonHeader: React.FC<InferProps<typeof props>> = ({
   navigation,
   isMember,
-  commonInfo: {logo, name, description, byline},
+  commonInfo: {logo, name, byline},
   headerHeightLayouted,
   common,
   canEdit,
@@ -71,9 +71,6 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
         }}
         numberOfLines={5}>
         {byline}
-      </Text>
-      <Text style={styles.headerDescription} numberOfLines={4}>
-        {description}
       </Text>
       {isMember && navigation && (
         <BlurView
@@ -125,6 +122,7 @@ const styles = StyleSheet.create({
     padding: 0,
     marginBottom: 10,
     ...layout.flexEnd,
+    justifyContent: 'center',
   },
   headerContainerCenterContent: {
     justifyContent: 'center',

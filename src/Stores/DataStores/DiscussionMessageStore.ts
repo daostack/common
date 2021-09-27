@@ -15,7 +15,7 @@ import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
 import {showBackendError} from '~/Util';
 //import {ProposalEntity} from '~/Graphql/Proposal';
 //import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-//import {DiscussionType} from '~/Graphql/Discussion';
+import {DiscussionType} from '~/Graphql/Discussion';
 import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
@@ -69,10 +69,10 @@ export default class DiscussionMessageStore extends BaseStore<
     });
   };
 
-  // Data consuming methods
-  getDiscussionMessageById = (id: string): DiscussionMessage | undefined => {
+  // Not in use anyways, TODO to be removed
+  getDiscussionMessageById = (discussionId: string): DiscussionMessage | undefined => {
     try {
-      return this.getDataById(id);
+      return this.getDataById(discussionId);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
       fetchDiscussionMessageById(id)
@@ -80,7 +80,7 @@ export default class DiscussionMessageStore extends BaseStore<
           if (discussion.exists) {
             runInAction(() => {
               this.setData(
-                id,
+                discussionId,
                 this.getEntityModel(this.firestoreDocToEntity(discussion)),
               );
             });

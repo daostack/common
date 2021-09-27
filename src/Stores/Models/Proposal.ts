@@ -4,8 +4,7 @@ import {BaseModel} from './BaseModel';
 //import ImageSize from 'react-native-image-size';
 //import {promisedComputed} from 'computed-async-mobx';
 //import Logger from '~/Services/Logger';
-import {ModerationType} from '~/Graphql/Report';
-import {FLAGS} from '~/Components/Moderation/constants';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {UserModel} from './UserModel';
 import {
   ProposalType,
@@ -14,6 +13,7 @@ import {
   ProposalFunding,
   JoinRequestEntity,
   FundingProposalEntity,
+  VoteOutcome,
 } from '~/Graphql/Proposal';
 import {Vote} from '~/Graphql/Votes';
 import {Discussion} from '~/Graphql/Discussion';
@@ -70,47 +70,6 @@ export class Proposal extends BaseModel<ProposalEntity> {
   @observable
   moderation?: ModerationType;
 
-  /* @observable
-  imagesPromised = promisedComputed(
-    [],
-    async (): Promise<IUIProposalImage[]> => {
-      const tempImages: IUIProposalImage[] = [];
-      if (this.images?.length) {
-        await Promise.all(
-          this.images.map(async (currImage: IProposalImage) => {
-            if (currImage.value) {
-              let currImageEntity: IUIProposalImage | null = null;
-              try {
-                const {width, height} = await ImageSize.getSize(
-                  currImage.value,
-                );
-                currImageEntity = {
-                  title: currImage.title,
-                  widthRatio: (width / height) * 220,
-                  uri: currImage.value,
-                } as IUIProposalImage;
-              } catch (err) {
-                Logger.warn(
-                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
-                  err,
-                );
-              }
-              if (currImageEntity) {
-                tempImages.push(currImageEntity);
-              }
-            }
-          }),
-        );
-      }
-      return tempImages;
-    },
-  );*/
-
-  /*@computed
-  get images() {
-    return this.imagesPromised.value;
-  }*/
-
   @computed
   get isJoinRequest() {
     return this.type === ProposalType.JOIN_REQUEST;
@@ -145,17 +104,30 @@ export class Proposal extends BaseModel<ProposalEntity> {
 
   @computed
   get votesCount() {
-    return this.votesFor + this.votesAgainst;
+    return this.votes.length;
   }
 
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
+    return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
   }
 
   @computed
   get countdown() {
-    return this.createdAt.getSeconds() + (this?.expiresAt.getSeconds() || 0);
+    return (
+      this.moderation?.updatedAt + this.moderation?.expiresAt ||
+      this.createdAt + (this?.expiresAt || 0)
+    );
+  }
+
+  @computed
+  get votesForCount() {
+    return this.votesFor;
+  }
+
+  @computed
+  get votesAgainstCount() {
+    return this.votesAgainst;
   }
 
   constructor(newProposalInfo: ProposalEntity) {
@@ -170,11 +142,13 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    this.votesFor = newProposalInfo.votesFor;
-    this.votesAgainst = newProposalInfo.votesAgainst;
+    [this.votesFor, this.votesAgainst] = [this.countVotes(VoteOutcome.APPROVE), this.countVotes(VoteOutcome.CONDEMN)];
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
-    this.moderation = newProposalInfo.moderation;
+    this.moderation = {
+      reports: newProposalInfo.reports,
+      flag: newProposalInfo.flag,
+    };
     //this.images = newProposalInfo.images;
     if (this.type === ProposalType.JOIN_REQUEST) {
       this.paymentState = (newProposalInfo as JoinRequestEntity).paymentState;
@@ -186,5 +160,9 @@ export class Proposal extends BaseModel<ProposalEntity> {
       // TODO: ... more props
     }
     this.discussions = newProposalInfo.discussions;
+  }
+
+  countVotes(state: string) {
+    return this.votes.filter((vote) => vote.outcome === state).length;
   }
 }

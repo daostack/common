@@ -1,10 +1,10 @@
 import {observable, computed} from 'mobx';
 import {UserType} from '~/Graphql/User';
+import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
-import {FLAGS} from '~/Components/Moderation/constants';
 import {DiscussionMessage} from './DiscussionMessage';
-import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
+import {DiscussionType, DiscussionTypes} from '~/Graphql/Discussion/DiscussionType';
 import {ModerationType} from '~/Graphql/Report';
 
 export class Discussion extends BaseModel<DiscussionType> {
@@ -38,9 +38,12 @@ export class Discussion extends BaseModel<DiscussionType> {
   @observable
   messages: DiscussionMessage[];
 
+  @observable
+  type: DiscussionTypes;
+
   @computed
   get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
+    return this.moderation && this.moderation?.flag === REPORT_FLAG.Hidden;
   }
 
   constructor(newDiscussionInfo: DiscussionType, isExpanded: boolean) {
@@ -54,6 +57,11 @@ export class Discussion extends BaseModel<DiscussionType> {
     this.lastMessage = newDiscussionInfo.lastMessage;
     this.isExpanded = isExpanded;
     this.owner = new UserModel(newDiscussionInfo.owner);
+    this.moderation = {
+      reports: newDiscussionInfo.reports,
+      flag: newDiscussionInfo.flag,
+    };
+    this.type = newDiscussionInfo.type;
     this.messages = newDiscussionInfo.messages?.map(
       (message: any) => new DiscussionMessage(message),
     );

@@ -9,6 +9,7 @@ import {
   Mutation,
   Scalars,
 } from '~/Graphql';
+import {MessageReport, REPORT_FLAG/*, gqlReportProps*/} from '~/Graphql/Report';
 
 import {Vote} from '../Votes';
 import {Discussion} from '../Discussion';
@@ -47,6 +48,11 @@ export enum ProposalType {
   JOIN_REQUEST = 'JoinRequest',
 }
 
+export enum VoteOutcome {
+  APPROVE = 'Approve',
+  CONDEMN = 'Condemn',
+}
+
 interface BaseProposal {
   id: string;
   userId: string;
@@ -66,7 +72,8 @@ interface BaseProposal {
   votesAgainst: number;
   votes: Vote[];
   discussions: Discussion[];
-  moderation?: ModerationType;
+  reports: MessageReport[];
+  flag: REPORT_FLAG;
 }
 
 export interface FundingProposalEntity extends BaseProposal {
@@ -203,6 +210,12 @@ export const CreateProposalVoteDocument = gql`
   }
 `;
 
+
+/* TODO add this when backend is updated with reports
+  reports {
+    ${gqlReportProps}
+  }
+ */
 const gqlProposalProps = `
   id
   userId
@@ -219,6 +232,7 @@ const gqlProposalProps = `
   links
   files
   images
+  flag
   funding {
     amount
   }
@@ -232,6 +246,13 @@ const gqlProposalProps = `
   votesAgainst
   votes {
     voterId
+    outcome
+    voter {
+      id
+      user {
+        id
+      }
+    }
   }
   discussions {
     id

@@ -1,5 +1,6 @@
 import BaseStore from './BaseStore';
 import {
+  subscribeToCommonDiscussions,
   fetchDiscussions,
   fetchDiscussionById,
   createDiscussion,
@@ -48,15 +49,29 @@ export default class DiscussionStore extends BaseStore<
     } catch (err) {
       try {
         const discussion = await fetchDiscussionById(id);
-        this.discussions = observable.map(this.toEntityModelArr([discussion]));
+        this.discussions.set(id, discussion);
         return discussion;
       } catch (error) {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          
         });
       }
     }
   };
+
+  getCommonDiscussions = (
+    commonId: string,
+  ): Array<DiscussionType> | undefined =>
+    this.getDataArray
+      ?.filter((discussion: Discussion) => discussion.commonId === commonId)
+      .sort(
+        (discussion: Discussion, prevDiscussion: Discussion) =>
+          prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
+      );
+  //Actions
+  subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
+    subscribeToCommonDiscussions(commonId, this.updateStoreData);
 
   // helper function
   // if discussion already exists in database,
