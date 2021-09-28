@@ -69,9 +69,9 @@ export const fetchDiscussions = async ({
 };
 
 export const fetchDiscussionById = async (
-  id: string,
+  discussionId: string,
 ): Promise<DiscussionType> => {
-if (!discussionId) {
+  if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
