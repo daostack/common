@@ -1,6 +1,5 @@
 import BaseStore from './BaseStore';
 import {
-  subscribeToCommonDiscussions,
   fetchDiscussions,
   fetchDiscussionById,
   createDiscussion,
@@ -73,9 +72,6 @@ export default class DiscussionStore extends BaseStore<
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
-  //Actions
-  subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToCommonDiscussions(commonId, this.updateStoreData);
 
   // helper function
   // if discussion already exists in database,
