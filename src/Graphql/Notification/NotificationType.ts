@@ -51,28 +51,28 @@ export interface NotificationItemData {
 export const EventTypeState = {
   // general: 'General', // -
   creationReqToJoin: 'creationReqToJoin', // -
-  requestToJoinCreated: 'requestToJoinCreated', // +
+  requestToJoinCreated: 'RequestToJoinCreated', // +
   requestToJoinExecuted: 'requestToJoinExecuted', // -
-  requestToJoinRejected: 'requestToJoinRejected', // +
+  requestToJoinRejected: 'RequestToJoinRejected', // +
   requestToJoinAccepted: 'requestToJoinAccepted', //-
   subscriptionPaymentConfirmed: 'subscriptionPaymentConfirmed', // -
   subscriptionCanceledByUser: 'subscriptionCanceledByUser', // -
-  fundingRequestAccepted: 'fundingRequestAccepted', // +
-  fundingRequestCreated: 'fundingRequestCreated', // +
-  fundingRequestExecuted: 'fundingRequestExecuted', // +
-  fundingRequestRejected: 'fundingRequestRejected', // +
+  fundingRequestAccepted: 'FundingRequestAccepted', // +
+  fundingRequestCreated: 'FundingRequestCreated', // +
+  fundingRequestExecuted: 'FundingRequestExecuted', // +
+  fundingRequestRejected: 'FundingRequestRejected', // +
   voteCreated: 'voteCreated', // -
   cardCreated: 'cardCreated', // -
   paymentFailed: 'paymentFailed', // -
-  messageCreated: 'messageCreated', // +
+  messageCreated: 'MessageCreated', // +
   commonCreated: 'CommonCreated', // +
-  commonWhitelisted: 'commonWhitelisted', // +
-  commonMemberAdded: 'commonMemberAdded', // +
-  welcomeNotification: 'welcomeNotification', // +
-  discussionCreated: 'discussionCreated', // +
-  discussionMessageReported: 'discussionMessageReported', // +
-  proposalReported: 'proposalReported', // +
-  discussionReported: 'discussionReported', // +
+  commonWhitelisted: 'CommonWhitelisted', // +
+  commonMemberAdded: 'CommonMemberAdded', // +
+  welcomeNotification: 'WelcomeNotification', // +
+  discussionCreated: 'DiscussionCreated', // +
+  discussionMessageReported: 'DiscussionMessageReported', // +
+  proposalReported: 'ProposalReported', // +
+  discussionReported: 'DiscussionReported', // +
   membershipRequestReported: 'membershipRequestReported', // -
 };
 
