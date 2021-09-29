@@ -1,8 +1,3 @@
-import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
-import {PROPOSAL_TYPE} from '~/Config';
-
-import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
-
 import {
   CreateFundingProposalDocument,
   CreateFundingProposalInput,
@@ -11,20 +6,19 @@ import {
   CreateProposalVoteDocument,
   CreateVoteInput,
   finalizeProposalDocument,
+  getProposalDocument,
   getProposalsDocument,
   onProposalChangeDocument,
+  ProposalEntity,
   proposalsStateFilterQueryPart,
   ProposalState,
   ProposalType,
   ProposalWhereInput,
-  ProposalEntity,
-  getProposalDocument,
 } from '~/Graphql/Proposal';
-import {Proposal} from '~/Stores/Models/Proposal';
-
-import {apollo} from '~/Util/helpers/apolloHelper';
-import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {getGQLErrorObject} from '~/Util';
+import {apollo} from '~/Util/helpers/apolloHelper';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<ProposalEntity>,
@@ -58,72 +52,6 @@ interface ProposalFilter {
   onlyActive?: boolean;
   onlyHistory?: boolean;
 }
-
-// Private
-export const subscribeToProposalList = (
-  listChangeCallback: (
-    updatedProposals: IFirebaseSnapshot<ProposalEntity>,
-  ) => void,
-  filter: ProposalFilter,
-): FirestoreUnsubscribeFn => {
-  let proposalListQuery = ProposalsCollection;
-
-  if (filter.id) {
-    proposalListQuery = proposalListQuery.where('id', '==', filter.id);
-  }
-  if (filter.commonId) {
-    proposalListQuery = proposalListQuery.where(
-      'commonId',
-      '==',
-      filter.commonId,
-    );
-  }
-  if (filter.userId) {
-    proposalListQuery = proposalListQuery.where(
-      'proposerId',
-      '==',
-      filter.userId,
-    );
-  }
-
-  if (filter.onlyFundingRequests) {
-    proposalListQuery = proposalListQuery.where(
-      'type',
-      '==',
-      PROPOSAL_TYPE.FundingRequest,
-    );
-  }
-  if (filter.onlyRequestsToJoin) {
-    proposalListQuery = proposalListQuery.where(
-      'type',
-      '==',
-      PROPOSAL_TYPE.Join,
-    );
-  }
-
-  if (!filter.showAll) {
-    if (filter.onlyActive || filter.onlyHistory) {
-      const stages = filter.onlyActive
-        ? PROPOSAL_STAGES_ACTIVE
-        : PROPOSAL_STAGES_HISTORY;
-      proposalListQuery = proposalListQuery.where('state', 'in', stages);
-    } else {
-      proposalListQuery = proposalListQuery.where(
-        'state',
-        'in',
-        PROPOSAL_STAGES_ALL,
-      );
-    }
-  }
-
-  //proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
-
-  return proposalListQuery.onSnapshot(
-    (snapshot: IFirebaseSnapshot<ProposalEntity>) => {
-      listChangeCallback(snapshot);
-    },
-  );
-};
 
 export const fetchProposalById = async (proposalId: string) => {
   if (!proposalId) {

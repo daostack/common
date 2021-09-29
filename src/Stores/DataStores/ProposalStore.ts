@@ -17,9 +17,7 @@ import {
 } from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {showBackendError} from '~/Util';
-import {subscribeToProposalList} from '~/Services/ListServices/ProposalListService';
 
 import {ProposalState, ProposalType, ProposalEntity} from '~/Graphql/Proposal';
 import Logger from '~/Services/Logger';
@@ -304,25 +302,6 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalEntity> {
       }
     }
   }
-
-  //Actions
-
-  subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
-      userId: userId,
-      onlyActive: true,
-    });
-
-  subscribeToUserAllProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
-      userId: userId,
-      showAll: true,
-    });
-
-  subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
-      commonId: commonId,
-    });
 
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
     // Check IProposalFilter.type filter
