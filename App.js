@@ -125,23 +125,15 @@ const App = ({rootStore, navigation}) => {
   // Initialize Mobx Stores
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
-    let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications?.forEach(
-        (unsubscribeLoggedUserNotificationsBatch) =>
-          unsubscribeLoggedUserNotificationsBatch &&
-          unsubscribeLoggedUserNotificationsBatch(),
-      );
     };
   }, [authStore.userInfo?.uid]);
 

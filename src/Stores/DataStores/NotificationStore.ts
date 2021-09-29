@@ -1,6 +1,4 @@
 import BaseStore from './BaseStore';
-import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {
   EventTypeState,
@@ -93,15 +91,6 @@ export default class NotificationStore extends BaseStore<
       };
     });
   };
-
-  //Actions
-  subscribeToLoggedUserNotifications = (): FirestoreUnsubscribeFn[] | null =>
-    this.rootStore.authStore.signedInUser
-      ? subscribeToUserNotifications(
-          this.rootStore.authStore.signedInUser,
-          this.updateStoreData,
-        )
-      : null;
 
   @action
   deleteUserNotifications = () => {
