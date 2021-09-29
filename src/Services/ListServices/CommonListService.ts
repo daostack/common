@@ -1,4 +1,3 @@
-import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {CommonType} from '~/Graphql/Common/CommonType';
 import {IFirebaseSnapshot} from '~/Firebase/types';
 import {
@@ -23,11 +22,6 @@ export type commonListLoadCallbackFn = (
 export type commonLoadCallbackFn = (
   updatedCommonList: CommonType | null,
 ) => void;
-
-export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
-  CommonsCollection.onSnapshot((snapshot: any) => {
-    callback(snapshot);
-  });
 
 export const fetchCommonById = async (
   commonId: string,

@@ -50,7 +50,6 @@ export type discussionMessageStore = {
 };
 
 export type commonStore = {
-  subscribeToAllCommons: () => void
   getCommonById: (id: string) => Common;
   updateCommonInfo: (updateCommonInfo: UpdateCommonInfoInput) => Promise<Common>;
 };
