@@ -38,7 +38,7 @@ const MessageCreated: React.FC<InferProps<typeof props>> = ({
         }
         const objectData = discussion || proposal;
 
-        const user = rootStore.userStore.getUserById(message.ownerId);
+        const user = await rootStore.userStore.getUserById(message.ownerId);
 
         const objectType = objectData?.userId
           ? {

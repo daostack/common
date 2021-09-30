@@ -45,7 +45,7 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
           const common = rootStore.commonStore.getCommonById(
             objectData.commonId,
           );
-          const messageOwner = rootStore.userStore.getUserById(
+          const messageOwner = await rootStore.userStore.getUserById(
             messageReportedData.ownerId,
           );
           const data = {

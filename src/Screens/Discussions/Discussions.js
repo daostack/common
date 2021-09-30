@@ -58,6 +58,7 @@ const Discussions = ({
   const currentUser = auth().currentUser;
 
   const [dataState, setDataState] = useState();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -70,9 +71,14 @@ const Discussions = ({
     commonId = dataState.commonId;
   }
 
-  const user = dataState?.ownerId
-    ? userStore.getUserById(dataState?.ownerId)
-    : null;
+  useEffect(() => {
+    (async () => {
+      if (dataState?.ownerId) {
+        const userResponse = await userStore.getUserById(dataState?.ownerId);
+        setUser(userResponse);
+      }
+    })();
+  }, [dataState?.ownerId]);
 
   const [currCommon, setCurrCommon] = useState();
   const [hasPermission, setHasPermission] = useState();

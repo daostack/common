@@ -14,23 +14,6 @@ export type userListLoadCallbackFn = (
 ) => void;
 export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
-export const subscribeToAllUsers = (
-  callback: userListLoadCallbackFn,
-): FirestoreUnsubscribeFn =>
-  UsersCollection.onSnapshot((snapshot: IFirebaseSnapshot<IUserEntity>) => {
-    callback(snapshot);
-  });
-
-export const subscribeToUser = (
-  uid: string,
-  callback: userListLoadCallbackFn,
-) =>
-  UsersCollection.doc(uid).onSnapshot(
-    (snapshot: IFirebaseSnapshot<IUserEntity>) => {
-      callback(snapshot);
-    },
-  );
-
 export const fetchUserById = async (
   userId: string,
 ): Promise<IFirebaseDoc<IUserEntity>> => {

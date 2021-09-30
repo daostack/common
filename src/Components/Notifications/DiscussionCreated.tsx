@@ -27,7 +27,7 @@ const DiscussionCreated: React.FC<InferProps<typeof props>> = ({
         await rootStore.discussionStore.getDiscussionById(item.eventObjectId);
       setDiscussion(discussionResponse);
       if (discussionResponse) {
-        const user = rootStore.userStore.getUserById(
+        const user = await rootStore.userStore.getUserById(
           discussionResponse.ownerId,
         );
         let data = {} as NotificationItemData;

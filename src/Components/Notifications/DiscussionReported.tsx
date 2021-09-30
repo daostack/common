@@ -27,7 +27,7 @@ const DiscussionReported: React.FC<InferProps<typeof props>> = ({
         await rootStore.discussionStore.getDiscussionById(item.eventObjectId);
       setDiscussion(discussionResponse);
       if (discussionResponse) {
-        const reporter = rootStore.userStore.getUserById(
+        const reporter = await rootStore.userStore.getUserById(
           discussionResponse.ownerId,
         );
 
