@@ -70,7 +70,6 @@ export const proposalStorePropTypes = shape({
 });
 
 export const discussionStorePropTypes = shape({
-  getCommonDiscussions: func.isRequired,
   getDiscussionById: func.isRequired,
 });
 

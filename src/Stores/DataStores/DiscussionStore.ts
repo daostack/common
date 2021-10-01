@@ -62,17 +62,6 @@ export default class DiscussionStore extends BaseStore<
         });
     }
   };
-
-  getCommonDiscussions = (
-    commonId: string,
-  ): Array<DiscussionType> | undefined =>
-    this.getDataArray
-      ?.filter((discussion: Discussion) => discussion.commonId === commonId)
-      .sort(
-        (discussion: Discussion, prevDiscussion: Discussion) =>
-          prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
-      );
-
   // helper function
   // if discussion already exists in database,
   // we don't want to initialize isExpanded with the default true value,
