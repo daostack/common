@@ -121,20 +121,6 @@ const Discussions = ({
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
-  useEffect(() => {
-    let unsubscribeFromDiscussionMessages = null;
-    if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
-    }
-
-    return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
-    };
-  }, [discussionId]);
-
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
   };

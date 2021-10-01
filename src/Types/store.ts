@@ -1,7 +1,7 @@
 import {ReactElement} from 'react';
 import {CommonMemberType} from '~/Graphql/Common/CommonType';
 import {Discussion} from '~/Graphql/Discussion';
-import {Message} from '~/Graphql/Message';
+import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';;
 import {Common, UpdateCommonInfoInput} from '~/Graphql/Common';
 
 export type BottomSheetStore = {
@@ -43,15 +43,18 @@ export type AuthStore = {
 };
 
 export type discussionMessageStore = {
-  subscribeToDiscussionsMessages: (discussionIds: Array<string>) => Array<Discussion>;
-  getDiscussionMessagesByDiscussionId: (discussionId: string) => Array<Message> | undefined;
-  getDiscussionMessageById: (discussionId: string) => Message | undefined;
-  proposalDiscussionId: string,
+  getDiscussionMessageById: (
+    discussionId: string,
+  ) => Promise<DiscussionMessage | undefined>;
+  loadDiscussionMessages: (discussionMessages: DiscussionMessage[]) => void;
+  loadProposalMessages: (proposalMessages: DiscussionMessage[]) => void;
 };
 
 export type commonStore = {
   getCommonById: (id: string) => Common;
-  updateCommonInfo: (updateCommonInfo: UpdateCommonInfoInput) => Promise<Common>;
+  updateCommonInfo: (
+    updateCommonInfo: UpdateCommonInfoInput,
+  ) => Promise<Common>;
 };
 
 export type proposalStore = {

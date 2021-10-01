@@ -1,13 +1,14 @@
-import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
-
+import {
+  DiscussionMessageType,
+  MessageType,
+} from '~/Graphql/Message/MessageType';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CreateDiscussionMessageInput,
   CreateDiscussionMessageDocument,
   GetDiscussionMessageDocument,
+  GetDiscussionMessageByIdDocument,
 } from '~/Graphql/Message';
-
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -82,49 +83,19 @@ export const getProposalDiscussionMessages = async (
 //OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (
   messageId: string,
-): Promise<IFirebaseDoc<DiscussionMessageType>> => {
+): Promise<MessageType> => {
   if (!messageId) {
     throw new Error(
       'Message Id (messageId) is required parameter, but it was not provided',
     );
   }
-  return await DiscussionMessagesCollection.doc(messageId).get();
-};
 
-export const subscribeToProposalDiscussionMessages = (
-  proposalId: string,
-  callback: commonDiscussionMessagesListLoadCallbackFn,
-) =>
-  DiscussionMessagesCollection.where('discussionId', '==', proposalId)
-    .orderBy('createTime', 'desc')
-    .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
-      callback(snapshot);
-    });
+  const {data} = await apollo.query({
+    query: GetDiscussionMessageByIdDocument,
+    variables: {
+      id: messageId,
+    },
+  });
 
-export const subscribeToDiscussionsMessages = (
-  discussionIds: Array<string>,
-  callback: commonDiscussionMessagesListLoadCallbackFn,
-) => {
-  const chunkSize = 10;
-  const unsubscribeArr = [];
-  if (discussionIds?.length > 0) {
-    for (let index = 0; index < discussionIds.length; index += chunkSize) {
-      const currDiscussionIdsChunk = discussionIds.slice(
-        index,
-        index + chunkSize,
-      );
-      unsubscribeArr.push(
-        DiscussionMessagesCollection.where(
-          'discussionId',
-          'in',
-          currDiscussionIdsChunk,
-        )
-          .orderBy('createTime', 'desc')
-          .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
-            callback(snapshot);
-          }),
-      );
-    }
-  }
-  return unsubscribeArr;
+  return data.discussionMessage;
 };

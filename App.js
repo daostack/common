@@ -89,9 +89,6 @@ if (Platform.OS === 'android') {
 
 const App = ({rootStore, navigation}) => {
   const authStore = rootStore.authStore;
-  const userStore = rootStore.userStore;
-  const proposalStore = rootStore.proposalStore;
-  const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
 
@@ -121,21 +118,6 @@ const App = ({rootStore, navigation}) => {
     });
     return unsubscribe;
   }, []);
-
-  // Initialize Mobx Stores
-  useEffect(() => {
-    const unsubscribeUsers = userStore.subscribeToAllUsers();
-    let unsubscribeProposals = null;
-    if (authStore.userInfo?.uid) {
-      unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-        authStore.userInfo?.uid,
-      );
-    }
-    return () => {
-      unsubscribeUsers && unsubscribeUsers();
-      unsubscribeProposals && unsubscribeProposals();
-    };
-  }, [authStore.userInfo?.uid]);
 
   // Initialize Intercom chat
   useEffect(() => {

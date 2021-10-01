@@ -75,8 +75,6 @@ export const discussionStorePropTypes = shape({
 });
 
 export const discussionMessageStorePropTypes = shape({
-  subscribeToDiscussionsMessages: func.isRequired,
-  getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });
 

@@ -1,28 +1,15 @@
 import BaseStore from './BaseStore';
-import {
-  fetchDiscussionMessageById,
-  //getProposalDiscussionMessages,
-  subscribeToDiscussionsMessages,
-  subscribeToProposalDiscussionMessages,
-} from '~/Services/ListServices/DiscussionMessageListService';
-import {
-  FirestoreUnsubscribeFn,
-  IFirebaseDoc,
-  IFirebaseDocChange,
-} from '~/Firebase/types';
+import {fetchDiscussionMessageById} from '~/Services/ListServices/DiscussionMessageListService';
 import RootStore from '../RootStore';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {MessageType} from '~/Graphql/Message/MessageType';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
-import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
-//import {ProposalEntity} from '~/Graphql/Proposal';
-//import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
-import {DiscussionType} from '~/Graphql/Discussion';
 import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
   DiscussionMessage,
-  DiscussionMessageType
+  MessageType
 > {
   @observable
   private proposalMessages: ObservableMap<string, DiscussionMessage> =
@@ -71,75 +58,28 @@ export default class DiscussionMessageStore extends BaseStore<
     });
   };
 
-  // Not in use anyways, TODO to be removed
-  getDiscussionMessageById = (discussionId: string): DiscussionMessage | undefined => {
-    try {
-      return this.getDataById(discussionId);
-    } catch (errr) {
-      // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchDiscussionMessageById(discussionId)
-        .then((discussion: IFirebaseDoc<DiscussionType>) => {
-          if (discussion.exists) {
-            runInAction(() => {
-              this.setData(
-                discussionId,
-                this.getEntityModel(this.firestoreDocToEntity(discussion)),
-              );
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
-        });
-      return undefined;
-    }
-  };
-
-  getDiscussionMessagesByDiscussionId = (
+  getDiscussionMessageById = async (
     discussionId: string,
-  ): Array<DiscussionMessage> | undefined => {
+  ): Promise<DiscussionMessage | undefined> => {
     try {
-      return this.getDataArray
-        ?.filter(
-          (message: DiscussionMessage) => message.discussionId === discussionId,
-        )
-        .sort(
-          (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
-            prevMessage?.createdAt?.getSeconds() -
-            message?.createdAt?.getSeconds(),
-        );
-    } catch (error) {
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
-      return;
+      return this.getDataByIdAndCollections(discussionId, [
+        this.proposalMessages,
+        this.discussionMessages,
+      ]);
+    } catch (err) {
+      try {
+        const message = await fetchDiscussionMessageById(discussionId);
+        return new DiscussionMessage(message);
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        });
+      }
     }
   };
-  //Actions
-  subscribeToDiscussionsMessages = (
-    discussionIds: Array<string>,
-  ): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionsMessages(discussionIds, this.updateStoreData);
-
-  subscribeToProposalDiscussionMessages = (
-    proposalId: string,
-  ): FirestoreUnsubscribeFn =>
-    subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
 
   // Overriden methods
-  getEntityModel(entity: DiscussionMessageType): DiscussionMessage {
+  getEntityModel(entity: MessageType): DiscussionMessage {
     return new DiscussionMessage(entity);
-  }
-
-  firestoreDocChangeToEntity(
-    firebaseDoc: IFirebaseDocChange<DiscussionMessageType>,
-  ): DiscussionMessageType {
-    const entity = super.firestoreDocChangeToEntity(firebaseDoc);
-    return {
-      ...entity,
-      createdAt: entity.createTime,
-    };
   }
 }

@@ -78,18 +78,18 @@ const ProposalScreen = ({
       // TODO fromNotificationItem,
     },
   },
-} : {
-  navigation: WithNavigation,
-  rootStore: rootStoreType,
+}: {
+  navigation: WithNavigation;
+  rootStore: rootStoreType;
   route: {
     params: {
-      commonId: string,
-      proposalId: string,
-      tabIndex: number,
-      hasPermission: boolean,
+      commonId: string;
+      proposalId: string;
+      tabIndex: number;
+      hasPermission: boolean;
       // TODO fromNotificationItem: boolean
-    }
-  }
+    };
+  };
 }) => {
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
@@ -152,22 +152,6 @@ const ProposalScreen = ({
       setDiscussion(proposalDiscussion);
       discussionMessageStore.loadProposalMessaages(proposal);
     })();
-
-    // const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-    //   proposalId,
-    // );
-
-    // let unsubscribeFromProposalById = null;
-    // unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-    //   proposalId
-    // );
-
-    // return () => {
-    //   unsubscribeFromProposalDiscussionMessages &&
-    //     unsubscribeFromProposalDiscussionMessages();
-
-    //   unsubscribeFromProposalById && unsubscribeFromProposalById.unsubscribe();
-    // };
   }, [proposalId]);
 
   useEffect(() => {
@@ -213,7 +197,9 @@ const ProposalScreen = ({
     proposalInfo &&
     PROPOSAL_STAGES_ACTIVE.includes(proposalInfo?.state) &&
     isMember &&
-    !proposalInfo?.votes?.some((vote: Vote) => vote?.voter?.user?.id === userInfo.uid);
+    !proposalInfo?.votes?.some(
+      (vote: Vote) => vote?.voter?.user?.id === userInfo.uid,
+    );
 
   useEffect(() => {
     if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
