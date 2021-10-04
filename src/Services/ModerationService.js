@@ -7,6 +7,7 @@ import {
   changeProposalFlag,
   changeDiscussionFlag,
 } from './ListServices/ReportService';
+import {auth} from '~/Firebase';
 import Toast from '~/Util/Toast.js';
 import {apollo} from '~/Util/helpers/apolloHelper';
 

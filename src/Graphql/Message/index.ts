@@ -2,7 +2,7 @@ import {gql} from '@apollo/client';
 import {Exact, Scalars} from '~/Graphql';
 import {gqlUserProps} from '~/Graphql/User';
 
-export const gqlDiscussionMessageProps = `
+const gqlDiscussionMessageProps = `
   id
   updatedAt
   createdAt

@@ -88,9 +88,12 @@ if (Platform.OS === 'android') {
 }
 
 const App = ({rootStore, navigation}) => {
+  const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
+  const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const notificationStore = rootStore.notificationStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -98,6 +101,19 @@ const App = ({rootStore, navigation}) => {
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
+
+  useEffect(() => {
+    let notificationSubscription;
+    if (authStore.userInfo?.uid) {
+      notificationSubscription =
+        notificationStore.subscribeToNewNotifications();
+    }
+    return () => {
+      if (notificationSubscription) {
+        notificationSubscription.unsubscribe();
+      }
+    };
+  }, [authStore.userInfo?.uid]);
 
   useEffect(() => {
     Text.defaultProps = Text.defaultProps || {};

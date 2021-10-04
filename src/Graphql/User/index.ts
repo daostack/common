@@ -1,3 +1,5 @@
+export * from './UserType';
+
 export const gqlUserProps = `
 uid: id
 email

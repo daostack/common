@@ -14,6 +14,7 @@ import {
   ProposalState,
   ProposalType,
   ProposalWhereInput,
+  getProposalDocumentById,
 } from '~/Graphql/Proposal';
 import logger from '~/Services/Logger';
 import {Proposal} from '~/Stores/Models/Proposal';
@@ -53,7 +54,9 @@ interface ProposalFilter {
   onlyHistory?: boolean;
 }
 
-export const fetchProposalById = async (proposalId: string) => {
+export const fetchProposalById = async (
+  proposalId: string,
+): Promise<ProposalEntity | undefined> => {
   if (!proposalId) {
     throw new Error(
       'Proposal Id (proposalId) is required parameter, but it was not provided',
@@ -61,7 +64,7 @@ export const fetchProposalById = async (proposalId: string) => {
   }
 
   const {data} = await apollo.query({
-    query: getProposalDocument,
+    query: getProposalDocumentById,
     variables: {
       where: {
         id: proposalId,
@@ -72,7 +75,7 @@ export const fetchProposalById = async (proposalId: string) => {
   if (!data.proposal) {
     return data;
   }
-  return new Proposal(data.proposal);
+  return new Proposal(data.proposal as ProposalEntity);
 };
 
 // Create Proposals

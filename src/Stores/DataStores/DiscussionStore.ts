@@ -4,14 +4,11 @@ import {
   fetchDiscussionById,
   createDiscussion,
 } from '~/Services/ListServices/DiscussionListService';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
-import Logger from '~/Services/Logger';
 import {CreateDiscussionInput} from '~/Graphql/Discussion';
 import {Discussion as DiscussionModel} from '../Models/Discussion';
 import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
-import {Discussion} from '~/Graphql/Discussion';
 import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 
 export default class DiscussionStore extends BaseStore<
@@ -28,10 +25,8 @@ export default class DiscussionStore extends BaseStore<
   );
 
   @observable
-  private proposalDiscussion: DiscussionModel; /*ObservableMap<
-    string,
-    DiscussionModel
-  > = observable.map({});*/
+  private proposalDiscussions: ObservableMap<string, DiscussionModel> =
+    observable.map({});
 
   @computed
   get commonDiscussions() {
@@ -39,29 +34,30 @@ export default class DiscussionStore extends BaseStore<
   }
 
   @computed
-  get proposalDiscussions() {
-    return this.proposalDiscussion;
+  get proposalDiscussionsArray() {
+    return this.toDataArray(this.proposalDiscussions);
   }
 
-  // Data consuming methods
-  getDiscussionById = async (id: string): Promise<DiscussionModel | void> => {
+  // Data consuming methods TO REMOVE
+  @action
+  getDiscussionById = async (
+    id: string,
+  ): Promise<DiscussionModel | undefined> => {
     try {
       return this.getDataByIdAndCollections(id, [this.discussions]);
     } catch (err) {
-      // Temporary logic for fetching Discussion in case it's not in the store.
-      return await fetchDiscussionById(id)
-        .then((discussion: DiscussionModel) => {
-          this.discussions.set(id, discussion);
-          return discussion;
-        })
-        .catch(() => {
-          Logger.info('getDiscussionById-error ~>', id);
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
+      try {
+        const discussion = await fetchDiscussionById(id);
+        this.discussions.set(id, discussion);
+        return discussion;
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
         });
+      }
     }
   };
+
   // helper function
   // if discussion already exists in database,
   // we don't want to initialize isExpanded with the default true value,
@@ -121,6 +117,25 @@ export default class DiscussionStore extends BaseStore<
     this.discussions = observable.map(discussionsMap);
   };
 
-  getProposalDiscussionById = async (id: string): Promise<DiscussionModel> =>
-    await fetchDiscussionById(id);
+  getProposalDiscussionById = async (
+    id: string,
+  ): Promise<DiscussionModel | undefined> => {
+    try {
+      return this.getDataByIdAndCollections(id, [this.discussions]);
+    } catch (err) {
+      try {
+        const discussion = await fetchDiscussionById(id);
+        if (discussion) {
+          this.proposalDiscussions = observable.map(
+            this.toEntityModelArr([discussion]),
+          );
+          return new DiscussionModel(discussion, false);
+        }
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        });
+      }
+    }
+  };
 }

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect, ReactElement} from 'react';
 
 import {
   SafeAreaView,
@@ -7,17 +7,17 @@ import {
   Text,
   View,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {layout, font, sizeS, colors} from '~/Theme';
-import {func, InferProps, shape} from 'prop-types';
 import {FlatList} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
-import {notificationStorePropTypes} from '~/Types/propTypes';
+import {NotificationStore} from '~/Types/store';
 import {Notification} from '~/Stores/Models/Notification';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {EventTypeState} from '~/Graphql/Notification/NotificationType';
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingRequest from '~/Components/Notifications/FundingRequest';
@@ -31,16 +31,25 @@ import DiscussionMessageReported from '~/Components/Notifications/DiscussionMess
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
 
-const props = {
-  navigation: shape({
-    addListener: func.isRequired,
-  }).isRequired,
-  notificationStore: notificationStorePropTypes.isRequired,
-};
-const NotificationList: React.FC<InferProps<typeof props>> = ({
+interface Props {
+  navigation: {
+    addListener: (status: string, callback: () => void) => void;
+  };
+  notificationStore: NotificationStore;
+}
+
+const NotificationList = ({
   navigation,
   notificationStore,
-}) => {
+}: Props): ReactElement => {
+  const [page, setPage] = useState(0);
+  const [isLoading, setLoading] = useState(true);
+
+  const initialLoad = async () => {
+    setPage(0);
+    return notificationStore.loadNotifications();
+  };
+
   useEffect(() => {
     if (!notificationStore.hasNewNotifications) {
       Platform.OS === 'ios'
@@ -49,48 +58,64 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     }
   }, [notificationStore.hasNewNotifications]);
 
-  const notificationList: Array<Notification> =
-    notificationStore.loggedUserNotifications;
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await initialLoad();
+      setLoading(false);
+    })();
+  }, []);
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await initialLoad();
+    setRefreshing(false);
+  }, [refreshing]);
+
+  const onEndReached = async () => {
+    notificationStore.loadNotifications(page + 1);
+    setPage(page + 1);
+  };
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
-        return <CommonWhitelisted item={item} navigation={navigation} />;
+        return <CommonWhitelisted item={item} />;
 
       case EventTypeState.fundingRequestCreated:
       case EventTypeState.fundingRequestAccepted:
       case EventTypeState.fundingRequestExecuted:
       case EventTypeState.fundingRequestRejected:
-        return <FundingRequest item={item} navigation={navigation} />;
+        return <FundingRequest item={item} />;
 
       case EventTypeState.messageCreated:
-        return <MessageCreated item={item} navigation={navigation} />;
+        return <MessageCreated item={item} />;
 
       case EventTypeState.commonMemberAdded:
-        return <CommonMemberAdded item={item} navigation={navigation} />;
+        return <CommonMemberAdded item={item} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <RequestToJoinCreated item={item} navigation={navigation} />;
+        return <RequestToJoinCreated item={item} />;
 
       case EventTypeState.requestToJoinRejected:
-        return <RequestToJoinRejected item={item} navigation={navigation} />;
+        return <RequestToJoinRejected item={item} />;
 
       case EventTypeState.discussionCreated:
-        return <DiscussionCreated item={item} navigation={navigation} />;
+        return <DiscussionCreated item={item} />;
 
       case EventTypeState.proposalReported:
-        return <ProposalReported item={item} navigation={navigation} />;
+        return <ProposalReported item={item} />;
 
       case EventTypeState.discussionReported:
-        return <DiscussionReported item={item} navigation={navigation} />;
+        return <DiscussionReported item={item} />;
 
       case EventTypeState.discussionMessageReported:
-        return (
-          <DiscussionMessageReported item={item} navigation={navigation} />
-        );
+        return <DiscussionMessageReported item={item} />;
       case EventTypeState.welcomeNotification:
-        return <WelcomeNotification item={item} navigation={navigation} />;
+        return <WelcomeNotification item={item} />;
 
       default:
         Logger.warn(
@@ -110,6 +135,16 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      setTimeout(() => {
+        setPage(0);
+      }, 5000);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -119,11 +154,17 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
           <Text style={styles.title}>Notifications</Text>
         </View>
 
-        {notificationList ? (
+        {!isLoading ? (
           <FlatList
-            data={notificationList.slice()}
+            data={notificationStore.myNotificationsValues}
             renderItem={renderNotificationItem}
             initialNumToRender={8}
+            keyExtractor={(x) => x.id}
+            onEndReachedThreshold={400}
+            onEndReached={onEndReached}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           />
         ) : (
           <Loader isBigger />
@@ -132,8 +173,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     </>
   );
 };
-
-NotificationList.propTypes = props;
 
 const styles = StyleSheet.create({
   scrollView: {

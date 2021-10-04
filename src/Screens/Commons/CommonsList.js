@@ -65,10 +65,12 @@ const CommonsList = ({navigation, rootStore}) => {
     data: commonStore.featuredCommonsValues,
   };
 
-  React.useEffect(async () => {
-    setLoading(true);
-    await initialLoad();
-    setLoading(false);
+  React.useEffect(() => {
+    (async () => {
+      setLoading(true);
+      await initialLoad();
+      setLoading(false);
+    })();
   }, []);
 
   const [refreshing, setRefreshing] = React.useState(false);

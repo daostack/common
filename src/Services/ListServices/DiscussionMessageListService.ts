@@ -80,7 +80,6 @@ export const getProposalDiscussionMessages = async (
   }
 };
 
-//OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (
   messageId: string,
 ): Promise<MessageType> => {

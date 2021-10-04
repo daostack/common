@@ -70,13 +70,12 @@ export const fetchDiscussions = async ({
 
 export const fetchDiscussionById = async (
   discussionId: string,
-): Promise<Discussion> => {
+): Promise<DiscussionType> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
-
   const {data} = await apollo.query({
     query: GetDiscussionDocumentById,
     variables: {
@@ -84,5 +83,5 @@ export const fetchDiscussionById = async (
     },
   });
 
-  return new Discussion(data.discussion, false);
+  return data.discussion as DiscussionType;
 };

@@ -1,5 +1,9 @@
 import BaseStore from './BaseStore';
-import {fetchDiscussionMessageById} from '~/Services/ListServices/DiscussionMessageListService';
+import {
+  fetchDiscussionMessageById,
+  subscribeToProposalDiscussionMessages,
+} from '~/Services/ListServices/DiscussionMessageListService';
+import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {MessageType} from '~/Graphql/Message/MessageType';
 import {DiscussionMessage} from '../Models/DiscussionMessage';

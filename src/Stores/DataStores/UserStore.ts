@@ -1,12 +1,17 @@
-import {observable, ObservableMap} from 'mobx';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {observable, ObservableMap, runInAction} from 'mobx';
+import {CommonMemberType} from '~/Graphql/Common/CommonType';
+import {UserType} from '~/Graphql/User';
+import {
+  fetchUserById,
+  getUserById,
+} from '~/Services/ListServices/UserListService';
 import {getUserById} from '~/Services/ListServices/UserListService';
 import {showBackendError} from '~/Util';
 import {UserModel} from '../Models/UserModel';
 import RootStore from '../RootStore';
 import BaseStore from './BaseStore';
 
-export default class UserStore extends BaseStore<UserModel, IUserEntity> {
+export default class UserStore extends BaseStore<UserModel, UserType> {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
@@ -20,8 +25,8 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     } catch (err) {
       try {
         const user = await getUserById(uid);
-        this.users.merge(this.toEntityModelArr([user as IUserEntity]));
-        return new UserModel(user as IUserEntity);
+        this.users.merge(this.toEntityModelArr([user as UserType]));
+        return new UserModel(user as UserType);
       } catch (error) {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
@@ -31,7 +36,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   };
 
   // Overriden methods
-  getEntityModel(entity: IUserEntity): UserModel {
+  getEntityModel(entity: UserType): UserModel {
     return new UserModel(entity);
   }
 }

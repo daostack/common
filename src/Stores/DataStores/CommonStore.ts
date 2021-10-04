@@ -1,5 +1,4 @@
 import {computed, observable, ObservableMap, action} from 'mobx';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {
   updateCommon,
   fetchUserCommons,

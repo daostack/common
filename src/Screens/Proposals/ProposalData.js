@@ -12,6 +12,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import ReadMore from 'react-native-read-more-text';
 import ImageView from 'react-native-image-viewing';
 import Loader from '~/Components/Loader';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 import {useNavigation} from '@react-navigation/native';
 import {observer, inject} from 'mobx-react';
@@ -37,7 +38,7 @@ const ProposalData = ({proposalId, rootStore}) => {
   const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>
       <Text style={styles.imageGalleryText}>
-        {proposalInfoState.images[imageGalleryIndex].title}
+        {proposalInfoState?.images[imageGalleryIndex].title}
       </Text>
     </View>
   );

@@ -1,7 +1,8 @@
-import {StackActionType} from '@react-navigation/native';
+import {StackActionType, CommonActions} from '@react-navigation/native';
 
-interface NavigationProps {
-  dispatch: (arg: StackActionType) => void;
+export interface NavigationProps {
+  dispatch: (arg: any) => void;
+  navigate: (arg: any, arg2?: any) => void;
   pop: () => void;
   goBack: () => void;
   setOptions: (value: any) => void;

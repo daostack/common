@@ -1,31 +1,96 @@
 import BaseStore from './BaseStore';
+import {ObservableSubscription} from '@apollo/client';
+import {
+  fetchNotifications,
+  fetchNotificationById,
+  changeNotificationSeenStatus,
+  markAsSeenNotifications,
+  onNotificationCreated,
+} from '~/Services/ListServices/NotificationListService';
+import {
+  NotificationSeenStatus,
+  NotificationType,
+} from '~/Graphql/Notification/NotificationType';
 import RootStore from '../RootStore';
 import {
   EventTypeState,
-  INotificationEntity,
   IProposalNotificationData,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {Notification, NotificationItemState} from '../Models/Notification';
-import {action, computed, observable} from 'mobx';
+} from '~/Graphql/Notification/NotificationType';
+import {Notification} from '../Models/Notification';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import Logger from '~/Services/Logger';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {DiscussionMessage} from '../Models/DiscussionMessage';
 import {Discussion} from '../Models/Discussion';
 import {Proposal} from '../Models/Proposal';
 import {showBackendError} from '~/Util';
 
 export default class NotificationStore extends BaseStore<
   Notification,
-  INotificationEntity
+  NotificationType
 > {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
 
+  @observable
+  private notifications: ObservableMap<string, Notification> = observable.map(
+    {},
+  );
+
+  @observable
+  private loadedNotifications: ObservableMap<string, Notification> =
+    observable.map({});
+
+  @computed
+  get myNotificationsValues() {
+    return (this.toDataArray(this.notifications) as Array<Notification>).sort(
+      (a: Notification, b: Notification) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }
+
+  @action
+  setNewNotification = (value: Notification): void => {
+    this.notifications.set(value.id, value);
+  };
+
+  subscribeToNewNotifications = (): ObservableSubscription | undefined =>
+    onNotificationCreated(this.setNewNotification);
+
+  @action
+  loadNotifications = async (page: number = 0): Promise<void> => {
+    if (page === 0) {
+      this.notifications.clear();
+    }
+    const notifications = await fetchNotifications(page);
+
+    const notificationsMap = new Map<string, Notification>();
+    notifications.forEach((item) => {
+      notificationsMap.set(item.id, item);
+    });
+    this.notifications.forEach((value, key) => {
+      if (!notificationsMap.has(key)) {
+        notificationsMap.set(key, value);
+      }
+    });
+    this.notifications = observable.map(notificationsMap);
+  };
+
   // Data consuming methods
-  getNotificationById = (id: string): Notification | undefined => {
+  getNotificationById = async (
+    id: string,
+  ): Promise<Notification | undefined> => {
     try {
-      return this.getDataById(id);
+      return this.getDataByIdAndCollections(id, [
+        this.notifications,
+        this.loadedNotifications,
+      ]);
     } catch (error) {
+      try {
+        const notification = await fetchNotificationById(id);
+        this.loadedNotifications.set(id, notification as Notification);
+        return notification;
+      } catch (err) {}
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
       });
@@ -34,25 +99,9 @@ export default class NotificationStore extends BaseStore<
   };
 
   @computed
-  get loggedUserNotifications(): Array<Notification> | undefined {
-    try {
-      const notif = this.getDataArray
-        ?.filter(() => true)
-        .sort(
-          (notification: Notification, prevNotification: Notification) =>
-            prevNotification.createdAt?.seconds -
-            notification.createdAt?.seconds,
-        );
-      return notif;
-    } catch (error) {
-      return [];
-    }
-  }
-
-  @computed
   get hasNewNotifications() {
     return (
-      (this.loggedUserNotifications?.filter(
+      (this.toDataArray(this.notifications)?.filter(
         (notification: Notification) =>
           notification.notificationItemState?.seen === false,
       )?.length || 0) > 0
@@ -60,82 +109,78 @@ export default class NotificationStore extends BaseStore<
   }
 
   @action
-  setNotificationItemState = (
+  setNotificationItemState = async (
     notificationId: string,
-    newState: Partial<NotificationItemState>,
+    newState: NotificationSeenStatus,
   ) => {
-    const currentNotification = this.getNotificationById(notificationId);
+    const currentNotification = await changeNotificationSeenStatus(
+      notificationId,
+      newState,
+    );
     if (currentNotification) {
-      currentNotification.notificationItemState = {
-        seen: newState.seen || currentNotification.notificationItemState.seen,
-        opened:
-          newState.opened || currentNotification.notificationItemState.opened,
-      };
+      this.notifications.set(notificationId, currentNotification);
     }
     Logger.warn(
-      'Not found notification while trying to update notifciationItemState',
+      'Not found notification while trying to update notification seen status',
       notificationId,
     );
   };
 
   @action
-  removeSeenStateForNewNotifications = () => {
-    const newNotificationsList = this.loggedUserNotifications?.filter(
-      (notification: Notification) =>
-        notification.notificationItemState?.seen === false,
-    );
-    newNotificationsList?.forEach((notificationItem: Notification) => {
-      notificationItem.notificationItemState = {
-        seen: true,
-        opened: notificationItem.notificationItemState.opened,
-      };
+  removeSeenStateForNewNotifications = async (): Promise<void> => {
+    const ids: string[] = [];
+    const updatedNotification = new Map<string, Notification>();
+    this.notifications.forEach((value, key) => {
+      if (!value.notificationItemState.seen) {
+        ids.push(key);
+      }
+      updatedNotification.set(key, {
+        ...value,
+        notificationItemState: {
+          seen: true,
+          opened: value.notificationItemState.opened,
+        },
+      });
     });
+    this.notifications = observable.map(updatedNotification);
+    if (ids.length > 0) {
+      await markAsSeenNotifications(ids);
+    }
   };
 
   @action
   deleteUserNotifications = () => {
-    this.data = observable.map({});
+    this.notifications.clear();
   };
 
   @action
-  addWelcomeNotification = () => {
-    const welcomeNotification = {
-      id: EventTypeState.welcomeNotification,
-      createdAt: this.rootStore.authStore.userInfo?.createdAt,
-      updatedAt: this.rootStore.authStore.userInfo?.createdAt,
-      eventObjectId: '',
-      userFilter: [],
-      eventType: EventTypeState.welcomeNotification,
-    } as INotificationEntity;
+  addWelcomeNotification = (userId?: string) => {
+    if (userId) {
+      const welcomeNotification = {
+        id: EventTypeState.welcomeNotification,
+        createdAt: this.rootStore.authStore.userInfo?.createdAt,
+        updatedAt: this.rootStore.authStore.userInfo?.createdAt,
+        eventObjectId: '',
+        userFilter: [],
+        eventType: EventTypeState.welcomeNotification,
+        commonId: null,
+        proposalId: null,
+        discussionId: null,
+        userId,
+        show: true,
+        seenStatus: NotificationSeenStatus.Done,
+      } as NotificationType;
 
-    this.setData(
-      EventTypeState.welcomeNotification,
-      this.getEntityModel(welcomeNotification),
-    );
+      this.notifications.set(
+        EventTypeState.welcomeNotification,
+        this.getEntityModel(welcomeNotification),
+      );
+    }
   };
 
   // Overriden methods
-  getEntityModel(entity: INotificationEntity): Notification {
-    const defaultNotificationItemState = {
-      seen: false,
-      opened: false,
-    };
-
-    let notificationItemState = defaultNotificationItemState;
-
-    if (this.rootStore.notificationStore.exists(entity.id)) {
-      const notificationFromStore =
-        this.rootStore.notificationStore.getNotificationById(entity.id);
-      // It's possible to have undefined notificationItemState for existing Notification in the store,
-      // because of old notifications, before the implementation of the feature with the dot indicator.
-      // So, we are setting a default state to such of prorposals for safety.
-      notificationItemState =
-        notificationFromStore?.notificationItemState ||
-        defaultNotificationItemState;
-    }
-
-    const newNotif = new Notification(entity, notificationItemState);
-    return newNotif;
+  getEntityModel(entity: NotificationType): Notification {
+    return new Notification(entity);
   }
 
   async getProposalNotificationData(
@@ -165,7 +210,7 @@ export default class NotificationStore extends BaseStore<
   }
 
   async getParentDiscussion(
-    message: DiscussionMessageType,
+    message: DiscussionMessage,
   ): Promise<Discussion | Proposal> {
     const discussion = await this.rootStore.discussionStore.getDiscussionById(
       message.discussionId,

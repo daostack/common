@@ -1,23 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
-import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import React, {ReactElement, useEffect, useState} from 'react';
+import {NotificationItemData} from '~/Graphql/Notification/NotificationType';
 import Logger from '~/Services/Logger';
+import {STORE_KEYS} from '~/Util/constants/storeKeys';
+import NotificationItem from './NotificationItem';
+import {NotificationProps} from './props';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
+const CommonWhitelisted = ({
   item,
-  navigation,
   rootStore,
-}) => {
+}: NotificationProps): ReactElement | null => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
 
@@ -53,15 +45,11 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
     return null;
   }
 
-  return (
-    <NotificationItem
-      item={item}
-      notificationData={notificationData}
-      navigation={navigation}
-    />
-  );
+  return <NotificationItem item={item} notificationData={notificationData} />;
 };
 
-CommonWhitelisted.propTypes = props;
-
-export default inject('rootStore')(observer(CommonWhitelisted));
+export default inject('rootStore')(
+  observer((props: Omit<NotificationProps, STORE_KEYS>) => (
+    <CommonWhitelisted {...(props as NotificationProps)} />
+  )),
+);

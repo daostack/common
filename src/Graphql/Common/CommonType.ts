@@ -1,8 +1,7 @@
 import {BaseType} from '~/Graphql/BaseType';
-import {firebase} from '~/Firebase';
 import {PERMISSIONS_GRAPHQL} from '~/Util/constants/permissions.enum';
 
-export interface CommonType extends BaseType {
+export type CommonType = BaseType & {
   /**
    * The name of the common showed in the app and
    * other places (email, notification etc.)
@@ -73,7 +72,7 @@ export interface CommonType extends BaseType {
   action: string;
   byline: string;
   description: string;
-}
+};
 
 export interface CommonRule {
   /**
@@ -106,8 +105,8 @@ export interface ICommonLink {
 
 export type ContributionType = 'one-time' | 'monthly';
 
-export interface CommonMemberType {
+export type CommonMemberType = {
   userId: string;
-  joinedAt?: firebase.firestore.Timestamp;
+  joinedAt?: Date;
   roles: Array<PERMISSIONS_GRAPHQL>;
-}
+};

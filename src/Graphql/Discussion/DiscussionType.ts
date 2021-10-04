@@ -1,5 +1,5 @@
 import {BaseType} from '~/Graphql/BaseType';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {UserType} from '~/Graphql/User';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
 import {MessageReport, REPORT_FLAG} from '~/Graphql/Report';
 
@@ -33,7 +33,7 @@ export interface DiscussionType extends BaseType {
    * Owner info
    */
 
-  owner: IUserEntity;
+  owner: UserType;
 
   /**
    * When was the last message sent in this discussion
@@ -49,10 +49,10 @@ export interface DiscussionType extends BaseType {
   reports: MessageReport[];
   flag: REPORT_FLAG;
 
-  type: DiscussionTypes;
+  type: DiscussionEntityType;
 }
 
-export enum DiscussionTypes {
+export enum DiscussionEntityType {
   PROPOSAL_DISCUSSION = 'ProposalDiscussion',
   COMMON_DISCUSSION = 'CommonDiscussion',
 }

@@ -1,28 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
-import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import React, {useEffect, useState} from 'react';
 import {PROPOSAL_TYPE} from '~/Config';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {
+  EventTypeState,
+  NotificationItemData,
+} from '~/Graphql/Notification/NotificationType';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {STORE_KEYS} from '~/Util/constants/storeKeys';
+import NotificationItem from './NotificationItem';
+import {NotificationProps} from './props';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const ProposalReported: React.FC<InferProps<typeof props>> = ({
-  item,
-  navigation,
-  rootStore,
-}) => {
+const ProposalReported = ({item, rootStore}: NotificationProps) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
   let eventType = item.eventType;
-  const [proposal, setProposal] = useState();
+  const [proposal, setProposal] = useState<Proposal>();
 
   useEffect(() => {
     (async () => {
@@ -66,11 +58,12 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
     <NotificationItem
       item={{...item, eventType}}
       notificationData={notificationData}
-      navigation={navigation}
     />
   );
 };
 
-ProposalReported.propTypes = props;
-
-export default inject('rootStore')(observer(ProposalReported));
+export default inject('rootStore')(
+  observer((props: Omit<NotificationProps, STORE_KEYS>) => (
+    <ProposalReported {...(props as NotificationProps)} />
+  )),
+);

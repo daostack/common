@@ -1,10 +1,13 @@
 import {observable, computed} from 'mobx';
+import {UserType} from '~/Graphql/User';
 import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
-import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {BaseModel} from './BaseModel';
 import {UserModel} from './UserModel';
 import {DiscussionMessage} from './DiscussionMessage';
-import {DiscussionType, DiscussionTypes} from '~/Graphql/Discussion/DiscussionType';
+import {
+  DiscussionType,
+  DiscussionEntityType,
+} from '~/Graphql/Discussion/DiscussionType';
 
 export class Discussion extends BaseModel<DiscussionType> {
   @observable
@@ -32,13 +35,13 @@ export class Discussion extends BaseModel<DiscussionType> {
   isExpanded: boolean;
 
   @observable
-  owner: IUserEntity;
+  owner: UserType;
 
   @observable
   messages: DiscussionMessage[];
 
   @observable
-  type: DiscussionTypes;
+  type: DiscussionEntityType;
 
   @computed
   get isModerationHidden() {
