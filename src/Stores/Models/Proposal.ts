@@ -142,7 +142,10 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    [this.votesFor, this.votesAgainst] = [this.countVotes(VoteOutcome.APPROVE), this.countVotes(VoteOutcome.CONDEMN)];
+    [this.votesFor, this.votesAgainst] = [
+      this.countVotes(VoteOutcome.APPROVE),
+      this.countVotes(VoteOutcome.CONDEMN),
+    ];
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = {

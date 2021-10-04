@@ -6,7 +6,6 @@ import {
   CreateProposalVoteDocument,
   CreateVoteInput,
   finalizeProposalDocument,
-  getProposalDocument,
   getProposalsDocument,
   onProposalChangeDocument,
   ProposalEntity,
@@ -43,17 +42,6 @@ export const PROPOSAL_STAGES_ALL = [
   ...PROPOSAL_STAGES_ACTIVE,
 ];
 
-interface ProposalFilter {
-  id?: string;
-  commonId?: string;
-  userId?: string;
-  showAll?: boolean;
-  onlyRequestsToJoin?: boolean;
-  onlyFundingRequests?: boolean;
-  onlyActive?: boolean;
-  onlyHistory?: boolean;
-}
-
 export const fetchProposalById = async (
   proposalId: string,
 ): Promise<ProposalEntity | undefined> => {
@@ -75,7 +63,7 @@ export const fetchProposalById = async (
   if (!data.proposal) {
     return data;
   }
-  return new Proposal(data.proposal as ProposalEntity);
+  return data.proposal as ProposalEntity;
 };
 
 // Create Proposals
