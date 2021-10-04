@@ -20,21 +20,20 @@ export const uiStorePropTypes = shape({
 
 export type uiStoreType = {
   bottomSheetStore: {
-    showBottomSheet: func,
-    hideBottomSheet: func,
-    topSnap: number,
-    template: object,
-    increaseTopSnap: func,
-    decreaseTopSnap: func,
-  },
+    showBottomSheet: func;
+    hideBottomSheet: func;
+    topSnap: number;
+    template: object;
+    increaseTopSnap: func;
+    decreaseTopSnap: func;
+  };
   appLoaderStore: {
-    isLoading: bool,
-    showLoader: func,
-    hideLoader: func,
-  },
-  conversionRate: number,
+    isLoading: bool;
+    showLoader: func;
+    hideLoader: func;
+  };
+  conversionRate: number;
 };
-
 
 export const authStorePropTypes = shape({
   userInfo: shape({
@@ -75,7 +74,6 @@ export const discussionStorePropTypes = shape({
 });
 
 export const discussionMessageStorePropTypes = shape({
-  getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });
 
@@ -89,7 +87,6 @@ export const notificationStorePropTypes = shape({
   addWelcomeNotification: func.isRequired,
   hasNewNotifications: bool.isRequired,
 });
-
 
 export const rootStorePropTypes = shape({
   authStore: authStorePropTypes.isRequired,

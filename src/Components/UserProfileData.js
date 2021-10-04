@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
@@ -30,18 +30,29 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
-  const user = isOwnProfile ? userInfo : userStore.getUserById(providedUserId);
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    (async () => {
+      if (isOwnProfile) {
+        setUser(userInfo);
+      } else {
+        const userInfoResponse = await userStore.getUserById(providedUserId);
+        setUser(userInfoResponse);
+      }
+    })();
+  }, [providedUserId, isOwnProfile]);
 
   navigation.setOptions({
-    title: user.displayNameFormatted,
+    title: user?.displayNameFormatted,
   });
 
-  const requestsCount = proposalStore.getUserProposals(user.uid, {
+  const requestsCount = proposalStore.getUserProposals(user?.uid, {
     stage: PROPOSAL_STAGE.Active,
     type: PROPOSAL_TYPE.Join,
   }).length;
 
-  const proposalsCount = proposalStore.getUserProposals(user.uid, {
+  const proposalsCount = proposalStore.getUserProposals(user?.uid, {
     stage: PROPOSAL_STAGE.Active,
     type: PROPOSAL_TYPE.FundingRequest,
   }).length;
@@ -50,13 +61,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
   useEffect(() => {
     commonStore.loadMyCommons();
-    const unsubscribeUserActiveProposals = !isOwnProfile
-      ? proposalStore.subscribeToUserActiveProposals(userId)
-      : null;
-    return () => {
-      unsubscribeUserActiveProposals && unsubscribeUserActiveProposals();
-    };
-  }, [userId, currUserInfo, userInfo]);
+  }, []);
 
   const navigateToEditProfile = (isCompleteAccount) => {
     const navigate = CommonActions.navigate({
@@ -70,7 +75,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
   const renderUserProfilePicture = () =>
     !isOwnProfile ? (
-      <UserAvatar image={user.photoURL} iconName={'follow'} />
+      <UserAvatar image={user?.photoURL} iconName={'follow'} />
     ) : (
       <ImageField
         isAvatar={true}
@@ -132,7 +137,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
    * @param newCount {number} - the new count of the requests
    */
 
-  const showMaxData = user.uid === userInfo?.uid ? 5 : null;
+  const showMaxData = user?.uid === userInfo?.uid ? 5 : null;
 
   return (
     <React.Fragment>
@@ -145,8 +150,10 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         </View>
       )}
       {renderUserProfilePicture()}
-      <Text style={styles.name}>{user.displayName}</Text>
-      {isOwnProfile && <Text style={text.ashleyjquimbacom2}>{user.email}</Text>}
+      <Text style={styles.name}>{user?.displayName}</Text>
+      {isOwnProfile && (
+        <Text style={text.ashleyjquimbacom2}>{user?.email}</Text>
+      )}
       <View style={styles.countBoxContainer}>
         <CountBox
           count={commonsCount}
@@ -167,7 +174,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
       <View style={styles.contentContainer}>
         <Text style={text.h2Black}>Intro</Text>
-        <Text style={styles.userIntro}>{user.intro}</Text>
+        <Text style={styles.userIntro}>{user?.intro}</Text>
       </View>
 
       <View style={styles.contentContainerWithoutPadding}>
@@ -196,7 +203,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
         <CommonsSwiper
           navigation={navigation}
-          userId={user.uid}
+          userId={user?.uid}
           showMax={showMaxData}
         />
       </View>
@@ -234,7 +241,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
           isSwiper={true}
           showMax={showMaxData}
           userInfo={{
-            id: user.uid,
+            id: user?.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
@@ -283,7 +290,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
           isSwiper={true}
           showMax={showMaxData}
           userInfo={{
-            id: user.uid,
+            id: user?.uid,
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,

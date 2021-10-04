@@ -14,7 +14,6 @@ import {
   IProposalNotificationData,
 } from '~/Graphql/Notification';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
-import {Message} from '~/Graphql/Message';
 
 export type AuthStore = {
   userInfo: UserInfo;
@@ -80,7 +79,7 @@ export type DiscussionMessageStore = {
   getDiscussionMessagesByDiscussionId: (
     discussionId: string,
   ) => DiscussionMessage | undefined;
-  getDiscussionMessageById: (id: string) => DiscussionMessage | undefined;
+  getDiscussionMessageById: (id: string) => Promise<DiscussionMessage | undefined>;
 };
 
 export type UiStore = {

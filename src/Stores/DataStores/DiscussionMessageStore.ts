@@ -7,10 +7,8 @@ import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {MessageType} from '~/Graphql/Message/MessageType';
 import {DiscussionMessage} from '../Models/DiscussionMessage';
-import {action, computed, observable, ObservableMap, runInAction} from 'mobx';
+import {action, computed, observable, ObservableMap} from 'mobx';
 import {showBackendError} from '~/Util';
-//import {ProposalEntity} from '~/Graphql/Proposal';
-//import {createDiscussion} from '~/Services/ListServices/DiscussionListService';
 import moment from 'moment';
 
 export default class DiscussionMessageStore extends BaseStore<
@@ -64,59 +62,25 @@ export default class DiscussionMessageStore extends BaseStore<
     });
   };
 
-  // Not in use anyways, TODO to be removed
-  getDiscussionMessageById = (
+  getDiscussionMessageById = async (
     discussionId: string,
-  ): DiscussionMessage | undefined => {
+  ): Promise<DiscussionMessage | undefined> => {
     try {
-      return this.getDataById(discussionId);
-    } catch (errr) {
-      // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchDiscussionMessageById(id)
-        .then((discussion: IFirebaseDoc<MessageType>) => {
-          if (discussion.exists) {
-            runInAction(() => {
-              this.setData(
-                discussionId,
-                this.getEntityModel(this.firestoreDocToEntity(discussion)),
-              );
-            });
-          }
-        })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          });
+      return this.getDataByIdAndCollections(discussionId, [
+        this.proposalMessages,
+        this.discussionMessages,
+      ]);
+    } catch (err) {
+      try {
+        const message = await fetchDiscussionMessageById(discussionId);
+        return new DiscussionMessage(message);
+      } catch (error) {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
         });
-      return undefined;
+      }
     }
   };
-
-  getDiscussionMessagesByDiscussionId = (
-    discussionId: string,
-  ): Array<DiscussionMessage> | undefined => {
-    try {
-      return this.getDataArray
-        ?.filter(
-          (message: DiscussionMessage) => message.discussionId === discussionId,
-        )
-        .sort(
-          (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
-            prevMessage?.createdAt?.getSeconds() -
-            message?.createdAt?.getSeconds(),
-        );
-    } catch (error) {
-      showBackendError({
-        bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-      });
-      return;
-    }
-  };
-
-  subscribeToProposalDiscussionMessages = (
-    proposalId: string,
-  ): FirestoreUnsubscribeFn =>
-    subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: MessageType): DiscussionMessage {

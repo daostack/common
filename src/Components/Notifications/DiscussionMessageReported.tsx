@@ -20,13 +20,16 @@ const DiscussionMessageReported = ({item, rootStore}: NotificationProps) => {
         }
       : {discussion: discussionObject};
 
-  const messageReportedData =
-    rootStore.discussionMessageStore.getDiscussionMessageById(
-      item.eventObjectId,
-    );
+  const [messageReportedData, setMessageReportedData] = useState();
+
   useEffect(() => {
     (async () => {
-      if (messageReportedData) {
+      const messageResponse =
+        await rootStore.discussionMessageStore.getDiscussionMessageById(
+          item.eventObjectId,
+        );
+      setMessageReportedData(messageReportedData);
+      if (messageResponse) {
         const objectData =
           await rootStore.notificationStore.getParentDiscussion(
             messageReportedData,
@@ -36,8 +39,8 @@ const DiscussionMessageReported = ({item, rootStore}: NotificationProps) => {
           const common = rootStore.commonStore.getCommonById(
             objectData.commonId,
           );
-          const messageOwner = rootStore.userStore.getUserById(
-            messageReportedData.ownerId,
+          const messageOwner = await rootStore.userStore.getUserById(
+            messageResponse.ownerId,
           );
           const data = {
             createdAt: item.createdAt,
@@ -51,7 +54,7 @@ const DiscussionMessageReported = ({item, rootStore}: NotificationProps) => {
         }
       }
     })();
-  }, [messageReportedData]);
+  }, [item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || messageReportedData?.isModerationHidden) {

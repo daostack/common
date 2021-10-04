@@ -8,26 +8,31 @@ import {NotificationProps} from './props';
 const MessageCreated = ({item, rootStore}: NotificationProps) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
-  const message = rootStore.discussionMessageStore.getDiscussionMessageById(
-    item.eventObjectId,
-  );
+  const [message, setMessage] = useState();
 
   useEffect(() => {
     (async () => {
-      if (message) {
+      const messageResponse =
+        await rootStore.discussionMessageStore.getDiscussionMessageById(
+          item.eventObjectId,
+        );
+      setMessage(messageResponse);
+      if (messageResponse) {
         let data = {} as NotificationItemData;
         const discussion = await rootStore.discussionStore.getDiscussionById(
-          message.discussionId,
+          messageResponse.discussionId,
         );
         let proposal;
         if (!discussion) {
           proposal = await rootStore.proposalStore.getProposalById(
-            message.discussionId,
+            messageResponse.discussionId,
           );
         }
         const objectData = discussion || proposal;
 
-        const user = rootStore.userStore.getUserById(message.ownerId);
+        const user = await rootStore.userStore.getUserById(
+          messageResponse.ownerId,
+        );
 
         const objectType = objectData?.userId
           ? {
@@ -41,7 +46,7 @@ const MessageCreated = ({item, rootStore}: NotificationProps) => {
             missingData: false,
             createdAt: item.createdAt,
             descriptionBold: `${user.firstName} ${user.lastName}:`,
-            description: ` ${message.text}`,
+            description: ` ${messageResponse.text}`,
             ownerAvatar: user.photoURL,
             ...objectType,
           };
@@ -64,7 +69,7 @@ const MessageCreated = ({item, rootStore}: NotificationProps) => {
         setNotificationData(data);
       }
     })();
-  }, [message]);
+  }, [item.eventObjectId]);
 
   //Skip in case of missiing data
   if (notificationData.missingData || message?.isModerationHidden) {

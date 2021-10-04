@@ -30,7 +30,7 @@ const validationSchema = object({
   firstName: string().required().label('The first name'),
   lastName: string().required().label('The last name'),
   photoURL: string(),
-  intro: string().label('The intro'),
+  intro: string().label('The intro').nullable(),
 });
 
 interface Values {

@@ -118,6 +118,7 @@ export default class CommonStore extends BaseStore<Common, CommonType> {
     return new Common(entity);
   }
 
+
   updateCommonInfo = async (updateCommonInfo: UpdateCommonInfoInput) => {
     try {
       return await updateCommon(updateCommonInfo);

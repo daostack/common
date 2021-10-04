@@ -49,7 +49,7 @@ export const CreateDiscussionMessageDocument = gql`
 `;
 
 export const GetDiscussionMessageDocument = gql`
-  query discussion($id: ID!) {
+  query GetDiscussionMessages($id: ID!) {
     discussion(id: $id) {
       id
       messages {
@@ -61,6 +61,21 @@ export const GetDiscussionMessageDocument = gql`
         owner {
           ${gqlUserProps}
         }
+      }
+    }
+  }
+`;
+
+export const GetDiscussionMessageByIdDocument = gql`
+  query GetDiscussionMessageById($id: ID!) {
+    discussionMessage(id: $id) {
+      id
+      message
+      userId
+      createdAt
+      flag
+      owner {
+        ${gqlUserProps}
       }
     }
   }

@@ -1,13 +1,14 @@
-import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
-
+import {
+  DiscussionMessageType,
+  MessageType,
+} from '~/Graphql/Message/MessageType';
+import {IFirebaseSnapshot} from '~/Firebase/types';
 import {
   CreateDiscussionMessageInput,
   CreateDiscussionMessageDocument,
   GetDiscussionMessageDocument,
+  GetDiscussionMessageByIdDocument,
 } from '~/Graphql/Message';
-
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 import {apollo} from '~/Util/helpers/apolloHelper';
@@ -79,25 +80,21 @@ export const getProposalDiscussionMessages = async (
   }
 };
 
-//OLD Methods: To be removed at the end of the migration
 export const fetchDiscussionMessageById = async (
   messageId: string,
-): Promise<IFirebaseDoc<DiscussionMessageType>> => {
+): Promise<MessageType> => {
   if (!messageId) {
     throw new Error(
       'Message Id (messageId) is required parameter, but it was not provided',
     );
   }
-  return await DiscussionMessagesCollection.doc(messageId).get();
+
+  const {data} = await apollo.query({
+    query: GetDiscussionMessageByIdDocument,
+    variables: {
+      id: messageId,
+    },
+  });
+
+  return data.discussionMessage;
 };
-
-export const subscribeToProposalDiscussionMessages = (
-  proposalId: string,
-  callback: commonDiscussionMessagesListLoadCallbackFn,
-) =>
-  DiscussionMessagesCollection.where('discussionId', '==', proposalId)
-    .orderBy('createTime', 'desc')
-    .onSnapshot((snapshot: IFirebaseSnapshot<DiscussionMessageType>) => {
-      callback(snapshot);
-    });
-

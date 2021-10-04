@@ -1,9 +1,6 @@
 import {observable, computed} from 'mobx';
 import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
 import {BaseModel} from './BaseModel';
-//import ImageSize from 'react-native-image-size';
-//import {promisedComputed} from 'computed-async-mobx';
-//import Logger from '~/Services/Logger';
 import {ModerationType, REPORT_FLAG} from '~/Graphql/Report';
 import {UserModel} from './UserModel';
 import {
@@ -142,7 +139,10 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.votes = newProposalInfo.votes;
     this.state = newProposalInfo.state;
     this.expiresAt = new Date(newProposalInfo.expiresAt);
-    [this.votesFor, this.votesAgainst] = [this.countVotes(VoteOutcome.APPROVE), this.countVotes(VoteOutcome.CONDEMN)];
+    [this.votesFor, this.votesAgainst] = [
+      this.countVotes(VoteOutcome.APPROVE),
+      this.countVotes(VoteOutcome.CONDEMN),
+    ];
     this.description = newProposalInfo.description;
     this.title = newProposalInfo.title;
     this.moderation = {

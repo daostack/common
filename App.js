@@ -135,19 +135,6 @@ const App = ({rootStore, navigation}) => {
     return unsubscribe;
   }, []);
 
-  // Initialize Mobx Stores
-  useEffect(() => {
-    let unsubscribeProposals = null;
-    if (authStore.userInfo?.uid) {
-      unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-        authStore.userInfo?.uid,
-      );
-    }
-    return () => {
-      unsubscribeProposals && unsubscribeProposals();
-    };
-  }, [authStore.userInfo?.uid]);
-
   // Initialize Intercom chat
   useEffect(() => {
     if (authStore.userInfo?.uid) {
