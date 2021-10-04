@@ -14,7 +14,6 @@ import {
   IProposalNotificationData,
 } from '~/Graphql/Notification';
 import {DiscussionMessage} from '~/Stores/Models/DiscussionMessage';
-import {Message} from '~/Graphql/Message';
 
 export type AuthStore = {
   userInfo: UserInfo;
