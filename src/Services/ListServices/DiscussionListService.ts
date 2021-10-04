@@ -1,4 +1,3 @@
-import {DiscussionsCollection} from '~/Firebase/Databasee/Collections/DiscussionsCollection';
 import {axiosDiscussionClient} from '../util/AxiosClient';
 import {auth} from '~/Firebase';
 import {IFirebaseSnapshot} from '~/Firebase/types';
@@ -16,18 +15,6 @@ import {apollo} from '~/Util/helpers/apolloHelper';
 export type commonDiscussionsListLoadCallbackFn = (
   updatedDiscussionsList: IFirebaseSnapshot<DiscussionType>,
 ) => void;
-
-export const subscribeToCommonDiscussions = (
-  commonId: string,
-  listChangeCallback: commonDiscussionsListLoadCallbackFn,
-) => {
-  const unsubscribe = DiscussionsCollection.where('commonId', '==', commonId)
-    .orderBy('lastMessage', 'desc')
-    .onSnapshot((snapshot: any) => {
-      listChangeCallback(snapshot);
-    });
-  return unsubscribe;
-};
 
 export const updateDiscussionLastMessage = async (
   discussionId: string,
@@ -83,13 +70,12 @@ export const fetchDiscussions = async ({
 
 export const fetchDiscussionById = async (
   discussionId: string,
-): Promise<Discussion> => {
+): Promise<DiscussionType> => {
   if (!discussionId) {
     throw new Error(
       'Discussion Id (discussionId) is required parameter, but it was not provided',
     );
   }
-
   const {data} = await apollo.query({
     query: GetDiscussionDocumentById,
     variables: {
@@ -97,5 +83,5 @@ export const fetchDiscussionById = async (
     },
   });
 
-  return new Discussion(data.discussion, false);
+  return data.discussion as DiscussionType;
 };

@@ -6,7 +6,7 @@ import {
   BadgeProps,
   EventTitleState,
   EventTypeState,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Graphql/Notification/NotificationType';
 
 const props = {
   type: string,

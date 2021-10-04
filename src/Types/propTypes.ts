@@ -51,12 +51,10 @@ export const authStorePropTypes = shape({
 });
 
 export const userStorePropTypes = shape({
-  subscribeToAllUsers: func.isRequired,
   getUserById: func.isRequired,
 });
 
 export const commonStorePropTypes = shape({
-  subscribeToAllCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
   updateCommonInfo: func.isRequired,
@@ -73,21 +71,16 @@ export const proposalStorePropTypes = shape({
 });
 
 export const discussionStorePropTypes = shape({
-  subscribeToCommonDiscussions: func.isRequired,
-  getCommonDiscussions: func.isRequired,
   getDiscussionById: func.isRequired,
 });
 
 export const discussionMessageStorePropTypes = shape({
-  subscribeToDiscussionsMessages: func.isRequired,
   getDiscussionMessagesByDiscussionId: func.isRequired,
   getDiscussionMessageById: func.isRequired,
 });
 
 export const notificationStorePropTypes = shape({
   getNotificationById: func.isRequired,
-  loggedUserNotifications: array.isRequired,
-  subscribeToLoggedUserNotifications: func.isRequired,
   deleteUserNotifications: func.isRequired,
   setNotificationItemState: func.isRequired,
   removeSeenStateForNewNotifications: func.isRequired,

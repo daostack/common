@@ -9,6 +9,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import {Proposal} from '~/Stores/Models/Proposal';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -49,11 +50,14 @@ const ProposalCard = ({
   const authStore = rootStore.authStore;
 
   const [proposalInfo, setProposalInfo] = useState();
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     (async () => {
       const proposal = await proposalStore.getProposalById(proposalId);
+      const isProposalOwner = authStore.isCurrentlyLogged(proposal.userId);
       setProposalInfo(proposal);
+      setIsOwner(isProposalOwner);
     })();
   }, [proposalId]);
 
@@ -75,7 +79,6 @@ const ProposalCard = ({
   }, [proposalInfo?.commonId, authStore?.userInfo]);
 
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(proposalInfo?.userId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;

@@ -1,11 +1,11 @@
 import {observable, computed} from 'mobx';
-import {DiscussionMessageType} from '~/Graphql/Message/MessageType';
+import {MessageType} from '~/Graphql/Message/MessageType';
 import {ModerationType} from '~/Graphql/Report';
 import {User} from '~/Graphql';
 import {BaseModel} from './BaseModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 
-export class DiscussionMessage extends BaseModel<DiscussionMessageType> {
+export class DiscussionMessage extends BaseModel<MessageType> {
   @observable
   discussionId: string;
 
@@ -32,7 +32,7 @@ export class DiscussionMessage extends BaseModel<DiscussionMessageType> {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 
-  constructor(newDiscussionMessageInfo: DiscussionMessageType) {
+  constructor(newDiscussionMessageInfo: MessageType) {
     super(newDiscussionMessageInfo);
     this.discussionId = newDiscussionMessageInfo.discussionId;
     this.userId = newDiscussionMessageInfo.userId;

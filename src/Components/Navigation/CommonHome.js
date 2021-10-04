@@ -11,64 +11,65 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {inject, observer} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
-const CommonHome = ({rootStore}) => (
-  <Tab.Navigator
-    // initialRouteName="My feed"
-    initialRouteName="Explore"
-    lazy={false}
-    screenOptions={({route}) => ({
-      tabBarIcon: ({focused}) => {
-        switch (route.name) {
-          case NAVIGATION_SCREENS.EXPLORE: {
-            if (focused) {
-              return <Icon name="commons-selected" size={30} />;
+const CommonHome = ({rootStore}) => {
+  const hasNewNotifications = rootStore.notificationStore.hasNewNotifications;
+  return (
+    <Tab.Navigator
+      // initialRouteName="My feed"
+      initialRouteName="Explore"
+      lazy={false}
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused}) => {
+          switch (route.name) {
+            case NAVIGATION_SCREENS.EXPLORE: {
+              if (focused) {
+                return <Icon name="commons-selected" size={30} />;
+              }
+              return <Icon name="commons" size={30} />;
             }
-            return <Icon name="commons" size={30} />;
-          }
-          case NAVIGATION_SCREENS.PROFILE: {
-            if (focused) {
-              return <Icon name="account-selected" size={30} />;
+            case NAVIGATION_SCREENS.PROFILE: {
+              if (focused) {
+                return <Icon name="account-selected" size={30} />;
+              }
+              return <Icon name="account" size={30} />;
             }
-            return <Icon name="account" size={30} />;
+            case NAVIGATION_SCREENS.NOTIFICATIONS: {
+              const imageName = focused
+                ? require('~/Assets/notificationsSelected.png')
+                : require('~/Assets/notificationsUnselected.png');
+              return (
+                <View style={styles.notificationContainer}>
+                  <Image source={imageName} width={30} height={30} />
+                  {hasNewNotifications && <View style={styles.notReadDot} />}
+                </View>
+              );
+            }
           }
-          case NAVIGATION_SCREENS.NOTIFICATIONS: {
-            const imageName = focused
-              ? require('~/Assets/notificationsSelected.png')
-              : require('~/Assets/notificationsUnselected.png');
-            return (
-              <View style={styles.notificationContainer}>
-                <Image source={imageName} width={30} height={30} />
-                {rootStore.notificationStore.hasNewNotifications && (
-                  <View style={styles.notReadDot} />
-                )}
-              </View>
-            );
-          }
-        }
-      },
-    })}
-    tabBarOptions={{
-      activeTintColor: colors.mainBlue,
-      showLabel: false,
-      style: {
-        elevation: 5,
-        shadowColor: '#333',
-        shadowOffset: {height: 5},
-        shadowOpacity: 0.75,
-        shadowRadius: 5,
-        height: Platform.OS === 'ios' ? 100 : 60,
-      },
-    }}>
-    <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
-    <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
-    {rootStore.authStore.signedInUser && (
-      <Tab.Screen
-        name={NAVIGATION_SCREENS.NOTIFICATIONS}
-        component={NotificationList}
-      />
-    )}
-  </Tab.Navigator>
-);
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: colors.mainBlue,
+        showLabel: false,
+        style: {
+          elevation: 5,
+          shadowColor: '#333',
+          shadowOffset: {height: 5},
+          shadowOpacity: 0.75,
+          shadowRadius: 5,
+          height: Platform.OS === 'ios' ? 100 : 60,
+        },
+      }}>
+      <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
+      <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
+      {rootStore.authStore.signedInUser && (
+        <Tab.Screen
+          name={NAVIGATION_SCREENS.NOTIFICATIONS}
+          component={NotificationList}
+        />
+      )}
+    </Tab.Navigator>
+  );
+};
 
 CommonHome.propTypes = {
   rootStore: rootStorePropTypes.isRequired,

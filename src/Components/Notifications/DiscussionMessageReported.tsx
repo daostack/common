@@ -1,24 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
-import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {Proposal} from '~/Stores/Models/Proposal';
+import React, {useEffect, useState} from 'react';
+import {NotificationItemData} from '~/Graphql/Notification/NotificationType';
 import {Discussion} from '~/Stores/Models/Discussion';
+import {Proposal} from '~/Stores/Models/Proposal';
+import {STORE_KEYS} from '~/Util/constants/storeKeys';
+import NotificationItem from './NotificationItem';
+import {NotificationProps} from './props';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
-  item,
-  navigation,
-  rootStore,
-}) => {
+const DiscussionMessageReported = ({item, rootStore}: NotificationProps) => {
   const [notificationData, setNotificationData] =
     useState<NotificationItemData>({missingData: true});
   const getParentObject = (
@@ -39,7 +28,9 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
     (async () => {
       if (messageReportedData) {
         const objectData =
-          rootStore.notificationStore.getParentDiscussion(messageReportedData);
+          await rootStore.notificationStore.getParentDiscussion(
+            messageReportedData,
+          );
 
         if (objectData && objectData.commonId) {
           const common = rootStore.commonStore.getCommonById(
@@ -67,15 +58,11 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
     return null;
   }
 
-  return (
-    <NotificationItem
-      item={item}
-      notificationData={notificationData}
-      navigation={navigation}
-    />
-  );
+  return <NotificationItem item={item} notificationData={notificationData} />;
 };
 
-DiscussionMessageReported.propTypes = props;
-
-export default inject('rootStore')(observer(DiscussionMessageReported));
+export default inject('rootStore')(
+  observer((props: Omit<NotificationProps, STORE_KEYS>) => (
+    <DiscussionMessageReported {...(props as NotificationProps)} />
+  )),
+);

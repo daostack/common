@@ -88,12 +88,12 @@ if (Platform.OS === 'android') {
 }
 
 const App = ({rootStore, navigation}) => {
-  const authStore = rootStore.authStore;
   const userStore = rootStore.userStore;
+  const authStore = rootStore.authStore;
   const proposalStore = rootStore.proposalStore;
-  const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const notificationStore = rootStore.notificationStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -101,6 +101,19 @@ const App = ({rootStore, navigation}) => {
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef();
   const navigationRef = useRef();
+
+  useEffect(() => {
+    let notificationSubscription;
+    if (authStore.userInfo?.uid) {
+      notificationSubscription =
+        notificationStore.subscribeToNewNotifications();
+    }
+    return () => {
+      if (notificationSubscription) {
+        notificationSubscription.unsubscribe();
+      }
+    };
+  }, [authStore.userInfo?.uid]);
 
   useEffect(() => {
     Text.defaultProps = Text.defaultProps || {};
@@ -124,24 +137,14 @@ const App = ({rootStore, navigation}) => {
 
   // Initialize Mobx Stores
   useEffect(() => {
-    const unsubscribeUsers = userStore.subscribeToAllUsers();
-    let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
-      unsubscribeUsers && unsubscribeUsers();
       unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications?.forEach(
-        (unsubscribeLoggedUserNotificationsBatch) =>
-          unsubscribeLoggedUserNotificationsBatch &&
-          unsubscribeLoggedUserNotificationsBatch(),
-      );
     };
   }, [authStore.userInfo?.uid]);
 

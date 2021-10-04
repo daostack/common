@@ -8,7 +8,7 @@ import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {
   EventTypesOnNotificationList,
   EventTypeState,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Graphql/Notification/NotificationType';
 import {fetchCommonById} from './ListServices/CommonListService';
 import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
