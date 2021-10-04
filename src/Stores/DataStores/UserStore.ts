@@ -1,10 +1,5 @@
-import {observable, ObservableMap, runInAction} from 'mobx';
-import {CommonMemberType} from '~/Graphql/Common/CommonType';
+import {observable, ObservableMap} from 'mobx';
 import {UserType} from '~/Graphql/User';
-import {
-  fetchUserById,
-  getUserById,
-} from '~/Services/ListServices/UserListService';
 import {getUserById} from '~/Services/ListServices/UserListService';
 import {showBackendError} from '~/Util';
 import {UserModel} from '../Models/UserModel';
