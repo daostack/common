@@ -27,7 +27,7 @@ export type CreateFundingProposalMutationVariables = Exact<{
 }>;
 
 export const CreateCardDocument = gql`
-  mutation CreateJoinProposal($createCard: CreateCardInput!) {
+  mutation CreateCard($createCard: CreateCardInput!) {
     createCard(input: $createCard) {
       id
     }

@@ -3,7 +3,7 @@ import {circlePayUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import OpenPGP from 'react-native-fast-openpgp';
 
-import apollo from '~/Util/helpers/apolloHelper';
+import {apollo} from '~/Util/helpers/apolloHelper';
 import {getGQLErrorObject} from '~/Util';
 import logger from '~/Services/Logger';
 
@@ -48,10 +48,11 @@ const cardData = (formData) => ({
 
 export const createCard = async (formData) => {
   try {
+    const cardPayload = await createCardPayload(formData);
     return await apollo.mutate({
       mutation: CreateCardDocument,
       variables: {
-        createCard: await createCardPayload(formData),
+        createCard: cardPayload,
       },
     });
   } catch (err) {
