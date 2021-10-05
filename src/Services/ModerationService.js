@@ -1,31 +1,15 @@
-import axios from 'axios';
-import {moderationUrl} from '~/Config';
 import {ACTIONS} from '~/Components/Moderation/constants';
 import {CreateReportDocument, REPORT_FLAG, REPORT_TYPE} from '~/Graphql/Report';
+import {apollo} from '~/Util/helpers/apolloHelper';
+import Toast from '~/Util/Toast.js';
 import {
+  changeDiscussionFlag,
   changeDiscussionMessageFlag,
   changeProposalFlag,
-  changeDiscussionFlag,
 } from './ListServices/ReportService';
-import {auth} from '~/Firebase';
-import Toast from '~/Util/Toast.js';
-import {apollo} from '~/Util/helpers/apolloHelper';
 
 export default class ModerationService {
   static serviceInstance = null;
-
-  constructor() {
-    this.axiosClient = axios.create({
-      baseURL: moderationUrl(),
-      timeout: 1000000,
-    });
-
-    this.endpoints = {
-      hide: '/hide',
-      report: '/report',
-      show: '/show',
-    };
-  }
 
   static getInstance = () => {
     if (ModerationService.serviceInstance == null) {
