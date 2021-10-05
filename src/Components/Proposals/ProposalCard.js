@@ -169,7 +169,7 @@ const ProposalCard = ({
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
-              userInfo={userStore.getUserById(proposalInfo.userId)}
+              userInfo={proposalInfo.user}
               proposalInfo={proposalInfo}
               commonId={proposalInfo.commonId}
               isPending={false}

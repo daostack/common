@@ -133,7 +133,7 @@ export class Proposal extends BaseModel<ProposalEntity> {
     this.createdAt = new Date(newProposalInfo.createdAt);
     this.updatedAt = new Date(newProposalInfo.updatedAt);
     this.userId = newProposalInfo.userId;
-    this.user = newProposalInfo.user;
+    this.user = new UserModel(newProposalInfo.user);
     this.commonId = newProposalInfo.commonId;
     this.type = newProposalInfo.type;
     this.votes = newProposalInfo.votes;

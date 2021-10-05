@@ -14,6 +14,7 @@ import {
   ProposalState,
   ProposalType,
 } from './ProposalType';
+import {gqlUserProps} from '~/Graphql/User';
 
 export * from './ProposalType';
 
@@ -133,9 +134,7 @@ const gqlProposalProps = `
   id
   userId
   user {
-    id
-    firstName
-    lastName
+    ${gqlUserProps}
   }
   title
   type

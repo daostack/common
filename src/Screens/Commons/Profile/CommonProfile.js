@@ -198,10 +198,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     (async () => {
-      const proposal = await proposalStore.getProposalById(
-        userPendingProposalId,
-        false,
-      );
       let userPendingProposalId = null;
 
       // TBD: Probably now better approach would be querying directly for pending proposals instead of filtering in JS.
@@ -211,6 +207,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           userPendingProposalId = pendingProposal.id;
         }
       });
+      let proposal;
+      if (userPendingProposalId) {
+        proposal = await proposalStore.getProposalById(
+          userPendingProposalId,
+          false,
+        );
+      }
+
       setPendingProposalsData({
         pendingProposalCount: proposalStore.getCommonPendingReqToJoins.length,
         usersPendingProposal: userPendingProposalId ? proposal : false,
