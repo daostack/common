@@ -84,7 +84,7 @@ export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
 
 export const getGQLErrorObject = (gqlError) => {
   try {
-    if (gqlError.graphQLErrors.length > 0) {
+    if (gqlError.graphQLErrors?.length > 0) {
       const errorObj = gqlError.graphQLErrors[0];
       return {
         errorMessage: errorObj.message,
