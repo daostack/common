@@ -23,19 +23,19 @@ import {
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
-  const userInfo = rootStore.authStore.userInfo;
+  const authUser = rootStore.authStore.userInfo;
   const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
 
-  const providedUserId = userId || currUserInfo.uid;
-  const isOwnProfile = providedUserId === userInfo?.uid;
+  const providedUserId = userId;
+  const isOwnProfile = providedUserId === authUser?.uid;
   const [user, setUser] = useState();
 
   useEffect(() => {
     (async () => {
       if (isOwnProfile) {
-        setUser(userInfo);
+        setUser(authUser);
       } else {
         const userInfoResponse = await userStore.getUserById(providedUserId);
         setUser(userInfoResponse);
@@ -137,7 +137,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
    * @param newCount {number} - the new count of the requests
    */
 
-  const showMaxData = user?.uid === userInfo?.uid ? 5 : null;
+  const showMaxData = user.uid === authUser?.uid ? 5 : null;
 
   return (
     <React.Fragment>

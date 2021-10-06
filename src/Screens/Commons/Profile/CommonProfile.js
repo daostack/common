@@ -21,7 +21,6 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
-import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
 import {CommonActions} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
@@ -34,7 +33,6 @@ import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import ModerationService from '~/Services/ModerationService';
-import CountDown from 'react-native-countdown-component';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -46,7 +44,6 @@ import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {BlurView} from '~/Components';
-import moment from 'moment';
 import {PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {getLastReporterInfo, getLastReport} from '~/Util/report';
@@ -87,13 +84,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [previousScrollHeight, setPreviousScrollHeight] = useState();
   const [nestedDiscussionListPage, setNestedDiscussionListPage] = useState(0);
   const [nestedProposalListPage, setNestedProposalListPage] = useState(0);
-  const [nestedProposalHistoryListPage, setNestedProposalHistoryListPage] =
-    useState(0);
+  const [
+    nestedProposalHistoryListPage,
+    setNestedProposalHistoryListPage,
+  ] = useState(0);
   const [scrollIsFetching, setScrollIsFetching] = useState(false);
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -144,8 +144,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = params.commonId || params.currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false
+  );
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -158,8 +159,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const originTabBarRef = useRef(null);
   const parallaxScrollRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false
+  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState();
@@ -233,10 +235,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       (async () => {
-        const count =
-          await ProposalService.getInstance().getProposalDiscussionsCount(
-            pendingProposalsData.usersPendingProposal.id,
-          );
+        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
         if (userPendingPropDiscCount !== count) {
           setUserPendingPropDiscCount(count);
         }

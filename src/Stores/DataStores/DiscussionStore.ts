@@ -25,8 +25,10 @@ export default class DiscussionStore extends BaseStore<
   );
 
   @observable
-  private proposalDiscussions: ObservableMap<string, DiscussionModel> =
-    observable.map({});
+  private proposalDiscussions: ObservableMap<
+    string,
+    DiscussionModel
+  > = observable.map({});
 
   @computed
   get commonDiscussions() {

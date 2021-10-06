@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {observer, inject} from 'mobx-react';
 import {layout, colors, text, font} from '~/Theme';
 import MemberImage from './Commons/MemberImage';
@@ -19,9 +19,20 @@ const MemberCard = ({
   commonId,
   rootStore,
 }) => {
+  const [proposerInfo, setProposerInfo] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const proposer = await rootStore.userStore.getUserById(
+        proposalInfo.userId,
+      );
+      setProposerInfo(proposer);
+    })();
+  }, []);
+
   const isModerator = useMemo(
-    () => userInfo.roles?.includes(PERMISSIONS_GRAPHQL.MODERATOR),
-    [userInfo.roles],
+    () => proposerInfo?.roles?.includes(PERMISSIONS_GRAPHQL.MODERATOR),
+    [proposerInfo?.roles],
   );
 
   const fundingAmount = () =>
@@ -82,8 +93,8 @@ const MemberCard = ({
       );
     } else {
       let memberCreatedDateInfo = null;
-      if (userInfo?.joinedAt) {
-        const memberCreatedDate = new Date(userInfo.joinedAt);
+      if (proposerInfo?.joinedAt) {
+        const memberCreatedDate = new Date(proposerInfo.joinedAt);
         memberCreatedDateInfo = memberCreatedDate
           ? `${
               monthShortNames[memberCreatedDate.getMonth()]
@@ -103,11 +114,11 @@ const MemberCard = ({
 
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
-      <MemberImage userInfo={userInfo} />
+      <MemberImage userInfo={proposerInfo} />
       <View style={styles.memberCard}>
         {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
         <Text style={styles.displayName}>
-          {userInfo?.displayName || 'Unknown user'}
+          {proposerInfo?.displayName || 'Unknown user'}
         </Text>
         {proposalInfo && proposalInfo.createdAt && (
           <Text style={{...text.runninglightGray, width: '100%'}}>
