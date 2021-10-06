@@ -9,7 +9,6 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {Proposal} from '~/Stores/Models/Proposal';
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -44,7 +43,6 @@ const ProposalCard = ({
   viewerPermission,
 }) => {
   // Stores
-  const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
   const authStore = rootStore.authStore;
@@ -85,13 +83,12 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -169,7 +166,7 @@ const ProposalCard = ({
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
-              userInfo={userStore.getUserById(proposalInfo.userId)}
+              userInfo={proposalInfo.user}
               proposalInfo={proposalInfo}
               commonId={proposalInfo.commonId}
               isPending={false}

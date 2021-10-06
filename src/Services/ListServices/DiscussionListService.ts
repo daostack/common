@@ -5,7 +5,7 @@ import {DiscussionType} from '~/Graphql/Discussion/DiscussionType';
 import {
   CreateDiscussionInput,
   CreateDiscussionDocument,
-  GetDiscussionsDocument,
+  GetDiscussionDocument,
   getDiscussionsVariable,
   GetDiscussionDocumentById,
 } from '~/Graphql/Discussion';
@@ -56,7 +56,7 @@ export const fetchDiscussions = async ({
   paginate,
 }: getDiscussionsVariable): Promise<Discussion[]> => {
   const {data} = await apollo.query({
-    query: GetDiscussionsDocument,
+    query: GetDiscussionDocument,
     variables: {
       where,
       paginate,

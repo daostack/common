@@ -60,6 +60,13 @@ export type CreateDiscussionMutationVariables = Exact<{
   discussion: CreateDiscussionInput;
 }>;
 
+/*
+TODO fix; not working -> causes rejection
+reports {
+  ${gqlReportProps}
+}
+ */
+
 const gqlDiscussionProps = `
 id
 title: topic
@@ -69,10 +76,6 @@ createdAt
 ownerId: userId
 owner {
   ${gqlUserProps}
-}
-flag
-reports {
-  ${gqlReportProps}
 }
 lastMessage: latestMessage
 messages {
@@ -86,10 +89,8 @@ messages {
   type
   flag
   userId
-  reports {
-    ${gqlReportProps}
-  }
-}`;
+}
+`;
 
 export const CreateDiscussionDocument = gql`
   mutation createNewDiscussion($discussion: CreateDiscussionInput!) {
@@ -134,14 +135,6 @@ export const GetDiscussionDocument = gql`
 export const GetDiscussionDocumentById = gql`
   query GetDiscussionById($id: ID!) {
     discussion(id: $id) {
-      ${gqlDiscussionProps}
-    }
-  }
-`;
-
-export const GetDiscussionsDocument = gql`
-  query GetDiscussionById($where: DiscussionWhereInput!, $paginate: PaginateInput) {
-    discussions(where: $where, paginate: $paginate) {
       ${gqlDiscussionProps}
     }
   }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -65,7 +65,7 @@ const CommonsList = ({navigation, rootStore}) => {
     data: commonStore.featuredCommonsValues,
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       setLoading(true);
       await initialLoad();
