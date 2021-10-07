@@ -65,6 +65,7 @@ id
 title: topic
 message: description
 messageCount
+commonId
 createdAt
 ownerId: userId
 owner {

@@ -5,6 +5,7 @@ import {
   NormalizedCacheObject,
   split,
 } from '@apollo/client';
+import {offsetLimitPagination} from '@apollo/client/utilities';
 import {setContext} from 'apollo-link-context';
 import {auth} from '~/Firebase';
 import {WebSocketLink} from '@apollo/client/link/ws';
@@ -63,7 +64,15 @@ export const createApolloClient = (gqlUri: string, token?: string) => {
 
   return new ApolloClient({
     // ssrMode: typeof window === 'undefined',
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            discussions: offsetLimitPagination(),
+          },
+        },
+      },
+    }),
     link: splitLink,
   });
 };
