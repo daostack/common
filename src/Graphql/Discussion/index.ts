@@ -67,7 +67,7 @@ message: description
 messageCount
 commonId
 createdAt
-ownerId: userId
+updatedAt
 owner {
   ${gqlUserProps}
 }
@@ -141,7 +141,7 @@ export const GetDiscussionDocumentById = gql`
 `;
 
 export const GetDiscussionsDocument = gql`
-  query GetDiscussionById($where: DiscussionWhereInput!, $paginate: PaginateInput) {
+  query GetCommonDiscussions($where: DiscussionWhereInput!, $paginate: PaginateInput) {
     discussions(where: $where, paginate: $paginate) {
       ${gqlDiscussionProps}
     }

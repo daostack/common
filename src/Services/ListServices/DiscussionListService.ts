@@ -90,7 +90,12 @@ export const fetchDiscussions = async ({
     nextFetchPolicy: 'cache-first',
   });
 
-  const {data} = await subscriber.refetch();
+  const {data} = await subscriber.fetchMore({
+    variables: {
+      where,
+      paginate,
+    },
+  });
 
   return data.discussions.map(
     (item: DiscussionType) => new Discussion(item, false),

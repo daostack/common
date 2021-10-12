@@ -68,7 +68,7 @@ export const createApolloClient = (gqlUri: string, token?: string) => {
       typePolicies: {
         Query: {
           fields: {
-            discussions: offsetLimitPagination(),
+            discussions: offsetLimitPagination(['commonId']),
           },
         },
       },
