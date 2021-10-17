@@ -7,13 +7,14 @@ export const VALIDATION_RULES = {
   VALID_DATE_FORMAT: 'valid_date_format',
 };
 
+//   /^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/,
 export const validateCCProvider = {
   ruleName: VALIDATION_RULES.CREDIT_CARD_PROVIDER,
   validateFunc: (value, requirement, attribute) =>
     new RegExp(
-      /^4[0-9]{12}(?:[0-9]{3})?$|^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/,
+      /^4[0-9]{12}(?:[0-9]{3})?$/,
     ).test(value),
-  errorMessage: 'We only accept Visa or MasterCard at the moment.',
+  errorMessage: 'We only accept Visa at the moment.',
 };
 
 const luhnAlgo = (ccNumber) => {
