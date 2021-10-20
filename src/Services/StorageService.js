@@ -28,7 +28,7 @@ export default class StorageService {
     }
 
     const dirs = RNFetchBlob.fs.dirs;
-    const destPath = `${dirs.DocumentDir}/_${name}_`;
+    const destPath = `${dirs.DocumentDir}/_${name}`;
     await RNFetchBlob.fs.writeFile(destPath, uri);
     const fileUri = await RNFetchBlob.fs.stat(destPath);
     return `file://${fileUri.path}`;
@@ -37,7 +37,7 @@ export default class StorageService {
   async uploadFile(fileUri, name) {
     const path =
       Platform.OS === 'ios'
-        ? `public_file/_${name}_`
+        ? `public_file/_${name}`
         : await this.getPathForFirebaseStorage(fileUri, name);
 
     const ref = storage.ref(path);
