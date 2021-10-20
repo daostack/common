@@ -51,7 +51,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast.js';
+import Toast from '~/Util/Toast';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 
 import {
@@ -64,6 +64,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -330,9 +331,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      screenTitle: currCommon.name,
-      common: currCommon,
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: currCommon.id,
     });
   };
 
@@ -423,7 +423,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const openCommonMembers = (e) => {
+  const openCommonMembers = () => {
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
@@ -436,7 +436,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = () => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
@@ -447,9 +447,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    type === 'info'
-      ? navigateTo('Edit info and cover photo')
-      : navigateTo('Edit Rules');
+    navigateTo(type);
   };
 
   /**
@@ -538,10 +536,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const getType = (title) =>
     title === TITLES.proposals ? TITLES.proposalText : title;
 
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
       currCommon: currCommon,
-      title: screenTitle,
+      type: type,
     });
   };
 
@@ -552,27 +550,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
   */
 
-  const calcShouldSkipRules = () => {
-    const rules = currCommon?.rules;
-    if (rules?.length > 0) {
-      // NOTE: value of multiple fields was stored in url prop before
-      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
-    } else {
-      return true;
-    }
-  };
-
-  const requestToJoin = (event) => {
+  const requestToJoin = () => {
     if (authStore.userInfo) {
-      const shouldSkipRules = calcShouldSkipRules();
-
       const introduceYourselfFormStore = new IntroduceYourselfFormStore();
       const paymentFormStore = new PaymentFormStore();
       const personalContributionFormStore = new PersonalContributionFormStore();
       const billingDetailsFormStore = new BillingDetailsFormStore();
 
       const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
+        name: 'IntroductionStep', // #498 we always go to Introduction first
         params: {
           formStores: {
             paymentFormStore,
@@ -582,7 +568,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           },
           currCommon: currCommon,
           currDaoId: currCommon.id,
-          skipFirstStep: shouldSkipRules,
+          skipFirstStep: false,
           refreshFeed,
         },
       });

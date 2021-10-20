@@ -11,6 +11,7 @@ import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
+import {calcShouldSkipRules} from '~/Util/rules';
 
 const IntroductionStep = ({
   navigation,
@@ -21,9 +22,10 @@ const IntroductionStep = ({
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   const push = () => {
+    const hasRules = !calcShouldSkipRules(currCommon);
     if (introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
-        name: 'ContributionStep',
+        name: hasRules ? 'RulesStep' : 'ContributionStep',
         params: {
           formStores,
           currDaoId: currDaoId,
@@ -41,7 +43,7 @@ const IntroductionStep = ({
       navigation={navigation}
       stepDotHeaderTitle="Introduce Yourself"
       navTitle={currCommon.name}
-      currentIndex={2}
+      currentIndex={1}
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}
