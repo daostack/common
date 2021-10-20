@@ -100,7 +100,7 @@ class FileField extends React.Component {
       : value;
 
     if (currValue) {
-      let fileNamePart1 = currValue.split('_');
+      let fileNamePart1 = currValue.split('%2F');
       fileNamePart1 = fileNamePart1[fileNamePart1.length - 1];
       let fileName = fileNamePart1.split('?')[0];
 
@@ -133,6 +133,7 @@ class FileField extends React.Component {
       ? validation.formStore.getFormField(validation.name, validation.multiName)
           ?.value
       : value;
+      console.log('currValue', currValue)
 
     return (
       <View style={styles.container}>
