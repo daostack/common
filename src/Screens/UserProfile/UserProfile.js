@@ -126,20 +126,24 @@ const UserProfile = ({authStore, navigation, route}) => {
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/tos')}
-                  title="Terms of use"
+                  onPress={() => navigation.navigate('Onboarding')}
+                  title="About Common"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('mailto:hi@common.io')}
+                  title="Contact us"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('https://common.io/help')}
+                  title="Help and support"
                 />
                 <AccordionBtn
                   onPress={() => Linking.openURL('https://common.io/privacy')}
                   title="Privacy Policy"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/help')}
-                  title="Help"
-                />
-                <AccordionBtn
-                  onPress={() => Linking.openURL('mailto:hi@common.io')}
-                  title="Contact us"
+                  onPress={() => Linking.openURL('https://common.io/tos')}
+                  title="Terms of use"
                 />
                 {authStore.userInfo && (
                   <React.Fragment>
