@@ -1,6 +1,6 @@
 {
   "name": "common",
-  "version": "1.9.8",
+  "version": "1.9.9",
   "private": true,
   "scripts": {
     "android:production": "ENVFILE=./env/env.prod react-native run-android --variant=ProdDebug",
