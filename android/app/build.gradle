@@ -139,6 +139,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    ndkVersion "21.0.6113669"
+
     defaultConfig {
         applicationId "com.daostack.common"
         minSdkVersion rootProject.ext.minSdkVersion
