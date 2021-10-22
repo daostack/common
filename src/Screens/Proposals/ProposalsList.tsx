@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
@@ -28,9 +29,6 @@ const {width, height} = Dimensions.get('window');
 
 const props = {
   // Required
-  navigation: shape({
-    navigate: func.isRequired,
-  }).isRequired,
   proposalFilter: shape({
     type: string.isRequired,
     stage: string.isRequired,
@@ -44,6 +42,7 @@ const props = {
   userInfo: shape({
     id: string,
   }),
+  hasPermission: string,
   showMax: number,
   isSwiper: bool,
   openCommonOptions: func,
@@ -56,7 +55,6 @@ const props = {
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
   ({
-    navigation,
     proposalFilter,
     showMax,
     isSwiper,
@@ -68,6 +66,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     isMember,
   }) => {
     const [viewerPermission, setViewerPermission] = React.useState('');
+    const navigation = useNavigation();
     const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
