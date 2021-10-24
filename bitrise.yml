@@ -570,7 +570,7 @@ workflows:
     envs:
       - opts:
           is_expand: false
-        APP_VERSION: '1.9.9'
+        APP_VERSION: '1.10.0'
       - opts:
           is_expand: false
         ENV: staging
@@ -988,7 +988,7 @@ workflows:
     envs:
       - opts:
           is_expand: false
-        APP_VERSION: '1.9.8'
+        APP_VERSION: '1.10.0'
       - opts:
           is_expand: false
         ENV: staging
@@ -1053,7 +1053,7 @@ app:
       BITRISE_EXPORT_METHOD: development
     - opts:
         is_expand: false
-      APP_VERSION: '1.9.8'
+      APP_VERSION: '1.10.0'
     - opts:
         is_expand: false
       ENV: production
