@@ -9,10 +9,10 @@ import {
   EventTypesOnNotificationList,
   EventTypeState,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {fetchCommonById} from './ListServices/CommonListService';
+import {fetchCommonById} from './CommonService';
 import {fetchProposalById} from './ListServices/ProposalListService';
 import {fetchMessageById} from './ListServices/DiscussionMessageListService';
-import {fetchDiscussionId} from './ListServices/DiscussionListService';
+import {fetchDiscussionId} from './DiscussionService';
 import {getUserById} from './ListServices/UserListService';
 
 export const TODELETE = 'To Delete';

@@ -3,7 +3,7 @@ import {
   subscribeToCommonDiscussions,
   subscribeToDiscussionById,
   fetchDiscussionId,
-} from '~/Services/ListServices/DiscussionListService';
+} from '~/Services/DiscussionService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';

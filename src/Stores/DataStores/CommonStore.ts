@@ -4,7 +4,7 @@ import {
   subscribeToAllCommons,
   updateCommon,
   fetchCommonById,
-} from '~/Services/ListServices/CommonListService';
+} from '~/Services/CommonService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';

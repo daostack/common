@@ -20,7 +20,7 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
+import {createCommon} from '~/Services/CommonService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
@@ -60,7 +60,9 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION] ? '0' : form[CreateCommonForm.MINIMUM];
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -120,9 +122,7 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
-        formattedData,
-      );
+      const createCommonResponse = await createCommon(formattedData);
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
@@ -142,9 +142,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(minContribution)}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout

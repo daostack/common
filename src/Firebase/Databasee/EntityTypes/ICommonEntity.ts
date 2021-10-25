@@ -120,3 +120,15 @@ export interface ICommonMember {
   userId: string;
   joinedAt?: firebase.firestore.Timestamp;
 }
+
+export interface CommonCreatedBody {
+  name: string;
+  image: string;
+  rules: ICommonRule[];
+  links: ICommonLink[];
+  byline: string;
+  description: string;
+  contributionType: ContributionType;
+  contributionAmount: number;
+  zeroContribution: boolean;
+}
