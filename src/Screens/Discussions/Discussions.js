@@ -13,6 +13,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
@@ -386,6 +387,20 @@ const Discussions = ({
     moderationFormStore.clearFormStoreState();
   };
 
+  const onChangeText = (currText) => setInputText(currText);
+
+  const onContentSizeChange = (event) => {
+    setInputHeight(event.nativeEvent.contentSize.height);
+  };
+
+  const hideDescription = () => {
+    dataState.isExpanded = false;
+  };
+
+  const showDescription = () => {
+    dataState.isExpanded = true;
+  };
+
   if (!dataState) {
     return (
       <View style={{...styles.safeView, ...layout.content}}>
@@ -435,6 +450,7 @@ const Discussions = ({
             flex: 1,
             color: '#fbfdff',
           }}
+          // behavior={Platform.OS === 'ios' ? 'padding' : null}
           keyboardVerticalOffset={0}>
           <View
             style={{
@@ -443,12 +459,12 @@ const Discussions = ({
             }}>
             {/* should be added in better discussion batch 3
             <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                justifyContent: 'center',
-              }}>
-              <Icon name="add-24" size={30} color={colors.mainBlue} />
-            </TouchableOpacity>*/}
+            onPress={() => {}}
+            style={{
+              justifyContent: 'center',
+            }}>
+            <Icon name="add-24" size={30} color={colors.mainBlue} />
+          </TouchableOpacity>*/}
             <TextInput
               ref={inputRef}
               editable={true}
@@ -456,10 +472,10 @@ const Discussions = ({
               multiline
               placeholder="What do you think?"
               placeholderTextColor={colors.grey3}
-              onChangeText={(currText) => setInputText(currText)}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height);
-              }}
+              onChangeText={onChangeText}
+              onContentSizeChange={onContentSizeChange}
+              onBlur={showDescription}
+              onFocus={hideDescription}
               style={styles.input}
             />
             <TouchableOpacity
@@ -483,7 +499,6 @@ const Discussions = ({
           </Text>
         </View>
       )}
-
       <ImageView
         images={
           dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []
