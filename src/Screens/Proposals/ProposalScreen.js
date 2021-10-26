@@ -49,6 +49,7 @@ import DebtErrorProposalNote from './components/DebtErrorProposalNote';
 import ModalDebtProposalWarning from './components/ModalDebtProposalWarning';
 import ModalDebtProposalError from './components/ModalDebtProposalError';
 import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsufficient';
+import {ModalApproval} from './components/ModalApproval';
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
@@ -83,6 +84,8 @@ const ProposalScreen = ({
   const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
   const {conversionRate} = uiStore;
+  const сurrentUserPhotoUrl = userInfo.photoURL;
+  console.log('userInfo', proposalStore);
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -147,6 +150,11 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+  let currentUserVote = {};
+  const filteredVotes = proposalInfo.votes.filter((item) => item.voterId === userInfo.uid);
+  if (filteredVotes.length !== 0) {
+    currentUserVote = filteredVotes[0];
+  }
 
   let viewerPermission = '';
   if (proposalInfo) {
@@ -198,6 +206,11 @@ const ProposalScreen = ({
   const [
     isApprovalBottomModalVisible,
     setIsApprovalBottomModalVisible,
+  ] = useState(false);
+
+  const [
+    voteModalVisible,
+    setVoteModalVisible,
   ] = useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
@@ -338,7 +351,8 @@ const ProposalScreen = ({
 
   const openApprovalSheet = (isApproval) => {
     setVoteType(isApproval);
-    setIsApprovalBottomModalVisible(true);
+    // setIsApprovalBottomModalVisible(true);
+    setVoteModalVisible(true);
   };
 
   const closeApprovalSheet = (e) => {
@@ -527,6 +541,10 @@ const ProposalScreen = ({
           (Math.abs(availableFunds) / 1000).toFixed(1) +
           'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
+  };
+
+  const closeVoteModal = () => {
+    setVoteModalVisible(false);
   };
 
   const closeDebtModal = () => {
@@ -941,12 +959,27 @@ const ProposalScreen = ({
                         ...layout.flexRow,
                         padding: 0,
                       }}>
-                      <Icon
-                        name="user-approved"
-                        color={colors.lightishGreen}
-                        size={25}
-                        style={layout.marginRightXS}
-                      />
+                      { currentUserVote?.voteOutcome !== 'approved' ?
+                        <Icon
+                          name="user-approved"
+                          color={colors.lightishGreen}
+                          size={25}
+                          style={layout.marginRightXS}
+                        />
+                        :
+                        <View style={{
+                                ...layout.marginRightXS,
+                                ...styles.imageContainer,
+                              }}>
+                          <Image
+                            style={styles.imageApprove}
+                            source={{uri: сurrentUserPhotoUrl}}
+                            width={26}
+                            height={26}
+                          />
+                          <Icon name={'iconVotingApproved16'} size={16} style={styles.iconStyle} />
+                        </View>
+                      }
                       <Text style={text.lightishGreenText}>
                         {proposalInfo.votesFor}
                       </Text>
@@ -969,12 +1002,27 @@ const ProposalScreen = ({
                       <Text style={text.againstText}>
                         {proposalInfo.votesAgainst}
                       </Text>
-                      <Icon
-                        name="user-rejected"
-                        color={colors.against}
-                        size={25}
-                        style={layout.marginLeftXS}
-                      />
+                      { currentUserVote?.voteOutcome !== 'rejected' ?
+                        <Icon
+                          name="user-rejected"
+                          color={colors.against}
+                          size={25}
+                          style={layout.marginLeftXS}
+                        />
+                        :
+                        <View style={{
+                                ...styles.imageContainer,
+                                ...layout.marginLeftXS,
+                              }}>
+                          <Image
+                            style={styles.imageReject}
+                            source={{uri: сurrentUserPhotoUrl}}
+                            width={26}
+                            height={26}
+                          />
+                          <Icon name={'iconVotingRejected16'} size={16} style={styles.iconStyle} />
+                        </View>
+                      }
                     </View>
                   </View>
                   <View
@@ -1069,6 +1117,12 @@ const ProposalScreen = ({
           onClose={closeApprovalSheet}
           votingProcessState={votingProcessState}
         />
+      </BottomSheetModal>
+      <BottomSheetModal
+        style={styles.voteModal}
+        isVisible={voteModalVisible}
+        onClose={closeVoteModal}>
+        <ModalApproval onVote={onVote} voteType={voteType} сurrentUserPhotoUrl={сurrentUserPhotoUrl} onPressClose={closeVoteModal} />
       </BottomSheetModal>
     </React.Fragment>
   );
@@ -1210,6 +1264,35 @@ const styles = StyleSheet.create({
     marginTop: sizeS,
     marginBottom: sizeM,
     alignSelf: 'center',
+  },
+  imageContainer: {
+    alignSelf: 'center',
+    width: 26,
+    height: 26,
+  },
+  imageApprove: {
+    borderWidth: 2,
+    borderRadius: 70,
+    borderColor: colors.lightishGreen,
+    alignSelf: 'center',
+  },
+  imageReject: {
+    borderWidth: 2,
+    borderRadius: 70,
+    borderColor: colors.pinkishOrange,
+    alignSelf: 'center',
+  },
+  iconStyle: {
+    height: 11,
+    width: 14,
+    position: 'absolute',
+    alignSelf: 'center',
+    left: 15,
+    bottom: -4,
+  },
+  voteModal: {
+    paddingTop: 16,
+    borderRadius: 27,
   },
 });
 
