@@ -100,9 +100,9 @@ class FileField extends React.Component {
       : value;
 
     if (currValue) {
-      let fileNamePart1 = currValue.split('%2F');
-      fileNamePart1 = fileNamePart1[fileNamePart1.length - 1];
-      let fileName = fileNamePart1.split('?')[0];
+      let splittedValue = currValue.split('%2F');
+      splittedValue = splittedValue[splittedValue.length - 1];
+      const fileName = splittedValue.split('?')[0];
 
       return (
         <View style={styles.adRow}>
