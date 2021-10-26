@@ -133,7 +133,6 @@ class FileField extends React.Component {
       ? validation.formStore.getFormField(validation.name, validation.multiName)
           ?.value
       : value;
-      console.log('currValue', currValue)
 
     return (
       <View style={styles.container}>
