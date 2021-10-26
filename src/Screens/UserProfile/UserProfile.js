@@ -15,7 +15,7 @@ import {layout, colors, text, sizeL, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '~/Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import UserProfileData from '~/Components/UserProfileData';
 import AuthService from '~/Services/AuthService';
 import Toast from '~/Util/Toast';
@@ -33,8 +33,9 @@ import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 
 
-const UserProfile = ({authStore, navigation, route}) => {
-  //const [editMode, setEditMode] = useState(false);
+const UserProfile = ({authStore}) => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
