@@ -19,7 +19,7 @@ import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
-import ProposalService from '~/Services/ProposalService';
+import {createFundingProposal} from '~/Services/ProposalService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
@@ -62,7 +62,7 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
+        const createFundingProposalResponse = await createFundingProposal(
           data,
         );
 

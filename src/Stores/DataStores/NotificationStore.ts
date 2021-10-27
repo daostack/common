@@ -1,5 +1,5 @@
 import BaseStore from './BaseStore';
-import {subscribeToUserNotifications} from '~/Services/ListServices/NotificationListService';
+import {subscribeToUserNotifications} from '~/Services/NotificationService';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {

@@ -12,7 +12,7 @@ import {
 import {text, layout, colors, font} from '~/Theme';
 import MemberCard from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService from '~/Services/ProposalService';
+import {subscribeToProposalDiscussionsCount} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
@@ -65,12 +65,13 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.getInstance().subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());

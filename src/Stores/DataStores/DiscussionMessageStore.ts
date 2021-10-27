@@ -3,7 +3,7 @@ import {
   fetchDiscussionMessageById,
   subscribeToDiscussionsMessages,
   subscribeToProposalDiscussionMessages,
-} from '~/Services/ListServices/DiscussionMessageListService';
+} from '~/Services/DiscussionMessageService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,

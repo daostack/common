@@ -3,16 +3,14 @@ import BaseStore from './BaseStore';
 import {
   subscribeToProposalList,
   fetchProposalById,
-} from '~/Services/ListServices/ProposalListService';
+  PROPOSAL_STAGES_ACTIVE,
+  PROPOSAL_STAGES_HISTORY,
+} from '~/Services/ProposalService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
-import {
-  PROPOSAL_STAGES_ACTIVE,
-  PROPOSAL_STAGES_HISTORY,
-} from '~/Services/ListServices/ProposalListService';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {showBackendError} from '~/Util';
 

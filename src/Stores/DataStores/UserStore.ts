@@ -4,7 +4,7 @@ import BaseStore from './BaseStore';
 import {
   subscribeToAllUsers,
   fetchUserById,
-} from '~/Services/ListServices/UserListService';
+} from '~/Services/UserService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,

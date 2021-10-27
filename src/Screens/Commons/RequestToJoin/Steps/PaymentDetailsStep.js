@@ -12,7 +12,7 @@ import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
 import {createCard} from '../../../../Services/CirclePayService';
-import ProposalService from '~/Services/ProposalService';
+import {createRequestToJoin} from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
@@ -77,12 +77,10 @@ const PaymentDetailsStep = ({
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
-          {
-            ...data,
-            cardId: createdCard.id,
-          },
-        );
+        const createRequestToJoinResponse = await createRequestToJoin({
+          ...data,
+          cardId: createdCard.id,
+        });
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;

@@ -30,7 +30,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {updateDiscussionLastMessage} from '~/Services/DiscussionService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import ModerationService from '~/Services/ModerationService';
+import * as ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
@@ -76,9 +76,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -90,9 +89,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -343,7 +343,7 @@ const Discussions = ({
     }
     bottomSheetStore.hideBottomSheet();
 
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       messageId,
       commonId,
@@ -372,7 +372,7 @@ const Discussions = ({
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       TITLES.discussionMessage,
       commonId,
       moderationFormStore.getFormFieldsJson(),

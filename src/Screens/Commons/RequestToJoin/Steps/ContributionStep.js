@@ -10,7 +10,7 @@ import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import ProposalService from '~/Services/ProposalService';
+import {createRequestToJoin} from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
 import {isIsraelLocale} from '~/Util/locale';
@@ -71,7 +71,7 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+    const createRequestToJoinResponse = await createRequestToJoin(
       {
         ...data,
       },

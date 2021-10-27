@@ -4,6 +4,8 @@ import {
   commonsUrl,
   discussionsUrl,
   permissionsUrl,
+  moderationUrl,
+  proposalsUrl,
 } from '~/Config';
 
 export const axiosCircleClient = axios.create({
@@ -23,5 +25,15 @@ export const axiosDiscussionClient = axios.create({
 
 export const axiosPermissionClient = axios.create({
   baseURL: permissionsUrl(),
+  timeout: 1000000,
+});
+
+export const axiosModerationClient = axios.create({
+  baseURL: moderationUrl(),
+  timeout: 1000000,
+});
+
+export const axiosProposalClient = axios.create({
+  baseURL: proposalsUrl(),
   timeout: 1000000,
 });

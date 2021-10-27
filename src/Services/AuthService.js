@@ -2,7 +2,7 @@ import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
 import {auth} from '~/Firebase';
-import {addUser, updateUser} from '~/Services/ListServices/UserListService';
+import {addUser, updateUser} from '~/Services/UserService';
 
 // Google imports
 import {GoogleSignin} from '@react-native-community/google-signin';
