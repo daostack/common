@@ -25,9 +25,11 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import {PROPOSAL_STAGE, createVote} from '~/Services/ProposalService';
+import ProposalService, {
+  PROPOSAL_STAGE,
+  PROPOSAL_STAGES_ACTIVE,
+} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -54,7 +56,7 @@ import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import * as ModerationService from '~/Services/ModerationService';
+import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 
@@ -356,7 +358,7 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalInfo.id,
       };
 
-      const createVoteResponse = await createVote(voteData);
+      const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();

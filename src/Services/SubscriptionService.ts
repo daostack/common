@@ -1,7 +1,6 @@
-import axios from 'axios';
+import axios, {AxiosInstance} from 'axios';
 import auth from '@react-native-firebase/auth';
-
-import {subscriptionsUrl} from '../Config';
+import {subscriptionsUrl} from '~/Config';
 import {db} from '../Firebase';
 import {IFirebaseSnapshot} from '~/Firebase/types';
 import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
@@ -17,36 +16,56 @@ export type SubscriptionSnapshot = (
   snap: IFirebaseSnapshot<ISubscriptionEntity>,
 ) => void;
 
-export const cancelSubscription = async (
-  subscriptionId: string,
-): Promise<void> => {
-  await axios.post(
-    `${subscriptionsUrl()}/cancel?subscriptionId=${subscriptionId}`,
-    null,
-    {
-      headers: {
-        Authorization: await auth().currentUser?.getIdToken(),
+class SubscriptionService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {cancelSubscription: string};
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: subscriptionsUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      cancelSubscription: '/cancel',
+    };
+  }
+
+  cancelSubscription = async (subscriptionId: string): Promise<void> => {
+    await this.axiosClient.post(
+      this.endpoints.cancelSubscription,
+      {
+        params: {
+          subscriptionId,
+        },
       },
-    },
-  );
-};
+      {
+        headers: {
+          Authorization: await auth().currentUser?.getIdToken(),
+        },
+      },
+    );
+  };
 
-export const getUserSubscriptions = async (
-  userId: string,
-  onSnapshot: SubscriptionSnapshot,
-): Promise<void> => {
-  await db
-    .collection('subscriptions')
-    .where('userId', '==', userId)
-    .onSnapshot(onSnapshot);
-};
+  getUserSubscriptions = async (
+    userId: string,
+    onSnapshot: SubscriptionSnapshot,
+  ): Promise<void> => {
+    await db
+      .collection('subscriptions')
+      .where('userId', '==', userId)
+      .onSnapshot(onSnapshot);
+  };
 
-export const getSubscription = async (
-  subscriptionId: string,
-  onSnapshot: SubscriptionSnapshot,
-): Promise<void> => {
-  await db
-    .collection('subscriptions')
-    .doc(subscriptionId)
-    .onSnapshot(onSnapshot);
-};
+  getSubscription = async (
+    subscriptionId: string,
+    onSnapshot: SubscriptionSnapshot,
+  ): Promise<void> => {
+    await db
+      .collection('subscriptions')
+      .doc(subscriptionId)
+      .onSnapshot(onSnapshot);
+  };
+}
+
+export default new SubscriptionService();

@@ -1,9 +1,5 @@
 import BaseStore from './BaseStore';
-import {
-  subscribeToCommonDiscussions,
-  subscribeToDiscussionById,
-  fetchDiscussionId,
-} from '~/Services/DiscussionService';
+import DiscussionService from '~/Services/DiscussionService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
@@ -25,7 +21,7 @@ export default class DiscussionStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion in case it's not in the store.
-      fetchDiscussionId(id)
+      DiscussionService.fetchDiscussionId(id)
         .then((discussion: IFirebaseDoc<IDiscussionEntity>) => {
           if (discussion.exists) {
             runInAction(() => {
@@ -54,11 +50,17 @@ export default class DiscussionStore extends BaseStore<
       );
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToCommonDiscussions(commonId, this.updateStoreData);
+    DiscussionService.subscribeToCommonDiscussions(
+      commonId,
+      this.updateStoreData,
+    );
 
   //Actions
   subscribeToDiscussionById = (discussionId: string): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionById(discussionId, this.updateStoreData);
+    DiscussionService.subscribeToDiscussionById(
+      discussionId,
+      this.updateStoreData,
+    );
 
   // helper function
   // if discussion already exists in database,

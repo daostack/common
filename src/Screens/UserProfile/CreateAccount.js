@@ -25,7 +25,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
 
   const isIos = Platform.OS === 'ios';
   const isLoginWithAppleEnabled = isIos
-    ? AuthService.getInstance().isAppleLoginSupported()
+    ? AuthService.isAppleLoginSupported()
     : false;
 
   return (

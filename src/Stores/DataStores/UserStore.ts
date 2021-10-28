@@ -1,10 +1,7 @@
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {UserModel} from '../Models/UserModel';
 import BaseStore from './BaseStore';
-import {
-  subscribeToAllUsers,
-  fetchUserById,
-} from '~/Services/UserService';
+import UserService from '~/Services/UserService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
@@ -25,7 +22,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     try {
       return this.getDataById(uid);
     } catch (err) {
-      fetchUserById(uid)
+      UserService.fetchUserById(uid)
         .then((user: IFirebaseDoc<IUserEntity>) => {
           if (user.exists) {
             runInAction(() => {
@@ -68,7 +65,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
 
   //Actions
   subscribeToAllUsers = (): FirestoreUnsubscribeFn =>
-    subscribeToAllUsers(this.updateStoreData);
+    UserService.subscribeToAllUsers(this.updateStoreData);
 
   // Overriden methods
   getEntityModel(entity: IUserEntity): UserModel {

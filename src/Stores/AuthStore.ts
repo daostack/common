@@ -5,7 +5,7 @@ import AuthService from '~/Services/AuthService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {subscribeToUser} from '~/Services/UserService';
+import UserService from '~/Services/UserService';
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
@@ -139,23 +139,23 @@ class AuthStore {
   // Private functions
   async _processUser(user: any) {
     this.unsubscribeFromUser && this.unsubscribeFromUser();
-    this.unsubscribeFromUser = subscribeToUser(
+    this.unsubscribeFromUser = UserService.subscribeToUser(
       user?.uid,
       async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
         const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
         if (isNewUser) {
-          const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
+          const providerUserInfo = await AuthService.getCurrentLoggedUser(
             user.providerData[0].providerId,
           );
           const userInfo = {
             ...user._user,
             ...{
-              firstName: providerUserInfo.user.givenName,
-              lastName: providerUserInfo.user.familyName,
+              firstName: providerUserInfo?.user.givenName,
+              lastName: providerUserInfo?.user.familyName,
             },
           };
-          AuthService.getInstance().createUser(userInfo);
+          AuthService.createUser(userInfo);
         } else {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
           NotificationService.saveTokenToDatabase();

@@ -1,13 +1,9 @@
-import {axiosCircleClient} from '~/Config/network';
+import axios, {AxiosInstance} from 'axios';
 import {auth} from '~/Firebase';
 import OpenPGP from 'react-native-fast-openpgp';
+import {circlePayUrl} from '~/Config';
 
 const base64 = require('base-64');
-
-const endpoints = {
-  assign: '/assign-card',
-  create: '/create-card',
-};
 
 type CardFormData = {
   CardName: string;
@@ -39,61 +35,81 @@ interface EncryptedCardData {
   keyId: string;
 }
 
-const getEncryptedData = async (
-  token: string,
-  dataToEncrypt: {number: string; cvv: string},
-): Promise<EncryptedCardData> => {
-  const {data} = await axiosCircleClient.get('encryption', {
-    headers: {
-      Authorization: token,
-    },
-  });
-  const {keyId, publicKey} = data.data;
-  let decodedPublicKey = base64.decode(publicKey);
-  return OpenPGP.encrypt(JSON.stringify(dataToEncrypt), decodedPublicKey).then(
-    (ciphertext) => ({
+class CirclePayService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {assign: string; create: string};
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: circlePayUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      assign: '/assign-card',
+      create: '/create-card',
+    };
+  }
+
+  getEncryptedData = async (
+    token: string,
+    dataToEncrypt: {number: string; cvv: string},
+  ): Promise<EncryptedCardData> => {
+    const {data} = await this.axiosClient.get('encryption', {
+      headers: {
+        Authorization: token,
+      },
+    });
+    const {keyId, publicKey} = data.data;
+    let decodedPublicKey = base64.decode(publicKey);
+    return OpenPGP.encrypt(
+      JSON.stringify(dataToEncrypt),
+      decodedPublicKey,
+    ).then((ciphertext) => ({
       encryptedData: base64.encode(ciphertext),
       keyId: keyId,
-    }),
-  );
-};
+    }));
+  };
 
-const cardData = (formData: CardFormData): CardData => ({
-  billingDetails: {
-    name: formData.CardName,
-    city: formData.City,
-    country: formData.Country,
-    line1: formData.Address,
-    postalCode: formData.PostalCode,
-    district: formData.District,
-  },
-  expMonth: +formData.expiration_date.split('/')[0],
-  expYear: +`20${formData.expiration_date.split('/')[1]}`,
-});
-
-export const createCard = async (formData: CardFormData) => {
-  const card = await createCardPayload(formData);
-
-  return (
-    await axiosCircleClient.post(endpoints.create, card, {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(true),
-      },
-    })
-  ).data;
-};
-
-export const createCardPayload = async (formData: CardFormData) => {
-  const idToken = await auth().currentUser.getIdToken(true);
-
-  const {encryptedData, keyId} = await getEncryptedData(idToken, {
-    number: `${formData.card_number}`,
-    cvv: `${formData.cvv}`,
+  cardData = (formData: CardFormData): CardData => ({
+    billingDetails: {
+      name: formData.CardName,
+      city: formData.City,
+      country: formData.Country,
+      line1: formData.Address,
+      postalCode: formData.PostalCode,
+      district: formData.District,
+    },
+    expMonth: +formData.expiration_date.split('/')[0],
+    expYear: +`20${formData.expiration_date.split('/')[1]}`,
   });
 
-  return {
-    keyId,
-    encryptedData,
-    ...cardData(formData),
+  createCard = async (formData: CardFormData) => {
+    const card = await this.createCardPayload(formData);
+
+    return (
+      await this.axiosClient.post(this.endpoints.create, card, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      })
+    ).data;
   };
-};
+
+  createCardPayload = async (formData: CardFormData) => {
+    const idToken = await auth().currentUser.getIdToken(true);
+
+    const {encryptedData, keyId} = await this.getEncryptedData(idToken, {
+      number: `${formData.card_number}`,
+      cvv: `${formData.cvv}`,
+    });
+
+    return {
+      keyId,
+      encryptedData,
+      ...this.cardData(formData),
+    };
+  };
+}
+
+export default new CirclePayService();

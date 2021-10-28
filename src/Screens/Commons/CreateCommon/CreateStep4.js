@@ -20,7 +20,7 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import {createCommon} from '~/Services/CommonService';
+import CommonService from '~/Services/CommonService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
@@ -122,7 +122,9 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await createCommon(formattedData);
+      const createCommonResponse = await CommonService.createCommon(
+        formattedData,
+      );
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);

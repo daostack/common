@@ -1,8 +1,6 @@
 import {computed, runInAction} from 'mobx';
 import BaseStore from './BaseStore';
-import {
-  subscribeToProposalList,
-  fetchProposalById,
+import ProposalService, {
   PROPOSAL_STAGES_ACTIVE,
   PROPOSAL_STAGES_HISTORY,
 } from '~/Services/ProposalService';
@@ -85,7 +83,7 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataById(id);
     } catch (errr) {
-      fetchProposalById(id)
+      ProposalService.fetchProposalById(id)
         .then((proposal: IFirebaseDoc<IProposalEntity>) => {
           if (proposal.exists) {
             runInAction(() => {
@@ -157,24 +155,24 @@ export default class ProposalStore extends BaseStore<
 
   //Actions
   subscribeToProposalById = (proposalId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
+    ProposalService.subscribeToProposalList(this.updateStoreData, {
       id: proposalId,
     });
 
   subscribeToUserActiveProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
+    ProposalService.subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       onlyActive: true,
     });
 
   subscribeToUserAllProposals = (userId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
+    ProposalService.subscribeToProposalList(this.updateStoreData, {
       userId: userId,
       showAll: true,
     });
 
   subscribeToCommonProposals = (commonId: string): FirestoreUnsubscribeFn =>
-    subscribeToProposalList(this.updateStoreData, {
+    ProposalService.subscribeToProposalList(this.updateStoreData, {
       commonId: commonId,
     });
 

@@ -1,10 +1,6 @@
 import {computed, observable} from 'mobx';
 import BaseStore from './BaseStore';
-import {
-  subscribeToAllCommons,
-  updateCommon,
-  fetchCommonById,
-} from '~/Services/CommonService';
+import CommonService from '~/Services/CommonService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
@@ -69,7 +65,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.getDataById(id);
     } catch (err) {
-      fetchCommonById(id)
+      CommonService.fetchCommonById(id)
         .then((common: IFirebaseDoc<ICommonEntity>) => {
           if (common.exists) {
             runInAction(() => {
@@ -104,7 +100,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
-    subscribeToAllCommons(this.updateStoreData);
+    CommonService.subscribeToAllCommons(this.updateStoreData);
 
   /**
    * This function is updating the common in the firebase with the new changes
@@ -114,7 +110,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
    */
   updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
-      return await updateCommon(updateCommonInfo);
+      return await CommonService.updateCommon(updateCommonInfo);
     } catch (err) {
       throw err;
     }

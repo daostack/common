@@ -11,8 +11,8 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {createCard} from '../../../../Services/CirclePayService';
-import {createRequestToJoin} from '~/Services/ProposalService';
+import CirclePayService from '~/Services/CirclePayService';
+import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/paymentDetailsRules';
@@ -68,19 +68,20 @@ const PaymentDetailsStep = ({
           name: 'FullScreenCreationLoader',
           params: {
             title: 'Creating your membership request',
-          },
+          },s
         });
 
-        const createdCard = await createCard({
+        const createdCard = await CirclePayService.createCard({
           ...formData,
           links: escapeUrl(formData.links),
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await createRequestToJoin({
-          ...data,
-          cardId: createdCard.id,
-        });
+        const createRequestToJoinResponse =
+          await ProposalService.createRequestToJoin({
+            ...data,
+            cardId: createdCard.id,
+          });
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;

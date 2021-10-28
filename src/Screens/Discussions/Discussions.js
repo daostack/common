@@ -27,10 +27,10 @@ import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {updateDiscussionLastMessage} from '~/Services/DiscussionService';
+import DiscussionService from '~/Services/DiscussionService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import * as ModerationService from '~/Services/ModerationService';
+import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
@@ -132,7 +132,10 @@ const Discussions = ({
         .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-          await updateDiscussionLastMessage(discussionId, currentUser.uid);
+          await DiscussionService.updateDiscussionLastMessage(
+            discussionId,
+            currentUser.uid,
+          );
         })
         .catch((error) => {
           Toast.error(error);

@@ -1,4 +1,5 @@
-import {axiosCommonClient} from '~/Config/network';
+import axios, {AxiosInstance} from 'axios';
+import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {
@@ -14,53 +15,67 @@ export type commonLoadCallbackFn = (
   updatedCommonList: ICommonEntity | null,
 ) => void;
 
-const endpoints = {
-  create: '/create',
-  update: '/update',
-};
+class CommonService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {create: string; update: string};
 
-export const subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
-  CommonsCollection.onSnapshot((snapshot: any) => {
-    callback(snapshot);
-  });
-
-export const createCommon = async (
-  formData: CommonCreatedBody,
-): Promise<ICommonEntity> => {
-  try {
-    return await axiosCommonClient.post(endpoints.create, formData, {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(true),
-      },
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: commonsUrl(),
+      timeout: 1000000,
     });
-  } catch (err) {
-    throw err;
-  }
-};
 
-export const updateCommon = async (
-  updateCommonInfo: Partial<ICommonEntity>,
-): Promise<void> =>
-  await axiosCommonClient.post(
-    endpoints.update,
-    {
-      commonId: updateCommonInfo.id,
-      changes: updateCommonInfo,
-    },
-    {
-      headers: {
-        Authorization: await auth().currentUser.getIdToken(true),
+    this.endpoints = {
+      create: '/create',
+      update: '/update',
+    };
+  }
+
+  subscribeToAllCommons = (callback: commonListLoadCallbackFn) =>
+    CommonsCollection.onSnapshot((snapshot: any) => {
+      callback(snapshot);
+    });
+
+  createCommon = async (
+    formData: CommonCreatedBody,
+  ): Promise<ICommonEntity> => {
+    try {
+      return await this.axiosClient.post(this.endpoints.create, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  updateCommon = async (
+    updateCommonInfo: Partial<ICommonEntity>,
+  ): Promise<void> =>
+    await this.axiosClient.post(
+      this.endpoints.update,
+      {
+        commonId: updateCommonInfo.id,
+        changes: updateCommonInfo,
       },
-    },
-  );
-
-export const fetchCommonById = async (
-  commonId: string,
-): Promise<IFirebaseDoc<ICommonEntity>> => {
-  if (!commonId) {
-    throw new Error(
-      'Common Id (commonId) is required parameter, but it was not provided',
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      },
     );
-  }
-  return await CommonsCollection.doc(commonId).get();
-};
+
+  fetchCommonById = async (
+    commonId: string,
+  ): Promise<IFirebaseDoc<ICommonEntity>> => {
+    if (!commonId) {
+      throw new Error(
+        'Common Id (commonId) is required parameter, but it was not provided',
+      );
+    }
+    return await CommonsCollection.doc(commonId).get();
+  };
+}
+
+export default new CommonService();

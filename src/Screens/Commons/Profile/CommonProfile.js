@@ -30,11 +30,8 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
-import {
-  getProposalDiscussionsCount,
-  subscribeToPendingProposalsData,
-} from '~/Services/ProposalService';
-import * as ModerationService from '~/Services/ModerationService';
+import ProposalService from '~/Services/ProposalService';
+import ModerationService from '~/Services/ModerationService';
 import CountDown from 'react-native-countdown-component';
 import {
   Placeholder,
@@ -193,7 +190,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
-      unsubscribe = await subscribeToPendingProposalsData(
+      unsubscribe = await ProposalService.subscribeToPendingProposalsData(
         commonId,
         authStore.userInfo?.uid,
         (data) => {
@@ -229,7 +226,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await getProposalDiscussionsCount(
+        const count = await ProposalService.getProposalDiscussionsCount(
           pendingProposalsData.usersPendingProposal.id,
         );
         if (userPendingPropDiscCount !== count) {

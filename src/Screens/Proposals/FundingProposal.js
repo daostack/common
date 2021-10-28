@@ -19,7 +19,7 @@ import {string, object, shape} from 'prop-types';
 import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
-import {createFundingProposal} from '~/Services/ProposalService';
+import ProposalService from '~/Services/ProposalService';
 import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
@@ -62,9 +62,8 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await createFundingProposal(
-          data,
-        );
+        const createFundingProposalResponse =
+          await ProposalService.createFundingProposal(data);
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
