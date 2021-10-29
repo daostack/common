@@ -6,7 +6,7 @@ import CreateAccount from '../UserProfile/CreateAccount';
 import {string} from 'prop-types';
 import {uiStorePropTypes} from '~/Types/propTypes';
 
-const LoginSheetScreen = ({uiStore, message = null}) => (
+const LoginSheetScreen = ({uiStore, message = null, callbackFn}) => (
   <View style={styles.contentContainer}>
     <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
     <Text
@@ -21,6 +21,7 @@ const LoginSheetScreen = ({uiStore, message = null}) => (
       <CreateAccount
         hidePlaceholder={true}
         onSignedIn={() => uiStore.bottomSheetStore.hideBottomSheet()}
+        callbackFn={callbackFn}
       />
     </View>
   </View>

@@ -72,6 +72,7 @@ const CommonsList = ({navigation, rootStore}) => {
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
           message: 'Connect your account to join this Common',
+          callbackFn: () => navigation.navigate('CommonExplanation'),
         },
       );
     }

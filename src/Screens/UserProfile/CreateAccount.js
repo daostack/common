@@ -16,10 +16,15 @@ import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {bool, func} from 'prop-types';
 
-const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
+const CreateAccount = ({onSignedIn, hidePlaceholder, callbackFn}) => {
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
-      onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
+      await onSignedIn(
+        userInfo.additionalUserInfo.isNewUser,
+        isSignedWithApple,
+      );
+      callbackFn();
+      console.log('sdsdsdsdsdsdsdsdsddsdsdsd');
     }
   };
 
