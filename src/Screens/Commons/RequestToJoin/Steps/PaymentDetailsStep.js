@@ -68,7 +68,7 @@ const PaymentDetailsStep = ({
           name: 'FullScreenCreationLoader',
           params: {
             title: 'Creating your membership request',
-          },s
+          },
         });
 
         const createdCard = await CirclePayService.createCard({
