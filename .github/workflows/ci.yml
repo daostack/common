@@ -55,5 +55,5 @@ jobs:
         run: yarn test
         
       - name: Lint
-        run: eslint . --ext .js,.jsx,.ts,.tsx
+        run: yarn run eslint . --ext .js,.jsx,.ts,.tsx
 
