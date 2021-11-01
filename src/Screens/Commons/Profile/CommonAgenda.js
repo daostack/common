@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: 170,
-    height: 170,
+    width: 160,
+    height: 160,
   },
   linkText: {
     ...layout.marginTopS,
