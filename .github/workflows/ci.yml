@@ -61,11 +61,12 @@ jobs:
         # npm script for ESLint
         # eslint --output-file eslint_report.json --format json src
         # See https://eslint.org/docs/user-guide/command-line-interface#options
-        run: yarn run lint:report
+        run: yarn run eslint --output-file eslint_report.json --format json src
         # Continue to the next step even if this fails
         continue-on-error: true
       - name: Annotate Code Linting Results
         uses: ataylorme/eslint-annotate-action@1.2.0
+        if: always()
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           report-json: "eslint_report.json"
