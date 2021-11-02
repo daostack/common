@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
-import {string, func, InferProps, shape} from 'prop-types';
+import {string, func, InferProps, shape, bool} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {TITLES} from '~/Components/Moderation/constants';
@@ -34,7 +34,7 @@ const reportProps = {
     isFormValid: func.isRequired,
   }).isRequired,
   onReportContent: func,
-  hasPermission: string,
+  hasPermission: bool,
 };
 
 const Report: React.FC<InferProps<typeof reportProps>> = ({

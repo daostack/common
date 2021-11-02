@@ -31,7 +31,7 @@ const moderationModalProps = {
   setShowModerationModal: func,
   moderationFormStore: object,
   onReportContent: func,
-  hasPermission: string,
+  hasPermission: bool,
 };
 
 ModerationModal.propTypes = moderationModalProps;

@@ -188,7 +188,7 @@ ProposalCardHeader.propTypes = {
   isReported: bool,
   moderation: object,
   reporter: object,
-  hasPermission: string,
+  hasPermission: bool,
   rootStore: rootStorePropTypes.isRequired,
   viewerPermission: string,
 };

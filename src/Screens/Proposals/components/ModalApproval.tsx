@@ -1,9 +1,18 @@
 import React from 'react';
-import {StyleSheet, Image, View, Text, Pressable, TouchableWithoutFeedback, ScrollView, TouchableOpacity, SafeAreaView} from 'react-native';
+import {StyleSheet, Image, View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 
-export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhotoUrl}) => (
+interface Props {
+  commonId: string;
+  limit: number;
+  voteType: boolean;
+  onVote: (voteType: boolean) => void;
+  onPressClose: () => void;
+  сurrentUserPhotoUrl: string;
+}
+
+export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhotoUrl}: Props) => (
   <SafeAreaView style={{
     ...styles.body,
     height: 350,

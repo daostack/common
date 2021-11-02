@@ -124,7 +124,7 @@ DiscussionMessagesList.propTypes = {
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
   rootStore: rootStorePropTypes.isRequired,
-  hasPermission: string,
+  hasPermission: bool,
   commonId: string,
   action: func,
   openMessageOptions: func,
