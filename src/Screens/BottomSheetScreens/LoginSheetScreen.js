@@ -3,10 +3,10 @@ import React from 'react';
 import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import CreateAccount from '../UserProfile/CreateAccount';
-import {string} from 'prop-types';
+import {func, string} from 'prop-types';
 import {uiStorePropTypes} from '~/Types/propTypes';
 
-const LoginSheetScreen = ({uiStore, message = null, callbackFn}) => (
+const LoginSheetScreen = ({uiStore, message = null, goToNextScreen}) => (
   <View style={styles.contentContainer}>
     <Text style={styles.sheetTitleStyle}>Be a part of Common</Text>
     <Text
@@ -21,7 +21,7 @@ const LoginSheetScreen = ({uiStore, message = null, callbackFn}) => (
       <CreateAccount
         hidePlaceholder={true}
         onSignedIn={() => uiStore.bottomSheetStore.hideBottomSheet()}
-        callbackFn={callbackFn}
+        goToNextScreen={goToNextScreen}
       />
     </View>
   </View>
@@ -30,6 +30,7 @@ const LoginSheetScreen = ({uiStore, message = null, callbackFn}) => (
 LoginSheetScreen.propTypes = {
   uiStore: uiStorePropTypes,
   message: string,
+  goToNextScreen: func,
 };
 
 const styles = StyleSheet.create({

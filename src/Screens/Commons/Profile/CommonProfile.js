@@ -578,7 +578,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
-          callbackFn: () => navigation.dispatch(navigate),
+          goToNextScreen: () => navigation.dispatch(navigate),
         },
       );
     }
