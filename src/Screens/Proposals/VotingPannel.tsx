@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Animated, {Easing, Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import React, {useEffect} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Icon from '~/Assets/iconfont/Icon';
 import {IProposalVote} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {Proposal} from '~/Stores/Models/Proposal';
@@ -15,36 +15,31 @@ interface VotingPannelProps {
 export const VotingPannel = (props: VotingPannelProps) => {
   const {currentUserVote, сurrentUserPhotoUrl, proposalInfo} = props;
 
-  const [test, setTest] = useState(false);
+  const animatedOpacity = useSharedValue(0);
+  const animatedImageSize = useSharedValue(50);
+  const animatedImageStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(animatedOpacity.value, {duration: 200, easing: Easing.linear}),
+    height: withTiming(animatedImageSize.value, {duration: 200, easing: Easing.linear}),
+    width: withTiming(animatedImageSize.value, {duration: 200, easing: Easing.linear}),
+  }), [animatedOpacity.value, animatedImageSize.value]);
 
-  // const test = currentUserVote?.voteOutcome
-
-  const animatedIndex = useSharedValue(0);
-  const animatedSize = useSharedValue(50);
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(animatedIndex.value, {duration: 200, easing: Easing.linear}),
-    height: withTiming(animatedSize.value, {duration: 200, easing: Easing.linear}),
-    width: withTiming(animatedSize.value, {duration: 200, easing: Easing.linear}),
-  }), [animatedIndex.value]);
+  const animatedIconSize = useSharedValue(36);
+  const animatedIconStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(animatedOpacity.value, {duration: 200, easing: Easing.linear}),
+    height: withTiming(animatedIconSize.value, {duration: 200, easing: Easing.linear}),
+    width: withTiming(animatedIconSize.value, {duration: 200, easing: Easing.linear}),
+  }), [animatedOpacity.value, animatedIconSize.value]);
 
   useEffect(() => {
     if (
-      test ) {
-      animatedIndex.value = 1;
-      animatedSize.value = 26;
+      currentUserVote?.voteOutcome === 'rejected'
+      || currentUserVote?.voteOutcome === 'approved') {
+      animatedOpacity.value = 1;
+      animatedImageSize.value = 26;
+      animatedIconSize.value = 18;
     }
-  }, [test]);
+  }, [currentUserVote?.voteOutcome]);
 
-  const containerStyle = useMemo(
-    () => [
-      {
-        ...layout.marginRightXS,
-        ...styles.imageContainer,
-      },
-      animatedStyle,
-    ],
-    [animatedStyle],
-  );
   return (
     <View
     style={{
@@ -64,18 +59,22 @@ export const VotingPannel = (props: VotingPannelProps) => {
           size={25}
           style={layout.marginRightXS}
         />
-        { // currentUserVote?.voteOutcome !== 'approved' ?
-          test &&
-          <Animated.View style={{
+        { currentUserVote?.voteOutcome === 'approved' &&
+          <View style={{
             ...layout.marginRightXS,
-            ...styles.imageContainer,
+            ...styles.imageLeftContainer,
             }}>
             <Animated.Image
-              style={[styles.imageApprove, animatedStyle]}
+              style={[styles.imageApprove, animatedImageStyle]}
               source={{uri: сurrentUserPhotoUrl}}
             />
-            <Icon name={'iconVotingApproved16'} size={16} style={styles.iconStyle} />
-          </Animated.View>
+            <View style={styles.iconContainer}>
+              <Animated.Image
+                style={[styles.iconStyle, animatedIconStyle]}
+                source={require('~/Assets/iconsApproved16.png')}
+              />
+            </View>
+          </View>
         }
         <Text style={text.lightishGreenText}>
           {proposalInfo.votesFor}
@@ -99,26 +98,29 @@ export const VotingPannel = (props: VotingPannelProps) => {
         <Text style={text.againstText}>
           {proposalInfo.votesAgainst}
         </Text>
-        { // currentUserVote?.voteOutcome !== 'rejected' ?
-          test !== 'rejected' ?
-          <Icon
-            name="user-rejected"
-            color={colors.against}
-            size={25}
-            style={layout.marginLeftXS}
-          />
-          :
+        <Icon
+          name="user-rejected"
+          color={colors.against}
+          size={25}
+          style={layout.marginLeftXS}
+        />
+        { currentUserVote?.voteOutcome === 'rejected' &&
           <View style={{
-                  ...styles.imageContainer,
+                  ...styles.imageRightContainer,
                   ...layout.marginLeftXS,
                 }}>
-            <Image
-              style={styles.imageReject}
+            <Animated.Image
+              style={[styles.imageReject, animatedImageStyle]}
               source={{uri: сurrentUserPhotoUrl}}
               width={26}
               height={26}
             />
-            <Icon name={'iconVotingRejected16'} size={16} style={styles.iconStyle} />
+            <View style={styles.iconContainer}>
+              <Animated.Image
+                style={[styles.iconStyle, animatedIconStyle]}
+                source={require('~/Assets/iconsReject16.png')}
+              />
+            </View>
           </View>
         }
       </View>
@@ -141,9 +143,6 @@ export const VotingPannel = (props: VotingPannelProps) => {
         }}
       />
     </View>
-    <TouchableOpacity onPress={() => setTest(!test)}>
-      <Text>yoyoyo</Text>
-    </TouchableOpacity>
   </View>
   );
 };
@@ -153,34 +152,55 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 0,
   },
-  imageContainer: {
+  imageLeftContainer: {
     alignSelf: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    left: -12,
-    bottom: -10,
-    width: 50,
-    height: 50,
+    left: -38,
+    bottom: -36,
+    width: 100,
+    height: 100,
+  },
+  imageRightContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: -38,
+    bottom: -36,
+    width: 100,
+    height: 100,
   },
   imageApprove: {
+    width: 50,
+    height: 50,
     borderWidth: 2,
     borderRadius: 70,
     borderColor: colors.lightishGreen,
     alignSelf: 'center',
   },
   imageReject: {
+    width: 50,
+    height: 50,
     borderWidth: 2,
     borderRadius: 70,
     borderColor: colors.pinkishOrange,
     alignSelf: 'center',
   },
-  iconStyle: {
-    height: 11,
-    width: 14,
+  iconContainer: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     position: 'absolute',
+    right: 26,
+    bottom: 28,
+  },
+  iconStyle: {
+    position: 'absolute',
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
     alignSelf: 'center',
-    left: 15,
-    bottom: -4,
   },
   proposalProgressBar: {
     width: '100%',

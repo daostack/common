@@ -63,7 +63,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {RouteProp} from '@react-navigation/native';
 import RootStore from '~/Stores/RootStore';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-import {IProposalEntity, IProposalVote} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {IProposalVote} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {VotingPannel} from '~/Screens/Proposals/VotingPannel';
 
 const screenWidth = Dimensions.get('window').width;
@@ -125,7 +125,6 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
   );
   const [changeVoteModalVisible, setChangeVoteModalVisible] = useState(false);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
-  const [testVar, setTestVar] = useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -246,7 +245,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
 
   const [inputText, setInputText] = useState('');
 
-  const inputRef = useRef<TextInput>();
+  const inputRef = useRef<TextInput>(null);
 
   const renderTabBar = (currProps: any) =>
     proposalInfo && (
@@ -306,18 +305,12 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
 
     return isMember || isProposer ? (
       <KeyboardAvoidingView
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          flex: 1,
-          color: '#fbfdff',
-        }}>
+        style={styles.keyboardAvoidingView}>
         <View style={viewStyle}>
           <View style={styles.inputBorder}>
             <TextInput
               ref={inputRef}
               editable={true}
-              fontSize={15}
               multiline
               placeholder="What do you think?"
               onChangeText={(currText: string) => setInputText(currText)}
@@ -325,6 +318,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
                 setInputHeight(event.nativeEvent.contentSize.height);
               }}
               style={{
+                fontSize: 15,
                 flex: 1,
                 padding: 0,
                 marginHorizontal: 10,
@@ -364,13 +358,13 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
     );
   };
 
-  const openApprovalSheet = (isApproval) => {
+  const openApprovalSheet = (isApproval: boolean) => {
     setVoteType(isApproval);
     // setIsApprovalBottomModalVisible(true);
     setVoteModalVisible(true);
   };
 
-  const closeApprovalSheet = (e) => {
+  const closeApprovalSheet = () => {
     setIsApprovalBottomModalVisible(false);
   };
 
@@ -385,6 +379,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
       inProgress: true,
       error: false,
     });
+    closeVoteModal();
 
     try {
       const voteData = {
@@ -397,8 +392,6 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
       );
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
-        // closeApprovalSheet();
-        closeVoteModal();
         Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
         setIsVoteByYou(isApproved);
       } else {
@@ -546,7 +539,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
       },
     ],
   };
-
+  console.log('proposalInfo?.state', proposalInfo?.state)
   const getAvailableFunds = () => (proposalCommon?.balance || 0) / 100;
 
   const getAvailableFundsText = () => {
@@ -965,7 +958,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
                 />
 
                 <TouchableOpacity style={{alignSelf: 'center', marginBottom: 16}} onPress={() => setChangeVoteModalVisible(true)}>
-                  <Text style={text.blackActionText}>{ testVar ? 'Change your vote' : ' '}</Text>
+                  <Text style={text.blackActionText}>{!renderVoting ? 'Change your vote' : ' '}</Text>
                 </TouchableOpacity>
 
                 <View
@@ -1002,12 +995,9 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
               {index === 0 && (
                 <ProposalData proposalId={proposalId || proposalInfo?.id} />
               )}
-
               {index === 1 && (
                 <DiscussionMessagesList
                   discussionId={proposalId || proposalInfo?.id}
-                  proposal={proposalInfo}
-                  inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
                   hasPermission={hasPermission}
                   commonId={proposalInfo?.commonId}
@@ -1018,9 +1008,6 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
             </View>
           </View>
         </ScrollView>
-        <TouchableOpacity onPress={() => setTestVar(!testVar)}>
-            <Text>YO</Text>
-          </TouchableOpacity>
         {index === 0 ? (
           renderVoting &&
           showBottomVotingButtonsContainer && (
@@ -1157,7 +1144,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
-
     borderTopWidth: 1,
     borderTopColor: colors.grey2,
   },
@@ -1187,6 +1173,12 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingBottom: 5,
     zIndex: 1,
+  },
+  keyboardAvoidingView: {
+    position: 'absolute',
+    bottom: 0,
+    flex: 1,
+    color: '#fbfdff',
   },
 });
 

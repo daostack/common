@@ -13,6 +13,7 @@ import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import { Proposal } from '~/Stores/Models/Proposal';
 
 type SignInErrorWithCode = any;
 
@@ -128,7 +129,7 @@ class AuthStore {
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: IProposalEntity) =>
+  isProposer = (proposal: Proposal) =>
     this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
 
   isLoginInProgressExists = (uid: any) =>

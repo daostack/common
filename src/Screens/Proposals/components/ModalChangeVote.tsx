@@ -4,8 +4,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 
 interface Props {
-  commonId: string
-  limit: number
   voteType: boolean
   onVote: (voteType: boolean) => void;
   onPressClose: () => void;

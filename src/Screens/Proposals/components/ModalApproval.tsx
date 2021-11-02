@@ -4,8 +4,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 
 interface Props {
-  commonId: string;
-  limit: number;
   voteType: boolean;
   onVote: (voteType: boolean) => void;
   onPressClose: () => void;
@@ -26,7 +24,7 @@ export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhoto
           width={70}
           height={70}
         />
-        <Icon name={voteType ? 'iconVotingApproved' : 'iconVotingRejected'} strokeWidth={3} size={40} style={styles.iconStyle} />
+        <Icon name={voteType ? 'iconsVotionApproved' : 'iconsVotionRejected'} size={40} style={styles.iconStyle} />
       </View>
       { voteType ?
         <Text style={styles.titleApprove}>Approve</Text>
