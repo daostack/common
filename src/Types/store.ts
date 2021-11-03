@@ -60,3 +60,4 @@ export type RootStore = {
 };
 // TODO: Add all Store types
 export type AppRootStore = {rootStore: RootStore};
+

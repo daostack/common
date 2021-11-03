@@ -1,11 +1,15 @@
-import axios from 'axios';
+import axios, {AxiosInstance} from 'axios';
+import {ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import Toast from '~/Util/Toast.js';
 
-export default class ModerationService {
-  static serviceInstance = null;
+class ModerationService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {hide: string; report: string; show: string};
 
   constructor() {
     this.axiosClient = axios.create({
@@ -20,14 +24,11 @@ export default class ModerationService {
     };
   }
 
-  static getInstance = () => {
-    if (ModerationService.serviceInstance == null) {
-      ModerationService.serviceInstance = new ModerationService();
-    }
-    return this.serviceInstance;
-  };
-
-  hide = async (itemId, type, commonId) => {
+  async hide(
+    itemId: string,
+    type: keyof typeof ENTITY_TYPES,
+    commonId: string,
+  ): Promise<IDiscussionEntity | IDiscussionMessageEntity | IProposalEntity> {
     try {
       return await this.axiosClient.post(
         this.endpoints.hide,
@@ -45,9 +46,13 @@ export default class ModerationService {
     } catch (error) {
       throw error;
     }
-  };
+  }
 
-  report = async (type, commonId, moderationData) =>
+  async report(
+    type: keyof typeof ENTITY_TYPES,
+    commonId: string,
+    moderationData: Record<string, string>,
+  ): Promise<void> {
     await this.axiosClient.post(
       this.endpoints.report,
       {
@@ -61,8 +66,13 @@ export default class ModerationService {
         },
       },
     );
+  }
 
-  show = async (itemId, commonId, type) =>
+  show = async (
+    itemId: string,
+    commonId: string,
+    type: keyof typeof ENTITY_TYPES,
+  ): Promise<void> =>
     await this.axiosClient.post(
       this.endpoints.show,
       {
@@ -77,7 +87,12 @@ export default class ModerationService {
       },
     );
 
-  onModerate = async (actionType, itemId, commonId, itemType) => {
+  onModerate = async (
+    actionType: keyof typeof ACTIONS,
+    itemId: string,
+    commonId: string,
+    itemType: keyof typeof ENTITY_TYPES,
+  ): Promise<boolean | string> => {
     try {
       switch (actionType) {
         case ACTIONS.show:
@@ -103,3 +118,5 @@ export default class ModerationService {
     }
   };
 }
+
+export default new ModerationService();
