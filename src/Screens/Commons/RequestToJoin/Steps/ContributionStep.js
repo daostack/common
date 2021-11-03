@@ -71,7 +71,7 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
       {
         ...data,
       },

@@ -73,8 +73,7 @@ function ImageField({
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.getInstance()
-          .uploadImage(response.uri)
+        StorageService.uploadImage(response.uri)
           .then((url: string): void => {
             Toast.hide();
             Toast.success('Done');

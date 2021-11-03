@@ -63,12 +63,12 @@ const UserProfile = ({authStore}) => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
             authStore.setIsLoading(true);
 
-            await AuthService.getInstance().signOut();
+            await AuthService.signOut();
           },
         },
       ]);
     } catch (error) {
-      await AuthService.getInstance().clearGoogleSignInCache();
+      await AuthService.clearGoogleSignInCache();
       authStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);

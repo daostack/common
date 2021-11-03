@@ -11,12 +11,10 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import layout from '../../Theme/layout';
 import {MonthlyContributionStatus} from '../../Components';
 import {PaymentFailureMessageBox} from '../../Components/Subscriptions/PaymentFailureMessageBox';
-import {
+import SubscriptionService, {
   ACTIVE,
   CANCELED_BY_PAYMENT,
   CANCELED_BY_USER,
-  cancelSubscription,
-  getSubscription,
   PAYMENT_FAILED,
   expirationPeriod,
 } from '~/Services/SubscriptionService';
@@ -38,7 +36,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
       BOTTOM_SHEET_TEMPLATES.CANCEL_SUBSCRIPTION,
       {
         onCancelConfirm: async () => {
-          await cancelSubscription(subscription.id);
+          await SubscriptionService.cancelSubscription(subscription.id);
         },
         commonName: subscription.metadata?.common?.name,
         dueDate: subscription.dueDate.toDate(),
@@ -78,9 +76,12 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
   React.useEffect(() => {
     if (!subscription) {
       (async () => {
-        await getSubscription(route.params?.subscription?.id, (snap) => {
-          setSubscription(snap?.data());
-        });
+        await SubscriptionService.getSubscription(
+          route.params?.subscription?.id,
+          (snap) => {
+            setSubscription(snap?.data());
+          },
+        );
       })();
     }
   }, [route.params?.subscription?.id]);
