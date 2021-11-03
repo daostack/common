@@ -62,9 +62,8 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.getInstance().createFundingProposal(
-          data,
-        );
+        const createFundingProposalResponse =
+          await ProposalService.createFundingProposal(data);
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;

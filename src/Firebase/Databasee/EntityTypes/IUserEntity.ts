@@ -12,5 +12,13 @@ export interface IUserEntity extends IBaseEntity {
   firstName: string;
   lastName: string;
   country: string;
+}
 
+export interface UserPublicData {
+  createdAt: Date;
+  firstName: string;
+  lastName: string;
+  email: string;
+  photoURL: string;
+  uid: string;
 }

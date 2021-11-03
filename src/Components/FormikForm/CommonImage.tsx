@@ -52,8 +52,7 @@ const CommonImage = ({
         logger.log('ImagePicker Error: ', response.error);
       } else {
         Toast.loading('Uploading...');
-        StorageService.getInstance()
-          .uploadImage(response.uri)
+        StorageService.uploadImage(response.uri)
           .then((url: string) => {
             Toast.hide();
             Toast.success('Done');

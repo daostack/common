@@ -21,7 +21,7 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
       authStore.setIsLoading(true);
-      const userInfo = await AuthService.getInstance().signIn();
+      const userInfo = await AuthService.signIn();
       if (onSignIn) {
         onSignIn(userInfo);
       }

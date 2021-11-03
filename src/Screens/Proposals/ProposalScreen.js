@@ -25,9 +25,11 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalService, {
+  PROPOSAL_STAGE,
+  PROPOSAL_STAGES_ACTIVE,
+} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -97,17 +99,14 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -127,15 +126,13 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
+    const unsubscribeFromProposalDiscussionMessages =
+      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
     let unsubscribeFromProposalById = null;
     if (fromNotificationItem) {
-      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-        proposalId,
-      );
+      unsubscribeFromProposalById =
+        proposalStore.subscribeToProposalById(proposalId);
     }
 
     return () => {
@@ -195,10 +192,8 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
+  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
+    useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -363,9 +358,7 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalInfo.id,
       };
 
-      const createVoteResponse = await ProposalService.getInstance().createVote(
-        voteData,
-      );
+      const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();
@@ -567,7 +560,7 @@ const ProposalScreen = ({
     switch (actionType) {
       case 'Show':
         Toast.loading('Loading...');
-        await ModerationService.getInstance().show(
+        await ModerationService.show(
           messageId,
           proposalInfo.commonId,
           'discussionMessage',
@@ -578,7 +571,7 @@ const ProposalScreen = ({
         break;
       case 'Hide':
         Toast.loading('Loading...');
-        await ModerationService.getInstance().hide(
+        await ModerationService.hide(
           messageId,
           'discussionMessage',
           proposalInfo.commonId,
@@ -617,7 +610,7 @@ const ProposalScreen = ({
     setShowModerationModal(false);
     Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       'discussionMessage',
       proposalInfo.commonId,
       moderationFormStore.getFormFieldsJson(),
