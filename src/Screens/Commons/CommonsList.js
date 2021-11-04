@@ -9,7 +9,7 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import {CommonBox, BottomRightButton} from '~/Components';
+import {CommonBox, BottomRightButton, ModalCreateCommon} from '~/Components';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
@@ -36,6 +36,7 @@ const CommonsList = ({navigation, rootStore}) => {
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const [isLoading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const handleLoader = () => {
     setLoading(false);
   };
@@ -198,8 +199,12 @@ const CommonsList = ({navigation, rootStore}) => {
         ) : (
           <LoadingPlaceholder />
         )}
-
         <BottomRightButton onPress={onAddCommon} />
+        <BottomRightButton onPress={() => setShowModal(true)} bottom={200} />
+        <ModalCreateCommon
+          showModal={showModal}
+          closeModal={() => setShowModal(false)}
+        />
       </SafeAreaView>
       {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
     </>
