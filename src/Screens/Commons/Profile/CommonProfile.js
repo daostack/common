@@ -546,31 +546,35 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   */
 
   const requestToJoin = () => {
-    if (authStore.userInfo) {
-      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
-      const paymentFormStore = new PaymentFormStore();
-      const personalContributionFormStore = new PersonalContributionFormStore();
-      const billingDetailsFormStore = new BillingDetailsFormStore();
+    const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+    const paymentFormStore = new PaymentFormStore();
+    const personalContributionFormStore = new PersonalContributionFormStore();
+    const billingDetailsFormStore = new BillingDetailsFormStore();
 
-      const navigate = CommonActions.navigate({
-        name: 'IntroductionStep', // #498 we always go to Introduction first
-        params: {
-          formStores: {
-            paymentFormStore,
-            introduceYourselfFormStore,
-            personalContributionFormStore,
-            billingDetailsFormStore,
-          },
-          currCommon: currCommon,
-          currDaoId: currCommon.id,
-          skipFirstStep: false,
-          refreshFeed,
+    const navigate = CommonActions.navigate({
+      name: 'IntroductionStep', // #498 we always go to Introduction first
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
         },
-      });
+        currCommon: currCommon,
+        currDaoId: currCommon.id,
+        skipFirstStep: false,
+        refreshFeed,
+      },
+    });
+
+    if (authStore.userInfo) {
       navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          goToNextScreen: () => navigation.dispatch(navigate),
+        },
       );
     }
   };
