@@ -9,5 +9,5 @@ export {default as ContributionListItem} from './ContributionListItem';
 export {default as MonthlyContributionStatus} from './MonthlyContributionStatus';
 export {default as Report} from './Moderation/Report';
 export {default as HideContentSuccess} from './Moderation/HideContentSuccess';
-export {default as ModalCreateCommon} from './ModalCreateCommon';
+export {default as ModalPreview} from './ModalPreview';
 export {ErrorExpand} from './ErrorExpand';

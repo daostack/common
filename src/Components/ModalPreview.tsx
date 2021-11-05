@@ -1,22 +1,16 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import {View, Text, Modal, StyleSheet, TouchableOpacity} from 'react-native';
 
-import {BottomRightButton} from '.';
 import {font, colors, text, layout} from '~/Theme';
 
 interface Props {
   showModal: boolean;
   closeModal: () => void;
+  title: string;
+  description: string;
 }
 
-const ModalCreateCommon = ({showModal, closeModal}: Props) => (
+const ModalPreview = ({showModal, closeModal, title, description}: Props) => (
   <Modal
     animationType="fade"
     transparent={true}
@@ -25,20 +19,15 @@ const ModalCreateCommon = ({showModal, closeModal}: Props) => (
     <View style={styles.background}>
       <View style={styles.container}>
         <View style={styles.modal}>
-          <Text style={styles.title}>Create your own Common</Text>
-          <Text style={styles.description}>
-            Tell the world, invite friends, and work together to achieve common
-            goals. Start now!
-          </Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
           <TouchableOpacity style={styles.btn} onPress={closeModal}>
             <Text style={styles.btnText}>Got it</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.triangleShape} />
-        <View style={styles.circle} />
+        <View style={styles.triangle} />
       </View>
     </View>
-    <BottomRightButton bottom={Platform.OS === 'ios' ? 112 : 72} />
   </Modal>
 );
 
@@ -46,19 +35,19 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     backgroundColor: 'rgba(0, 26, 54, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   container: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 104 : 64,
-    right: 6,
+    width: '90%',
   },
   modal: {
-    width: 370,
+    width: '100%',
     borderRadius: 18,
     backgroundColor: colors.mainBlue,
     paddingHorizontal: 16,
     paddingVertical: 24,
-    justifyContent: 'center',
   },
   title: {
     ...font.fontSize(5),
@@ -73,7 +62,7 @@ const styles = StyleSheet.create({
     color: colors.grey4,
     textAlign: 'center',
     paddingTop: 8,
-    paddingVertical: 16,
+    paddingBottom: 14,
   },
   btn: {
     ...layout.btnOutline,
@@ -83,8 +72,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     color: colors.white,
   },
-  triangleShape: {
-    marginRight: 25,
+  triangle: {
     borderLeftWidth: 16,
     borderRightWidth: 16,
     borderTopWidth: 13,
@@ -92,17 +80,8 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     borderLeftColor: 'transparent',
-    alignSelf: 'flex-end',
-  },
-  circle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 1,
-    borderColor: 'white',
-    borderWidth: 2,
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
   },
 });
 
-export default ModalCreateCommon;
+export default ModalPreview;

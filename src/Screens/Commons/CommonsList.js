@@ -9,7 +9,7 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import {CommonBox, BottomRightButton, ModalCreateCommon} from '~/Components';
+import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
@@ -201,9 +201,12 @@ const CommonsList = ({navigation, rootStore}) => {
         )}
         <BottomRightButton onPress={onAddCommon} />
         <BottomRightButton onPress={() => setShowModal(true)} bottom={200} />
-        <ModalCreateCommon
+        <ModalPreview
           showModal={showModal}
           closeModal={() => setShowModal(false)}
+          title="Create your own Common"
+          description="Tell the world, invite friends, and work together to achieve common
+          goals. Start now!"
         />
       </SafeAreaView>
       {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
