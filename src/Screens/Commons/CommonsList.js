@@ -8,12 +8,14 @@ import {
   ScrollView,
   Image,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
 import {inject, observer} from 'mobx-react';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
+import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
 
 import {
   Placeholder,
@@ -199,15 +201,24 @@ const CommonsList = ({navigation, rootStore}) => {
         ) : (
           <LoadingPlaceholder />
         )}
-        <BottomRightButton onPress={onAddCommon} />
-        <BottomRightButton onPress={() => setShowModal(true)} bottom={200} />
         <ModalPreview
           showModal={showModal}
           closeModal={() => setShowModal(false)}
           title="Create your own Common"
           description="Tell the world, invite friends, and work together to achieve common
-          goals. Start now!"
-        />
+        goals. Start now!"
+          positionArrow={POSITION_ARROW.BOTTOM_RIGHT}
+          arrowMarginRight={25}
+          modalPosition={{
+            bottom: Platform.OS === 'ios' ? 184 : 144,
+            right: 6,
+          }}>
+          <BottomRightButton
+            onPress={onAddCommon}
+            bottom={showModal && (Platform.OS === 'ios' ? 112 : 72)}
+            isInModal={showModal}
+          />
+        </ModalPreview>
       </SafeAreaView>
       {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
     </>
