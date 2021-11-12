@@ -6,6 +6,7 @@ import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEnt
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import Toast from '~/Util/Toast.js';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 class ModerationService {
   private axiosClient: AxiosInstance;
@@ -87,6 +88,12 @@ class ModerationService {
       },
     );
 
+  copyLink = (itemId: string, type: keyof typeof ENTITY_TYPES): void => {
+    const baseURL = 'common://';
+    const itemType = type === ENTITY_TYPES.proposals ? 'proposal' : type;
+    Clipboard.setString(`${baseURL}/${itemType}/${itemId}`);
+  };
+
   onModerate = async (
     actionType: keyof typeof ACTIONS,
     itemId: string,
@@ -107,6 +114,10 @@ class ModerationService {
           Toast.hide();
           Toast.success('Done');
           return true;
+        case ACTIONS.copyLink:
+          this.copyLink(itemId, itemType);
+          Toast.success('Link copied to clipboard');
+          return false;
         default:
           // reporting
           return ACTIONS.report;

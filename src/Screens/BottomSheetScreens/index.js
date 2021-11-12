@@ -23,7 +23,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     },
   },
   SCREEN_COMMON_PROFILE_OPTIONS: {
-    topSnap: 280,
+    topSnap: 440,
     content: CommonProfileOptions,
     props: {
       isCommonProfile: true,

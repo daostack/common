@@ -18,6 +18,8 @@ export const ACTIONS = {
   report: 'Report',
   show: 'Show',
   hide: 'Hide',
+  share: 'Share',
+  copyLink: 'Copy link',
 };
 
 export const FLAGS = {
