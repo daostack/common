@@ -99,14 +99,17 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
-    useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -126,13 +129,15 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages =
-      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
 
     let unsubscribeFromProposalById = null;
     if (fromNotificationItem) {
-      unsubscribeFromProposalById =
-        proposalStore.subscribeToProposalById(proposalId);
+      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+        proposalId,
+      );
     }
 
     return () => {
@@ -192,8 +197,10 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
-    useState(false);
+  const [
+    isApprovalBottomModalVisible,
+    setIsApprovalBottomModalVisible,
+  ] = useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -212,6 +219,10 @@ const ProposalScreen = ({
       iconSelected: 'discussion-selected',
     },
   ]);
+
+  useEffect(() => {
+    setShowStickyTabBar(index === 0 ? false : true);
+  }, [index]);
 
   const [inputText, setInputText] = useState(null);
 
@@ -470,15 +481,11 @@ const ProposalScreen = ({
     const isDiscussionTab = item === 1;
     setIsHeaderHidden(isDiscussionTab);
 
-    if (!isDiscussionTab && showStickyTabBar) {
-      Animated.timing(stickyTabBarState.animation, {
-        toValue: 0,
-        duration: 450,
-        useNativeDriver: true,
-      }).start(() => {
-        setShowStickyTabBar(false);
-      });
-    }
+    Animated.timing(stickyTabBarState.animation, {
+      toValue: 1,
+      duration: 450,
+      useNativeDriver: true,
+    }).start(() => {});
 
     setIndex(item);
   };
@@ -698,6 +705,7 @@ const ProposalScreen = ({
           flex: 1,
           backgroundColor: colors.white,
         }}>
+        {console.log('index', index, 'showStickyTabBar', showStickyTabBar)}
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
             <TabBarRenderer
@@ -719,26 +727,11 @@ const ProposalScreen = ({
 
             stickyTabBarRef?.current?.measure(
               (fx, fy, width, height, px, py) => {
-                const isVisible = py < 0;
-
-                if (isVisible !== showStickyTabBar) {
-                  if (isVisible) {
-                    setShowStickyTabBar(isVisible);
-                    Animated.timing(stickyTabBarState.animation, {
-                      toValue: 1,
-                      duration: 200,
-                      useNativeDriver: true,
-                    }).start();
-                  } else {
-                    Animated.timing(stickyTabBarState.animation, {
-                      toValue: 0,
-                      duration: 300,
-                      useNativeDriver: true,
-                    }).start(() => {
-                      setShowStickyTabBar(isVisible);
-                    });
-                  }
-                }
+                Animated.timing(stickyTabBarState.animation, {
+                  toValue: 1,
+                  duration: 200,
+                  useNativeDriver: true,
+                }).start();
               },
             );
 
