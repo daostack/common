@@ -10,6 +10,7 @@ export const TITLES = {
 
 export const ENTITY_TYPES = {
   proposals: 'proposals',
+  proposal: 'proposal',
   discussion: 'discussion',
   discussionMessage: 'discussionMessage',
 };

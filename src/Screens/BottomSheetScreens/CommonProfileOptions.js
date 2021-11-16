@@ -20,7 +20,7 @@ const CommonProfileOptions = ({
     moderatorOptions.actions || ['Hide', 'Report', 'Share', 'Copy link'],
   );
   const [iconName, setIconName] = useState('hidden');
-  const {item} = moderatorOptions;
+  const {item, isMember} = moderatorOptions;
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
@@ -91,21 +91,23 @@ const CommonProfileOptions = ({
                 {actions[3]}
               </Text>
             </TouchableOpacity>
-            {hasPermission && <View style={styles.lineHorizontal} />}
-            {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
             {hasPermission && (
-              <TouchableOpacity
-                style={styles.optionBtn}
-                onPress={() => onAction(actions[0])}>
-                <Icon
-                  name={iconName}
-                  style={layout.marginRightS}
-                  color={colors.error}
-                />
-                <Text style={text.buttonred}>{actions[0]}</Text>
-              </TouchableOpacity>
+              <>
+                <View style={styles.lineHorizontal} />
+                <Text style={styles.text}>Moderator tools</Text>
+                <TouchableOpacity
+                  style={styles.optionBtn}
+                  onPress={() => onAction(actions[0])}>
+                  <Icon
+                    name={iconName}
+                    style={layout.marginRightS}
+                    color={colors.error}
+                  />
+                  <Text style={text.buttonred}>{actions[0]}</Text>
+                </TouchableOpacity>
+              </>
             )}
-            {actions[1] && (
+            {isMember && actions[1] && (
               <TouchableOpacity
                 style={styles.optionBtn}
                 onPress={() => onAction(actions[1])}>

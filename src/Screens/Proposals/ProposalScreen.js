@@ -99,14 +99,17 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
-    useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -126,13 +129,15 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages =
-      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
 
     let unsubscribeFromProposalById = null;
     if (fromNotificationItem) {
-      unsubscribeFromProposalById =
-        proposalStore.subscribeToProposalById(proposalId);
+      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+        proposalId,
+      );
     }
 
     return () => {
@@ -192,8 +197,10 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
-    useState(false);
+  const [
+    isApprovalBottomModalVisible,
+    setIsApprovalBottomModalVisible,
+  ] = useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -595,7 +602,7 @@ const ProposalScreen = ({
       );
     }
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
