@@ -8,7 +8,6 @@ import {
   ScrollView,
   Image,
   RefreshControl,
-  Platform,
 } from 'react-native';
 import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
 import {inject, observer} from 'mobx-react';
@@ -16,6 +15,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
 import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
+import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 
 import {
   Placeholder,
@@ -210,12 +210,12 @@ const CommonsList = ({navigation, rootStore}) => {
           positionArrow={POSITION_ARROW.BOTTOM_RIGHT}
           arrowMarginRight={25}
           modalPosition={{
-            bottom: Platform.OS === 'ios' ? 184 : 144,
+            bottom: TAB_BAR_HEIGHT + 84,
             right: 6,
           }}>
           <BottomRightButton
             onPress={onAddCommon}
-            bottom={showModal && (Platform.OS === 'ios' ? 112 : 72)}
+            bottom={showModal && TAB_BAR_HEIGHT + 12}
             isInModal={showModal}
           />
         </ModalPreview>
