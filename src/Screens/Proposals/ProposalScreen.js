@@ -221,7 +221,7 @@ const ProposalScreen = ({
   ]);
 
   useEffect(() => {
-    setShowStickyTabBar(index === 0 ? false : true);
+    setShowStickyTabBar(index !== 0);
   }, [index]);
 
   const [inputText, setInputText] = useState(null);
@@ -705,7 +705,6 @@ const ProposalScreen = ({
           flex: 1,
           backgroundColor: colors.white,
         }}>
-        {console.log('index', index, 'showStickyTabBar', showStickyTabBar)}
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
             <TabBarRenderer
