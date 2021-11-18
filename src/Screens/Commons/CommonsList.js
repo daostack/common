@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -9,24 +9,26 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
-import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
-import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
-
+import {CommonActions} from '@react-navigation/native';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {CommonActions} from '@react-navigation/native';
+
+import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {font, colors} from '~/Theme';
+import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
+import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
+import logger from '~/Services/Logger';
+import {setCountVisitScreen, getCountVisitScreen} from '~/Util/asyncStorage';
 
 const TIMEOUT = 1500;
 
@@ -59,6 +61,34 @@ const CommonsList = ({navigation, rootStore}) => {
   };
 
   const [refreshing, setRefreshing] = React.useState(false);
+
+  useEffect(() => {
+    const checkCountVisitScreen = async () => {
+      try {
+        const countVisitExploreCommons = await getCountVisitScreen(
+          'countVisitExploreCommons',
+        );
+        if (countVisitExploreCommons) {
+          await setCountVisitScreen(
+            'countVisitExploreCommons',
+            countVisitExploreCommons + 1,
+          );
+          if (countVisitExploreCommons === 3) {
+            await setCountVisitScreen('countVisitExploreCommons', 1);
+            setShowModal(true);
+          }
+        } else {
+          await setCountVisitScreen('countVisitExploreCommons', 1);
+        }
+      } catch (e) {
+        logger.log(e);
+      }
+    };
+
+    if (authStore.signedInUser) {
+      checkCountVisitScreen();
+    }
+  }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
