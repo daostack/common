@@ -1,16 +1,15 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {StyleSheet, Image, View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 
 interface Props {
-  voteType: boolean
   onVote: (voteType: boolean) => void;
   onPressClose: () => void;
   сurrentUserPhotoUrl: string;
 }
 
-export const ModalChangeVote = ({onVote, voteType, onPressClose, сurrentUserPhotoUrl}: Props) => (
+export const ModalChangeVoteReject = ({onVote, onPressClose, сurrentUserPhotoUrl}: Props): ReactElement => (
   <SafeAreaView style={{
     ...styles.body,
     height: 350,
@@ -19,57 +18,35 @@ export const ModalChangeVote = ({onVote, voteType, onPressClose, сurrentUserPho
     <View style={styles.content}>
       <View style={styles.imageContainer}>
         <Image
-          style={voteType ? styles.imageApprove : styles.imageReject}
+          style={styles.imageReject}
           source={{uri: сurrentUserPhotoUrl}}
           width={70}
           height={70}
         />
-        <Icon name={voteType ? 'iconVotingApproved' : 'iconVotingRejected'} strokeWidth={3} size={40} style={styles.iconStyle} />
+        <Icon name={'iconVotingRejected'} strokeWidth={3} size={40} style={styles.iconStyle} />
       </View>
       <Text style={styles.title}>Change your vote</Text>
       <View style={styles.btnsContainer}>
-        {voteType ?
-          <TouchableOpacity
-            style={{
-              ...styles.btnApprove,
-              ...layout.btnAction,
-              ...layout.marginRightS,
-            }}
-            onPress={() => onVote(voteType)}>
-            <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
-          </TouchableOpacity>
-          :
-          <TouchableOpacity
-            style={{
-              ...styles.cancelBtn,
-              ...layout.btnAction,
-              ...layout.marginRightS,
-            }}
-            onPress={() => onVote(voteType)}>
-            <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
-          </TouchableOpacity>
-        }
-        {voteType ?
-          <TouchableOpacity
-            style={{
-              ...styles.cancelBtn,
-              ...layout.btnOutline,
-              ...layout.marginRightS,
-            }}
-            onPress={onPressClose}>
-            <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
-          </TouchableOpacity>
-          :
-          <TouchableOpacity
-            style={{
-              ...styles.btnReject,
-              ...layout.btnOutline,
-              ...layout.marginRightS,
-            }}
-            onPress={onPressClose}>
-            <Icon name={'iconVotingRejected'} strokeWidth={3} size={40} style={styles.btnRejectIcon} />
-          </TouchableOpacity>
-        }
+      <>
+        <TouchableOpacity
+          style={{
+            ...styles.cancelBtn,
+            ...layout.btnAction,
+            ...layout.marginRightS,
+          }}
+          onPress={() => onVote(false)}>
+          <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.btnReject,
+            ...layout.btnOutline,
+            ...layout.marginRightS,
+          }}
+          onPress={onPressClose}>
+          <Icon name={'iconVotingRejected'} strokeWidth={3} size={40} style={styles.btnRejectIcon} />
+        </TouchableOpacity>
+      </>
       </View>
     </View>
   </SafeAreaView>
@@ -171,6 +148,6 @@ export const ModalChangeVote = ({onVote, voteType, onPressClose, сurrentUserPho
     },
     btnsContainer: {
       flexDirection: 'row',
-    }
+    },
   });
 

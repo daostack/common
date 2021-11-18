@@ -10,10 +10,9 @@ import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {persist} from 'mobx-persist';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
-import { Proposal } from '~/Stores/Models/Proposal';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 type SignInErrorWithCode = any;
 

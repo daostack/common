@@ -60,7 +60,8 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import {ModalChangeVote} from './components/ModalChangeVote';
+import {ModalChangeVoteReject} from './components/ModalChangeVoteReject';
+import {ModalChangeVoteApprove} from './components/ModalChangeVoteApprove';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RouteProp} from '@react-navigation/native';
 import RootStore from '~/Stores/RootStore';
@@ -460,13 +461,13 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
           </Text>
           <View style={layout.flexRow}>
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
+              onPress={() => openApprovalSheet(true)}
               style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
               <Icon name="approved-24" color={colors.lightishGreen} size={24} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
+              onPress={() => openApprovalSheet(false)}
               style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
               <Icon name="reject-24" color={colors.against} size={24} />
             </TouchableOpacity>
@@ -532,7 +533,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
       },
     ],
   };
-  console.log('proposalInfo?.state', proposalInfo?.state)
+
   const getAvailableFunds = () => (proposalCommon?.balance || 0) / 100;
 
   const getAvailableFundsText = () => {
@@ -1033,7 +1034,11 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
         style={styles.voteModal}
         isVisible={changeVoteModalVisible}
         onClose={closeChangeVoteModal}>
-        <ModalChangeVote onVote={onVote} voteType={voteType} сurrentUserPhotoUrl={сurrentUserPhotoUrl} onPressClose={closeChangeVoteModal} />
+          {voteType ?
+           <ModalChangeVoteApprove onVote={onVote} сurrentUserPhotoUrl={сurrentUserPhotoUrl} onPressClose={closeChangeVoteModal} />
+           :
+           <ModalChangeVoteReject onVote={onVote} сurrentUserPhotoUrl={сurrentUserPhotoUrl} onPressClose={closeChangeVoteModal} />
+          }
       </BottomSheetModal>
     </React.Fragment>
   );

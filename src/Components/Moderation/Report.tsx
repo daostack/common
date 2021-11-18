@@ -44,6 +44,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   onReportContent,
   hasPermission,
 }) => {
+
   if (title === TITLES.proposals && !reasons[2].includes(proposalReason)) {
     // this reason should only be displayed for proposals
     reasons[2].push(proposalReason);

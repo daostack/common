@@ -1,16 +1,15 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {StyleSheet, Image, View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 
 interface Props {
-  voteType: boolean;
   onVote: (voteType: boolean) => void;
   onPressClose: () => void;
   сurrentUserPhotoUrl: string;
 }
 
-export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhotoUrl}: Props) => (
+export const ModalChangeVoteApprove = ({onVote, onPressClose, сurrentUserPhotoUrl}: Props): ReactElement => (
   <SafeAreaView style={{
     ...styles.body,
     height: 350,
@@ -19,51 +18,36 @@ export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhoto
     <View style={styles.content}>
       <View style={styles.imageContainer}>
         <Image
-          style={voteType ? styles.imageApprove : styles.imageReject}
+          style={styles.imageApprove}
           source={{uri: сurrentUserPhotoUrl}}
           width={70}
           height={70}
         />
-        <Icon name={voteType ? 'iconsVotionApproved' : 'iconsVotionRejected'} size={40} style={styles.iconStyle} />
+        <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.iconStyle} />
       </View>
-      { voteType ?
-        <>
-          <Text style={styles.titleApprove}>Approve</Text>
-          <Text style={styles.subTitle}>Vote to approve this proposal</Text>
-          <TouchableOpacity
-            style={{
-              ...styles.btnApprove,
-              ...layout.btnAction,
-              ...layout.marginRightS,
-            }}
-            onPress={() => onVote(voteType)}>
-            <Text style={styles.btnActionText}>Vote to approve</Text>
-          </TouchableOpacity>
-        </>
-        :
-        <>
-          <Text style={styles.titleReject}>Reject</Text>
-          <Text style={styles.subTitle}>Vote to reject this proposal</Text>
-          <TouchableOpacity
-            style={{
-              ...styles.btnReject,
-              ...layout.btnAction,
-              ...layout.marginRightS,
-            }}
-            onPress={() => onVote(voteType)}>
-            <Text style={styles.btnActionText}>Vote to reject</Text>
-          </TouchableOpacity>
-        </>
-      }
-      <TouchableOpacity
-        style={{
-          ...styles.cancelBtn,
-          ...layout.btnOutline,
-          ...layout.marginRightS,
-        }}
-        onPress={onPressClose}>
-        <Text style={styles.btnCancelText}>Cancel</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Change your vote</Text>
+      <View style={styles.btnsContainer}>
+      <>
+        <TouchableOpacity
+          style={{
+            ...styles.btnApprove,
+            ...layout.btnAction,
+            ...layout.marginRightS,
+          }}
+          onPress={() => onVote(true)}>
+          <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.cancelBtn,
+            ...layout.btnOutline,
+            ...layout.marginRightS,
+          }}
+          onPress={onPressClose}>
+          <Icon name={'iconVotingApproved'} strokeWidth={3} size={40} style={styles.btnApproveIcon} />
+        </TouchableOpacity>
+      </>
+      </View>
     </View>
   </SafeAreaView>
   );
@@ -114,17 +98,11 @@ export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhoto
       borderColor: colors.pinkishOrange,
       alignSelf: 'center',
     },
-    titleApprove: {
+    title: {
       fontSize: 20,
+      lineHeight: 28,
       alignSelf: 'center',
-      color: colors.lightishGreen,
-      marginBottom: 7,
-      ...font.primary.bold,
-    },
-    titleReject: {
-      fontSize: 20,
-      alignSelf: 'center',
-      color: colors.pinkishOrange,
+      color: colors.black,
       marginBottom: 7,
       ...font.primary.bold,
     },
@@ -161,6 +139,15 @@ export const ModalApproval = ({onVote, voteType, onPressClose, сurrentUserPhoto
       alignSelf: 'center',
       left: 41,
       bottom: -8,
+    },
+    btnApproveIcon: {
+
+    },
+    btnRejectIcon: {
+
+    },
+    btnsContainer: {
+      flexDirection: 'row',
     },
   });
 

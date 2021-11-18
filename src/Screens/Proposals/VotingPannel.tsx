@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Icon from '~/Assets/iconfont/Icon';
@@ -12,7 +12,7 @@ interface VotingPannelProps {
   proposalInfo: Proposal;
 }
 
-export const VotingPannel = (props: VotingPannelProps) => {
+export const VotingPannel = (props: VotingPannelProps): ReactElement => {
   const {currentUserVote, сurrentUserPhotoUrl, proposalInfo} = props;
 
   const animatedOpacity = useSharedValue(0);
