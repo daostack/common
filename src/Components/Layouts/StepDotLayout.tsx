@@ -151,6 +151,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
           title={{
             title: navTitle || '',
+            style: [{marginLeft: 70, marginRight: 85}],
           }}
           leftButton={
             <TouchableOpacity
