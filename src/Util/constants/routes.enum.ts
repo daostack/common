@@ -1,5 +1,7 @@
 export enum NAVIGATION_SCREENS {
+  CREATE_ACCOUNT = 'CreateAccount',
   ONBOARDING = 'Onboarding',
+  TAB_STACK = 'TabStack',
   COMMON_HOME = 'CommonHome',
   COMMON_PROFILE = 'CommonProfile',
   COMMON_AGENDA = 'CommonAgenda',
@@ -13,6 +15,7 @@ export enum NAVIGATION_SCREENS {
   CONTRIBUTION_STEP = 'ContributionStep',
   BILLING_DETAILS_STEP = 'BillingDetailsStep',
   PAYMENT_DETAILS_STEP = 'PaymentDetailsStep',
+  CREATE_COMMON = 'CreateCommonStack',
   CREATE_STEP_1 = 'CreateStep1',
   CREATE_STEP_2 = 'CreateStep2',
   CREATE_STEP_3 = 'CreateStep3',
@@ -31,4 +34,5 @@ export enum NAVIGATION_SCREENS {
   FUNDING_PROPOSAL = 'FundingProposal',
   MONTHLY_CONTRIBUTIONS_LIST = 'MonthlyContributionsList',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
+  BOTTOM_SHEET = 'BottomSheet',
 }

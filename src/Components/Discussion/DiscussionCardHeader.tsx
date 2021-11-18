@@ -1,44 +1,30 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {layout, colors, sizeXS, sizeM} from '~/Theme';
-import {observer, inject} from 'mobx-react';
-import {Reported} from '../../Components/Moderation/Reported';
-import {bool, object, InferProps, string} from 'prop-types';
+import {observer} from 'mobx-react';
+import {Reported} from '~/Components/Moderation/Reported';
 import Icon from '~/Assets/iconfont/Icon';
-import {FLAGS} from '../../Components/Moderation/constants';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {FLAGS} from '~/Components/Moderation/constants';
+import {PERMISSIONS} from '~/Types';
+import {Common, Discussion} from '~/Stores/Models';
 
-const props = {
-  isReported: bool,
-  moderation: object,
-  reporter: object,
-  hasPermission: string,
-  rootStore: rootStorePropTypes.isRequired,
-  viewerPermission: string,
-};
-
-const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
-  isReported,
-  moderation,
-  reporter,
-  hasPermission,
-  rootStore,
-  viewerPermission,
-}) => {
-  const authStore = rootStore.authStore;
+export const DiscussionCardHeader: React.FC<{
+  discussion: Discussion;
+  common: Common;
+}> = observer(({discussion, common}) => {
+  const ownersPermission = common.getPermission(discussion.ownerId);
+  const viewerPermission = common.getPermission();
   const showIcon =
-    (moderation?.flag === FLAGS.hidden && !hasPermission) ||
+    (discussion.moderation?.flag === FLAGS.hidden && !ownersPermission) ||
     viewerPermission === PERMISSIONS.MODERATOR;
 
   return (
     <View
       style={showIcon ? styles.hiddenCardHeader : styles.discussionCardHeader}>
-      {isReported && moderation && (
+      {discussion.isReported && moderation && (
         <Reported
           moderation={moderation}
           reporter={reporter}
-          currentUID={authStore?.userInfo?.uid}
           viewerPermission={viewerPermission}
         />
       )}
@@ -52,9 +38,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
       )}
     </View>
   );
-};
-
-DiscussionCardHeader.propTypes = props;
+});
 
 const styles = StyleSheet.create({
   // Proposal Card Header style
@@ -80,5 +64,3 @@ const styles = StyleSheet.create({
     height: 35,
   },
 });
-
-export default inject('rootStore')(observer(DiscussionCardHeader));

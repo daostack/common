@@ -1,8 +1,9 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
+import {useNavigation} from '@react-navigation/core';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
 import {observer, inject} from 'mobx-react';
-import ImageField from '~/Components/FormFields/ImageField';
+import {UserImage} from '~/Components';
 import CountBox from '~/Components/CountBox';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import CommonsSwiper from '~/Screens/Commons/CommonsSwiper';
@@ -11,7 +12,7 @@ import {CommonActions} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object} from 'prop-types';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 import {
@@ -20,9 +21,10 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import IntercomShowButton from '~/Services/IntercomChat/IntercomShowButton';
 
-const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
+const UserProfileData = ({userId, currUserInfo, rootStore}) => {
+  const navigation = useNavigation();
   const userInfo = rootStore.authStore.userInfo;
   const userStore = rootStore.userStore;
   const proposalStore = rootStore.proposalStore;
@@ -48,15 +50,6 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
 
   const commonsCount = commonStore.getUserCommons(user.uid).length;
 
-  useEffect(() => {
-    const unsubscribeUserActiveProposals = !isOwnProfile
-      ? proposalStore.subscribeToUserActiveProposals(userId)
-      : null;
-    return () => {
-      unsubscribeUserActiveProposals && unsubscribeUserActiveProposals();
-    };
-  }, [userId, currUserInfo, userInfo]);
-
   const navigateToEditProfile = (isCompleteAccount) => {
     const navigate = CommonActions.navigate({
       name: 'EditProfile',
@@ -71,12 +64,7 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
     !isOwnProfile ? (
       <UserAvatar image={user.photoURL} iconName={'follow'} />
     ) : (
-      <ImageField
-        isAvatar={true}
-        value={user?.photoURL}
-        placeholderUrl={user?.photoURL}
-        disableEdit={true}
-      />
+      <UserImage isAvatar={true} user={user} editable={false} />
     );
 
   if (!user) {
@@ -229,12 +217,9 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         </View>
 
         <ProposalsList
-          navigation={navigation}
           isSwiper={true}
           showMax={showMaxData}
-          userInfo={{
-            id: user.uid,
-          }}
+          user={user}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
             type: PROPOSAL_TYPE.FundingRequest,
@@ -278,12 +263,9 @@ const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
         </View>
 
         <ProposalsList
-          navigation={navigation}
           isSwiper={true}
           showMax={showMaxData}
-          userInfo={{
-            id: user.uid,
-          }}
+          user={user}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
             type: PROPOSAL_TYPE.Join,
@@ -346,7 +328,7 @@ const styles = StyleSheet.create({
   countBoxDivider: {
     height: '100%',
     width: 1,
-    backgroundColor: '#eeeeee',
+    backgroundColor: colors.grey4,
   },
   emptyObjectContainer: {
     ...layout.content,

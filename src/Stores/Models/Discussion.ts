@@ -1,67 +1,66 @@
-import {observable, computed} from 'mobx';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
-import {BaseModel} from './BaseModel';
+import {BaseDocument} from './base-document';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {IDiscussionEntity} from '~/Types/EntityTypes/IDiscussionEntity';
+import {Timestamp} from '~/Firebase';
 
-export class Discussion extends BaseModel<IDiscussionEntity> {
-  @observable
-  id: string;
+export class Discussion extends BaseDocument<IDiscussionEntity> {
+  description: any;
+  get id(): string {
+    return this.data.id;
+  }
 
-  @observable
-  title: string;
+  get title(): string {
+    return this.data.title;
+  }
 
-  @observable
-  message: string;
+  get message(): string {
+    return this.data.message;
+  }
 
-  @observable
-  ownerId: string;
+  get ownerId(): string {
+    return this.data.ownerId;
+  }
 
-  @observable
-  commonId: string;
+  get commonId(): string {
+    return this.data.commonId;
+  }
 
-  // TODO: Remove that as we already have createAt in the BaseModel and every other collection follows that pattern
-  @observable
-  createTime: Date;
+  get _createTime(): Timestamp {
+    return this.data.createTime;
+  }
 
-  @observable
-  lastMessage: Date;
+  get createTime(): Date {
+    return this._createTime.toDate();
+  }
 
-  @observable
-  files: string[];
+  get _lastMessage() {
+    return this.data.lastMessage;
+  }
 
-  @observable
-  images: string[];
+  get lastMessage(): Date {
+    return this._lastMessage.toDate();
+  }
 
-  @observable
-  followers: string[];
+  get files(): string[] {
+    return this.data.files;
+  }
 
-  @observable
-  moderation?: IModerationEntity;
+  get images(): string[] {
+    return this.data.images;
+  }
 
-  @observable
-  isExpanded: boolean;
+  get followers(): string[] {
+    return this.data.followers;
+  }
 
-  @computed
+  get moderation() {
+    return this.data.moderation;
+  }
+
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
-
-  constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
-    super(newDiscussionInfo);
-    this.id = newDiscussionInfo.id;
-    this.title = newDiscussionInfo.title;
-    this.message = newDiscussionInfo.message;
-    this.ownerId = newDiscussionInfo.ownerId;
-    this.commonId = newDiscussionInfo.commonId;
-    // TODO: remove the createTime when we start using createdAt instead.
-    this.createTime = newDiscussionInfo.createTime;
-    this.createdAt = newDiscussionInfo.createTime;
-    this.lastMessage = newDiscussionInfo.lastMessage;
-    this.files = newDiscussionInfo.files;
-    this.images = newDiscussionInfo.images;
-    this.followers = newDiscussionInfo.followers;
-    this.moderation = newDiscussionInfo.moderation;
-    this.isExpanded = isExpanded;
+  get isReported() {
+    return this.moderation?.flag !== FLAGS.visible;
   }
 }

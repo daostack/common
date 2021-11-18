@@ -2,10 +2,10 @@ import axios, {AxiosInstance} from 'axios';
 import {ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import Toast from '~/Util/Toast.js';
+import {IDiscussionEntity} from '~/Types/EntityTypes/IDiscussionEntity';
+import {IDiscussionMessageEntity} from '~/Types/EntityTypes/IDiscussionMessageEntity';
+import {IProposalEntity} from '~/Types/EntityTypes/IProposalEntity';
+import {Toast} from '~/Components';
 
 class ModerationService {
   private axiosClient: AxiosInstance;

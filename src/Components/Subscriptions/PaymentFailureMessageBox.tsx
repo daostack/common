@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import {Bold} from '~/Components/Text/Bold';
-import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
+import {ISubscriptionEntity} from '~/Types/EntityTypes/ISubscriptionEntity';
 import {colors} from '~/Theme';
 
 export const PaymentFailureMessageBox = ({

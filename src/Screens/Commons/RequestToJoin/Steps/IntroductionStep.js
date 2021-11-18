@@ -6,7 +6,7 @@ import {colors, text} from '~/Theme';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';

@@ -13,14 +13,14 @@ import {text, layout, colors} from '~/Theme';
 import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
-import Toast from '~/Util/Toast';
+import {Toast} from '~/Components';
 import font from '~/Theme/font';
 import {string, object, shape} from 'prop-types';
-import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
+import FundingRequestFormStore from '~/Stores/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
-import UseOfFunds from '../../Components/Commons/UseOfFunds';
+import UseOfFunds from '~/Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
@@ -62,8 +62,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse =
-          await ProposalService.createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.createFundingProposal(
+          data,
+        );
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;

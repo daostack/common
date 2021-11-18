@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import ImagePicker from 'react-native-image-picker';
-import Toast from '~/Util/Toast';
+import {Toast} from '~/Components';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
 import colors from '~/Theme/colors';
@@ -31,30 +31,10 @@ class ImageField extends React.Component {
     super(props);
 
     if (this.props.validation) {
-      const {
-        validation: {
-          name,
-          formStore,
-          validateRule,
-          multiName,
-          displayName,
-          customErrorMessage,
-        },
-        value,
-      } = this.props;
-
+      const {validation, value} = this.props;
+      const {name, formStore, validateRule, multiName} = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
-
-      this.fieldValidation = (
-        <ValidationMessage
-          displayName={displayName}
-          customErrorMessage={customErrorMessage}
-          formStore={formStore}
-          name={name}
-          multiName={multiName}
-          invisibleContainer={true}
-        />
-      );
+      this.fieldValidation = <ValidationMessage {...validation} />;
     }
   }
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Dimensions,
   Image,
@@ -8,35 +7,43 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-
 import {colors, font} from '~/Theme';
-import {inject, observer} from 'mobx-react';
 import {ErrorExpand} from '~/Components';
-import {uiStorePropTypes} from '~/Types/propTypes';
+import {useStore} from '~/Stores';
+import {useNavigation} from '@react-navigation/core';
 
-const propTypes = {
-  title: PropTypes.string,
-  subTitle: PropTypes.string,
-  buttonText: PropTypes.string,
+interface BackendErrorSheetScreenProps {
+  title?: string;
+  subTitle?: string;
+  buttonText?: string;
 
-  titleRed: PropTypes.bool,
-  uiStore: uiStorePropTypes.isRequired,
-  error: PropTypes.instanceOf(Error),
+  titleRed?: boolean;
+  error?: Error;
 
-  onClose: PropTypes.func,
-  navigation: PropTypes.any,
-  shouldGoBack: PropTypes.bool,
-};
+  onClose?(): void;
+  navigation?: any;
+  shouldGoBack?: boolean;
+}
 
-const BackendErrorSheetScreen: React.FC<
-  PropTypes.InferProps<typeof propTypes>
-> = ({uiStore, shouldGoBack, ...props}) => {
+export const BackendErrorSheetScreen: React.FC<BackendErrorSheetScreenProps> = ({
+  onClose: outerOnClose,
+  titleRed,
+  title = 'Something went wrong',
+  buttonText = 'OK',
+  shouldGoBack = false,
+  subTitle,
+  error,
+}) => {
+  const {
+    uiStore: {bottomSheetStore},
+  } = useStore();
+  const navigation = useNavigation();
   const onClose = (): void => {
-    uiStore.bottomSheetStore.hideBottomSheet();
-    if (shouldGoBack && props.navigation?.current) {
-      props.navigation?.current?.goBack();
+    bottomSheetStore.hideBottomSheet();
+    if (shouldGoBack) {
+      navigation.goBack();
     }
-    typeof props.onClose === 'function' && onClose();
+    outerOnClose && outerOnClose();
   };
 
   return (
@@ -48,23 +55,18 @@ const BackendErrorSheetScreen: React.FC<
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={[styles.title, props.titleRed && styles.titleRed]}>
-          {props.title || 'Something went wrong'}
+        <Text style={[styles.title, titleRed && styles.titleRed]}>
+          {title || 'Something went wrong'}
         </Text>
 
-        {props.subTitle && (
-          <Text style={styles.subtitle}>{props.subTitle}</Text>
-        )}
+        {subTitle && <Text style={styles.subtitle}>{subTitle}</Text>}
       </View>
 
       <TouchableOpacity onPress={onClose} style={styles.button}>
-        <Text>{props.buttonText || 'OK'}</Text>
+        <Text>{buttonText || 'OK'}</Text>
       </TouchableOpacity>
 
-      <ErrorExpand
-        error={props.error}
-        bottomSheetStore={uiStore.bottomSheetStore}
-      />
+      <ErrorExpand error={error} />
     </View>
   );
 };
@@ -143,12 +145,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-BackendErrorSheetScreen.propTypes = propTypes;
-BackendErrorSheetScreen.defaultProps = {
-  title: 'Something went wrong',
-  buttonText: 'OK',
-  shouldGoBack: false,
-};
-
-export default inject('uiStore')(observer(BackendErrorSheetScreen));

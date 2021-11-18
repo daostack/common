@@ -1,25 +1,23 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {colors, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
-import {InferProps, number, object} from 'prop-types';
 
-const props = {
-  userInfo: object,
-  style: object,
-  id: number,
-};
-const MemberImage: React.FC<InferProps<typeof props>> = ({
-  userInfo,
-  style,
-  id,
-}) =>
-  userInfo?.photoURL ? (
+interface MemberImageProps {
+  user?: {
+    photoURL: string;
+    displayName: string;
+  };
+  style?: ViewStyle;
+}
+
+export const MemberImage = ({user, style}: MemberImageProps) =>
+  user?.photoURL ? (
     <FastImage
-      key={id}
+      key={user?.photoURL}
       style={styles.memberImage}
       source={{
-        uri: userInfo?.photoURL,
+        uri: user?.photoURL,
       }}
     />
   ) : (
@@ -31,11 +29,9 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
         backgroundColor: '#6e7d82',
         ...style,
       }}>
-      <Text style={styles.memberImageDisplayName}>{userInfo?.displayName}</Text>
+      <Text style={styles.memberImageDisplayName}>{user?.displayName}</Text>
     </View>
   );
-
-MemberImage.propTypes = props;
 
 const styles = StyleSheet.create({
   memberImageDisplayName: {
@@ -53,5 +49,3 @@ const styles = StyleSheet.create({
     borderColor: colors.white,
   },
 });
-
-export default MemberImage;

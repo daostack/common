@@ -5,7 +5,7 @@ import {string, func, array} from 'prop-types';
 import Title from '~/Components/CommonAgenda/Title';
 import {HyperText} from '~/Components/Text/HyperText';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
-import {ICommonRule} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {ICommonRule} from '~/Types';
 
 type Props = {
   onEdit: () => void;

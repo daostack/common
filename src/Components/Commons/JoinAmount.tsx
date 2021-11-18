@@ -1,21 +1,17 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {layout, colors, text, font} from '~/Theme';
-import {func, bool, number, InferProps} from 'prop-types';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
-import {uiStorePropTypes} from '~/Types/propTypes';
 
-const props = {
-  id: number.isRequired,
-  amount: number,
-  isCustom: bool,
-  onPress: func,
-  isSelected: bool,
-  isMonthly: bool,
-  uiStore: uiStorePropTypes.isRequired,
-};
-const JoinAmount: React.FC<InferProps<typeof props>> = ({
+export const JoinAmount: React.FC<{
+  id: number;
+  amount: number;
+  isCustom: boolean;
+  onPress: func;
+  isSelected: boolean;
+  isMonthly: boolean;
+}> = ({
   id,
   amount,
   isCustom,
@@ -43,8 +39,6 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
     </TouchableOpacity>
   );
 };
-
-JoinAmount.propTypes = props;
 
 const styles = StyleSheet.create({
   container: {

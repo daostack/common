@@ -1,3 +1,5 @@
+import {ValueOf} from '~/Types';
+
 export const TITLES = {
   proposals: 'Proposals',
   proposalText: 'Proposal',
@@ -25,3 +27,5 @@ export const FLAGS = {
   reported: 'reported',
   visible: 'visible',
 };
+
+export type ActionValues = ValueOf<typeof ACTIONS>;

@@ -11,13 +11,13 @@ import {colors, text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import Toast from '~/Util/Toast';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
+import {Toast} from '~/Components';
 import {object, shape, InferProps, string, func} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {ICommonEntity, ICommonMetadata} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {ICommonEntity, ICommonMetadata} from '~/Types';
 
 import {Formik, FormikProps} from 'formik';
 import {
@@ -28,11 +28,10 @@ import {
   Values as EditRulesValues,
   validationSchema as editRulesValidation,
 } from '~/Components/EditCommon/EditRules';
-import {editType} from './Profile/CommonAgenda';
+import {EditType} from '~/Types';
 import Loader from '~/Components/Loader';
 
-
-type EditFormValues =  EditInfoValues | EditRulesValues;
+type EditFormValues = EditInfoValues | EditRulesValues;
 
 const props = {
   rootStore: rootStorePropTypes.isRequired,
@@ -59,7 +58,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const currCommon: ICommonEntity = commonStore.getCommonById(route.params.currCommon.id) as ICommonEntity;
+  const currCommon = commonStore.getCommonById(route.params.currCommon.id);
   const type: string = route.params.type;
   const formikRef = useRef();
 
@@ -72,7 +71,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
         <Icon name="left-arrow" size={32} />
       </TouchableOpacity>
     ),
-    title: type === editType.info ? 'Edit info and cover photo' : 'Edit Rules',
+    title: type === EditType.info ? 'Edit info and cover photo' : 'Edit Rules',
     headerRight: () => (
       <TouchableOpacity
         onPress={async () => {
@@ -86,7 +85,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
   const formSave = async (formValues: EditFormValues) => {
     let commonUpdate = {};
 
-    if (type === editType.info) {
+    if (type === EditType.info) {
       const infoValues = formValues as EditInfoValues;
       const updatedMetadata = {
         ...currCommon.metadata,
@@ -100,7 +99,6 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
         image: infoValues.image,
         metadata: updatedMetadata,
       } as Partial<ICommonEntity>;
-
     } else {
       const rulesValues = formValues as EditInfoValues;
       commonUpdate = {
@@ -124,7 +122,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
 
   const onFormClose = () => {
     if (formikRef?.current?.dirty) {
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET.UNSAVED_CHANGES, {
         navigation: navigation,
         onContinueEditing: closeBottomSheet,
         onLeaveWithoutSaving: closeBottomSheet,
@@ -138,24 +136,30 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     bottomSheetStore.hideBottomSheet();
   };
 
-  const initialValues: EditInfoValues | EditRulesValues  = type === editType.info ? ({
-    image: currCommon?.image,
-    name: currCommon?.name,
-    tagLine: currCommon?.metadata?.byline,
-    about: currCommon?.metadata?.description,
-  } as EditInfoValues) : ({
-    rules: currCommon.rules,
-  } as EditRulesValues);
+  const initialValues: EditInfoValues | EditRulesValues =
+    type === EditType.info
+      ? ({
+          image: currCommon?.image,
+          name: currCommon?.name,
+          tagLine: currCommon?.metadata?.byline,
+          about: currCommon?.metadata?.description,
+        } as EditInfoValues)
+      : ({
+          rules: currCommon.rules,
+        } as EditRulesValues);
 
   return (
     <Formik
       innerRef={formikRef}
       enableReinitialize={true}
       initialValues={initialValues}
-      validationSchema={type === editType.info ? editInfoValidation : editRulesValidation}
+      validationSchema={
+        type === EditType.info ? editInfoValidation : editRulesValidation
+      }
       onSubmit={formSave}>
-      {(formikProps: FormikProps<EditInfoValues | EditRulesValues>): ReactElement => {
-
+      {(
+        formikProps: FormikProps<EditInfoValues | EditRulesValues>,
+      ): ReactElement => {
         const {handleSubmit} = formikProps;
 
         return (
@@ -166,17 +170,15 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
               <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
-
                 {authStore.userInfo ? (
-                    type === editType.info ? (
-                      <EditInfo formikProps={formikProps} />
-                    ) : (
-                      <EditRules formikProps={formikProps} />
-                    )
+                  type === EditType.info ? (
+                    <EditInfo formikProps={formikProps} />
                   ) : (
-                    <Loader />
+                    <EditRules formikProps={formikProps} />
+                  )
+                ) : (
+                  <Loader />
                 )}
-
               </ScrollView>
 
               <View style={{marginBottom: 20}}>

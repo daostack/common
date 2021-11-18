@@ -9,38 +9,32 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
-import {BlurView} from '~/Components';
-import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import {Toast, BlurView} from '~/Components';
+import {CreateCommonForm} from '~/Stores/FormStores';
 import {colors, font} from '~/Theme';
 import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
-import Toast from '~/Util/Toast';
 import {handlePermission} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
-import {number, string, shape, func, InferProps} from 'prop-types';
+import {useStore} from '~/Stores';
 
-const props = {
-  width: number.isRequired,
-  reviewFormStore: shape({
-    registerFormField: func.isRequired,
-    fieldChanged: func.isRequired,
-    getFormField: func.isRequired,
-  }).isRequired,
-  commonName: string,
-  commonByLine: string,
-  currImage: string,
-  onImageChanged: func,
-};
-
-const CommonImage: React.FC<InferProps<typeof props>> = observer(
+const CommonImage: React.FC<{
+  width: number;
+  commonName: string;
+  commonByLine: string;
+  currImage: string;
+  onImageChanged(): void;
+}> = observer(
   ({
     width,
-    reviewFormStore,
     commonName,
     commonByLine,
     currImage = null,
     onImageChanged = null,
   }) => {
+    const {
+      formStores: {reviewFormStore},
+    } = useStore();
     const [templateIndex, setTemplateIndex] = useState(1);
 
     //set default value for Image field

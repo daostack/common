@@ -84,18 +84,7 @@ export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
 
-// JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
+// JUST HARD CODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
 export const testCard = __DEV__ && false; //Config.testCard === 'true';
 
 export const appId = Platform.OS === 'android' ? androidAppId : iosAppId;
-
-// Arc.js related string constants
-export const PROPOSAL_TYPE = {
-  Join: 'join',
-  FundingRequest: 'fundingRequest',
-};
-
-export const PROPOSAL_STAGE = {
-  Active: 'active',
-  History: 'history',
-};

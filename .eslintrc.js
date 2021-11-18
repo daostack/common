@@ -23,6 +23,5 @@ module.exports = {
     'object-curly-newline': 1,
     'arrow-parens': 1,
     'arrow-body-style': 1,
-    'react/prop-types': 1,
   },
 };

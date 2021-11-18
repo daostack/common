@@ -1,0 +1,1172 @@
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  LayoutAnimation,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Animated,
+} from 'react-native';
+import FastImage from 'react-native-fast-image';
+
+import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
+import Icon from '~/Assets/iconfont/Icon';
+import {TabView} from 'react-native-tab-view';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
+import {CommonStageSummary, CommonHeader} from '~/Components/Commons';
+import Modal from 'react-native-modal';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
+import {CommonActions} from '@react-navigation/native';
+import ProposalsList from '../../../Proposals/ProposalsList';
+import BottomRightButton from '~/Components/BottomRightButton';
+import {DiscussionList} from '~/Components/Discussion';
+import {inject, observer} from 'mobx-react';
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
+import CommonMembersList from '../CommonMembersList';
+import ProposalService from '~/Services/ProposalService';
+import ModerationService from '~/Services/ModerationService';
+import CountDown from 'react-native-countdown-component';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
+import NavigationBar from 'react-native-navbar';
+import {TabBarRenderer} from '~/Components/TabView';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {BlurView} from '~/Components';
+import Logger from '~/Services/Logger';
+import moment from 'moment';
+import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Types';
+import {
+  ModerationFormFields,
+  ModerationFormStore,
+  IntroduceYourselfFormStore,
+  PersonalContributionFormStore,
+  BillingDetailsFormStore,
+  PaymentFormStore,
+} from '~/Stores/FormStores';
+import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {Toast} from '~/Components';
+import {TITLES, ACTIONS, ActionValues} from '~/Components/Moderation/constants';
+import {truncateString} from '~/Util/stringUtil';
+import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {useStore} from '~/Stores';
+import {useRoute} from '@react-navigation/native';
+import {EditType} from '~/Types';
+import {shareCommon} from '~/Services';
+import {noop} from 'lodash';
+
+const {width} = Dimensions.get('window');
+
+let stickyHeightAddon = 56;
+const STICKY_HEADER_HEIGHT =
+  Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
+const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
+
+export type CommonProfileRouteProps = {
+  params: {
+    commonId: string;
+    showRequestSentModal: boolean;
+  };
+  key: string;
+  name: string;
+};
+
+const CommonProfileScreen: React.FC = () => {
+  /* all of  params.commonId,
+  params.showRequestSentModal,
+  params.createdProposalId
+  are undefined
+  is this sth we plan on having in future?
+   */
+  const {
+    uiStore: {bottomSheetStore},
+    authStore,
+    commonStore,
+    userStore,
+  } = useStore();
+
+  const {params} = useRoute<CommonProfileRouteProps>();
+  const common = commonStore.getCommonById(params.commonId);
+  const [showModerationModal, setShowModerationModal] = useState(
+    params.showRequestSentModal || false,
+  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
+  const [moderationFormStore] = useState(new ModerationFormStore());
+  const [moderationType, setModerationType] = useState(TITLES.discussion);
+  const [action, setAction] = useState<ActionValues>(ACTIONS.report);
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {
+      index: 0,
+      key: 'discussions',
+      title: 'Discussions',
+      icon: 'discussion',
+      iconSelected: 'discussion-selected',
+    },
+    {
+      index: 1,
+      key: 'proposals',
+      title: 'Proposals',
+      icon: 'proposal',
+      iconSelected: 'proposal-selected',
+    },
+    {
+      index: 2,
+      key: 'history',
+      title: 'History',
+      icon: 'history',
+      iconSelected: 'history-selected',
+    },
+  ]);
+
+  Logger.log('Common id ->', common.id);
+  const [showRequestSentModal, setShowRequestSentModal] = useState(false);
+  const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
+  const [showPending, setShowPending] = React.useState(false);
+  const [pendingProposalsData, setPendingProposalsData] = useState(null);
+  const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false,
+  );
+
+  const [dark, setDark] = useState(false);
+  const headerHeight = React.useMemo(() => {
+    if (common.isUserMember) {
+      return DEFAULT_HEADER_HEIGHT + stickyHeightAddon;
+    } else {
+      return DEFAULT_HEADER_HEIGHT;
+    }
+  }, [common]);
+
+  const upperRequestToJoinBtnRef = useRef(null);
+
+  // Sticky Tab Bar
+  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
+  const stickyTabBarRef = useRef(null);
+  const originTabBarRef = useRef(null);
+  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false,
+  );
+
+  // checking if user is the founder or had moderator permissions
+  const permission = common.getPermission();
+
+  const headerHeightDidLayout = noop;
+
+  const animateNextStateRender = () => {
+    Platform.OS === 'ios' &&
+      LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
+  };
+
+  useEffect(() => {
+    setShowRequestSentModal(params.showRequestSentModal);
+    if (common.isUserMember) {
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
+    } else {
+      setHeaderHeight(DEFAULT_HEADER_HEIGHT);
+    }
+    setHasPermission(
+      authStore.getPermission(commonId, authStore?.userInfo?.uid),
+    );
+  }, [params.showRequestSentModal, authStore.userInfo, common?.members]);
+
+  useEffect(() => {
+    let unsubscribe = null;
+    let getPendingProposalsData = async () => {
+      unsubscribe = await ProposalService.subscribeToPendingProposalsData(
+        commonId,
+        authStore.userInfo?.uid,
+        (data) => {
+          setPendingProposalsData({...data});
+
+          if (!isMember) {
+            if (data) {
+              if (data.usersPendingProposal) {
+                animateNextStateRender();
+                setShowPending(true);
+
+                animateNextStateRender();
+                setShowRequestToJoin(false);
+              } else {
+                animateNextStateRender();
+                setShowRequestToJoin(true);
+              }
+            }
+          }
+        },
+      );
+    };
+
+    getPendingProposalsData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [commonId, isMember, authStore.userInfo]);
+
+  useEffect(() => {
+    if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
+      const getPendingProposalsDiscussionCount = async () => {
+        const count = await ProposalService.getProposalDiscussionsCount(
+          pendingProposalsData.usersPendingProposal.id,
+        );
+        if (userPendingPropDiscCount !== count) {
+          setUserPendingPropDiscCount(count);
+        }
+      };
+      getPendingProposalsDiscussionCount();
+    }
+  }, [pendingProposalsData]);
+
+  const renderTabBar = (props) => (
+    <TabBarRenderer
+      ref={originTabBarRef}
+      jumpTo={originTabBarRef.current?.props?.jumpTo}
+      indexChange={setIndex}
+      {...props}
+    />
+  );
+
+  const Discussions = () => (
+    <View style={{...styles.paleBackground, ...{paddingVertical: sizeL}}}>
+      <Text style={text.h1BlackTitle}>Discussions</Text>
+      <DiscussionList
+        commonId={common.id}
+        openCommonOptions={(discussion) =>
+          openCommonOptions(discussion, TITLES.discussion)
+        }
+        showHiddenNote={(hiddenDiscussion) =>
+          showHiddenNote(hiddenDiscussion, TITLES.discussion)
+        }
+        isMember={isMember}
+      />
+    </View>
+  );
+
+  const Proposals = () => (
+    <View style={{...styles.paleBackground, padding: sizeL}}>
+      <Text style={text.h1BlackTitle}>Proposals</Text>
+
+      <ProposalsList
+        common={{
+          name: common.name,
+          id: common.id,
+          balance: common.balance,
+        }}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.Active,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
+        openCommonOptions={(proposal) =>
+          openCommonOptions(proposal, TITLES.proposals)
+        }
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
+        }
+        isMember={isMember}
+      />
+    </View>
+  );
+
+  const History = () => (
+    <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
+      <Text style={text.h1BlackTitle}>History</Text>
+
+      <ProposalsList
+        navigation={navigation}
+        commonInfo={{
+          name: common.name,
+          id: common.id,
+          balance: common.balance,
+        }}
+        proposalFilter={{
+          stage: PROPOSAL_STAGE.History,
+          type: PROPOSAL_TYPE.FundingRequest,
+        }}
+        showHiddenNote={(hiddenProposal) =>
+          showHiddenNote(hiddenProposal, TITLES.proposalText)
+        }
+        sMember={isMember}
+      />
+    </View>
+  );
+
+  const renderScene = (scene) => {
+    switch (scene.route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
+
+  const openAgendaScreen = () => {
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: common.id,
+    });
+  };
+
+  const renderAgendaForNonMembers = () => {
+    if (!isMember) {
+      return (
+        <View style={styles.agendaBox}>
+          <View style={layout.flexStart}>
+            <Text style={text.h2Black}>About</Text>
+            <Text
+              style={{
+                ...text.regularText,
+                ...layout.marginTopS,
+                ...text.writingDirection(common.metadata.description),
+              }}>
+              {truncateString(
+                common.metadata.description,
+                ABOUT_TRUNCATE_LENGTH,
+              )}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={openAgendaScreen}
+            style={layout.marginTopS}>
+            <View style={styles.viewAgendaBtn}>
+              <Text style={styles.viewFullAgenda}>View full agenda</Text>
+              <Icon
+                style={styles.icon}
+                name="right-arrow"
+                color={colors.mainBlue}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
+
+  const renderMembersRow = () => (
+    <View style={styles.membersContainerWrapper}>
+      <View
+        style={{
+          ...styles.membersContainer,
+          paddingTop: !isMember ? sizeL : sizeS,
+          paddingBottom: isMember ? 0 : sizeL,
+        }}>
+        {pendingProposalsData ? (
+          <TouchableOpacity onPress={openCommonMembers} style={layout.flexRow}>
+            <View style={layout.flexRow}>
+              <Text style={text.h4Black}>
+                {`${common?.members?.length} Member${
+                  common?.members?.length !== 1 ? 's' : ''
+                }`}
+              </Text>
+            </View>
+            <View style={{...layout.flexRow, ...layout.marginLeftS}}>
+              <Text style={text.h4BlackRegular}>
+                {`${pendingProposalsData.pendingProposalCount}  Pending`}
+              </Text>
+              <Icon name="right-arrow" />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <Placeholder Animation={Fade}>
+            <PlaceholderLine
+              width={50}
+              height={9}
+              style={{alignSelf: 'center'}}
+            />
+          </Placeholder>
+        )}
+        {isMember && (
+          <TouchableOpacity
+            onPress={openCommonMembers}
+            style={styles.membersAction}>
+            <View style={styles.membersRow}>
+              <CommonMembersList
+                horizontal={true}
+                navigation={navigation}
+                commonId={common.id}
+                limit={5}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+
+  const openCommonMembers = () => {
+    navigation.navigate('CommonMembers', {
+      commonId: common.id,
+      screenTitle: common.name,
+      permission,
+      openCommonOptions: (requestToJoin) =>
+        openCommonOptions(requestToJoin, TITLES.membershipRequest),
+      showHiddenNote: (hiddenRequestToJoin) =>
+        showHiddenNote(hiddenRequestToJoin, TITLES.membershipRequest),
+      isMember,
+    });
+  };
+
+  const onEdit = (type: EditType) => {
+    bottomSheetStore.hideBottomSheet();
+    navigateTo(type);
+  };
+
+  /**
+   * For other types of items
+   * @param  {[type]} actionType [description]
+   * @param  {String} itemType   [description]
+   * @param  {[type]} itemId     [description]
+   * @return {[type]}            [description]
+   */
+  const onModerate = async (actionType, itemType = '', itemId = null) => {
+    setAction(actionType);
+    bottomSheetStore.hideBottomSheet();
+    const resp = await ModerationService.onModerate(
+      actionType,
+      itemId,
+      commonId,
+      itemType.toLowerCase(),
+    );
+
+    resp === ACTIONS.report
+      ? setShowModerationModal(true)
+      : resp && setShowModerationSuccessModal(true);
+  };
+
+  const membershipRequestType = (itemTitle) =>
+    itemTitle === TITLES.membershipRequest ? TITLES.proposals : itemTitle;
+
+  // consider adding itemId to edit (?)
+  const openCommonOptions = (item = null, itemType = '') => {
+    if (item) {
+      moderationFormStore.clearFormStoreState();
+      moderationFormStore.registerFormField(
+        ModerationFormFields.ITEM_ID,
+        'string',
+        item.id,
+      );
+    }
+    setModerationType(itemType);
+
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET.SCREEN_COMMON_PROFILE_OPTIONS,
+      {
+        onAction: item
+          ? (actionType) =>
+              onModerate(actionType, membershipRequestType(itemType), item.id)
+          : (type: EditType) => onEdit(type),
+        permission,
+        moderatorOptions: {
+          item,
+        },
+      },
+    );
+  };
+
+  const onReportContent = async () => {
+    setShowModerationModal(false);
+    bottomSheetStore.hideBottomSheet();
+    Toast.loading('Reporting content...');
+
+    await ModerationService.report(
+      membershipRequestType(moderationType).toLowerCase(),
+      commonId,
+      moderationFormStore.getFormFieldsJson(),
+    );
+    Toast.hide();
+    Toast.success('Done');
+    setShowModerationSuccessModal(true);
+    moderationFormStore.clearFormStoreState();
+  };
+
+  const showHiddenNote = (
+    {hiddenItem: {moderation}, isModerator = false}: any,
+    type: string,
+  ) => {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET.HIDDEN_CONTENT_INFO, {
+      userName: reporterName(userStore.getUserById(moderation.moderator)),
+      date: timeReported(moderation.updatedAt),
+      reasons: moderation.reasons,
+      moderatorNote: moderation?.moderatorNote,
+      type,
+      isModerator,
+    });
+  };
+
+  const getType = (title: string) =>
+    title === TITLES.proposals ? TITLES.proposalText : title;
+
+  const navigateTo = (type: EditType) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
+      common: common,
+      type: type,
+    });
+  };
+
+  /*
+  const openNotif = event => {
+    commonOperationalStateNotifRef.current.snapTo(1);
+    commonOperationalStateNotifRef.current.snapTo(1);
+  };
+  */
+
+  const requestToJoin = () => {
+    const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+    const paymentFormStore = new PaymentFormStore();
+    const personalContributionFormStore = new PersonalContributionFormStore();
+    const billingDetailsFormStore = new BillingDetailsFormStore();
+
+    const navigate = CommonActions.navigate({
+      name: 'IntroductionStep', // #498 we always go to Introduction first
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
+        },
+        common: common,
+        currDaoId: common.id,
+        skipFirstStep: false,
+      },
+    });
+
+    if (authStore.userInfo) {
+      navigation.dispatch(navigate);
+    } else {
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET.LOGIN_SHEET_SCREEN, {
+        goToNextScreen: () => navigation.dispatch(navigate),
+      });
+    }
+  };
+
+  const viewProposal = () => {
+    navigation.navigate('ProposalScreen', {
+      proposalId: params.createdProposalId,
+    });
+
+    setShowRequestSentModal(false);
+  };
+
+  const goToToCommon = () => {
+    setShowRequestSentModal(false);
+  };
+
+  const openProposalScreen = () => {
+    navigation.navigate('ProposalScreen', {
+      proposalId: pendingProposalsData.usersPendingProposal?.id,
+    });
+  };
+
+  const renderPendingApproval = () => {
+    const remainingSeconds =
+      pendingProposalsData.usersPendingProposal.createdAt.seconds +
+      pendingProposalsData.usersPendingProposal.countdownPeriod -
+      moment().unix();
+
+    return (
+      <TouchableOpacity
+        onPress={openProposalScreen}
+        style={{
+          ...layout.content,
+          paddingVertical: 15,
+          ...{borderBottomWidth: 1, borderBottomColor: colors.grey4},
+        }}>
+        <View
+          style={{
+            ...layout.content,
+            ...layout.flexRow,
+            ...{padding: 0},
+          }}>
+          <Icon name="clcok" size={16} style={layout.marginRightXS} />
+          <Text style={text.smallBoldGreyText}>Pending Approval</Text>
+        </View>
+        <View
+          style={{
+            ...layout.flexRow,
+            ...layout.marginTopS,
+            ...{width: '100%', justifyContent: 'space-between'},
+          }}>
+          <View style={layout.flexRow}>
+            <ProposalApprovalTag
+              iconName="approved"
+              value={Number(
+                pendingProposalsData.usersPendingProposal.votesFor || 0,
+              )}
+              isMarked={true}
+            />
+            <ProposalApprovalTag
+              iconName="declined"
+              value={Number(
+                pendingProposalsData.usersPendingProposal.votesAgainst || 0,
+              )}
+              isMarked={false}
+            />
+            <ProposalApprovalTag
+              iconName="discussion"
+              value={Number(userPendingPropDiscCount || 0)}
+              isMarked={false}
+            />
+          </View>
+          <View>
+            <CountDown
+              digitTxtStyle={text.smallGreyText}
+              separatorStyle={text.smallGreyText}
+              timeLabels={false}
+              showSeparator={true}
+              digitStyle={{
+                height: 'auto',
+                width: 'auto',
+              }}
+              until={remainingSeconds}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const loadingPlaceholder = () => (
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <Placeholder Animation={Fade}>
+        <PlaceholderMedia
+          style={{height: 200, width: '100%', marginBottom: 20}}
+        />
+        <PlaceholderMedia
+          style={{height: 100, width: '100%', marginBottom: 20}}
+        />
+        <PlaceholderMedia
+          style={{height: 100, width: '100%', marginBottom: 20}}
+        />
+      </Placeholder>
+
+      <Placeholder Animation={Fade}>
+        {[...Array(3).keys()].map((i) => (
+          <View key={`common_loading_${i}`}>
+            <PlaceholderMedia
+              style={{height: 80 * i, width: '100%', marginBottom: 20}}
+            />
+            <PlaceholderLine width={80} />
+            <PlaceholderLine />
+            <PlaceholderLine width={30} />
+          </View>
+        ))}
+      </Placeholder>
+    </ScrollView>
+  );
+
+  const fixedHeaderHeight = () => (
+    <NavigationBar
+      statusBar={{hidden: true}}
+      containerStyle={{
+        ...styles.fixedSection,
+        ...{bottom: showStickyTabBar || isHeaderClosingInProgress ? 85 : 5},
+      }}
+      leftButton={
+        <TouchableOpacity
+          style={{justifyContent: 'center'}}
+          onPress={() => navigation.pop()}>
+          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={dark ? 'black' : 'white'}
+            />
+          </BlurView>
+        </TouchableOpacity>
+      }
+      rightButton={
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{justifyContent: 'center', marginRight: 10}}
+            onPress={shareCommon}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+              <Icon
+                name="share-32"
+                size={32}
+                color={dark ? 'black' : 'white'}
+              />
+            </BlurView>
+          </TouchableOpacity>
+          {permission && (
+            <TouchableOpacity
+              style={{justifyContent: 'center', marginRight: 10}}
+              onPress={() => openCommonOptions()}>
+              <BlurView
+                style={{
+                  padding: 6,
+                  borderRadius: 15,
+                }}
+                isBlurring={dark}>
+                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
+              </BlurView>
+            </TouchableOpacity>
+          )}
+        </View>
+      }
+    />
+  );
+
+  const renderRequestToJoinBtn = () => (
+    <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
+      <Text style={styles.requestToJoin}>Request to join</Text>
+      <Text style={styles.contribution}>
+        ${common.minFeeToJoinFormatted}
+        {common.metadata.contributionType === 'monthly' && '/mo'} min.
+        contribution
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const initialLayout = {width};
+
+  const slideUp = {
+    transform: [
+      {
+        translateY: stickyTabBarState.animation.interpolate({
+          inputRange: [0.01, 1],
+          outputRange: [0, 80],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  };
+
+  const stickyTabBarStyle = {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? -25 : 0,
+    width: '100%',
+    paddingBottom: 5,
+    zIndex: 1,
+  };
+
+  return (
+    <View style={{flex: 1, backgroundColor: colors.white}}>
+      <ModerationModal
+        title={moderationType}
+        visible={showModerationModal}
+        setShowModerationModal={() => setShowModerationModal(false)}
+        moderationFormStore={moderationFormStore}
+        onReportContent={() => onReportContent()}
+        permission={permission}
+      />
+      <ModerationActionSuccessModal
+        type={getType(moderationType)}
+        visible={showModerationSuccessModal}
+        setShowModerationSuccessModal={() =>
+          setShowModerationSuccessModal(false)
+        }
+        action={action}
+      />
+      {common ? (
+        <View style={{flex: 1, position: 'relative'}}>
+          <TouchableOpacity
+            onPress={() => navigation.pop()}
+            style={{
+              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={colors.white}
+              style={{marginLeft: 10}}
+            />
+          </TouchableOpacity>
+          <ParallaxScrollView
+            contentContainerStyle={{position: 'relative', zIndex: 99}}
+            backgroundColor="white"
+            showsVerticalScrollIndicator={false}
+            stickyHeaderHeight={
+              showStickyTabBar || isHeaderClosingInProgress
+                ? STICKY_HEADER_HEIGHT + 80
+                : STICKY_HEADER_HEIGHT
+            }
+            parallaxHeaderHeight={headerHeight}
+            renderBackground={() => (
+              <FastImage
+                source={{
+                  uri: common.image,
+                }}
+                style={{
+                  width: width,
+                  height: headerHeight,
+                  backgroundColor: colors.grey4,
+                }}>
+                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
+              </FastImage>
+            )}
+            scrollEvent={(e) => {
+              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
+              upperRequestToJoinBtnRef?.current?.measure(
+                (fx, fy, mWidth, height, px, py) => {
+                  setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
+                },
+              );
+              stickyTabBarRef?.current?.measure(
+                (fx, fy, mWidth, height, px, py) => {
+                  const isVisible = py < STICKY_HEADER_HEIGHT - 80;
+                  if (isVisible !== showStickyTabBar) {
+                    if (isVisible) {
+                      setShowStickyTabBar(isVisible);
+                      Animated.timing(stickyTabBarState.animation).stop();
+                      Animated.timing(stickyTabBarState.animation, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true,
+                      }).start();
+                    } else if (!isHeaderClosingInProgress) {
+                      setIsHeaderClosingInProgress(true);
+                      setShowStickyTabBar(isVisible);
+                      Animated.timing(stickyTabBarState.animation).stop();
+                      Animated.timing(stickyTabBarState.animation, {
+                        toValue: 0,
+                        duration: 300,
+                        useNativeDriver: true,
+                      }).start(({finished}) => {
+                        setIsHeaderClosingInProgress(!finished);
+                      });
+                    }
+                  }
+                },
+              );
+            }}
+            renderForeground={() => (
+              <CommonHeader
+                common={common}
+                headerHeightDidLayout={headerHeightDidLayout}
+                onEdit={onEdit}
+              />
+            )}
+            renderStickyHeader={() => (
+              <View style={{height: '100%'}}>
+                <Animated.View style={[stickyTabBarStyle, slideUp]}>
+                  <TabBarRenderer
+                    navigationState={{index, routes}}
+                    jumpTo={originTabBarRef.current?.props?.jumpTo}
+                    parentRef={originTabBarRef}
+                    indexChange={setIndex}
+                  />
+                </Animated.View>
+                <View key="sticky-header" style={styles.stickySection}>
+                  <Text style={styles.stickySectionText}>{common.name}</Text>
+                </View>
+              </View>
+            )}
+            renderFixedHeader={fixedHeaderHeight}>
+            {showPending && (
+              <React.Fragment>
+                {pendingProposalsData?.usersPendingProposal &&
+                  renderPendingApproval()}
+              </React.Fragment>
+            )}
+
+            <View style={{paddingVertical: sizeS}}>
+              <CommonStageSummary
+                commonProgressInfo={{
+                  time: common.fundingGoalDeadline,
+                  activeProposals:
+                    common.numberOfBoostedProposals +
+                    common.numberOfPreBoostedProposals +
+                    common.numberOfQueuedProposals,
+                  /* goal: common.fundingGoal, */
+                  members: common?.members?.length,
+                  balance: common.balance,
+                  raised: common.raised,
+                }}
+              />
+            </View>
+
+            {renderMembersRow()}
+
+            {!isMember && showReqToJoin && (
+              <View
+                style={styles.upperActionButtonContainer}
+                ref={upperRequestToJoinBtnRef}
+                collapsable={false}>
+                {renderRequestToJoinBtn()}
+              </View>
+            )}
+
+            {renderAgendaForNonMembers()}
+
+            <View ref={stickyTabBarRef} collapsable={false}>
+              <TabView
+                navigationState={{index, routes}}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
+                style={{
+                  backgroundColor: colors.paleGrey,
+                }}
+              />
+            </View>
+          </ParallaxScrollView>
+
+          <SafeAreaView>
+            {isMember ? (
+              index === 0 ? (
+                <BottomRightButton
+                  iconName="add-proposal-32"
+                  onPress={() =>
+                    navigation.navigate('New Post', {
+                      commonId: common.id,
+                    })
+                  }
+                  bottom={50}
+                />
+              ) : (
+                index === 1 && (
+                  <BottomRightButton
+                    iconName="create-proposal"
+                    onPress={() =>
+                      navigation.navigate('FundingProposal', {
+                        commonId: common.id,
+                        common: common,
+                        screenTitle: common.name,
+                      })
+                    }
+                    bottom={50}
+                  />
+                )
+              )
+            ) : (
+              <React.Fragment>
+                {showStickyRequestToJoinBtn && showReqToJoin && (
+                  <View style={styles.actionButtonContainer}>
+                    {renderRequestToJoinBtn()}
+                  </View>
+                )}
+
+                <Modal
+                  isVisible={showRequestSentModal}
+                  avoidKeyboard={true}
+                  backdropColor={colors.white}
+                  backdropOpacity={1}
+                  onBackdropPress={() => setShowRequestSentModal(false)}
+                  style={{padding: 0}}>
+                  <SentTemplate
+                    hideLogo
+                    title="Membership request sent"
+                    description="The common members will vote on your membership request. If it's approved, you will become a member with equal voting rights."
+                    onClose={() => setShowRequestSentModal(false)}>
+                    <View>
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnPrimary}
+                        onPress={viewProposal}>
+                        <Text style={text.buttoncenterwhite}>View request</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.modalRequestSentBtnOutline}
+                        onPress={goToToCommon}>
+                        <Text style={styles.backButton}>Back to Common</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </SentTemplate>
+                </Modal>
+              </React.Fragment>
+            )}
+          </SafeAreaView>
+        </View>
+      ) : (
+        loadingPlaceholder()
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  paleBackground: {
+    backgroundColor: '#fcfcfc',
+  },
+  requestToJoin: {
+    ...font.primary.bold,
+    color: colors.white,
+    ...font.fontSize(3),
+    marginRight: 40,
+  },
+  viewAgendaBtn: {
+    ...layout.content,
+    ...layout.flexRow,
+    justifyContent: 'flex-start',
+    padding: 0,
+  },
+  contribution: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.white,
+  },
+  viewFullAgenda: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.mainBlue,
+  },
+  modalRequestSentBtnOutline: {
+    ...layout.btnOutline,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  backButton: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.black,
+  },
+  modalRequestSentBtnPrimary: {
+    ...layout.btnPrimary,
+    ...layout.marginTopL,
+    flexGrow: 0,
+    width: '100%',
+  },
+  memberImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  membersRow: {
+    ...layout.flexRow,
+  },
+  membersContainerWrapper: {
+    paddingHorizontal: 20,
+  },
+  membersContainer: {
+    ...layout.content,
+    paddingVertical: 0,
+    borderTopWidth: 1,
+    borderColor: colors.grey4,
+  },
+  membersAction: {
+    ...layout.content,
+    ...layout.flexRow,
+    paddingHorizontal: 0,
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  icon: {
+    marginTop: 2,
+  },
+  tabStyle: {
+    ...text.ashleyjquimbacom2,
+  },
+  tabStyleActive: {
+    ...text.ashleyjquimbacom2,
+
+    color: colors.mainBlue,
+  },
+  upperActionButtonContainer: {
+    paddingHorizontal: 20,
+  },
+  actionButtonContainer: {
+    padding: 20,
+    position: 'absolute',
+    bottom: 28,
+    left: 0,
+    right: 0,
+  },
+  agendaBox: {
+    padding: 20,
+    paddingTop: 20,
+  },
+  agendaDescription: {
+    marginBottom: 9,
+  },
+  readMoreButton: {
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    color: colors.black,
+  },
+  commonNumbers: {
+    ...layout.content,
+    ...layout.flexRow,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  headerButton: {
+    height: 48,
+    borderRadius: 32,
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: colors.mainBlue,
+
+    shadowColor: 'rgba(79, 92, 105, 0.1)',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 1,
+    elevation: 4,
+  },
+  stickySection: {
+    paddingBottom: 10,
+    justifyContent: 'flex-end',
+    height: STICKY_HEADER_HEIGHT,
+    borderBottomWidth: 1,
+    backgroundColor: colors.white,
+    borderBottomColor: colors.grey4,
+    zIndex: 99,
+  },
+  stickySectionText: {
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    ...font.heading.bold,
+    fontSize: 20,
+    color: colors.black,
+    textAlign: 'center',
+  },
+  fixedSection: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 10,
+    left: 5,
+    backgroundColor: 'transparent',
+  },
+  fixedSectionText: {
+    color: '#999',
+    fontSize: 20,
+  },
+});
+
+export default inject('rootStore')(observer(CommonProfileScreen));

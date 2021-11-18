@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import DocumentPicker from 'react-native-document-picker';
-import Toast from '~/Util/Toast';
+import {Toast} from '~/Components';
 import Icon from '~/Assets/iconfont/Icon';
 import {text, layout, colors} from '~/Theme';
 import StorageService from '~/Services/StorageService';
@@ -20,25 +20,10 @@ class FileField extends React.Component {
     const {validation, value} = this.props;
 
     if (validation) {
-      const {
-        name,
-        formStore,
-        validateRule,
-        multiName,
-        displayName,
-        customErrorMessage,
-      } = validation;
+      const {name, formStore, validateRule, multiName} = validation;
       formStore.registerFormField(name, validateRule, value, multiName);
 
-      this.fieldValidation = (
-        <ValidationMessage
-          displayName={displayName}
-          customErrorMessage={customErrorMessage}
-          formStore={formStore}
-          name={name}
-          multiName={multiName}
-        />
-      );
+      this.fieldValidation = <ValidationMessage {...validation} />;
     }
   }
 

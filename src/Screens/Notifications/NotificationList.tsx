@@ -17,7 +17,6 @@ import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {Notification} from '~/Stores/Models/Notification';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingRequest from '~/Components/Notifications/FundingRequest';
@@ -54,42 +53,42 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
     switch (item.eventType) {
-      case EventTypeState.commonWhitelisted:
-      case EventTypeState.commonCreated:
+      case EventType.commonWhitelisted:
+      case EventType.commonCreated:
         return <CommonWhitelisted item={item} navigation={navigation} />;
 
-      case EventTypeState.fundingRequestCreated:
-      case EventTypeState.fundingRequestAccepted:
-      case EventTypeState.fundingRequestExecuted:
-      case EventTypeState.fundingRequestRejected:
+      case EventType.fundingRequestCreated:
+      case EventType.fundingRequestAccepted:
+      case EventType.fundingRequestExecuted:
+      case EventType.fundingRequestRejected:
         return <FundingRequest item={item} navigation={navigation} />;
 
-      case EventTypeState.messageCreated:
+      case EventType.messageCreated:
         return <MessageCreated item={item} navigation={navigation} />;
 
-      case EventTypeState.commonMemberAdded:
+      case EventType.commonMemberAdded:
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
-      case EventTypeState.requestToJoinCreated:
+      case EventType.requestToJoinCreated:
         return <RequestToJoinCreated item={item} navigation={navigation} />;
 
-      case EventTypeState.requestToJoinRejected:
+      case EventType.requestToJoinRejected:
         return <RequestToJoinRejected item={item} navigation={navigation} />;
 
-      case EventTypeState.discussionCreated:
+      case EventType.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;
 
-      case EventTypeState.proposalReported:
+      case EventType.proposalReported:
         return <ProposalReported item={item} navigation={navigation} />;
 
-      case EventTypeState.discussionReported:
+      case EventType.discussionReported:
         return <DiscussionReported item={item} navigation={navigation} />;
 
-      case EventTypeState.discussionMessageReported:
+      case EventType.discussionMessageReported:
         return (
           <DiscussionMessageReported item={item} navigation={navigation} />
         );
-      case EventTypeState.welcomeNotification:
+      case EventType.welcomeNotification:
         return <WelcomeNotification item={item} navigation={navigation} />;
 
       default:

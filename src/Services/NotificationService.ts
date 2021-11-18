@@ -1,17 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
-import {db} from '~/Firebase';
-import {NotificationsCollection} from '~/Firebase/Databasee/Collections/NotificationsCollection';
 import {
   EventTypesOnNotificationList,
   EventTypesOnNotificationList1,
-  EventTypeState,
   INotificationEntity,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Firebase';
 import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
-import Toast from '~/Util/Toast';
-import UserService from './UserService';
+import {Toast} from '~/Components';
 import logger from './Logger';
 
 export type commonNotificationListLoadCallbackFn = (
@@ -87,23 +83,6 @@ class NotificationService {
     }
   };
 
-  addWelcomeNotification = async () => {
-    const userId = auth().currentUser?.uid as string;
-    const user = await UserService.fetchUserById(userId);
-
-    const data = {
-      id: EventTypeState.welcomeNotification,
-      descriptionBold: "We're excited to have you with us",
-      description: ' Looking for the first Common to join? Browse now.',
-      ownerAvatar:
-        'https://firebasestorage.googleapis.com/v0/b/common-staging-50741.appspot.com/o/public_img%2FappLogo.png?alt=media&token=41fec685-b6fb-4b56-813a-fd3e8756787a',
-      createdAt: user.createdAt,
-      eventType: EventTypeState.welcomeNotification,
-    };
-
-    return data;
-  };
-
   follow = async (targetUid: string): Promise<void | undefined> => {
     if (auth().currentUser === null) {
       return;
@@ -173,7 +152,7 @@ class NotificationService {
 
   //           if (data.eventObjectId) {
   //             switch (data.eventType) {
-  //               case EventTypeState.commonWhitelisted:
+  //               case EventType.commonWhitelisted:
   //                 common = await fetchCommonById(data.eventObjectId);
   //                 if (common) {
   //                   user = await getUserById(common.members[0].userId);
@@ -191,10 +170,10 @@ class NotificationService {
 
   //                 break;
 
-  //               case EventTypeState.fundingRequestCreated:
-  //               case EventTypeState.fundingRequestAccepted:
-  //               case EventTypeState.fundingRequestExecuted:
-  //               case EventTypeState.fundingRequestRejected:
+  //               case EventType.fundingRequestCreated:
+  //               case EventType.fundingRequestAccepted:
+  //               case EventType.fundingRequestExecuted:
+  //               case EventType.fundingRequestRejected:
   //                 proposal = await fetchProposalById(data.eventObjectId);
   //                 if (proposal) {
   //                   common = await fetchCommonById(proposal.commonId);
@@ -212,7 +191,7 @@ class NotificationService {
   //                     };
 
   //                     if (
-  //                       data.eventType === EventTypeState.fundingRequestCreated
+  //                       data.eventType === EventType.fundingRequestCreated
   //                     ) {
   //                       data = {
   //                         ...data,
@@ -226,7 +205,7 @@ class NotificationService {
 
   //                 break;
 
-  //               case EventTypeState.messageCreated:
+  //               case EventType.messageCreated:
   //                 const message = await fetchMessageById(data.eventObjectId);
   //                 if (message) {
   //                   const discussion = await fetchDiscussionId(
@@ -262,7 +241,7 @@ class NotificationService {
 
   //                 break;
 
-  //               case EventTypeState.requestToJoinAccepted:
+  //               case EventType.requestToJoinAccepted:
   //                 proposal = await fetchProposalById(data.eventObjectId);
   //                 if (proposal) {
   //                   common = await fetchCommonById(proposal.commonId);
@@ -282,7 +261,7 @@ class NotificationService {
 
   //                 break;
 
-  //               case EventTypeState.requestToJoinCreated:
+  //               case EventType.requestToJoinCreated:
   //                 proposal = await fetchProposalById(data.eventObjectId);
   //                 if (proposal) {
   //                   common = await fetchCommonById(proposal.commonId);
@@ -303,7 +282,7 @@ class NotificationService {
 
   //                 break;
 
-  //               case EventTypeState.requestToJoinRejected:
+  //               case EventType.requestToJoinRejected:
   //                 proposal = await fetchProposalById(data.eventObjectId);
   //                 if (proposal) {
   //                   common = await fetchCommonById(proposal.commonId);

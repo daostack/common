@@ -6,7 +6,7 @@ import {
   BadgeProps,
   EventTitleState,
   EventTypeState,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Types/EntityTypes/INotificationEntity';
 
 const props = {
   type: string,
@@ -17,7 +17,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
 
   useEffect(() => {
     switch (type) {
-      case EventTypeState.welcomeNotification:
+      case EventType.welcomeNotification:
         setBadgeValues({
           title: EventTitleState.welcomeNotification,
           bgColor: colors.lightBlue,
@@ -25,7 +25,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
 
         break;
-      case EventTypeState.fundingRequestAccepted:
+      case EventType.fundingRequestAccepted:
         setBadgeValues({
           title: EventTitleState.fundingRequestAccepted,
           bgColor: colors.lightGreen,
@@ -33,7 +33,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.fundingRequestCreated:
+      case EventType.fundingRequestCreated:
         setBadgeValues({
           title: EventTitleState.fundingRequestCreated,
           bgColor: colors.lightBlue,
@@ -41,7 +41,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.fundingRequestExecuted:
+      case EventType.fundingRequestExecuted:
         setBadgeValues({
           title: EventTitleState.fundingRequestExecuted,
           bgColor: colors.redLight,
@@ -49,7 +49,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.fundingRequestRejected:
+      case EventType.fundingRequestRejected:
         setBadgeValues({
           title: EventTitleState.fundingRequestRejected,
           bgColor: colors.redLight,
@@ -57,7 +57,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.paymentFailed:
+      case EventType.paymentFailed:
         setBadgeValues({
           title: EventTitleState.paymentFailed,
           bgColor: colors.redLight,
@@ -65,7 +65,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.messageCreated:
+      case EventType.messageCreated:
         setBadgeValues({
           title: EventTitleState.messageCreated,
           bgColor: colors.lightBlue,
@@ -73,7 +73,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.voteCreated:
+      case EventType.voteCreated:
         setBadgeValues({
           title: EventTitleState.voteCreated,
           bgColor: colors.lightBlue,
@@ -81,7 +81,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.cardCreated:
+      case EventType.cardCreated:
         setBadgeValues({
           title: EventTitleState.cardCreated,
           bgColor: colors.lightBlue,
@@ -89,7 +89,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.requestToJoinCreated:
+      case EventType.requestToJoinCreated:
         setBadgeValues({
           title: EventTitleState.requestToJoinCreated,
           bgColor: colors.lightBlue,
@@ -97,7 +97,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.requestToJoinRejected:
+      case EventType.requestToJoinRejected:
         setBadgeValues({
           title: EventTitleState.requestToJoinRejected,
           bgColor: colors.redLight,
@@ -105,7 +105,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.requestToJoinAccepted:
+      case EventType.requestToJoinAccepted:
         setBadgeValues({
           title: EventTitleState.requestToJoinAccepted,
           bgColor: colors.lightGreen,
@@ -113,7 +113,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.creationReqToJoin:
+      case EventType.creationReqToJoin:
         setBadgeValues({
           title: EventTitleState.creationReqToJoin,
           bgColor: colors.lightBlue,
@@ -121,7 +121,7 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.commonMemberAdded:
+      case EventType.commonMemberAdded:
         setBadgeValues({
           title: EventTitleState.commonMemberAdded,
           bgColor: colors.lightGreen,
@@ -129,42 +129,42 @@ const NotificationBadge: React.FC<InferProps<typeof props>> = ({type}) => {
         });
         break;
 
-      case EventTypeState.commonWhitelisted:
+      case EventType.commonWhitelisted:
         setBadgeValues({
           title: EventTitleState.commonWhitelisted,
           bgColor: colors.lightBlue,
           textColor: colors.mainBlue,
         });
         break;
-      case EventTypeState.discussionCreated:
+      case EventType.discussionCreated:
         setBadgeValues({
           title: EventTitleState.discussionCreated,
           bgColor: colors.lightBlue,
           textColor: colors.mainBlue,
         });
         break;
-      case EventTypeState.discussionMessageReported:
+      case EventType.discussionMessageReported:
         setBadgeValues({
           title: EventTitleState.discussionMessageReported,
           bgColor: colors.redLight,
           textColor: colors.error,
         });
         break;
-      case EventTypeState.proposalReported:
+      case EventType.proposalReported:
         setBadgeValues({
           title: EventTitleState.proposalReported,
           bgColor: colors.redLight,
           textColor: colors.error,
         });
         break;
-      case EventTypeState.membershipRequestReported:
+      case EventType.membershipRequestReported:
         setBadgeValues({
           title: EventTitleState.membershipRequestReported,
           bgColor: colors.redLight,
           textColor: colors.error,
         });
         break;
-      case EventTypeState.discussionReported:
+      case EventType.discussionReported:
         setBadgeValues({
           title: EventTitleState.discussionReported,
           bgColor: colors.redLight,

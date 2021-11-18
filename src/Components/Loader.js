@@ -2,16 +2,15 @@ import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import React from 'react';
 import {inject, observer} from 'mobx-react';
 import {layout, colors, sizeXXL} from '~/Theme';
-import {string, bool, object} from 'prop-types';
+import {string, bool} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../Util/hooks/useTimeoutFn';
 import {showLoadingExpirationPopUp} from '../Util';
 
 const TIMEOUT = 100000;
 
-const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) => {
+const Loader = ({color, isBigger, isFullScreen = false, rootStore}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-
 
   useTimeoutFn(callbackFn, TIMEOUT);
 
@@ -23,7 +22,12 @@ const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) 
     : styles.loader;
 
   function callbackFn() {
-    isFullScreen ? showLoadingExpirationPopUp(bottomSheetStore, "Oops... We couldn't load the app.", navigation) : null;
+    isFullScreen
+      ? showLoadingExpirationPopUp(
+          bottomSheetStore,
+          "Oops... We couldn't load the app.",
+        )
+      : null;
   }
 
   return (
@@ -46,7 +50,6 @@ Loader.propTypes = {
   isBigger: bool,
   isFullScreen: bool,
   rootStore: rootStorePropTypes,
-  navigation: object,
 };
 
 const styles = StyleSheet.create({

@@ -9,8 +9,8 @@ import {colors, font} from '../../Theme';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 import layout from '../../Theme/layout';
-import {MonthlyContributionStatus} from '../../Components';
-import {PaymentFailureMessageBox} from '../../Components/Subscriptions/PaymentFailureMessageBox';
+import {MonthlyContributionStatus} from '~/Components';
+import {PaymentFailureMessageBox} from '~/Components/Subscriptions/PaymentFailureMessageBox';
 import SubscriptionService, {
   ACTIVE,
   CANCELED_BY_PAYMENT,

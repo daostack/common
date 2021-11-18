@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import {text, layout, colors, font, sizeL} from '~/Theme';
-import ButtonSwiper from '~/Components/ButtonSwiper';
+import {ButtonSwiper} from '~/Components/ButtonSwiper';
 import PropTypes from 'prop-types';
 import {useQuote} from '~/Util/hooks/useQuote';
 import {Bar} from 'react-native-progress';
@@ -24,24 +24,24 @@ const propTypes = {
   }),
 };
 
-const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
-  onApprove,
-  onClose,
-  voteType,
-  votingProcessState,
-}) => {
+export const ApprovalSheetScreen: React.FC<
+  PropTypes.InferProps<typeof propTypes>
+> = ({onApprove, onClose, voteType, votingProcessState}) => {
   const quote = useQuote();
   const title = voteType ? 'Approve' : 'Reject';
   const voteColor =
-    votingProcessState?.error || !voteType ? colors.against : colors.lightishGreen;
+    votingProcessState?.error || !voteType
+      ? colors.against
+      : colors.lightishGreen;
 
   const [height, setHeight] = React.useState<number>(200);
 
   return (
-    <SafeAreaView style={{
-      ...styles.body,
-      height,
-    }}>
+    <SafeAreaView
+      style={{
+        ...styles.body,
+        height,
+      }}>
       {votingProcessState?.inProgress && (
         <Bar
           indeterminate
@@ -70,16 +70,13 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
             Please try again later
           </Text>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={onClose as any}
-          >
+          <TouchableOpacity style={styles.button} onPress={onClose as any}>
             <Text>OK</Text>
           </TouchableOpacity>
 
           {typeof votingProcessState?.error !== 'boolean' && (
             <ErrorExpand
-              error={(votingProcessState?.error as any)}
+              error={votingProcessState?.error as any}
               onLayout={(_: any, change: number) => {
                 setHeight(height + change);
               }}
@@ -104,8 +101,7 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
           <ButtonSwiper
             title="Swipe to confirm your vote"
             onSwipeSuccess={() => {
-              typeof onApprove === 'function'
-              && onApprove(voteType);
+              typeof onApprove === 'function' && onApprove(voteType);
             }}
           />
         </React.Fragment>
@@ -113,8 +109,6 @@ const ApprovalSheetScreen: React.FC<PropTypes.InferProps<typeof propTypes>> = ({
     </SafeAreaView>
   );
 };
-
-ApprovalSheetScreen.propTypes = propTypes;
 
 const styles = StyleSheet.create({
   title: {
@@ -173,7 +167,4 @@ const styles = StyleSheet.create({
     borderColor: colors.grey4,
     marginVertical: 25,
   },
-
 });
-
-export default ApprovalSheetScreen;

@@ -23,22 +23,19 @@ import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
-import Toast from '~/Util/Toast';
+import {Toast} from '~/Components';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService, {
-  PROPOSAL_STAGE,
-  PROPOSAL_STAGES_ACTIVE,
-} from '~/Services/ProposalService';
+import ProposalService, {PROPOSAL_STAGE, PROPOSAL_STAGES_ACTIVE} from '~/Types';
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
-import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
+import {TabBarRenderer} from '~/Components/TabView';
+import {ProposalCardHeader} from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -54,8 +51,10 @@ import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsuffi
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
-import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {
+  ModerationFormStore,
+  ModerationFormFields,
+} from '~/Stores/FormStores/ModerationFormStore';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
@@ -99,14 +98,17 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
-    useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -124,24 +126,6 @@ const ProposalScreen = ({
   const VOTE_APPROVE = 'approved';
   const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
-
-  useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages =
-      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
-
-    let unsubscribeFromProposalById = null;
-    if (fromNotificationItem) {
-      unsubscribeFromProposalById =
-        proposalStore.subscribeToProposalById(proposalId);
-    }
-
-    return () => {
-      unsubscribeFromProposalDiscussionMessages &&
-        unsubscribeFromProposalDiscussionMessages();
-
-      unsubscribeFromProposalById && unsubscribeFromProposalById();
-    };
-  }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
@@ -192,8 +176,10 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
-    useState(false);
+  const [
+    isApprovalBottomModalVisible,
+    setIsApprovalBottomModalVisible,
+  ] = useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -221,7 +207,7 @@ const ProposalScreen = ({
     proposalInfo && (
       <View style={{paddingBottom: 5}}>
         <TabBarRenderer
-          originRef={originTabBarRef}
+          ref={originTabBarRef}
           jumpTo={originTabBarRef.current?.props?.jumpTo}
           indexChange={setIndex}
           {...currProps}
@@ -404,7 +390,7 @@ const ProposalScreen = ({
   };
 
   const paymentStatusModal = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.PAYMENT_STATUS, {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET.PAYMENT_STATUS, {
       proposerName: proposedUser?.displayName,
       paymentState: proposalInfo?.paymentState,
     });
@@ -589,13 +575,13 @@ const ProposalScreen = ({
   const openMessageOptions = (message, itemType) => {
     if (message) {
       moderationFormStore.registerFormField(
-        ModerationForm.ITEM_ID,
+        ModerationFormFields.ITEM_ID,
         'string',
         message.id,
       );
     }
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET.SCREEN_COMMON_PROFILE_OPTIONS,
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,

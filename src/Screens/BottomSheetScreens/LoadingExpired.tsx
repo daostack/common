@@ -1,47 +1,46 @@
 import {StackActions} from '@react-navigation/native';
-import {inject, observer} from 'mobx-react';
+import {useNavigation} from '@react-navigation/core';
 import React, {ReactElement} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {font, layout, text} from '~/Theme/index';
-import {AppRootStore} from '~/Types/store';
-import {WithNavigationRef} from '~/Types/navigation';
+import {useStore} from '~/Stores';
 
-type Props = AppRootStore & WithNavigationRef & {
-    errorMessage: string;
-}
+export function LoadingExpired({
+  errorMessage,
+}: {
+  errorMessage: string;
+}): ReactElement {
+  const navigation = useNavigation();
+  const {
+    uiStore: {appLoaderStore, bottomSheetStore},
+  } = useStore();
+  const onReloadApp = React.useCallback(() => {
+    navigation.dispatch(StackActions.popToTop());
+    appLoaderStore.showLoader();
+    bottomSheetStore.hideBottomSheet();
+  }, []);
 
-function LoadingExpired({errorMessage, rootStore, navigation}: Props): ReactElement {
+  return (
+    <View style={styles.scrollView}>
+      <View style={styles.body}>
+        <View style={styles.spacer} />
 
-    function onReloadApp(): void {
-        navigation.current.dispatch(StackActions.popToTop());
-        rootStore.uiStore.appLoaderStore.showLoader();
-        rootStore.uiStore.bottomSheetStore.hideBottomSheet();
-    }
+        <Image source={require('~/Assets/alert.png')} style={styles.imgAlert} />
 
-    return (
-        <View style={styles.scrollView}>
-        <View style={styles.body}>
+        <Text style={styles.title}>Something went wrong</Text>
 
-            <View style={styles.spacer} />
-
-            <Image source={require('~/Assets/alert.png')} style={styles.imgAlert} />
-
-            <Text style={styles.title}>Something went wrong</Text>
-
-                <View style={styles.textWithIconContainer}>
-                <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
-                </View>
-
-            <View style={styles.spacer} />
-
-            <TouchableOpacity
-            style={styles.dismissButton}
-            onPress={onReloadApp}>
-            <Text style={text.buttonblue}>Reload</Text>
-            </TouchableOpacity>
+        <View style={styles.textWithIconContainer}>
+          <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
         </View>
-        </View>
-    );
+
+        <View style={styles.spacer} />
+
+        <TouchableOpacity style={styles.dismissButton} onPress={onReloadApp}>
+          <Text style={text.buttonblue}>Reload</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +90,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-
 });
-
-export default inject('rootStore')(observer(LoadingExpired));

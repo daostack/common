@@ -1,4 +1,4 @@
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
 import logger from '~/Services/Logger';
 import {LayoutAnimation} from 'react-native';
 import moment from 'moment';
@@ -47,13 +47,13 @@ export const showErrorPopUp = (bottomSheetStore, arg) => {
   if (arg instanceof Error) {
     const errorObj = getErrorObject(arg);
 
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET.TRANSACTION_ERROR, {
       errorMessage: errorObj.errorMessage,
       errorId: errorObj.errorId,
       errorObj,
     });
   } else {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.TRANSACTION_ERROR, {
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET.TRANSACTION_ERROR, {
       errorMessage: arg,
     });
   }
@@ -66,7 +66,7 @@ export const showLoadingExpirationPopUp = (
   errorMessage,
   navigation,
 ) => {
-  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOADING_EXPIRED, {
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET.LOADING_EXPIRED, {
     errorMessage,
     navigation,
   });
@@ -75,7 +75,7 @@ export const showLoadingExpirationPopUp = (
 // This function requires the bottomSheetStore as a variable as you can't
 // access the mobx store outside of a react component
 export const showBackendError = ({bottomSheetStore, subTitle = null}) => {
-  bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
+  bottomSheetStore.showBottomSheet(BOTTOM_SHEET.BACKEND_ERROR, {
     subTitle:
       subTitle || 'This took longer than expected, please try again later',
     shouldGoBack: true,

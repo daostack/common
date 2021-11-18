@@ -6,7 +6,7 @@ export const handlePermission = async () =>
     // perhaps make this a bottom message(like the login from CommonList screen)?
     Alert.alert(
       'Permission required',
-      'To access camera you need to allow pemissions in settings',
+      'To access camera you need to allow permissions in settings',
       [
         {
           text: 'Settings',

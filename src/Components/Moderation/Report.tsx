@@ -12,7 +12,7 @@ import {
 import {colors, text, layout, font} from '~/Theme';
 import {string, func, InferProps, shape} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
-import * as ModerationForm from '~/Components/Forms/ModerationForm';
+import {ModerationFormFields} from '~/Stores/FormStores';
 import {TITLES} from '~/Components/Moderation/constants';
 const {width} = Dimensions.get('window');
 
@@ -74,7 +74,8 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
 
   const onProblemPressed = (chosenProblem: string) => {
     let currProblems =
-      `${formStore.getFormField(ModerationForm.REASONS, false)?.value}` || [];
+      `${formStore.getFormField(ModerationFormFields.REASONS, false)?.value}` ||
+      [];
     if (currProblems.length) {
       currProblems = currProblems.split(',');
       if (!currProblems.includes(chosenProblem)) {
@@ -88,7 +89,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
 
     setChosen(currProblems);
     formStore.fieldChanged(
-      ModerationForm.REASONS,
+      ModerationFormFields.REASONS,
       currProblems.toString(),
       false,
     );
@@ -122,7 +123,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
             multiline={true}
             infoLabel="Required"
             value={
-              formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
+              formStore.getFormField(ModerationFormFields.MODERATOR_NOTE, false)
                 ?.value
             }
             onChangeText={(noteText: string) => isValidNote(noteText)}

@@ -12,25 +12,17 @@ import {BlurView} from '~/Components';
 import {colors, font} from '~/Theme';
 import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
-import Toast from '~/Util/Toast';
+import {Toast} from '~/Components';
 import {handlePermission} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
 
-type Props = {
+const CommonImage: React.FC<{
   width: number;
   commonName: string;
   commonByLine: string;
   currImage: string;
   onImageChanged: (value: string) => void;
-};
-
-const CommonImage = ({
-  width,
-  commonName,
-  commonByLine,
-  currImage,
-  onImageChanged,
-}: Props): ReactElement => {
+}> = ({width, commonName, commonByLine, currImage, onImageChanged}) => {
   const [templateIndex, setTemplateIndex] = useState(1);
 
   const getImageUrl = (index: number) =>

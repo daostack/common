@@ -1,38 +1,40 @@
-import {observable} from 'mobx';
-import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {BaseModel} from './BaseModel';
+import {Document} from 'firestorter';
+import {Timestamp} from '~/Firebase';
+import {INotificationEntity} from '~/Types/EntityTypes/INotificationEntity';
+import {getProposalById} from './Proposal';
 
 export interface NotificationItemState {
   seen: boolean;
   opened: boolean;
 }
 
-export class Notification extends BaseModel<INotificationEntity> {
-  @observable
-  id: string;
+export class Notification
+  extends Document<INotificationEntity>
+  implements NotificationItemState {
+  seen = false;
+  opened = false;
 
-  @observable
-  eventObjectId: string;
+  get id() {
+    return this.data.id;
+  }
 
-  @observable
-  eventType: string;
+  get _createdAt() {
+    return (this.data.createdAt as unknown) as Timestamp;
+  }
 
-  @observable
-  userFilter: Array<string>;
+  get createdAt() {
+    return this._createdAt.toDate();
+  }
 
-  @observable
-  notificationItemState: NotificationItemState;
+  get eventObjectId() {
+    return this.data.eventObjectId;
+  }
 
-  constructor(
-    newNotificationInfo: INotificationEntity,
-    notificationItemState: NotificationItemState,
-  ) {
-    super(newNotificationInfo);
+  get eventType() {
+    return this.data.eventType;
+  }
 
-    this.id = newNotificationInfo.id;
-    this.eventObjectId = newNotificationInfo.eventObjectId;
-    this.eventType = newNotificationInfo.eventType;
-    this.userFilter = newNotificationInfo.userFilter;
-    this.notificationItemState = notificationItemState;
+  get userFilter() {
+    return this.data.userFilter;
   }
 }

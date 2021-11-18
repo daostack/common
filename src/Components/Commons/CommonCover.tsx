@@ -9,33 +9,15 @@ import React, {useCallback} from 'react';
 import FastImage from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {layout, colors, text, font} from '~/Theme';
-import {bool, func, string, shape, InferProps} from 'prop-types';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {Common} from '~/Stores/Models';
+import {useNavigation} from '@react-navigation/core';
 
-const props = {
-  navigation: shape({
-    navigate: func.isRequired,
-    goBack: func.isRequired,
-  }),
-  isMember: bool,
-  onHeaderMenuOpen: func,
-  commonInfo: shape({
-    cover: string.isRequired,
-    name: string.isRequired,
-    description: string.isRequired,
-  }).isRequired,
-  common: shape({
-    id: string.isRequired,
-  }).isRequired,
-};
-
-const CommonCover: React.FC<InferProps<typeof props>> = ({
-  navigation,
-  isMember,
-  onHeaderMenuOpen,
-  commonInfo: {cover, name, description},
-  common,
-}) => {
+export const CommonCover: React.FC<{
+  common: Common;
+  onHeaderMenuOpen?(): void;
+}> = ({onHeaderMenuOpen, common}) => {
+  const navigation = useNavigation();
   const handleHeaderMenuOpen = useCallback(() => {
     if (!onHeaderMenuOpen) {
       return;
@@ -120,8 +102,6 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-CommonCover.propTypes = props;
-
 const styles = StyleSheet.create({
   coverBackground: {
     borderTopLeftRadius: 28,
@@ -174,5 +154,3 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
 });
-
-export default CommonCover;

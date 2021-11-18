@@ -1,32 +1,22 @@
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {layout, text, font, colors} from '~/Theme';
-import {InferProps} from 'prop-types';
-import {bool, shape, number} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
 import ModalConversion from './ModalConversion';
-import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
-import {inject, observer} from 'mobx-react';
-import {uiStorePropTypes} from '~/Types/propTypes';
+import {observer} from 'mobx-react';
+import {Common} from '~/Stores/Models';
+import {CurrencyConverter} from '~/Stores';
 
-const props = {
-  isCommonCard: bool,
-  uiStore: uiStorePropTypes.isRequired,
-  commonProgressInfo: shape({
-    time: number,
-    activeProposals: number,
-    goal: number,
-    members: number,
-    raised: number,
-    balance: number,
-  }),
-};
+const formatNumber = (num: number) =>
+  Math.abs(num) > 999
+    ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
+    : Math.sign(num) * Math.abs(num);
 
-const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
-  isCommonCard,
-  commonProgressInfo: {raised, balance, members},
-  uiStore,
-}) => {
+export const CommonStageSummary: React.FC<{
+  isCommonCard: boolean;
+  common: Common;
+}> = observer(({isCommonCard, common}) => {
+  const [currencyConverter] = React.useState(new CurrencyConverter(0));
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
   // const isFundingStage = !deadlineHasPassed;
@@ -58,11 +48,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
     }; */
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const formatNumber = (num: number) =>
-    Math.abs(num) > 999
-      ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
-      : Math.sign(num) * Math.abs(num);
-
   const commonNumberBox = (
     numberComponent: React.ReactNode,
     title: string,
@@ -76,9 +61,8 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
       {subtitle &&
-        isIsraelLocale &&
         !isCommonCard &&
-        subtitle !== convertAmountToIls(0, uiStore.conversionRate) && (
+        subtitle !== currencyConverter.convertedAmount && (
           <View style={styles.subtitleContainer}>
             <Text style={styles.subtitleText}>{subtitle}</Text>
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
@@ -96,26 +80,28 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
+            $
+            {formatNumber(
+              isCommonCard ? common.raised / 100 : common.balance / 100,
+            )}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
-          convertAmountToIls(
-            isCommonCard ? raised / 100 : balance / 100,
-            uiStore.conversionRate,
+          currencyConverter.convert(
+            isCommonCard ? common.raised / 100 : common.balance / 100,
           ),
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            {isCommonCard ? members : '$' + formatNumber(raised / 100)}
+            {isCommonCard
+              ? common.members.length
+              : '$' + formatNumber(common.raised / 100)}
           </Text>,
           isCommonCard ? 'Members' : 'Raised',
         )}
       </View>
     </View>
   );
-};
-
-CommonStageSummary.propTypes = props;
+});
 
 const styles = StyleSheet.create({
   raisedContainer: {
@@ -157,5 +143,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-export default inject('uiStore')(observer(CommonStageSummary));

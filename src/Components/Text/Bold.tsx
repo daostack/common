@@ -1,6 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
-import {object, string} from 'prop-types';
+import {Text, TextStyle} from 'react-native';
 import {text} from '~/Theme';
 
 export const Bold = ({
@@ -8,10 +7,5 @@ export const Bold = ({
   style = {},
 }: {
   boldText: string;
-  style: object | null;
+  style?: TextStyle;
 }) => <Text style={{...text.bold, ...style}}>{boldText}</Text>;
-
-Bold.propTypes = {
-  boldText: string,
-  style: object,
-};

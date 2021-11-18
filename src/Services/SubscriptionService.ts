@@ -3,7 +3,7 @@ import auth from '@react-native-firebase/auth';
 import {subscriptionsUrl} from '~/Config';
 import {db} from '../Firebase';
 import {IFirebaseSnapshot} from '~/Firebase/types';
-import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
+import {ISubscriptionEntity} from '~/Types/EntityTypes/ISubscriptionEntity';
 
 export const CANCELED_BY_PAYMENT = 'CanceledByPaymentFailure';
 export const CANCELED_BY_USER = 'CanceledByUser';

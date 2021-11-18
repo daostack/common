@@ -17,7 +17,7 @@ import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
 import {bool, object, shape} from 'prop-types';
 import {PROPOSAL_STAGE} from '~/Config';
-import {isTypeFilterJoin} from '~/Stores/DataStores/ProposalStore';
+import {isTypeFilterJoin} from '~/Stores/DataStores/proposal-store';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
 const MyProposals = ({

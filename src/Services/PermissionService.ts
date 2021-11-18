@@ -1,6 +1,6 @@
 import axios, {AxiosInstance} from 'axios';
 import {auth} from '~/Firebase';
-import {Role} from '~/Firebase/Databasee/EntityTypes/IPermission';
+import {Role} from '~/Types/EntityTypes/IPermission';
 import {permissionsUrl} from '~/Config';
 
 class PermissionService {

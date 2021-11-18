@@ -8,52 +8,17 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {inject} from 'mobx-react';
-import {
-  object,
-  bool,
-  number,
-  func,
-  string,
-  shape,
-  InferProps,
-  oneOfType,
-} from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
 import NavigationBar from 'react-native-navbar';
 import Icon from '~/Assets/iconfont/Icon';
 import StepDotHeader from './StepDotHeader';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {uiStorePropTypes} from '~/Types/propTypes';
-import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-// import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
+import IntercomShowButton from '~/Services/IntercomChat/IntercomShowButton';
+import {useStore} from '~/Stores';
+import {useNavigation, StackActions} from '@react-navigation/core';
+// import UseAcknowledgment from '../~/Componentsposals/UseAcknowledgment';
 const {width} = Dimensions.get('window');
-
-const props = {
-  closeDialog: func,
-  navigation: shape({
-    popToTop: func.isRequired,
-    pop: func.isRequired,
-  }).isRequired,
-  stepDotHeaderTitle: string,
-  navTitle: string,
-  currentIndex: number,
-  skipFirstStep: bool,
-  isRequestToJoin: bool,
-
-  //ScrollView:
-  onScrollEndDrag: func,
-
-  prependedArea: object,
-  appendedArea: oneOfType([bool, object]),
-  requestStepActionButton: object,
-  layoutTitle: object,
-  children: object,
-  uiStore: uiStorePropTypes.isRequired,
-  onContentSizeChange: func,
-  isRequestButtonSticky: bool,
-};
 
 const DOT_INFO_JOIN_REQUEST = [
   {
@@ -88,23 +53,41 @@ const DOT_INFO_CREATE_COMMON = [
   },
 ];
 
-const StepDotLayout: React.FC<InferProps<typeof props>> = ({
-  navigation,
+const StepDotLayout: React.FC<{
+  closeDialog(): void;
+  stepDotHeaderTitle: string;
+  navTitle: string;
+  currentIndex: number;
+  skipFirstStep?: boolean;
+  isRequestToJoin?: boolean;
+
+  //ScrollView:
+  onScrollEndDrag(): void;
+  prependedArea: React.ReactNode;
+  appendedArea: React.ReactNode;
+  requestStepActionButton: React.ReactNode;
+  layoutTitle: React.ReactNode;
+  onContentSizeChange(): void;
+  isRequestButtonSticky?: boolean;
+}> = ({
   stepDotHeaderTitle,
   navTitle,
   currentIndex,
-  skipFirstStep,
-  isRequestToJoin = false,
   requestStepActionButton,
   onScrollEndDrag,
   prependedArea,
   appendedArea,
   children,
   layoutTitle,
-  uiStore,
   onContentSizeChange,
+  skipFirstStep = false,
+  isRequestToJoin = false,
   isRequestButtonSticky = true,
 }) => {
+  const {
+    uiStore: {bottomSheetStore},
+  } = useStore();
+  const navigation = useNavigation();
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
 
@@ -120,17 +103,13 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   }, [scrollY]);
 
   const closeDialog = () => {
-    uiStore.bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
-      {
-        navigation: navigation,
-        onContinueEditing: () => uiStore.bottomSheetStore.hideBottomSheet(),
-        onLeaveWithoutSaving: () => {
-          uiStore.bottomSheetStore.hideBottomSheet();
-          navigation.popToTop();
-        },
+    bottomSheetStore.showBottomSheet(BOTTOM_SHEET.UNSAVED_CHANGES, {
+      onContinueEditing: () => bottomSheetStore.hideBottomSheet(),
+      onLeaveWithoutSaving: () => {
+        bottomSheetStore.hideBottomSheet();
+        navigation.dispatch(StackActions.popToTop());
       },
-    );
+    });
   };
 
   const currDotInfo = isRequestToJoin
@@ -155,7 +134,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           leftButton={
             <TouchableOpacity
               style={styles.navBtn}
-              onPress={() => navigation.pop()}>
+              onPress={() => navigation.dispatch(StackActions.pop())}>
               <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
             </TouchableOpacity>
           }
@@ -180,22 +159,20 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
         <StepDotHeader
           title={stepDotHeaderTitle}
           currentIndex={currentIndex}
-          navigation={navigation}
           headerHeight={headerHeight}
           isFirstStepSkipped={skipFirstStep}
           totalDots={currDotInfo.length}
           onClose={closeDialog}
         />
-        {/* )} */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          width={width}
           onContentSizeChange={onContentSizeChange}
           contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
             padding: 24,
+            width,
           }}
           scrollEventThrottle={16}
           onScrollEndDrag={onScrollEndDrag}
@@ -219,8 +196,6 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-StepDotLayout.propTypes = props;
-
 const styles = StyleSheet.create({
   navBtn: {
     justifyContent: 'center',
@@ -231,4 +206,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(StepDotLayout);
+export default StepDotLayout;

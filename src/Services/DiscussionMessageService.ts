@@ -1,5 +1,5 @@
-import {DiscussionMessagesCollection} from '~/Firebase/Databasee/Collections/DiscussionMessagesCollection';
-import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {DiscussionMessagesCollection} from '~/Firebase/Database/Collections/DiscussionMessagesCollection';
+import {IDiscussionMessageEntity} from '~/Types/EntityTypes/IDiscussionMessageEntity';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonDiscussionMessagesListLoadCallbackFn = (

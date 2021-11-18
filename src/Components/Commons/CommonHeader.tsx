@@ -11,56 +11,39 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
-import {object, shape, string, bool, func, InferProps} from 'prop-types';
+import {Common} from '~/Stores/Models';
+import {useNavigation} from '@react-navigation/core';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {EditType} from '~/Types';
 
-const props = {
-  navigation: object,
-  isMember: bool,
-  headerHeightLayouted: func,
-  commonInfo: shape({
-    logo: string,
-    name: string.isRequired,
-    description: string,
-    byline: string,
-  }).isRequired,
-  common: shape({
-    id: string.isRequired,
-  }).isRequired,
-  canEdit: bool,
-  onEdit: func,
-};
-
-const CommonHeader: React.FC<InferProps<typeof props>> = ({
-  navigation,
-  isMember,
-  commonInfo: {logo, name, description, byline},
-  headerHeightLayouted,
-  common,
-  canEdit,
-  onEdit,
-}) => {
+export const CommonHeader: React.FC<{
+  headerHeightDidLayout(height: number): void;
+  common: Common;
+  onEdit(type: EditType): void;
+}> = ({headerHeightDidLayout, common, onEdit}) => {
+  const navigation = useNavigation();
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       commonId: common.id,
-      canEdit,
+      canEdit: !!common.getPermission(),
       onEdit,
     });
   };
+
   return (
     <SafeAreaView
       onLayout={(event) => {
-        headerHeightLayouted(event.nativeEvent.layout.height);
+        headerHeightDidLayout(event.nativeEvent.layout.height);
       }}
       style={styles.headerContainer}>
-      {logo && (
+      {common.metadata?.avatar && (
         <FastImage
           style={styles.logoImage as StyleProp<ImageStyle>}
-          source={{uri: logo}}
+          source={{uri: common.metadata?.avatar}}
         />
       )}
       <Text style={styles.headerTitleWhite} numberOfLines={5}>
-        {name}
+        {common.name}
       </Text>
       <Text
         style={{
@@ -69,12 +52,12 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
           textAlign: 'center',
         }}
         numberOfLines={5}>
-        {byline}
+        {common.metadata?.byline}
       </Text>
       <Text style={styles.headerDescription} numberOfLines={4}>
-        {description}
+        {common.metadata.description}
       </Text>
-      {isMember && navigation && (
+      {common.isUserMember && navigation && (
         <BlurView
           style={{
             paddingVertical: 10,
@@ -92,8 +75,6 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
     </SafeAreaView>
   );
 };
-
-CommonHeader.propTypes = props;
 
 const styles = StyleSheet.create({
   coverBackground: {
@@ -159,5 +140,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-export default CommonHeader;

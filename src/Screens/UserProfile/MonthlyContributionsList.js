@@ -12,7 +12,7 @@ import {
 import {inject, observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
-import {ContributionListItem} from '../../Components';
+import {ContributionListItem} from '~/Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import SubscriptionService from '~/Services/SubscriptionService';

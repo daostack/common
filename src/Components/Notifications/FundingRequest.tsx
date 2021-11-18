@@ -3,17 +3,17 @@ import {InferProps, object} from 'prop-types';
 import {
   EventTypeState,
   NotificationItemData,
-} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+} from '~/Types/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PROPOSAL_TYPE} from '~/Config';
+import {PROPOSAL_TYPE} from '~/Types';
 import {
   IFundingRequestDescription,
   IFundingRequestProposal,
   IJoinRequestProposal,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+} from '~/Types/EntityTypes/IProposalEntity';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -62,7 +62,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
       proposal,
     };
 
-    if (item.eventType === EventTypeState.fundingRequestCreated) {
+    if (item.eventType === EventType.fundingRequestCreated) {
       notificationData = {
         ...notificationData,
         header: ' by',

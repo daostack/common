@@ -6,24 +6,24 @@ import {
   StyleSheet,
   View,
   Text,
+  TextInput,
 } from 'react-native';
-import {Formik} from 'formik';
-import {isEqual} from 'lodash';
+import {Formik, FormikProps} from 'formik';
+import {isEqual, pick} from 'lodash';
 import {object, string} from 'yup';
-import TextInputField from '~/Components/FormikForm/TextInputField';
-import ImageField from '~/Components/FormikForm/ImageField';
-import {CountrySelectField} from '~/Components/FormikForm/CountrySelectField';
+import {UserImage} from '~/Components';
 import {layout, text, font, colors} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import Toast from '~/Util/Toast';
-import AuthService from '~/Services/AuthService';
+import {BOTTOM_SHEET} from '~/Screens/BottomSheetScreens';
+import {Toast} from '~/Components';
 import logger from '~/Services/Logger';
-import {AppRootStore} from '~/Types/store';
-import {WithNavigation} from '~/Types/navigation';
+import {useStore} from '~/Stores';
+import {useNavigation} from '@react-navigation/core';
+import {StackActions} from '@react-navigation/routers';
+import {UserModel} from '~/Stores/Models';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -32,67 +32,56 @@ const validationSchema = object({
   intro: string().label('The intro'),
 });
 
-interface Values {
-  photoURL: string;
-  firstName: string;
-  lastName: string;
-  country: string;
-  email: string;
-  intro: string;
-}
+type FormValues = Pick<
+  UserModel,
+  'photoURL' | 'firstName' | 'lastName' | 'country' | 'email' | 'intro'
+>;
 
-type Props = AppRootStore &
-  WithNavigation & {
-    route: {
-      params: {
-        isCompleteAccount: boolean;
-        isSignedWithApple: boolean;
-      };
-    };
-  };
+const EditProfile = (): ReactElement => {
+  const {
+    authStore,
+    uiStore: {bottomSheetStore},
+  } = useStore();
+  const formikRef = useRef<FormikProps<FormValues> | null>(null);
+  const user = authStore.user.current()!;
+  const navigation = useNavigation();
 
-const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
-  const authStore = rootStore.authStore;
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const formikRef = useRef();
-
-  if (route.params.isCompleteAccount) {
-    navigation.setOptions({
-      headerLeft: false,
+  React.useEffect(() => {
+    navigation.setParams({
+      title: user.isCompleteAccount ? false : 'Edit my profile',
     });
-  } else {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={async () => {
-            onFormClose();
-          }}>
-          <Icon name="left-arrow" size={32} />
-        </TouchableOpacity>
-      ),
-    });
-  }
+    if (user.isCompleteAccount) {
+      navigation.setOptions({
+        headerLeft: false,
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={async () => {
+              onFormClose();
+            }}>
+            <Icon name="left-arrow" size={32} />
+          </TouchableOpacity>
+        ),
+      });
+    }
+  }, [[user.isCompleteAccount]]);
 
-  const formSave = async (values: Values): Promise<void> => {
+  const formSave = async (values: FormValues): Promise<void> => {
     onFormSubmitStart();
-
     try {
-      await AuthService.updateUserData(
-        {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          photoURL: values.photoURL,
-          country: values.country,
-        },
-        {
-          intro: values.intro,
-        },
-      );
+      await user.update({
+        firstName: values.firstName,
+        lastName: values.lastName,
+        photoURL: values.photoURL,
+        country: values.country,
+        intro: values.intro,
+      });
     } catch (err) {
       logger.log('Error -> ', err);
       throw err;
     }
-
     onFormSubmitEnd();
   };
 
@@ -107,14 +96,12 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
 
   const onFormClose = () => {
     const values = (formikRef?.current ?? {values: {}})?.values;
-    const {isCompleteAccount, isSignedWithApple} = route.params;
-
     try {
       validationSchema.validateSync(values);
       if (
-        isSignedWithApple &&
-        isCompleteAccount &&
-        (!authStore.userInfo?.firstName || !authStore.userInfo?.lastName)
+        user.isSignedWithApple &&
+        user.isCompleteAccount &&
+        (!user.firstName || !user.lastName)
       ) {
         return;
       }
@@ -123,18 +110,21 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     }
 
     if (
-      isEqual(values, {
-        photoURL: authStore.userInfo.photoURL,
-        firstName: authStore.userInfo.firstName,
-        lastName: authStore.userInfo.lastName,
-        country: authStore.userInfo.country,
-        email: authStore.userInfo.email,
-        intro: authStore.userInfo.intro,
-      })
+      isEqual(
+        values,
+        pick(user, [
+          'photoURL',
+          'firstName',
+          'lastName',
+          'country',
+          'email',
+          'intro',
+        ]),
+      )
     ) {
-      navigation.pop();
+      navigation.dispatch(StackActions.pop(1));
     } else {
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET.UNSAVED_CHANGES, {
         navigation,
         onContinueEditing: closeBottomSheet,
         onLeaveWithoutSaving: closeBottomSheet,
@@ -146,7 +136,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     bottomSheetStore.hideBottomSheet();
   };
 
-  const saveBtnStyle = route.params.isCompleteAccount
+  const saveBtnStyle = user.isCompleteAccount
     ? styles.bigSaveBtn
     : layout.marginLeftS;
 
@@ -156,13 +146,13 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
       enableReinitialize={true}
       initialValues={
         {
-          photoURL: authStore.userInfo?.photoURL,
-          firstName: authStore.userInfo?.firstName,
-          lastName: authStore.userInfo?.lastName,
-          country: authStore.userInfo?.country,
-          email: authStore.userInfo?.email,
-          intro: authStore.userInfo?.intro,
-        } as Values
+          photoURL: user.photoURL,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          country: user.country,
+          email: user.email,
+          intro: user.intro,
+        } as FormValues
       }
       validationSchema={validationSchema}
       onSubmit={formSave}>
@@ -190,7 +180,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                     flexGrow: 1,
                     marginTop: 0,
                   }}>
-                  {route?.params?.isCompleteAccount && (
+                  {user.isCompleteAccount && (
                     <View style={{marginBottom: 32}}>
                       <Text style={styles.title}>Complete your account</Text>
                       <Text style={styles.subtitleForm}>
@@ -199,54 +189,46 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                     </View>
                   )}
 
-                  {authStore.userInfo ? (
+                  {user ? (
                     <>
-                      <ImageField
-                        isAvatar={true}
-                        value={values.photoURL}
-                        allowsEditing={true}
-                        title={'Select new avatar'}
-                        onChangeImage={handleChange('photoURL')}
-                        name="photoURL"
-                      />
-
+                      <UserImage isAvatar={true} user={user} editable={true} />
                       <View style={styles.emailContainer}>
                         <Text style={text.ashleyjquimbacom}>
                           {values.email}
                         </Text>
                       </View>
 
-                      <TextInputField
-                        errorMessage={
-                          errors && touched.firstName && errors.firstName
-                        }
+                      <TextInput
+                        // errorMessage={
+                        //   errors && touched.firstName && errors.firstName
+                        // }
                         value={values.firstName}
-                        viewStyle={{alignSelf: 'stretch'}}
-                        label="First name"
-                        infoLabel="Required"
+                        // viewStyle={{alignSelf: 'stretch'}}
+                        // label="First name"
+                        // infoLabel="Required"
                         placeholderText="First name"
-                        onBlur={handleBlur('firstName')}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        onChangeText={handleChange('firstName')}
+                        // onBlur={handleBlur('firstName')}
+                        // autoCapitalize="none"
+                        // autoCorrect={false}
+                        // onChangeText={handleChange('firstName')}
                       />
 
-                      <TextInputField
-                        errorMessage={
-                          errors && touched.lastName && errors.lastName
-                        }
+                      <TextInput
+                        // errorMessage={
+                        //   errors && touched.lastName && errors.lastName
+                        // }
                         value={values.lastName}
-                        viewStyle={{alignSelf: 'stretch'}}
-                        label="Last name"
-                        infoLabel="Required"
-                        placeholderText="Last name"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        onBlur={handleBlur('lastName')}
-                        onChangeText={handleChange('lastName')}
+                        // viewStyle={{alignSelf: 'stretch'}}
+                        // label="Last name"
+                        // infoLabel="Required"
+                        // placeholderText="Last name"
+                        // autoCapitalize="none"
+                        // autoCorrect={false}
+                        // onBlur={handleBlur('lastName')}
+                        // onChangeText={handleChange('lastName')}
                       />
 
-                      {route.params.isCompleteAccount && (
+                      {user.isCompleteAccount && (
                         <CountrySelectField
                           label="Country"
                           infoLabel="Required"
@@ -277,11 +259,11 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
 
             <View
               style={
-                route.params.isCompleteAccount
+                user.isCompleteAccount
                   ? styles.oneBtnContainer
                   : styles.multiBtnContainer
               }>
-              {!route.params.isCompleteAccount && (
+              {!user.isCompleteAccount && (
                 <TouchableOpacity
                   style={{
                     ...styles.btns,
@@ -299,7 +281,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                   ...saveBtnStyle,
                 }}
                 disabled={!isValid}
-                onPress={handleSubmit}>
+                onPress={() => handleSubmit()}>
                 <Text style={text.buttoncenterwhite}>Save</Text>
               </TouchableOpacity>
             </View>

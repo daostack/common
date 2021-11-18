@@ -1,21 +1,22 @@
 import React from 'react';
-import {firebase} from '~/Firebase';
 import {Text} from 'react-native';
-import {string, object, InferProps, shape} from 'prop-types';
 import {colors, text} from '~/Theme';
-import {MESSAGE_STATUSES, PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {IModerationEntity, MESSAGE_STATUSES, PERMISSIONS} from '~/Types';
 import moment from 'moment';
-const _ = require('lodash');
+import {getCurrentUser} from '~/Firebase';
+import {UserModel} from '~/Stores/Models';
+import {upperFirst} from 'lodash';
 
-export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
-  moderation,
-  reporter,
-  currentUID,
-  viewerPermission,
-}) => {
+type Reporter = Pick<UserModel, 'firstName' | 'lastName' | 'uid'>;
+
+export const Reported: React.FC<{
+  moderation: IModerationEntity;
+  reporter: Reporter;
+  viewerPermission: string;
+}> = ({moderation, reporter, viewerPermission}) => {
   const reporterUserName =
     viewerPermission === PERMISSIONS.MODERATOR
-      ? ` by ${reporterName(reporter, currentUID)}`
+      ? ` by ${reporterName(reporter)}`
       : '';
 
   if (
@@ -28,37 +29,18 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   return (
     <Text
       style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
-      {`${_.upperFirst(moderation?.flag)}${reporterUserName} on ${timeReported(
-        moderation?.updatedAt,
+      {`${upperFirst(moderation?.flag)}${reporterUserName} on ${timeReported(
+        moderation,
       )}`}
     </Text>
   );
 };
 
-export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
+// TODO: move these somewhere else one it's clean what object gets here from firestore:
+export const timeReported = ({updatedAt}: IModerationEntity) =>
   updatedAt.toMillis && moment(updatedAt?.toMillis()).format('MMMM D');
 
-export const reporterName = (
-  user: {firstName: string; lastName: string; uid: string},
-  currentUID: string,
-) =>
-  user?.uid === currentUID
+export const reporterName = ({firstName, lastName, uid}: Reporter) =>
+  getCurrentUser()?.uid === uid
     ? 'you'
-    : `${user?.firstName || ''} ${user?.lastName || ''}`;
-
-const reportedProps = {
-  moderation: shape({
-    updatedAt: object,
-    flag: string,
-    reporter: string,
-  }),
-  currentUID: string,
-  reporter: shape({
-    firstName: string,
-    lastName: string,
-    uid: string,
-  }),
-  viewerPermission: string,
-};
-
-Reported.propTypes = reportedProps;
+    : `${firstName || ''} ${lastName || ''}`;

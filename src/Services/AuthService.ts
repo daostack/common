@@ -1,11 +1,10 @@
 import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
-import {auth, firebase} from '~/Firebase';
-import UserService from '~/Services/UserService';
+import {auth, Timestamp} from '~/Firebase';
 
 // Google imports
-import {GoogleSignin, User} from '@react-native-community/google-signin';
+import {GoogleSignin} from '@react-native-community/google-signin';
 
 // Apple imports
 import appleAuth, {
@@ -13,19 +12,12 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
-import {
-  IUserEntity,
-  UserPublicData,
-} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {IUserEntity, UserPublicData} from '~/Types/EntityTypes/IUserEntity';
 
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
 };
-
-interface UserInfo {
-  user: {givenName?: string | null; familyName?: string | null};
-}
 
 class AuthService {
   constructor() {
@@ -39,7 +31,7 @@ class AuthService {
   }
 
   // Apple Auth flow
-  signInApple = async (): Promise<IUserEntity> => {
+  signInApple = async () => {
     const appleAuthRequestResponse = await this._applePerformRequest();
 
     // Ensure Apple returned a user identityToken
@@ -59,7 +51,7 @@ class AuthService {
   };
 
   // Google Auth flow
-  signIn = async (): Promise<IUserEntity> => {
+  signIn = async () => {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
@@ -99,43 +91,13 @@ class AuthService {
     }
   };
 
-  getCurrentLoggedUser = async (
-    providerId: string,
-  ): Promise<User | UserInfo | null | undefined> => {
-    switch (providerId) {
-      case AUTH_PROVIDER_ID.APPLE: {
-        const {fullName} = await this._applePerformRequest();
-        return {
-          user: {
-            givenName: fullName?.givenName,
-            familyName: fullName?.familyName,
-          },
-        };
-      }
-      case AUTH_PROVIDER_ID.GOOGLE:
-        return await GoogleSignin.getCurrentUser();
-      default:
-    }
-  };
-
-  // Firebase
-  async updateUserData(userData: IUserEntity, publicData: IUserEntity) {
-    const currentUser = await auth().currentUser;
-    currentUser.updateProfile(userData);
-
-    return await UserService.updateUser(currentUser.uid, {
-      ...publicData,
-      ...userData,
-    });
-  }
-
   createUser = async (
     user: IUserEntity & {
       email: string;
       displayName: string;
       photoURL: string;
       metadata: {
-        creationTime: firebase.firestore.timestamp;
+        creationTime: Timestamp;
       };
     },
   ) => {
@@ -148,7 +110,7 @@ class AuthService {
           user.displayName ? user.displayName : user.email
         }&rounded=true`;
     const userPublicData: UserPublicData = {
-      createdAt: new Date(user.metadata.creationTime),
+      createdAt: user.metadata.creationTime.toDate(),
       firstName:
         user.firstName || splittedDisplayName?.length >= 1
           ? splittedDisplayName[0]

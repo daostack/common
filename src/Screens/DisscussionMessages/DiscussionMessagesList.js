@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {layout, text, colors, font} from '~/Theme';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
+import DiscussionMessageItem from '../Discussions/DiscussionMessageItem';
 import {observer, inject} from 'mobx-react';
 import moment from 'moment';
 import logger from '../../Services/Logger';
@@ -76,14 +76,14 @@ const DiscussionMessagesList = ({
             paddingTop: 100,
             width: Dimensions.get('screen').width * 0.9,
           }}
-          renderItem={(x) => (
-            <DiscussionMessage
-              data={x.item}
+          renderItem={({item: discussionMessage}) => (
+            <DiscussionMessageItem
+              data={discussionMessage}
               showCurrentUserAvatar
               hasPermission={hasPermission}
               viewerPermission={viewerPermission}
               commonId={commonId}
-              openMessageOptions={() => openMessageOptions(x.item)}
+              openMessageOptions={() => openMessageOptions(discussionMessage)}
               isMember={isMember}
             />
           )}

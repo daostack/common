@@ -7,7 +7,7 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
-import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import {string, func, bool, object, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
@@ -150,7 +150,9 @@ const ContributionStep = ({
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month ($${currCommon.minFeeToJoinFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0 ? `($${currCommon.minFeeToJoinFormatted} min.)` : ''
+        currCommon.minFeeToJoinFormatted !== 0
+          ? `($${currCommon.minFeeToJoinFormatted} min.)`
+          : ''
       }`;
 
   return (

@@ -1,12 +1,12 @@
 import React from 'react';
 import {InferProps, object} from 'prop-types';
-import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {NotificationItemData} from '~/Types/EntityTypes/INotificationEntity';
 import {inject, observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
 import {notificationItemPropTypes} from './propType';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PROPOSAL_TYPE} from '~/Config';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {EventTypeState} from '~/Types/EntityTypes/INotificationEntity';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -27,7 +27,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
     const isJoin = proposal.type === PROPOSAL_TYPE.Join;
 
     if (isJoin) {
-      eventType = EventTypeState.membershipRequestReported;
+      eventType = EventType.membershipRequestReported;
     }
     if (proposal && proposal.commonId) {
       const common = rootStore.commonStore.getCommonById(proposal.commonId);

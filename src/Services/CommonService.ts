@@ -1,12 +1,10 @@
 import axios, {AxiosInstance} from 'axios';
 import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
-import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
-import {
-  ICommonEntity,
-  CommonCreatedBody,
-} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {CommonsCollection} from '~/Firebase/Database/Collections/CommonsCollection';
+import {ICommonEntity, CommonCreatedBody} from '~/Types';
+import {IFirebaseSnapshot} from '~/Firebase/types';
+import {getCurrentUser} from '~/Stores/Models/auth';
 
 export type commonListLoadCallbackFn = (
   updatedCommonList: IFirebaseSnapshot<ICommonEntity>,
@@ -61,14 +59,12 @@ class CommonService {
       },
       {
         headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
+          Authorization: await getCurrentUser()?.getIdToken(true),
         },
       },
     );
 
-  fetchCommonById = async (
-    commonId: string,
-  ): Promise<IFirebaseDoc<ICommonEntity>> => {
+  fetchCommonById = async (commonId: string) => {
     if (!commonId) {
       throw new Error(
         'Common Id (commonId) is required parameter, but it was not provided',

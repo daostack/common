@@ -15,7 +15,7 @@ const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
   const myDaos = commonStore.getUserCommons(userId);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
-  const headerHeightLayouted = (height) => {
+  const headerHeightDidLayout = (height) => {
     setHeaderHeight(height);
   };
 
@@ -36,7 +36,7 @@ const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
         common={item}
         navigation={navigation}
         onPress={() => navigateToCommon(item)}
-        headerHeightLayouted={headerHeightLayouted}
+        headerHeightDidLayout={headerHeightDidLayout}
       />
     ) : (
       <TouchableOpacity

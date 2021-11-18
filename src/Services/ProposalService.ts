@@ -1,19 +1,16 @@
 import axios, {AxiosInstance} from 'axios';
 import {auth, db} from '~/Firebase';
-import {DB_COLLECTIONS} from '~/Firebase/Databasee';
-import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {DB_COLLECTIONS} from '~/Firebase/Database';
+import {ProposalsCollection} from '~/Firebase/Database/Collections/ProposalsCollection';
+import {IDiscussionEntity} from '~/Types/EntityTypes/IDiscussionEntity';
 import {
   CreateFundingRequestProposalPayload,
   IFundingRequestProposal,
   IJoinRequestProposal,
   IProposalEntity,
   JoinRequestPayload,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
-import {
-  CreateVotePayload,
-  IVoteEntity,
-} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
+} from '~/Types/EntityTypes/IProposalEntity';
+import {CreateVotePayload, IVoteEntity} from '~/Types/EntityTypes/IVoteEntity';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
@@ -23,11 +20,12 @@ import {
   IProposalTypeFilter,
   isTypeFilterFundingRequest,
   isTypeFilterJoin,
-} from '~/Stores/DataStores/ProposalStore';
+} from '~/Stores/DataStores/proposal-store';
 import {getErrorObject} from '~/Util';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
-import Toast from '~/Util/Toast';
-import {proposalsUrl, PROPOSAL_TYPE} from '~/Config';
+import {Toast} from '~/Components';
+import {proposalsUrl, PROPOSAL_TYPE} from '~/Types';
+import {getCurrentUser} from '~/Stores/Models/auth';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -312,7 +310,7 @@ class ProposalService {
     try {
       return await this.axiosClient.post(this.endpoints.createJoin, formData, {
         headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
+          Authorization: await getCurrentUser()?.getIdToken(true),
         },
       });
     } catch (err) {
@@ -325,7 +323,7 @@ class ProposalService {
     try {
       return await this.axiosClient.post(this.endpoints.createVote, formData, {
         headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
+          Authorization: await getCurrentUser()?.getIdToken(true),
         },
       });
     } catch (err) {

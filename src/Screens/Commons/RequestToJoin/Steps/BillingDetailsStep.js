@@ -3,16 +3,16 @@ import {View, Text, Dimensions, Platform} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
 import {CommonActions} from '@react-navigation/native';
-import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
+import RequestStepHeaderTitle from './RequestStepHeaderTitle';
 import RequestStepActionButton from '../../RequestStepActionButton';
 
-import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDetailsForm';
+import * as BillingDetailsConstants from '~/Components/Forms/BillingDetailsForm';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
-import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
+import {VALIDATION_RULES} from '~/Stores/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';

@@ -1,47 +1,46 @@
-import {observable, computed} from 'mobx';
-import {
-  IDiscussionMessageEntity,
-  IModerationEntity,
-} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
-import {BaseModel} from './BaseModel';
+import {Document} from 'firestorter';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {IDiscussionMessageEntity} from '~/Types/EntityTypes/IDiscussionMessageEntity';
+import {Timestamp} from '~/Firebase';
 
+export class DiscussionMessage extends Document<IDiscussionMessageEntity> {
+  get discussionId() {
+    return this.data.discussionId;
+  }
 
-export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
-  @observable
-  discussionId: string;
+  get ownerId() {
+    return this.data.ownerId;
+  }
 
-  @observable
-  ownerId: string;
+  get ownerName() {
+    return this.data.ownerName;
+  }
 
-  @observable
-  ownerName: string;
+  get text() {
+    return this.data.text;
+  }
 
-  @observable
-  text: string;
+  get _createTime() {
+    return (this.data.createTime as unknown) as Timestamp;
+  }
+  get createTime(): Date {
+    return this._createTime.toDate();
+  }
 
-  @observable
-  createTime: Date;
+  get ownerAvatar() {
+    return this.data.ownerAvatar;
+  }
 
-  @observable
-  ownerAvatar: string;
+  get moderation() {
+    return this.data.moderation;
+  }
 
-  @observable
-  moderation?: IModerationEntity;
-
-  @computed
   get isModerationHidden() {
     return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
-
-  constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
-    super(newDiscussionMessageInfo);
-    this.discussionId = newDiscussionMessageInfo.discussionId;
-    this.ownerId = newDiscussionMessageInfo.ownerId;
-    this.ownerName = newDiscussionMessageInfo.ownerName;
-    this.text = newDiscussionMessageInfo.text;
-    this.createTime = newDiscussionMessageInfo.createTime;
-    this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
-    this.moderation = newDiscussionMessageInfo.moderation;
+  get parentDiscussion() {
+    return (
+      getDiscussionById(this.discussionId) || getProposalById(this.discussionId)
+    );
   }
 }
