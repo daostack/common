@@ -90,8 +90,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -134,8 +135,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
+    false,
+  );
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -147,8 +149,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
+    false,
+  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -163,10 +166,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals =
-      proposalStore.subscribeToCommonProposals(currCommon.id);
-    const unsubscribeFromCommonDiscussions =
-      discussionStore.subscribeToCommonDiscussions(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon.id,
+    );
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon.id,
+    );
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -907,7 +912,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <Text style={styles.stickySectionText}>
+                  <Text style={styles.stickySectionText} numberOfLines={1}>
                     {currCommon.name}
                   </Text>
                 </View>
@@ -1195,6 +1200,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
     fontSize: 20,
+    marginHorizontal: 60,
     color: colors.black,
     textAlign: 'center',
   },
