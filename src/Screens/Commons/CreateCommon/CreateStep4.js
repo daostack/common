@@ -268,7 +268,7 @@ const CreateStep4 = ({
                       url: x.value,
                     });
                   }}
-                  style={{...styles.linkText, flex: 'row'}}>
+                  style={{...styles.linkText, flexDirection: 'row'}}>
                   {x.title}
                 </Text>
               </View>
