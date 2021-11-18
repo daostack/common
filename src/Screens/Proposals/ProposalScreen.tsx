@@ -25,9 +25,11 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalService, {
+  PROPOSAL_STAGE,
+  PROPOSAL_STAGES_ACTIVE,
+} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -112,19 +114,16 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
   const [changeVoteModalVisible, setChangeVoteModalVisible] = useState(false);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -144,15 +143,13 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
+    const unsubscribeFromProposalDiscussionMessages =
+      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
     let unsubscribeFromProposalById: FirestoreUnsubscribeFn;
     if (fromNotificationItem) {
-      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-        proposalId,
-      );
+      unsubscribeFromProposalById =
+        proposalStore.subscribeToProposalById(proposalId);
     }
 
     return () => {
@@ -220,10 +217,8 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
+  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
+    useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -387,9 +382,7 @@ const ProposalScreen = ({rootStore}: ProposalProps) => {
         proposalId: proposalId || proposalInfo?.id,
       };
 
-      const createVoteResponse = await ProposalService.getInstance().createVote(
-        voteData,
-      );
+      const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');

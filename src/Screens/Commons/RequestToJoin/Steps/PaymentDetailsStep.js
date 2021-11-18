@@ -11,7 +11,7 @@ import {showErrorPopUp} from '~/Util';
 import {string, func, bool, object, shape} from 'prop-types';
 import {font} from '../../../../Theme';
 import MembershipRequest from '../MembershipRequest';
-import {createCard} from '../../../../Services/CirclePayService';
+import CirclePayService from '~/Services/CirclePayService';
 import ProposalService from '~/Services/ProposalService';
 import {testCard} from '~/Config';
 import moment from 'moment';
@@ -71,18 +71,17 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createdCard = await createCard({
+        const createdCard = await CirclePayService.createCard({
           ...formData,
           links: escapeUrl(formData.links),
           ...userInfo,
         });
 
-        const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
-          {
+        const createRequestToJoinResponse =
+          await ProposalService.createRequestToJoin({
             ...data,
             cardId: createdCard.id,
-          },
-        );
+          });
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;

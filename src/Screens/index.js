@@ -7,7 +7,7 @@ export {default as CreateStep3} from './Commons/CreateCommon/CreateStep3';
 export {default as CreateStep4} from './Commons/CreateCommon/CreateStep4';
 export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplanation';
 export {default as CommonAgenda} from './Commons/Profile/CommonAgenda';
-export {default as CommonMembers} from './Commons/Profile/CommonMembers';
+export {default as CommonMembers} from './Commons/Profile/CommonMembers/CommonMembers';
 export {default as RulesStep} from './Commons/RequestToJoin/Steps/RulesStep';
 export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/IntroductionStep';
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';

@@ -77,7 +77,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     onFormSubmitStart();
 
     try {
-      await AuthService.getInstance().updateUserData(
+      await AuthService.updateUserData(
         {
           firstName: values.firstName,
           lastName: values.lastName,

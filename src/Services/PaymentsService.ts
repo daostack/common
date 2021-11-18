@@ -1,5 +1,10 @@
 import {db} from '../Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {IPaymentEntity} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 
-export const getPaymentById = async (paymentId: string) =>
-  (await db.collection(DB_COLLECTIONS.payments).doc(paymentId).get()).data();
+class PaymentService {
+  getPaymentById = async (paymentId: string): Promise<IPaymentEntity> =>
+    (await db.collection(DB_COLLECTIONS.payments).doc(paymentId).get()).data();
+}
+
+export default new PaymentService();

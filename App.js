@@ -352,18 +352,17 @@ const App = ({rootStore, navigation}) => {
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
+          initialRouteName={onboarded ? 'CommonHome' : 'Onboarding'}
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
-          {!onboarded && (
-            <Stack.Screen
-              name="Onboarding"
-              component={Onboarding}
-              options={{headerShown: false}}
-            />
-          )}
+          <Stack.Screen
+            name="Onboarding"
+            component={Onboarding}
+            options={{headerShown: false}}
+          />
           <Stack.Screen
             name="CommonHome"
             component={CommonHome}

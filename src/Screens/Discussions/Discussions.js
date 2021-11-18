@@ -27,7 +27,7 @@ import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+import DiscussionService from '~/Services/DiscussionService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
@@ -76,9 +76,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -90,9 +89,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -132,7 +132,10 @@ const Discussions = ({
         .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-          await updateDiscussionLastMessage(discussionId, currentUser.uid);
+          await DiscussionService.updateDiscussionLastMessage(
+            discussionId,
+            currentUser.uid,
+          );
         })
         .catch((error) => {
           Toast.error(error);
@@ -343,7 +346,7 @@ const Discussions = ({
     }
     bottomSheetStore.hideBottomSheet();
 
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       messageId,
       commonId,
@@ -372,7 +375,7 @@ const Discussions = ({
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       TITLES.discussionMessage,
       commonId,
       moderationFormStore.getFormFieldsJson(),
