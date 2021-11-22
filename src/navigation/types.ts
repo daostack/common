@@ -12,7 +12,12 @@ export type RootNavigatorParamList = {
   [NAVIGATION_SCREENS.COMMON_AGENDA]: undefined;
   [NAVIGATION_SCREENS.EDIT_COMMON]: undefined;
   [NAVIGATION_SCREENS.COMMON_EXPLANATION]: undefined;
-  [NAVIGATION_SCREENS.PROPOSAL_SCREEN]: undefined;
+  [NAVIGATION_SCREENS.PROPOSAL_SCREEN]: {
+    commonId: string;
+    fromNotificationItem: boolean;
+    title: string;
+    subtitle: string;
+  };
   [NAVIGATION_SCREENS.RULES_STEP]: undefined;
   [NAVIGATION_SCREENS.INTRODUCTION_STEP]: undefined;
   [NAVIGATION_SCREENS.CONTRIBUTION_STEP]: undefined;

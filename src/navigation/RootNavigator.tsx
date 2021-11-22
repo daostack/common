@@ -14,7 +14,7 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {TabNavigator} from './TabNavigator';
 import {useStore} from '~/Stores';
-import {CreateNewCommonNavigator} from './CreateNewCommonNavigator';
+import {CreateNewCommonStack} from './CreateNewCommonStack';
 import IntercomShowButton from '~/Services/IntercomChat/IntercomShowButton';
 import {AppNavigationContainerRefWithCurrent, RootNavigatorParamList} from './types';
 import { useNavigation } from '@react-navigation/core';
@@ -33,6 +33,7 @@ export const RootNavigator = ({
   } = useStore();
   const navigation = useNavigation();
 
+  const goBack = React.useCallback(() => navigation.goBack, [navigation]);
   return (
     <Stack.Navigator
     initialRouteName={onboarded ? NAVIGATION_SCREENS.TAB_STACK: NAVIGATION_SCREENS.ONBOARDING}
@@ -66,14 +67,14 @@ export const RootNavigator = ({
       })}
     />
     <Stack.Screen
-      name="Profile"
+      name={NAVIGATION_SCREENS.PROFILE}
       component={Screens.UserProfile}
       options={({route}) => ({
         headerBackTitleVisible: false,
       })}
     />
     <Stack.Screen
-      name="EditCommon"
+      name={NAVIGATION_SCREENS.EDIT_COMMON}
       component={Screens.EditCommon}
       options={{
         headerShown: true,
@@ -94,7 +95,7 @@ export const RootNavigator = ({
       })}
     />
     <Stack.Screen
-      name="ProposalScreen"
+      name={NAVIGATION_SCREENS.PROPOSAL_SCREEN}
       component={Screens.ProposalScreen}
       options={({route, ...rest}) => ({
         headerBackTitleVisible: false,
@@ -111,7 +112,7 @@ export const RootNavigator = ({
                       commonId: route?.params.commonId,
                     })
                   : rest?.navigation.pop()
-                : navigationRef.current.goBack()
+                : goBack()
             }
           />
         ),

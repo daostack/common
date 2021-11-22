@@ -11,7 +11,7 @@ enum CREATE_COMMON_NAVIGATION_SCREENS {
 
 const Stack = createStackNavigator();
 
-export const CreateNewCommonNavigator = () => (
+export const CreateNewCommonStack = () => (
   <Stack.Navigator>
     <Stack.Screen
       name={CREATE_COMMON_NAVIGATION_SCREENS.CREATE_STEP_1}

@@ -36,6 +36,7 @@ export const {
   increment,
 } = firestore.FieldValue;
 export type CollectionReference = FirebaseFirestoreTypes.CollectionReference;
+export type DocumentReference = FirebaseFirestoreTypes.DocumentReference;
 
 export * from './auth';
 export * from './Database';

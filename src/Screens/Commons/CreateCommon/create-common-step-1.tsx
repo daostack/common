@@ -11,6 +11,7 @@ import UseAcknowledgment from '../~/Components/Proposals/UseAcknowledgment';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {useStore} from '~/Stores';
 import {useNavigation} from '@react-navigation/core';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 export const CreateCommonStep_1: React.FC<{}> = ({}) => {
   const {formStores} = useStore();
@@ -29,7 +30,7 @@ export const CreateCommonStep_1: React.FC<{}> = ({}) => {
 
   const continueToFunding = () => {
     if (generalInfoFormStore.isFormValid()) {
-      navigation.navigate('CreateStep2', {formStores});
+      navigation.navigate(NAVIGATION_SCREENS.CREATE_STEP_2, {formStores});
     }
   };
 

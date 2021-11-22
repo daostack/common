@@ -1,9 +1,6 @@
 import {Collection} from 'firestorter';
-import {
-  DiscussionCreatedBody,
-  getCurrentUser,
-  serverTimestamp,
-} from '~/Firebase';
+import {getCurrentUser, serverTimestamp} from '~/Firebase';
+import {DiscussionCreatedBody} from '~/Types';
 import {Discussion, DiscussionMessage} from '../Models';
 
 export const createDiscussion = (data: DiscussionCreatedBody) =>
