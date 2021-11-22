@@ -195,7 +195,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+      unsubscribe = await ProposalService.subscribeToPendingProposalsData(
         commonId,
         authStore.userInfo?.uid,
         (data) => {
@@ -231,7 +231,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+        const count = await ProposalService.getProposalDiscussionsCount(
           pendingProposalsData.usersPendingProposal.id,
         );
         if (userPendingPropDiscCount !== count) {
@@ -460,7 +460,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       itemId,
       commonId,
@@ -507,7 +507,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
       commonId,
       moderationFormStore.getFormFieldsJson(),
@@ -551,31 +551,35 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   */
 
   const requestToJoin = () => {
-    if (authStore.userInfo) {
-      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
-      const paymentFormStore = new PaymentFormStore();
-      const personalContributionFormStore = new PersonalContributionFormStore();
-      const billingDetailsFormStore = new BillingDetailsFormStore();
+    const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+    const paymentFormStore = new PaymentFormStore();
+    const personalContributionFormStore = new PersonalContributionFormStore();
+    const billingDetailsFormStore = new BillingDetailsFormStore();
 
-      const navigate = CommonActions.navigate({
-        name: 'IntroductionStep', // #498 we always go to Introduction first
-        params: {
-          formStores: {
-            paymentFormStore,
-            introduceYourselfFormStore,
-            personalContributionFormStore,
-            billingDetailsFormStore,
-          },
-          currCommon: currCommon,
-          currDaoId: currCommon.id,
-          skipFirstStep: false,
-          refreshFeed,
+    const navigate = CommonActions.navigate({
+      name: 'IntroductionStep', // #498 we always go to Introduction first
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
         },
-      });
+        currCommon: currCommon,
+        currDaoId: currCommon.id,
+        skipFirstStep: false,
+        refreshFeed,
+      },
+    });
+
+    if (authStore.userInfo) {
       navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          goToNextScreen: () => navigation.dispatch(navigate),
+        },
       );
     }
   };
@@ -908,7 +912,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <Text style={styles.stickySectionText}>
+                  <Text style={styles.stickySectionText} numberOfLines={1}>
                     {currCommon.name}
                   </Text>
                 </View>
@@ -1196,6 +1200,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
     fontSize: 20,
+    marginHorizontal: 60,
     color: colors.black,
     textAlign: 'center',
   },

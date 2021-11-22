@@ -16,16 +16,22 @@ import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {bool, func} from 'prop-types';
 
-const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
+const CreateAccount = ({onSignedIn, hidePlaceholder, goToNextScreen}) => {
   const onSignIn = async (userInfo, isSignedWithApple = false) => {
     if (onSignedIn) {
-      onSignedIn(userInfo.additionalUserInfo.isNewUser, isSignedWithApple);
+      await onSignedIn(
+        userInfo.additionalUserInfo.isNewUser,
+        isSignedWithApple,
+      );
+    }
+    if (goToNextScreen) {
+      setTimeout(goToNextScreen, 0);
     }
   };
 
   const isIos = Platform.OS === 'ios';
   const isLoginWithAppleEnabled = isIos
-    ? AuthService.getInstance().isAppleLoginSupported()
+    ? AuthService.isAppleLoginSupported()
     : false;
 
   return (
@@ -63,6 +69,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder}) => {
 CreateAccount.propTypes = {
   onSignedIn: func,
   hidePlaceholder: bool,
+  goToNextScreen: func,
 };
 
 const styles = StyleSheet.create({

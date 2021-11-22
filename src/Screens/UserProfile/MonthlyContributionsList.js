@@ -15,7 +15,7 @@ import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
-import {getUserSubscriptions} from '~/Services/SubscriptionService';
+import SubscriptionService from '~/Services/SubscriptionService';
 import {authStorePropTypes} from '~/Types/propTypes';
 
 const styles = StyleSheet.create({
@@ -52,9 +52,12 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
 
   React.useEffect(() => {
     (async () => {
-      await getUserSubscriptions(authStore.userInfo.uid, (snap) => {
-        setSubs(snap?.docs.map((doc) => doc.data()));
-      });
+      await SubscriptionService.getUserSubscriptions(
+        authStore.userInfo.uid,
+        (snap) => {
+          setSubs(snap?.docs.map((doc) => doc.data()));
+        },
+      );
     })();
   }, []);
 

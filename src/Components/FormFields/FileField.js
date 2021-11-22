@@ -75,10 +75,7 @@ class FileField extends React.Component {
       // );
 
       Toast.loading('Uploading...');
-      const downloadUrl = await StorageService.getInstance().uploadFile(
-        res.uri,
-        res.name,
-      );
+      const downloadUrl = await StorageService.uploadFile(res.uri, res.name);
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
       this.onChangeValue(downloadUrl);
