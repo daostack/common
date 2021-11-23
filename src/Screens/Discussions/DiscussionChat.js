@@ -10,6 +10,7 @@ import Animated, {
   withSpring,
   withTiming,
   Easing,
+  useAnimatedRef,
 } from 'react-native-reanimated';
 import {
   Dimensions,
@@ -44,6 +45,7 @@ const DiscussionChat = ({
   discussionId,
   fromNotificationItem,
   rootStore,
+  isHeaderExpanded,
 }) => {
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
@@ -204,19 +206,32 @@ const DiscussionChat = ({
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
+      'keyboardWillShow',
       (event) => {
-        console.log('-----keyboardDidShowListener', event);
-        keyboardHeight.value = withTiming(
-          Math.abs(event.endCoordinates.height - event.startCoordinates.height),
-        );
+        scrollRef.current.scrollToEnd({animated: true});
+        if (event.endCoordinates.height > event.startCoordinates.height) {
+          keyboardHeight.value = withTiming(
+            event.endCoordinates.height - event.startCoordinates.height + 80,
+            {
+              duration: 500,
+              easing: Easing.out(Easing.exp),
+            },
+          );
+        } else {
+          keyboardHeight.value = withTiming(0, {
+            duration: 500,
+            easing: Easing.out(Easing.exp),
+          });
+        }
       },
     );
     const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
+      'keyboardWillHide',
       (event) => {
-        console.log('-----event', event);
-        keyboardHeight.value = withTiming(0);
+        keyboardHeight.value = withTiming(0, {
+          duration: 500,
+          easing: Easing.out(Easing.exp),
+        });
       },
     );
 
@@ -226,64 +241,67 @@ const DiscussionChat = ({
     };
   }, []);
 
+  console.log('---isHeaderExpanded', isHeaderExpanded);
+
   const translationY = useSharedValue(0);
+  const scrollViewHeight = useSharedValue(0);
 
-  const scrollHandler = useAnimatedScrollHandler((event, context) => {
-    translationY.value = event.contentOffset.y;
-  });
-
-  const rTextInputStyle = useAnimatedStyle(
-    () => ({
-      transform: [
-        {
-          translateY: translationY.value - keyboardHeight.value + 200, // + height / 2 + 50 - keyboardHeight.value,
-        },
-      ],
-    }),
-    [keyboardHeight],
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event, context) => {
+        translationY.value = event.contentOffset.y;
+        scrollViewHeight.value = event.layoutMeasurement.height;
+      },
+    },
+    [isHeaderExpanded],
   );
 
-  return (
-    <KeyboardAvoidingView
-      style={[
+  const rTextInputStyle = useAnimatedStyle(() => {
+    console.log('---keyboardHeight.value,', keyboardHeight.value);
+    return {
+      transform: [
         {
-          flex: 1,
-          color: '#fbfdff',
+          translateY:
+            translationY.value +
+            scrollViewHeight.value -
+            100 -
+            keyboardHeight.value,
         },
-      ]}
-      behavior={Platform.OS === 'ios' ? 'padding' : null}
-      keyboardVerticalOffset={0}>
-      <Animated.ScrollView
-        style={styles.scrollView}
-        ref={scrollRef}
-        scrollEventThrottle={16}
-        onScroll={scrollHandler}>
-        <DiscussionMessagesList
-          discussionId={discussionId}
-          inputRef={inputRef}
-          scrollViewRef={scrollRef}
-          hasPermission={hasPermission}
-          commonId={commonId}
-          openMessageOptions={(message) => openMessageOptions(message)}
-          isMember={isMember}
-        />
-        <Animated.View
-          style={[{position: 'absolute', top: 0}, rTextInputStyle]}>
-          {isMember ? (
-            // <KeyboardAvoidingView
-            //   style={[
-            //     {
-            //       color: '#fbfdff',
-            //     },
-            //   ]}
-            //   // behavior={Platform.OS === 'ios' ? 'padding' : null}
-            //   keyboardVerticalOffset={0}>
-            <View
-              style={{
-                ...styles.inputContainer,
-                height: Math.max(100, inputHeight + 50),
-              }}>
-              {/* should be added in better discussion batch 3
+      ],
+    };
+  }, [keyboardHeight]);
+
+  return (
+    <Animated.ScrollView
+      style={styles.scrollView}
+      ref={scrollRef}
+      scrollEventThrottle={16}
+      onScroll={scrollHandler}>
+      <DiscussionMessagesList
+        discussionId={discussionId}
+        inputRef={inputRef}
+        scrollViewRef={scrollRef}
+        hasPermission={hasPermission}
+        commonId={commonId}
+        openMessageOptions={(message) => openMessageOptions(message)}
+        isMember={isMember}
+      />
+      <Animated.View style={[{position: 'absolute', top: 0}, rTextInputStyle]}>
+        {isMember ? (
+          // <KeyboardAvoidingView
+          //   style={[
+          //     {
+          //       color: '#fbfdff',
+          //     },
+          //   ]}
+          //   // behavior={Platform.OS === 'ios' ? 'padding' : null}
+          //   keyboardVerticalOffset={0}>
+          <View
+            style={{
+              ...styles.inputContainer,
+              height: Math.max(100, inputHeight + 50),
+            }}>
+            {/* should be added in better discussion batch 3
             <TouchableOpacity
             onPress={() => {}}
             style={{
@@ -291,42 +309,41 @@ const DiscussionChat = ({
             }}>
             <Icon name="add-24" size={30} color={colors.mainBlue} />
           </TouchableOpacity>*/}
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                placeholderTextColor={colors.grey3}
-                onChangeText={onChangeText}
-                onContentSizeChange={onContentSizeChange}
-                onBlur={showDescription}
-                onFocus={hideDescription}
-                style={styles.input}
+            <TextInput
+              ref={inputRef}
+              editable={true}
+              fontSize={15}
+              multiline
+              placeholder="What do you think?"
+              placeholderTextColor={colors.grey3}
+              onChangeText={onChangeText}
+              onContentSizeChange={onContentSizeChange}
+              onBlur={showDescription}
+              onFocus={hideDescription}
+              style={styles.input}
+            />
+            <TouchableOpacity
+              onPress={sendMessageToDiscussion}
+              style={{
+                justifyContent: 'center',
+              }}
+              disabled={isEmptyMessage()}>
+              <Icon
+                name="send-message"
+                size={25}
+                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
               />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  justifyContent: 'center',
-                }}
-                disabled={isEmptyMessage()}>
-                <Icon
-                  name="send-message"
-                  size={25}
-                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={{paddingTop: 10}}>
-              <Text style={{...styles.joinCommonText}}>
-                Only members can send messages
-              </Text>
-            </View>
-          )}
-        </Animated.View>
-      </Animated.ScrollView>
-    </KeyboardAvoidingView>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={{paddingTop: 10}}>
+            <Text style={{...styles.joinCommonText}}>
+              Only members can send messages
+            </Text>
+          </View>
+        )}
+      </Animated.View>
+    </Animated.ScrollView>
   );
 };
 

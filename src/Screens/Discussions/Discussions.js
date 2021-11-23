@@ -13,7 +13,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
@@ -36,6 +36,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
+import DiscussionChat from './DiscussionChat';
 const {width} = Dimensions.get('window');
 
 const Discussions = ({
@@ -411,6 +412,8 @@ const Discussions = ({
 
   const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
+  console.log('---datastate', dataState.isExpanded);
+
   return (
     <SafeAreaView style={styles.safeView}>
       {header()}
@@ -430,75 +433,12 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={styles.scrollView} ref={scrollRef}>
-        <DiscussionMessagesList
-          discussionId={discussionId}
-          inputRef={inputRef}
-          scrollViewRef={scrollRef}
-          hasPermission={hasPermission}
-          commonId={commonId}
-          openMessageOptions={(message) => openMessageOptions(message)}
-          isMember={isMember}
-        />
-      </ScrollView>
-
-      {isMember ? (
-        <KeyboardAvoidingView
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            flex: 1,
-            color: '#fbfdff',
-          }}
-          // behavior={Platform.OS === 'ios' ? 'padding' : null}
-          keyboardVerticalOffset={0}>
-          <View
-            style={{
-              ...styles.inputContainer,
-              height: Math.max(100, inputHeight + 50),
-            }}>
-            {/* should be added in better discussion batch 3
-            <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              justifyContent: 'center',
-            }}>
-            <Icon name="add-24" size={30} color={colors.mainBlue} />
-          </TouchableOpacity>*/}
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              placeholderTextColor={colors.grey3}
-              onChangeText={onChangeText}
-              onContentSizeChange={onContentSizeChange}
-              onBlur={showDescription}
-              onFocus={hideDescription}
-              style={styles.input}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={25}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-              />
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      ) : (
-        <View style={{paddingTop: 10}}>
-          <Text style={{...styles.joinCommonText}}>
-            Only members can send messages
-          </Text>
-        </View>
-      )}
+      <DiscussionChat
+        commonId={commonId}
+        discussionId={discussionId}
+        fromNotificationItem={fromNotificationItem}
+        isHeaderExpanded={dataState.isExpanded}
+      />
       <ImageView
         images={
           dataState.images ? dataState.images.map((x) => ({uri: x.value})) : []
