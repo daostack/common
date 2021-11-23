@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -27,10 +27,11 @@ import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
 import Loader from '~/Components/Loader';
-import logger from '~/Services/Logger';
-import {setCountVisitScreen, getCountVisitScreen} from '~/Util/asyncStorage';
+import {STORAGE_KEYS} from '~/Util/constants/storageKeys.enum';
+import {useVisitScreen} from '~/Util/hooks/useVisitScreen';
 
 const TIMEOUT = 1500;
+const numberOfVisits = 3;
 
 const groupTitle = (title, arrLength) =>
   arrLength > 0 ? `${title} (${arrLength})` : '';
@@ -44,8 +45,20 @@ const CommonsList = ({navigation, rootStore}) => {
   const handleLoader = () => {
     setLoading(false);
   };
+  const toggleModal = () => {
+    setShowModal((flag) => !flag);
+  };
 
   useTimeoutFn(handleLoader, TIMEOUT);
+
+  useVisitScreen({
+    signedInUser: authStore.signedInUser,
+    callback: toggleModal,
+    callbackDependencies: [isLoading],
+    callbackCondition: !isLoading,
+    storageKey: STORAGE_KEYS.VISIT_EXPLORE_COMMONS_DATA,
+    numberOfVisits,
+  });
 
   const myDaosGroup = {
     title: groupTitle('My Commons', commonStore.myCommons.length),
@@ -62,34 +75,6 @@ const CommonsList = ({navigation, rootStore}) => {
 
   const [refreshing, setRefreshing] = React.useState(false);
 
-  useEffect(() => {
-    const checkCountVisitScreen = async () => {
-      try {
-        const countVisitExploreCommons = await getCountVisitScreen(
-          'countVisitExploreCommons',
-        );
-        if (countVisitExploreCommons) {
-          await setCountVisitScreen(
-            'countVisitExploreCommons',
-            countVisitExploreCommons + 1,
-          );
-          if (countVisitExploreCommons === 3) {
-            await setCountVisitScreen('countVisitExploreCommons', 1);
-            setShowModal(true);
-          }
-        } else {
-          await setCountVisitScreen('countVisitExploreCommons', 1);
-        }
-      } catch (e) {
-        logger.log(e);
-      }
-    };
-
-    if (authStore.signedInUser) {
-      checkCountVisitScreen();
-    }
-  }, []);
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     // TODO: Implement logic for refresh or leave it as it is now - faky
@@ -98,6 +83,8 @@ const CommonsList = ({navigation, rootStore}) => {
   }, [refreshing]);
 
   const onAddCommon = () => {
+    showModal && toggleModal();
+
     if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
@@ -233,7 +220,7 @@ const CommonsList = ({navigation, rootStore}) => {
         )}
         <ModalPreview
           showModal={showModal}
-          closeModal={() => setShowModal(false)}
+          closeModal={toggleModal}
           title="Create your own Common"
           description="Tell the world, invite friends, and work together to achieve common
         goals. Start now!"

@@ -4,22 +4,42 @@ import logger from '~/Services/Logger';
 
 const strToNum = (str: string | null): number => Number(str);
 
-export const setCountVisitScreen = async (
+type storageData = {
+  isModalWasShown: string;
+  visitCounter: number;
+};
+
+export const setStorageDataVisitScreen = async (
   key: string,
-  value: number,
+  value: storageData,
 ): Promise<void> => {
-  const count = value.toString();
   try {
-    await AsyncStorage.setItem(key, count);
+    const storageValue = {
+      ...value,
+      visitCounter: value.visitCounter.toString(),
+    };
+    const jsonValue = JSON.stringify(storageValue);
+    await AsyncStorage.setItem(key, jsonValue);
   } catch (e) {
     logger.log(e);
   }
 };
 
-export const getCountVisitScreen = async (key: string): Promise<number> => {
+export const getStorageDataVisitScreen = async (
+  key: string,
+): Promise<storageData> => {
   try {
-    const countVisitExploreCommons = await AsyncStorage.getItem(key);
-    return strToNum(countVisitExploreCommons);
+    const jsonStorageDataVisitScreen = await AsyncStorage.getItem(key);
+    const storageDataVisitScreen =
+      jsonStorageDataVisitScreen != null
+        ? JSON.parse(jsonStorageDataVisitScreen)
+        : null;
+    return storageDataVisitScreen
+      ? {
+          ...storageDataVisitScreen,
+          visitCounter: strToNum(storageDataVisitScreen.visitCounter),
+        }
+      : null;
   } catch (e) {
     throw e;
   }

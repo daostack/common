@@ -12,7 +12,6 @@ const BottomRightButton = ({
   isInModal,
 }) => (
   <TouchableOpacity
-    disabled={isInModal}
     style={{...styles.button, bottom: bottom || 12}}
     onPress={onPress}>
     <Icon
