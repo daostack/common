@@ -208,6 +208,10 @@ export default StyleSheet.create({
     borderRadius: 28,
     borderColor: colors.grey4,
   },
+  btnAction: {
+    ...btn,
+    borderRadius: 28,
+  },
   btnLeftIcon: {
     position: 'absolute',
     left: 12,
