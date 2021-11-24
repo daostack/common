@@ -35,7 +35,7 @@ import {colors, font, layout, sizeM, sizeS, sizeXL, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import Toast from '~/Util/Toast.js';
 import {db} from '../../Firebase';
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const KeyboardView = Animated.createAnimatedComponent(KeyboardAvoidingView);
 
@@ -249,21 +249,35 @@ const DiscussionChat = ({
 
   const translationY = useSharedValue(0);
   const scrollViewHeight = useSharedValue(0);
+  const scrollViewContentSize = useSharedValue(0);
+  console.log('-0-isMounted', scrollRef.current);
 
   const scrollHandler = useAnimatedScrollHandler(
     {
       onScroll: (event, context) => {
         translationY.value = event.contentOffset.y;
         scrollViewHeight.value = event.layoutMeasurement.height;
+        scrollViewContentSize.value = event.contentSize.height;
       },
     },
     [isHeaderExpanded],
   );
 
-  console.log('---12inputHeight', inputHeight);
+  console.log(
+    '---12inputHeight',
+    scrollViewContentSize.value,
+    scrollViewHeight.value,
+    translationY.value,
+  );
 
-  const rTextInputStyle = useAnimatedStyle(
-    () => ({
+  const rTextInputStyle = useAnimatedStyle(() => {
+    console.log(
+      '----',
+      scrollViewHeight.value,
+      scrollViewContentSize.value,
+      translationY.value,
+    );
+    return {
       transform: [
         {
           translateY:
@@ -274,15 +288,19 @@ const DiscussionChat = ({
             (inputHeight > 50 ? inputHeight - 48 : 0),
         },
       ],
-    }),
-    [keyboardHeight, inputHeight],
-  );
+    };
+  }, [keyboardHeight, inputHeight]);
 
   return (
     <Animated.ScrollView
       style={styles.scrollView}
       ref={scrollRef}
       scrollEventThrottle={16}
+      onLayout={(event) => {
+        'worklet';
+        const {height} = event.nativeEvent.layout;
+        scrollViewHeight.value = height;
+      }}
       onScroll={scrollHandler}>
       <DiscussionMessagesList
         discussionId={discussionId}
@@ -293,22 +311,26 @@ const DiscussionChat = ({
         openMessageOptions={(message) => openMessageOptions(message)}
         isMember={isMember}
       />
-      <Animated.View style={[{position: 'absolute', top: 0}, rTextInputStyle]}>
-        {isMember ? (
-          // <KeyboardAvoidingView
-          //   style={[
-          //     {
-          //       color: '#fbfdff',
-          //     },
-          //   ]}
-          //   // behavior={Platform.OS === 'ios' ? 'padding' : null}
-          //   keyboardVerticalOffset={0}>
-          <View
-            style={{
-              ...styles.inputContainer,
-              height: Math.max(100, inputHeight + 50),
-            }}>
-            {/* should be added in better discussion batch 3
+      <KeyboardAvoidingView
+        style={{flex: 1, position: 'absolute'}}
+        behavior="height">
+        <Animated.View
+          style={[{position: 'absolute', top: 0}, rTextInputStyle]}>
+          {isMember ? (
+            // <KeyboardAvoidingView
+            //   style={[
+            //     {
+            //       color: '#fbfdff',
+            //     },
+            //   ]}
+            //   // behavior={Platform.OS === 'ios' ? 'padding' : null}
+            //   keyboardVerticalOffset={0}>
+            <View
+              style={{
+                ...styles.inputContainer,
+                height: Math.max(100, inputHeight + 50),
+              }}>
+              {/* should be added in better discussion batch 3
             <TouchableOpacity
             onPress={() => {}}
             style={{
@@ -316,40 +338,41 @@ const DiscussionChat = ({
             }}>
             <Icon name="add-24" size={30} color={colors.mainBlue} />
           </TouchableOpacity>*/}
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              placeholderTextColor={colors.grey3}
-              onChangeText={onChangeText}
-              onContentSizeChange={onContentSizeChange}
-              onBlur={showDescription}
-              onFocus={hideDescription}
-              style={styles.input}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={25}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                multiline
+                placeholder="What do you think?"
+                placeholderTextColor={colors.grey3}
+                onChangeText={onChangeText}
+                onContentSizeChange={onContentSizeChange}
+                onBlur={showDescription}
+                onFocus={hideDescription}
+                style={styles.input}
               />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={{paddingTop: 10}}>
-            <Text style={{...styles.joinCommonText}}>
-              Only members can send messages
-            </Text>
-          </View>
-        )}
-      </Animated.View>
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  justifyContent: 'center',
+                }}
+                disabled={isEmptyMessage()}>
+                <Icon
+                  name="send-message"
+                  size={25}
+                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{paddingTop: 10}}>
+              <Text style={{...styles.joinCommonText}}>
+                Only members can send messages
+              </Text>
+            </View>
+          )}
+        </Animated.View>
+      </KeyboardAvoidingView>
     </Animated.ScrollView>
   );
 };
