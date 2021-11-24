@@ -191,6 +191,10 @@ const DiscussionChat = ({
 
   const onContentSizeChange = (event) => {
     setInputHeight(event.nativeEvent.contentSize.height);
+    console.log(
+      '---event.nativeEvent.contentSize.height,event.nativeEvent.contentSize.height',
+      event.nativeEvent.contentSize.height,
+    );
   };
 
   const hideDescription = () => {
@@ -208,7 +212,7 @@ const DiscussionChat = ({
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardWillShow',
       (event) => {
-        scrollRef.current.scrollToEnd({animated: true});
+        // scrollRef.current.scrollToEnd({animated: true});
         if (event.endCoordinates.height > event.startCoordinates.height) {
           keyboardHeight.value = withTiming(
             event.endCoordinates.height - event.startCoordinates.height + 80,
@@ -256,20 +260,23 @@ const DiscussionChat = ({
     [isHeaderExpanded],
   );
 
-  const rTextInputStyle = useAnimatedStyle(() => {
-    console.log('---keyboardHeight.value,', keyboardHeight.value);
-    return {
+  console.log('---12inputHeight', inputHeight);
+
+  const rTextInputStyle = useAnimatedStyle(
+    () => ({
       transform: [
         {
           translateY:
             translationY.value +
             scrollViewHeight.value -
             100 -
-            keyboardHeight.value,
+            keyboardHeight.value -
+            (inputHeight > 50 ? inputHeight - 48 : 0),
         },
       ],
-    };
-  }, [keyboardHeight]);
+    }),
+    [keyboardHeight, inputHeight],
+  );
 
   return (
     <Animated.ScrollView
