@@ -4,22 +4,17 @@ import logger from '~/Services/Logger';
 
 const strToNum = (str: string | null): number => Number(str);
 
-type storageData = {
-  isModalWasShown: string;
+export interface StorageData {
+  isCalled: string;
   visitCounter: number;
-};
+}
 
 export const setStorageDataVisitScreen = async (
   key: string,
-  value: storageData,
+  value: StorageData,
 ): Promise<void> => {
   try {
-    const storageValue = {
-      ...value,
-      visitCounter: value.visitCounter.toString(),
-    };
-    const jsonValue = JSON.stringify(storageValue);
-    await AsyncStorage.setItem(key, jsonValue);
+    await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
     logger.log(e);
   }
@@ -27,7 +22,7 @@ export const setStorageDataVisitScreen = async (
 
 export const getStorageDataVisitScreen = async (
   key: string,
-): Promise<storageData> => {
+): Promise<StorageData> => {
   try {
     const jsonStorageDataVisitScreen = await AsyncStorage.getItem(key);
     const storageDataVisitScreen =

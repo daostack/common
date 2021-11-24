@@ -4,6 +4,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {
   setStorageDataVisitScreen,
   getStorageDataVisitScreen,
+  StorageData,
 } from '~/Util/asyncStorage';
 import {STORAGE_KEYS} from '~/Util/constants/storageKeys.enum';
 import logger from '~/Services/Logger';
@@ -27,6 +28,31 @@ export const useVisitScreen = ({
 }: Props) => {
   const [visitCounter, setVisitCounter] = useState(0);
 
+  const handleCounter = async (
+    storageDataVisitScreen: StorageData,
+  ): Promise<void> => {
+    if (storageDataVisitScreen.isCalled === 'false') {
+      await setStorageDataVisitScreen(storageKey, {
+        isCalled: 'false',
+        visitCounter: storageDataVisitScreen.visitCounter + 1,
+      });
+      setVisitCounter(storageDataVisitScreen.visitCounter);
+    } else {
+      setVisitCounter(storageDataVisitScreen.visitCounter + 1);
+    }
+  };
+
+  const checkNumberOfVisits = async (
+    storageDataVisitScreen: StorageData,
+  ): Promise<void> => {
+    if (storageDataVisitScreen.visitCounter === numberOfVisits) {
+      await setStorageDataVisitScreen(storageKey, {
+        isCalled: 'true',
+        visitCounter: storageDataVisitScreen.visitCounter + 1,
+      });
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       const checkCountVisitScreen = async () => {
@@ -35,24 +61,11 @@ export const useVisitScreen = ({
             storageKey,
           );
           if (storageDataVisitScreen) {
-            if (storageDataVisitScreen.isModalWasShown === 'false') {
-              await setStorageDataVisitScreen(storageKey, {
-                isModalWasShown: 'false',
-                visitCounter: storageDataVisitScreen.visitCounter + 1,
-              });
-              setVisitCounter(storageDataVisitScreen.visitCounter);
-            } else {
-              setVisitCounter(storageDataVisitScreen.visitCounter + 1);
-            }
-            if (storageDataVisitScreen.visitCounter === numberOfVisits) {
-              await setStorageDataVisitScreen(storageKey, {
-                isModalWasShown: 'true',
-                visitCounter: storageDataVisitScreen.visitCounter + 1,
-              });
-            }
+            await handleCounter(storageDataVisitScreen);
+            await checkNumberOfVisits(storageDataVisitScreen);
           } else {
             await setStorageDataVisitScreen(storageKey, {
-              isModalWasShown: 'false',
+              isCalled: 'false',
               visitCounter: 1,
             });
             setVisitCounter(1);
@@ -61,6 +74,7 @@ export const useVisitScreen = ({
           logger.log(e);
         }
       };
+
       signedInUser && checkCountVisitScreen();
     }, [signedInUser]),
   );

@@ -1,8 +1,15 @@
+import React, {ReactElement} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
 import colors from '~/Theme/colors';
-import Icon from '~/Assets/iconfont/Icon';
-import {string, func, number, bool} from 'prop-types';
+import Icon, {IconNames} from '~/Assets/iconfont/Icon';
+
+interface Props {
+  bottom?: number;
+  onPress: () => void;
+  iconName?: IconNames;
+  iconSize?: number;
+  isInModal?: boolean;
+}
 
 const BottomRightButton = ({
   bottom,
@@ -10,7 +17,7 @@ const BottomRightButton = ({
   iconName,
   iconSize,
   isInModal,
-}) => (
+}: Props): ReactElement => (
   <TouchableOpacity
     style={{...styles.button, bottom: bottom || 12}}
     onPress={onPress}>
@@ -22,14 +29,6 @@ const BottomRightButton = ({
     {isInModal && <View style={styles.backgroundBtn} />}
   </TouchableOpacity>
 );
-
-BottomRightButton.propTypes = {
-  bottom: number,
-  onPress: func,
-  iconName: string,
-  iconSize: number,
-  isInModal: bool,
-};
 
 const styles = StyleSheet.create({
   button: {
