@@ -1,6 +1,6 @@
 import {observable, computed} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
-import {PROPOSAL_STAGE} from '~/Services/ListServices/ProposalListService';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {
   IFundingRequestProposal,
   IJoinRequestProposal,
@@ -180,12 +180,16 @@ export class Proposal extends BaseModel<IProposalEntity> {
     this.description = newProposalInfo.description;
     this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
-      this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
+      this.paymentState = (
+        newProposalInfo as IJoinRequestProposal
+      ).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
     if (this.type === PROPOSAL_TYPE.FundingRequest) {
-      this.fundingRequest = (newProposalInfo as IFundingRequestProposal).fundingRequest;
+      this.fundingRequest = (
+        newProposalInfo as IFundingRequestProposal
+      ).fundingRequest;
       // TODO: ... more props
     }
   }

@@ -5,4 +5,5 @@ class CreateDiscussionStore extends FormStore {
     super();
   }
 }
+
 export default CreateDiscussionStore;

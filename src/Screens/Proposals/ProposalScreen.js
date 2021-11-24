@@ -25,9 +25,11 @@ import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMess
 import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import ProposalService, {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import ProposalService, {
+  PROPOSAL_STAGE,
+  PROPOSAL_STAGES_ACTIVE,
+} from '~/Services/ProposalService';
 import {UserAvatar} from '~/Components';
-import {PROPOSAL_STAGES_ACTIVE} from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
@@ -218,6 +220,10 @@ const ProposalScreen = ({
     },
   ]);
 
+  useEffect(() => {
+    setShowStickyTabBar(index !== 0);
+  }, [index]);
+
   const [inputText, setInputText] = useState(null);
 
   const inputRef = useRef();
@@ -363,9 +369,7 @@ const ProposalScreen = ({
         proposalId: proposalId || proposalInfo.id,
       };
 
-      const createVoteResponse = await ProposalService.getInstance().createVote(
-        voteData,
-      );
+      const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
         setVotingProcessState({inProgress: false, error: false});
         closeApprovalSheet();
@@ -477,15 +481,11 @@ const ProposalScreen = ({
     const isDiscussionTab = item === 1;
     setIsHeaderHidden(isDiscussionTab);
 
-    if (!isDiscussionTab && showStickyTabBar) {
-      Animated.timing(stickyTabBarState.animation, {
-        toValue: 0,
-        duration: 450,
-        useNativeDriver: true,
-      }).start(() => {
-        setShowStickyTabBar(false);
-      });
-    }
+    Animated.timing(stickyTabBarState.animation, {
+      toValue: 1,
+      duration: 450,
+      useNativeDriver: true,
+    }).start(() => {});
 
     setIndex(item);
   };
@@ -567,7 +567,7 @@ const ProposalScreen = ({
     switch (actionType) {
       case 'Show':
         Toast.loading('Loading...');
-        await ModerationService.getInstance().show(
+        await ModerationService.show(
           messageId,
           proposalInfo.commonId,
           'discussionMessage',
@@ -578,7 +578,7 @@ const ProposalScreen = ({
         break;
       case 'Hide':
         Toast.loading('Loading...');
-        await ModerationService.getInstance().hide(
+        await ModerationService.hide(
           messageId,
           'discussionMessage',
           proposalInfo.commonId,
@@ -617,7 +617,7 @@ const ProposalScreen = ({
     setShowModerationModal(false);
     Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       'discussionMessage',
       proposalInfo.commonId,
       moderationFormStore.getFormFieldsJson(),
@@ -726,26 +726,11 @@ const ProposalScreen = ({
 
             stickyTabBarRef?.current?.measure(
               (fx, fy, width, height, px, py) => {
-                const isVisible = py < 0;
-
-                if (isVisible !== showStickyTabBar) {
-                  if (isVisible) {
-                    setShowStickyTabBar(isVisible);
-                    Animated.timing(stickyTabBarState.animation, {
-                      toValue: 1,
-                      duration: 200,
-                      useNativeDriver: true,
-                    }).start();
-                  } else {
-                    Animated.timing(stickyTabBarState.animation, {
-                      toValue: 0,
-                      duration: 300,
-                      useNativeDriver: true,
-                    }).start(() => {
-                      setShowStickyTabBar(isVisible);
-                    });
-                  }
-                }
+                Animated.timing(stickyTabBarState.animation, {
+                  toValue: 1,
+                  duration: 200,
+                  useNativeDriver: true,
+                }).start();
               },
             );
 

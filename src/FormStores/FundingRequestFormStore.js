@@ -5,4 +5,5 @@ class FundingRequestFormStore extends FormStore {
     super();
   }
 }
+
 export default FundingRequestFormStore;

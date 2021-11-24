@@ -1,45 +1,45 @@
 import {firebaseWebClientId} from '~/Config';
 
 // Firebase imports
-import {auth} from '~/Firebase';
-import {addUser, updateUser} from '~/Services/ListServices/UserListService';
+import {auth, firebase} from '~/Firebase';
+import UserService from '~/Services/UserService';
 
 // Google imports
-import {GoogleSignin} from '@react-native-community/google-signin';
+import {GoogleSignin, User} from '@react-native-community/google-signin';
 
 // Apple imports
 import appleAuth, {
   AppleAuthRequestScope,
   AppleAuthRequestOperation,
+  AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
+import {
+  IUserEntity,
+  UserPublicData,
+} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
 };
 
-export default class AuthService {
-  static serviceInstance = null;
+interface UserInfo {
+  user: {givenName?: string | null; familyName?: string | null};
+}
 
+class AuthService {
   constructor() {
     GoogleSignin.configure({
       webClientId: firebaseWebClientId,
     });
   }
 
-  static getInstance = () => {
-    if (AuthService.serviceInstance == null) {
-      AuthService.serviceInstance = new AuthService();
-    }
-    return this.serviceInstance;
-  };
-
   isAppleLoginSupported() {
     return appleAuth.isSupported;
   }
 
   // Apple Auth flow
-  async signInApple() {
+  signInApple = async (): Promise<IUserEntity> => {
     const appleAuthRequestResponse = await this._applePerformRequest();
 
     // Ensure Apple returned a user identityToken
@@ -56,10 +56,10 @@ export default class AuthService {
 
     // Sign the user in with the credential
     return auth().signInWithCredential(appleCredential);
-  }
+  };
 
   // Google Auth flow
-  async signIn() {
+  signIn = async (): Promise<IUserEntity> => {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
@@ -77,18 +77,18 @@ export default class AuthService {
       throw error;
     }
     return signedInUser;
-  }
+  };
 
-  async clearGoogleSignInCache() {
+  clearGoogleSignInCache = async (): Promise<void> => {
     const {accessToken} = await GoogleSignin.getTokens();
     await GoogleSignin.clearCachedAccessToken(accessToken);
-  }
+  };
 
-  async googleSignOut() {
+  googleSignOut = async (): Promise<void> => {
     await GoogleSignin.signOut();
-  }
+  };
 
-  async signOut() {
+  signOut = async (): Promise<void | unknown> => {
     try {
       await this.googleSignOut();
       await auth().signOut();
@@ -97,16 +97,18 @@ export default class AuthService {
       await GoogleSignin.clearCachedAccessToken(accessToken);
       return error;
     }
-  }
+  };
 
-  async getCurrentLoggedUser(providerId) {
+  getCurrentLoggedUser = async (
+    providerId: string,
+  ): Promise<User | UserInfo | null | undefined> => {
     switch (providerId) {
       case AUTH_PROVIDER_ID.APPLE: {
         const {fullName} = await this._applePerformRequest();
         return {
           user: {
-            givenName: fullName.givenName,
-            familyName: fullName.familyName,
+            givenName: fullName?.givenName,
+            familyName: fullName?.familyName,
           },
         };
       }
@@ -114,20 +116,29 @@ export default class AuthService {
         return await GoogleSignin.getCurrentUser();
       default:
     }
-  }
+  };
 
   // Firebase
-  async updateUserData(userData, publicData) {
+  async updateUserData(userData: IUserEntity, publicData: IUserEntity) {
     const currentUser = await auth().currentUser;
     currentUser.updateProfile(userData);
 
-    return await updateUser(currentUser.uid, {
+    return await UserService.updateUser(currentUser.uid, {
       ...publicData,
       ...userData,
     });
   }
 
-  async createUser(user) {
+  createUser = async (
+    user: IUserEntity & {
+      email: string;
+      displayName: string;
+      photoURL: string;
+      metadata: {
+        creationTime: firebase.firestore.timestamp;
+      };
+    },
+  ) => {
     const splittedDisplayName = user?.displayName?.split(' ') || [
       user?.email.split('@')[0],
     ];
@@ -136,7 +147,7 @@ export default class AuthService {
       : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
           user.displayName ? user.displayName : user.email
         }&rounded=true`;
-    const userPublicData = {
+    const userPublicData: UserPublicData = {
       createdAt: new Date(user.metadata.creationTime),
       firstName:
         user.firstName || splittedDisplayName?.length >= 1
@@ -151,17 +162,18 @@ export default class AuthService {
       uid: user.uid,
     };
 
-    await addUser(user.uid, userPublicData);
+    await UserService.addUser(user.uid, userPublicData);
     return userPublicData;
-  }
+  };
 
-  async _applePerformRequest() {
-    return await appleAuth.performRequest({
+  _applePerformRequest = async (): Promise<AppleAuthRequestResponse> =>
+    await appleAuth.performRequest({
       requestedOperation: AppleAuthRequestOperation.LOGIN,
       requestedScopes: [
         AppleAuthRequestScope.EMAIL,
         AppleAuthRequestScope.FULL_NAME,
       ],
     });
-  }
 }
+
+export default new AuthService();

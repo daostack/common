@@ -15,7 +15,7 @@ import {layout, colors, text, sizeL, font} from '~/Theme';
 import {observer, inject} from 'mobx-react';
 import AccordionBtn from '~/Components/AccordionBtn';
 import CreateAccount from './CreateAccount';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import UserProfileData from '~/Components/UserProfileData';
 import AuthService from '~/Services/AuthService';
 import Toast from '~/Util/Toast';
@@ -33,8 +33,9 @@ import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 
 
-const UserProfile = ({authStore, navigation, route}) => {
-  //const [editMode, setEditMode] = useState(false);
+const UserProfile = ({authStore}) => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
@@ -62,12 +63,12 @@ const UserProfile = ({authStore, navigation, route}) => {
             // That loading status will be changed to false in the onAuthStateChanged method in App.js
             authStore.setIsLoading(true);
 
-            await AuthService.getInstance().signOut();
+            await AuthService.signOut();
           },
         },
       ]);
     } catch (error) {
-      await AuthService.getInstance().clearGoogleSignInCache();
+      await AuthService.clearGoogleSignInCache();
       authStore.setIsLoading(false);
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
@@ -126,20 +127,24 @@ const UserProfile = ({authStore, navigation, route}) => {
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/tos')}
-                  title="Terms of use"
+                  onPress={() => navigation.navigate('Onboarding')}
+                  title="About Common"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('mailto:hi@common.io')}
+                  title="Contact us"
+                />
+                <AccordionBtn
+                  onPress={() => Linking.openURL('https://common.io/help')}
+                  title="Help and support"
                 />
                 <AccordionBtn
                   onPress={() => Linking.openURL('https://common.io/privacy')}
                   title="Privacy Policy"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/help')}
-                  title="Help"
-                />
-                <AccordionBtn
-                  onPress={() => Linking.openURL('mailto:hi@common.io')}
-                  title="Contact us"
+                  onPress={() => Linking.openURL('https://common.io/tos')}
+                  title="Terms of use"
                 />
                 {authStore.userInfo && (
                   <React.Fragment>

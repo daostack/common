@@ -20,7 +20,7 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
+import CommonService from '~/Services/CommonService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
@@ -60,7 +60,9 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION] ? '0' : form[CreateCommonForm.MINIMUM];
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -120,7 +122,7 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
+      const createCommonResponse = await CommonService.createCommon(
         formattedData,
       );
 
@@ -142,9 +144,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(minContribution)}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout
@@ -268,7 +268,7 @@ const CreateStep4 = ({
                       url: x.value,
                     });
                   }}
-                  style={{...styles.linkText, flex: 'row'}}>
+                  style={{...styles.linkText, flexDirection: 'row'}}>
                   {x.title}
                 </Text>
               </View>
