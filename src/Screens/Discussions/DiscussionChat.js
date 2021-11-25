@@ -1,17 +1,7 @@
 import auth from '@react-native-firebase/auth';
 // import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {inject, observer} from 'mobx-react';
-import {object, shape, string} from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
-import Animated, {
-  useAnimatedStyle,
-  useAnimatedScrollHandler,
-  useSharedValue,
-  withSpring,
-  withTiming,
-  Easing,
-  useAnimatedRef,
-} from 'react-native-reanimated';
 import {
   Dimensions,
   Keyboard,
@@ -23,19 +13,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import Icon from '~/Assets/iconfont/Icon';
-import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import DiscussionService from '~/Services/DiscussionService';
-import ModerationService from '~/Services/ModerationService';
-import {colors, font, layout, sizeM, sizeS, sizeXL, text} from '~/Theme';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {colors, sizeS, sizeXL, text} from '~/Theme';
 import Toast from '~/Util/Toast.js';
+import {KEYBOARD_EVENTS} from '~/Util/constants/keyboard';
 import {db} from '../../Firebase';
-const {height, width} = Dimensions.get('window');
+
+const {width} = Dimensions.get('window');
+const ANIMATION_DURATION = 500;
+const INPUT_OFFSET = 50;
+const INITIAL_TEXT_INPUT_VIEW_HEIGHT = 100;
 
 const DiscussionChat = ({
   navigation,
@@ -44,6 +41,7 @@ const DiscussionChat = ({
   fromNotificationItem,
   rootStore,
   isHeaderExpanded,
+  openMessageOptions,
 }) => {
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
@@ -69,17 +67,10 @@ const DiscussionChat = ({
   const [inputText, setInputText] = useState(null);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
-  const [moderationFormStore] = useState(new ModerationFormStore());
-  const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
-  const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
     authStore.userInfo &&
     (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
-
-  useEffect(() => {}, [commonId, discussionId, currentUser]);
 
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
@@ -143,48 +134,6 @@ const DiscussionChat = ({
     }
   };
 
-  /**
-   * For discussionMessages
-   * @param  {[type]} actionType [description]
-   * @param  {[type]} messageId  [description]
-   * @return {[type]}            [description]
-   */
-  const onModerate = async (actionType, messageId) => {
-    setAction(actionType);
-    if (messageId) {
-      moderationFormStore.registerFormField(
-        ModerationForm.ITEM_ID,
-        'string',
-        messageId,
-      );
-    }
-    bottomSheetStore.hideBottomSheet();
-
-    const resp = await ModerationService.onModerate(
-      actionType,
-      messageId,
-      commonId,
-      TITLES.discussionMessage,
-    );
-
-    resp === ACTIONS.report
-      ? setShowModerationModal(true)
-      : resp && setShowModerationSuccessModal(true);
-  };
-
-  const openMessageOptions = (message, itemType) => {
-    bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
-      {
-        onAction: (actionType) => onModerate(actionType, message.id),
-        hasPermission,
-        moderatorOptions: {
-          item: message,
-        },
-      },
-    );
-  };
-
   const onChangeText = (currText) => setInputText(currText);
 
   const onContentSizeChange = (event) => {
@@ -204,30 +153,28 @@ const DiscussionChat = ({
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardWillShow',
+      KEYBOARD_EVENTS.keyboardWillShow,
       (event) => {
         if (event.endCoordinates.height > event.startCoordinates.height) {
-          keyboardHeight.value = withTiming(
-            event.endCoordinates.height - event.startCoordinates.height + 80,
-            {
-              duration: 500,
-              easing: Easing.out(Easing.exp),
-            },
-          );
+          scrollRef.current.scrollToEnd({animated: true});
+          keyboardHeight.value = withTiming(event.endCoordinates.height - 35, {
+            duration: ANIMATION_DURATION,
+            easing: Easing.out(Easing.exp),
+          });
         } else {
           keyboardHeight.value = withTiming(0, {
-            duration: 500,
+            duration: ANIMATION_DURATION,
             easing: Easing.out(Easing.exp),
           });
         }
       },
     );
 
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardWillHide',
+    const keyboardWillHideListener = Keyboard.addListener(
+      KEYBOARD_EVENTS.keyboardWillHide,
       (event) => {
         keyboardHeight.value = withTiming(0, {
-          duration: 500,
+          duration: ANIMATION_DURATION,
           easing: Easing.out(Easing.exp),
         });
       },
@@ -235,7 +182,7 @@ const DiscussionChat = ({
 
     return () => {
       keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+      keyboardWillHideListener.remove();
     };
   }, []);
 
@@ -245,7 +192,7 @@ const DiscussionChat = ({
 
   const scrollHandler = useAnimatedScrollHandler(
     {
-      onScroll: (event, context) => {
+      onScroll: (event) => {
         translationY.value = event.contentOffset.y;
         scrollViewHeight.value = event.layoutMeasurement.height;
         scrollViewContentSize.value = event.contentSize.height;
@@ -261,9 +208,9 @@ const DiscussionChat = ({
           translateY:
             translationY.value +
             scrollViewHeight.value -
-            100 -
+            INITIAL_TEXT_INPUT_VIEW_HEIGHT -
             keyboardHeight.value -
-            (inputHeight > 50 ? inputHeight - 48 : 0),
+            (inputHeight > INPUT_OFFSET ? inputHeight - INPUT_OFFSET : 0),
         },
       ],
     }),
@@ -292,28 +239,17 @@ const DiscussionChat = ({
         openMessageOptions={(message) => openMessageOptions(message)}
         isMember={isMember}
       />
-      <Animated.View style={[{position: 'absolute', top: 0}, rTextInputStyle]}>
-        {isMember ? (
-          <KeyboardAvoidingView
-            style={[
-              {
-                color: '#fbfdff',
-              },
-            ]}
-            keyboardVerticalOffset={0}>
+      {isMember ? (
+        <Animated.View style={[styles.textInputContainer, rTextInputStyle]}>
+          <KeyboardAvoidingView keyboardVerticalOffset={0}>
             <View
               style={{
                 ...styles.inputContainer,
-                height: Math.max(100, inputHeight + 50),
+                height: Math.max(
+                  INITIAL_TEXT_INPUT_VIEW_HEIGHT,
+                  inputHeight + INPUT_OFFSET,
+                ),
               }}>
-              {/* should be added in better discussion batch 3
-            <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              justifyContent: 'center',
-            }}>
-            <Icon name="add-24" size={30} color={colors.mainBlue} />
-          </TouchableOpacity>*/}
               <TextInput
                 ref={inputRef}
                 editable={true}
@@ -341,60 +277,29 @@ const DiscussionChat = ({
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
-        ) : (
-          <View style={{paddingTop: 10}}>
-            <Text style={{...styles.joinCommonText}}>
-              Only members can send messages
-            </Text>
-          </View>
-        )}
-      </Animated.View>
+        </Animated.View>
+      ) : (
+        <View style={styles.nonMemberContainer}>
+          <Text style={{...styles.joinCommonText}}>
+            Only members can send messages
+          </Text>
+        </View>
+      )}
     </Animated.ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  message: {
-    marginVertical: 10,
-    lineHeight: 24,
-    color: colors.black,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-  date: {
-    color: colors.formPlaceholderColor,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-  displayName: {
-    ...font.primary.regular,
-    ...font.fontSize(2),
-    color: colors.black,
-  },
-  galleryImage: {
-    marginRight: 15,
-    width: 120,
-    height: 250,
-    borderRadius: 10,
-    backgroundColor: colors.grey4,
-  },
-  safeView: {
+  scrollView: {
     flex: 1,
-    backgroundColor: colors.paleGrey,
-  },
-  imageGallery: {
-    ...layout.flexRow,
-    ...layout.flexStart,
-
-    width: '100%',
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    backgroundColor: colors.grey4,
-    borderRadius: 17.5,
+    paddingBottom: 30,
+    backgroundColor: colors.paleLilacTwo,
   },
   inputContainer: {
+    position: 'absolute',
+    top: 0,
+  },
+  inputWrapper: {
     width,
     display: 'flex',
     alignItems: 'center',
@@ -424,18 +329,6 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 15 : 10,
     paddingHorizontal: 15,
   },
-  adsText: {
-    ...font.fontSize(2),
-    textDecorationLine: 'underline',
-    ...font.primary.regular,
-    ...layout.marginLeftXS,
-  },
-  adRow: {
-    alignItems: 'center',
-    ...layout.flexRow,
-    alignSelf: 'stretch',
-    paddingVertical: sizeM,
-  },
   joinCommonText: {
     ...text.textFieldplaceholder,
     width,
@@ -445,29 +338,10 @@ const styles = StyleSheet.create({
     paddingBottom: sizeXL,
     alignSelf: 'center',
   },
-  headerContainer: {
-    backgroundColor: colors.white,
-    // flex: 1,
-    paddingBottom: 0,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    shadowColor: 'rgba(0, 0, 0, 0.12)',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 5,
-    shadowOpacity: 0.8,
-    elevation: 5,
-  },
-  hyperLinkStyle: {
-    textDecorationLine: 'underline',
-    color: colors.mainBlue,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
+  nonMemberContainer: {
+    paddingTop: 10,
+    position: 'absolute',
+    bottom: 0,
   },
 });
 

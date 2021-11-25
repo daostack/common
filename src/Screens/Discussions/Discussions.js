@@ -438,6 +438,7 @@ const Discussions = ({
         discussionId={discussionId}
         fromNotificationItem={fromNotificationItem}
         isHeaderExpanded={dataState.isExpanded}
+        openMessageOptions={openMessageOptions}
       />
       <ImageView
         images={
