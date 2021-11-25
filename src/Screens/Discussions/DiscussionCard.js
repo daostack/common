@@ -99,7 +99,6 @@ const DiscussionCard = ({
                 </Text>
                 {(!discussionMessageStore.isModerationHidden ||
                   hasPermission) &&
-                  isMember &&
                   !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}

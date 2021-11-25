@@ -74,7 +74,13 @@ const DiscussionMessage = ({
 
   const flagView = (isHidden || isFlagged) && (
     <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
-      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
+      {isHidden && (
+        <Icon
+          name={'hidden'}
+          style={layout.marginRightS}
+          color={colors.grey3}
+        />
+      )}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
         {isHidden && !isModerator ? ' by a moderator' : ` by ${moderatorName}`}
@@ -96,10 +102,7 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || viewerPermission) &&
-        isMember &&
-        !isOwner &&
-        openMessageOptions()
+        (!isHidden || viewerPermission) && !isOwner && openMessageOptions()
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
@@ -110,7 +113,7 @@ const DiscussionMessage = ({
               elevation: 2,
             }}>
             {flagView}
-            {(!isHidden) && (
+            {!isHidden && (
               <View style={styles.textContainer}>
                 <HyperText
                   textStyle={{

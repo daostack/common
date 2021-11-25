@@ -38,7 +38,7 @@ const HiddenContentInfo = ({
         <Text style={styles.text}>
           This {type} was hidden
           {isModerator ? ' by ' : ''}
-          <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
+          <Bold boldText={isModerator ? userName : ''} /> on{'\n'}{' '}
           <Bold boldText={date} /> {getReasons(reasons)}
         </Text>
         {!!moderatorNote && (

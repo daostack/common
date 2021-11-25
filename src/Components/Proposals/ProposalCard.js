@@ -148,7 +148,6 @@ const ProposalCard = ({
                   (proposalInfo?.description?.title || 'Unknown title')}
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
-                isMember &&
                 !isSwiper &&
                 !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
