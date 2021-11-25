@@ -3,7 +3,7 @@ import {firebase} from '~/Firebase';
 import {Text} from 'react-native';
 import {string, object, InferProps, shape} from 'prop-types';
 import {colors, text} from '~/Theme';
-import {MESSAGE_STATUSES, PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import moment from 'moment';
 const _ = require('lodash');
 
@@ -16,14 +16,7 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   const reporterUserName =
     viewerPermission === PERMISSIONS.MODERATOR
       ? ` by ${reporterName(reporter, currentUID)}`
-      : '';
-
-  if (
-    moderation?.flag === MESSAGE_STATUSES.REPORTED &&
-    viewerPermission !== PERMISSIONS.MODERATOR
-  ) {
-    return <></>;
-  }
+      : ' by a moderator';
 
   return (
     <Text

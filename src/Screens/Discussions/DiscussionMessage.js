@@ -72,12 +72,12 @@ const DiscussionMessage = ({
     }
   }, []);
 
-  const flagView = (isModerator || isHidden) && isFlagged && (
+  const flagView = (isHidden || isFlagged) && (
     <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
       {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
-        {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
+        {isHidden && !isModerator ? ' by a moderator' : ` by ${moderatorName}`}
       </Text>
     </View>
   );
@@ -107,11 +107,10 @@ const DiscussionMessage = ({
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
-              alignItems: isHidden ? 'flex-start' : 'flex-end',
               elevation: 2,
             }}>
             {flagView}
-            {(!isHidden || viewerPermission) && (
+            {(!isHidden) && (
               <View style={styles.textContainer}>
                 <HyperText
                   textStyle={{
@@ -163,13 +162,13 @@ const DiscussionMessage = ({
                     }}>
                     {ownerInfo?.displayName}
                   </Text>
-                  {!isHidden && (
+                  {!isHidden && !flag && (
                     <Text style={styles.permission}>{permission}</Text>
                   )}
                   {flagView}
                 </View>
               </Hyperlink>
-              {(!isHidden || viewerPermission) && (
+              {(!isHidden) && (
                 <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{
@@ -216,6 +215,7 @@ const styles = StyleSheet.create({
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
+    marginRight: 10,
   },
   permission: {
     ...font.primary.bold,

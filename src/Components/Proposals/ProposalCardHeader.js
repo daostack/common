@@ -9,7 +9,6 @@ import {observer, inject} from 'mobx-react';
 import {Reported} from '~/Components/Moderation/Reported';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ProposalCountDown from '~/Components/Proposals/ProposalCountDown';
 
 const TITLES = {
@@ -93,8 +92,7 @@ const ProposalCardHeader = ({
     !moderation?.flag ||
     moderation?.flag === FLAGS.visible ||
     (moderation?.flag !== FLAGS.hidden &&
-      moderation?.flag === FLAGS.reported &&
-      viewerPermission !== PERMISSIONS.MODERATOR);
+      moderation?.flag === FLAGS.reported);
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -134,6 +132,8 @@ const ProposalCardHeader = ({
           ? {
               ...styles.proposalCardHeader,
               backgroundColor: headerStatus.lightColor,
+              flexDirection: moderation?.flag === FLAGS.reported ? 'column' : 'row',
+
             }
           : {
               ...styles.hiddenCardHeader,
