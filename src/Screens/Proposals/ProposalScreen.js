@@ -62,6 +62,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
 import {TooltipComponent} from './components/ModalTooltip';
+import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -137,13 +138,13 @@ const ProposalScreen = ({
     const unsubscribe = navigation.addListener('transitionEnd', (e) => {
       const asyncData = async () => {
         try {
-          const value = await AsyncStorage.getItem('seenProposal');
+          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
           if (value === null) {
-            await AsyncStorage.setItem('seenProposal', 'yes');
+            await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
             start();
           }
         } catch (error){
-          console.log(error);
+          logger.log(error);
         }
       };
       asyncData();
