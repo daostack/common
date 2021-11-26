@@ -1,15 +1,15 @@
 import auth from '@react-native-firebase/auth';
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {inject, observer} from 'mobx-react';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import {
-  Dimensions,
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
+  LayoutChangeEvent,
+  NativeSyntheticEvent,
+  ScrollView,
   Text,
   TextInput,
+  TextInputContentSizeChangeEventData,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,35 +21,45 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Icon from '~/Assets/iconfont/Icon';
+import {db} from '~/Firebase';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import DiscussionService from '~/Services/DiscussionService';
-import {colors, sizeS, sizeXL, text} from '~/Theme';
-import Toast from '~/Util/Toast.js';
+import {colors} from '~/Theme';
+import {RootStore} from '~/Types/store';
 import {KEYBOARD_EVENTS} from '~/Util/constants/keyboard';
-import {db} from '../../Firebase';
+import Toast from '~/Util/Toast.js';
+import {styles} from './styles';
 
-const {width} = Dimensions.get('window');
 const ANIMATION_DURATION = 500;
 const INPUT_OFFSET = 50;
 const INITIAL_TEXT_INPUT_VIEW_HEIGHT = 100;
 
-const DiscussionChat = ({
-  navigation,
+interface Props {
+  commonId: string;
+  discussionId: string;
+  rootStore: RootStore;
+  isHeaderExpanded: boolean;
+  fromNotificationItem: boolean;
+  openMessageOptions: (message: string) => void;
+}
+
+const Chat = ({
   commonId,
   discussionId,
   fromNotificationItem,
   rootStore,
   isHeaderExpanded,
   openMessageOptions,
-}) => {
+}: Props): ReactElement => {
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
-  const scrollRef = useRef(null);
-  const inputRef = useRef(null);
+  const scrollRef = useRef<ScrollView>(null);
+  const inputRef = useRef<TextInput>(null);
 
   const currentUser = auth().currentUser;
 
@@ -64,16 +74,16 @@ const DiscussionChat = ({
     commonId,
     authStore?.userInfo?.uid,
   );
-  const [inputText, setInputText] = useState(null);
+  const [inputText, setInputText] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
+  const [inputHeight, setInputHeight] = useState(0);
 
   const isMember =
     authStore.userInfo &&
     (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
 
   useEffect(() => {
-    let unsubscribeFromDiscussionMessages = null;
+    let unsubscribeFromDiscussionMessages: FirestoreUnsubscribeFn | null = null;
     if (fromNotificationItem) {
       unsubscribeFromDiscussionMessages =
         rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
@@ -87,7 +97,10 @@ const DiscussionChat = ({
   }, [discussionId]);
 
   const showLoginScreen = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
+    bottomSheetStore.showBottomSheet(
+      BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+      null,
+    );
   };
 
   const sendMessageToDiscussion = async () => {
@@ -104,7 +117,7 @@ const DiscussionChat = ({
 
     const message = inputText;
     if (!isEmptyMessage()) {
-      inputRef.current.clear();
+      inputRef.current?.clear();
 
       db.collection('discussionMessage')
         .doc()
@@ -115,7 +128,7 @@ const DiscussionChat = ({
           commonId: commonId,
           discussionId: discussionId,
         })
-        .then(async (msg) => {
+        .then(async () => {
           Keyboard.dismiss();
           setInputText('');
           await DiscussionService.updateDiscussionLastMessage(
@@ -134,20 +147,22 @@ const DiscussionChat = ({
     }
   };
 
-  const onChangeText = (currText) => setInputText(currText);
+  const onChangeText = (currText: string) => setInputText(currText);
 
-  const onContentSizeChange = (event) => {
+  const onContentSizeChange = (
+    event: NativeSyntheticEvent<TextInputContentSizeChangeEventData>,
+  ) => {
     setInputHeight(event.nativeEvent.contentSize.height);
   };
 
   const hideDescription = () => {
-    dataState.isExpanded = false;
+    dataState!.isExpanded = false;
   };
 
   const showDescription = () => {
-    dataState.isExpanded = true;
+    dataState!.isExpanded = true;
   };
-  const isEmptyMessage = () => !(inputText && inputText.trim().length);
+  const isEmptyMessage = () => !(inputText && inputText?.trim().length);
 
   const keyboardHeight = useSharedValue(0);
 
@@ -155,8 +170,10 @@ const DiscussionChat = ({
     const keyboardDidShowListener = Keyboard.addListener(
       KEYBOARD_EVENTS.keyboardWillShow,
       (event) => {
-        if (event.endCoordinates.height > event.startCoordinates.height) {
-          scrollRef.current.scrollToEnd({animated: true});
+        if (
+          event.endCoordinates.height > Number(event.startCoordinates?.height)
+        ) {
+          scrollRef.current?.scrollToEnd({animated: true});
           keyboardHeight.value = withTiming(event.endCoordinates.height - 35, {
             duration: ANIMATION_DURATION,
             easing: Easing.out(Easing.exp),
@@ -172,7 +189,7 @@ const DiscussionChat = ({
 
     const keyboardWillHideListener = Keyboard.addListener(
       KEYBOARD_EVENTS.keyboardWillHide,
-      (event) => {
+      () => {
         keyboardHeight.value = withTiming(0, {
           duration: ANIMATION_DURATION,
           easing: Easing.out(Easing.exp),
@@ -208,7 +225,7 @@ const DiscussionChat = ({
           translateY:
             translationY.value +
             scrollViewHeight.value -
-            INITIAL_TEXT_INPUT_VIEW_HEIGHT -
+            100 -
             keyboardHeight.value -
             (inputHeight > INPUT_OFFSET ? inputHeight - INPUT_OFFSET : 0),
         },
@@ -217,7 +234,7 @@ const DiscussionChat = ({
     [keyboardHeight, inputHeight],
   );
 
-  function handleScrollViewOnLayout(event) {
+  function handleScrollViewOnLayout(event: LayoutChangeEvent) {
     'worklet';
     const {height: scrollLayoutHeight} = event.nativeEvent.layout;
     scrollViewHeight.value = scrollLayoutHeight;
@@ -240,11 +257,11 @@ const DiscussionChat = ({
         isMember={isMember}
       />
       {isMember ? (
-        <Animated.View style={[styles.textInputContainer, rTextInputStyle]}>
+        <Animated.View style={[styles.inputContainer, rTextInputStyle]}>
           <KeyboardAvoidingView keyboardVerticalOffset={0}>
             <View
               style={{
-                ...styles.inputContainer,
+                ...styles.inputWrapper,
                 height: Math.max(
                   INITIAL_TEXT_INPUT_VIEW_HEIGHT,
                   inputHeight + INPUT_OFFSET,
@@ -289,60 +306,4 @@ const DiscussionChat = ({
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
-  },
-  inputContainer: {
-    position: 'absolute',
-    top: 0,
-  },
-  inputWrapper: {
-    width,
-    display: 'flex',
-    alignItems: 'center',
-    alignContent: 'center',
-    backgroundColor: colors.white,
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: -1,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 0.5,
-    elevation: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 10,
-  },
-  input: {
-    backgroundColor: colors.paleLilacTwo,
-    borderTopColor: colors.grey4,
-    borderTopWidth: 1,
-    width: '75%',
-    flexDirection: 'row',
-    borderRadius: 40,
-    textAlignVertical: 'center',
-    paddingTop: Platform.OS === 'ios' ? 15 : 10,
-    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
-    paddingHorizontal: 15,
-  },
-  joinCommonText: {
-    ...text.textFieldplaceholder,
-    width,
-    textAlign: 'center',
-    color: colors.greySubtitle,
-    paddingTop: sizeS,
-    paddingBottom: sizeXL,
-    alignSelf: 'center',
-  },
-  nonMemberContainer: {
-    paddingTop: 10,
-    position: 'absolute',
-    bottom: 0,
-  },
-});
-
-export default inject('rootStore')(observer(DiscussionChat));
+export const DiscussionChat = inject('rootStore')(observer(Chat));

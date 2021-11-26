@@ -1,43 +1,39 @@
-import React, {useState, useEffect, useRef} from 'react';
+import auth from '@react-native-firebase/auth';
+// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {inject, observer} from 'mobx-react';
+import moment from 'moment';
+import {object, shape, string} from 'prop-types';
+import React, {useEffect, useState} from 'react';
 import {
+  Dimensions,
+  Image,
+  Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  ScrollView,
-  View,
   TouchableOpacity,
-  Image,
-  Dimensions,
-  TextInput,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform,
+  View,
 } from 'react-native';
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {observer, inject} from 'mobx-react';
-import Icon from '~/Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
-import Toast from '~/Util/Toast.js';
-import moment from 'moment';
-import NavigationBar from 'react-native-navbar';
-import auth from '@react-native-firebase/auth';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import ImageView from 'react-native-image-viewing';
-import {db} from '../../Firebase';
-import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
-import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import DiscussionService from '~/Services/DiscussionService';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ImageView from 'react-native-image-viewing';
+import NavigationBar from 'react-native-navbar';
+import Icon from '~/Assets/iconfont/Icon';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import ModerationService from '~/Services/ModerationService';
+import Loader from '~/Components/Loader';
+import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
-import Loader from '~/Components/Loader';
-import DiscussionChat from './DiscussionChat';
+import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import ModerationService from '~/Services/ModerationService';
+import {colors, font, layout, sizeM, sizeS, sizeXL, text} from '~/Theme';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import Toast from '~/Util/Toast.js';
+import {DiscussionChat} from './DiscussionChat';
 const {width} = Dimensions.get('window');
+
+console.log('000DiscussionChat', DiscussionChat);
 
 const Discussions = ({
   navigation,
@@ -47,18 +43,16 @@ const Discussions = ({
   rootStore,
 }) => {
   const redirectBack = !commonId && fromNotificationItem;
-  const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
 
-  const scrollRef = useRef(null);
-  const inputRef = useRef(null);
-
   const currentUser = auth().currentUser;
 
   const dataState = discussionStore.getDiscussionById(discussionId);
+
+  console.log('--dataState', dataState);
 
   if (!commonId && dataState) {
     commonId = dataState.commonId;
@@ -67,24 +61,16 @@ const Discussions = ({
   const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
-  const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
   const hasPermission = authStore.getPermission(
     commonId,
     authStore?.userInfo?.uid,
   );
-  const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
-  const [isSending, setIsSending] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
     useState(false);
   const [action, setAction] = useState(ACTIONS.report);
-
-  const isMember =
-    authStore.userInfo &&
-    (currCommon ? authStore.isDaoMember(currCommon?.members) : false);
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
@@ -102,52 +88,8 @@ const Discussions = ({
     };
   }, [discussionId]);
 
-  const showLoginScreen = () => {
-    bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
-  };
-
-  const sendMessageToDiscussion = async () => {
-    if (isSending) {
-      return;
-    }
-    setIsSending(true);
-
-    if (!currentUser) {
-      showLoginScreen();
-      setIsSending(false);
-      return;
-    }
-
-    const message = inputText;
-    if (!isEmptyMessage()) {
-      inputRef.current.clear();
-
-      db.collection('discussionMessage')
-        .doc()
-        .set({
-          text: message,
-          createTime: new Date(),
-          ownerId: currentUser.uid,
-          commonId: commonId,
-          discussionId: discussionId,
-        })
-        .then(async (msg) => {
-          Keyboard.dismiss();
-          setInputText('');
-          await DiscussionService.updateDiscussionLastMessage(
-            discussionId,
-            currentUser.uid,
-          );
-        })
-        .catch((error) => {
-          Toast.error(error);
-        })
-        .finally(() => {
-          setIsSending(false);
-        });
-    } else {
-      setIsSending(false);
-    }
+  const handleImageGallery = (index) => {
+    setImageGalleryIndex(index);
   };
 
   const headerImages = () => (
@@ -212,7 +154,6 @@ const Discussions = ({
       : navigation.pop();
 
   const header = () => (
-    // <SafeAreaView flex={1}>
     <>
       <NavigationBar
         statusBar={{hidden: true}}
@@ -327,7 +268,6 @@ const Discussions = ({
           /> */}
         </View>
       </View>
-      {/* </SafeAreaView> */}
     </>
   );
 
@@ -388,20 +328,6 @@ const Discussions = ({
     moderationFormStore.clearFormStoreState();
   };
 
-  const onChangeText = (currText) => setInputText(currText);
-
-  const onContentSizeChange = (event) => {
-    setInputHeight(event.nativeEvent.contentSize.height);
-  };
-
-  const hideDescription = () => {
-    dataState.isExpanded = false;
-  };
-
-  const showDescription = () => {
-    dataState.isExpanded = true;
-  };
-
   if (!dataState) {
     return (
       <View style={{...styles.safeView, ...layout.content}}>
@@ -409,10 +335,6 @@ const Discussions = ({
       </View>
     );
   }
-
-  const isEmptyMessage = () => !(inputText && inputText.trim().length);
-
-  console.log('---datastate', dataState.isExpanded);
 
   return (
     <SafeAreaView style={styles.safeView}>

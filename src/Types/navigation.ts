@@ -15,3 +15,9 @@ export interface WithNavigationRef {
 export interface WithNavigation {
   navigation: NavigationProps;
 }
+
+export type NavigationParams = {
+  CommonProfile: {
+    commonId: string;
+  };
+};

@@ -2,6 +2,7 @@ import {observable, computed} from 'mobx';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {BaseModel} from './BaseModel';
+import {firebase} from '~/Firebase';
 import {FLAGS} from '~/Components/Moderation/constants';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
@@ -22,7 +23,7 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
 
   // TODO: Remove that as we already have createAt in the BaseModel and every other collection follows that pattern
   @observable
-  createTime: Date;
+  createTime: firebase.firestore.Timestamp;
 
   @observable
   lastMessage: Date;
