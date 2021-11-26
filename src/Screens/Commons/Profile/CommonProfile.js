@@ -65,6 +65,9 @@ import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import {ModalCommonOptions} from '../components/ModalCommonOptions';
+import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 
 const {width} = Dimensions.get('window');
 
@@ -96,6 +99,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
+  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+  const [deleteScreenOn, setDeleteScreenOn] = useState(false);
 
   const {refreshFeed} = params;
 
@@ -446,7 +452,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const onEdit = (type) => {
-    bottomSheetStore.hideBottomSheet();
+    // bottomSheetStore.hideBottomSheet();
+    setOptionsModalVisible(false);
     navigateTo(type);
   };
 
@@ -740,7 +747,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           {hasPermission && (
             <TouchableOpacity
               style={{justifyContent: 'center', marginRight: 10}}
-              onPress={() => openCommonOptions()}>
+              onPress={openCommonOptionsModal}
+              // onPress={() => openCommonOptions()}
+              >
               <BlurView
                 style={{
                   padding: 6,
@@ -755,6 +764,35 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       }
     />
   );
+
+  const onModalOptionsAction = (type) => {
+    if (type === 'info' || type === 'rules') {
+      onEdit(type);
+    } else if (type === 'delete') {
+      setDeleteScreenOn(true);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      commonStore.deleteCommon(commonId);
+      Toast.done('Your Common is deleted');
+    } catch (err) {
+      Toast.error('Could not delete your Common');
+    }
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteScreenOn(false);
+  };
+
+  const closeCommonOptionsModal = () => {
+    setOptionsModalVisible(false);
+  };
+
+  const openCommonOptionsModal = () => {
+    setOptionsModalVisible(true);
+  };
 
   const renderRequestToJoinBtn = () => (
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
@@ -1034,6 +1072,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               </React.Fragment>
             )}
           </SafeAreaView>
+          <BottomSheetModal
+            style={styles.optionsModal}
+            isVisible={optionsModalVisible}
+            onClose={closeCommonOptionsModal}>
+            { !deleteScreenOn ?
+              <ModalCommonOptions onAction={onModalOptionsAction} />
+              :
+              <ModalDeleteConfirmation onDelete={onDelete} onCancel={onDeleteCancel} />
+            }
+          </BottomSheetModal>
         </View>
       ) : (
         loadingPlaceholder()
@@ -1214,6 +1262,10 @@ const styles = StyleSheet.create({
   fixedSectionText: {
     color: '#999',
     fontSize: 20,
+  },
+  optionsModal: {
+    borderRadius: 27,
+    padding: 16,
   },
 });
 

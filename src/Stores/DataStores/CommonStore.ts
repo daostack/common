@@ -115,4 +115,11 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
       throw err;
     }
   };
+  deleteCommon = async (commonId: string) => {
+    try {
+      return await CommonService.deleteCommon(commonId);
+    } catch (err) {
+      throw err;
+    }
+  };
 }

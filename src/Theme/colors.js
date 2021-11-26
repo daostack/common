@@ -44,4 +44,5 @@ export default {
   againstMediumOpacity: 'rgba(255, 96, 62, 0.2)',
   blueGray: 'rgba(151, 155, 186, 0.2)',
   blueGray1: 'rgba(151, 155, 186, 0.3)',
+  pinkishOrange: '#ff603e',
 };
