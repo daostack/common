@@ -36,6 +36,7 @@ import {styles} from './styles';
 const ANIMATION_DURATION = 500;
 const INPUT_OFFSET = 50;
 const INITIAL_TEXT_INPUT_VIEW_HEIGHT = 100;
+const INPUT_HINT_HEIGHT = 35;
 
 interface Props {
   commonId: string;
@@ -175,10 +176,13 @@ const Chat = ({
           event.endCoordinates.height > Number(event.startCoordinates?.height)
         ) {
           scrollRef.current?.scrollToEnd({animated: true});
-          keyboardHeight.value = withTiming(event.endCoordinates.height - 35, {
-            duration: ANIMATION_DURATION,
-            easing: Easing.out(Easing.exp),
-          });
+          keyboardHeight.value = withTiming(
+            event.endCoordinates.height - INPUT_HINT_HEIGHT,
+            {
+              duration: ANIMATION_DURATION,
+              easing: Easing.out(Easing.exp),
+            },
+          );
         } else {
           keyboardHeight.value = withTiming(0, {
             duration: ANIMATION_DURATION,
@@ -221,7 +225,7 @@ const Chat = ({
 
   const inputTranslateY = useDerivedValue(() => {
     const textInputCalc = isMember
-      ? 100 +
+      ? INITIAL_TEXT_INPUT_VIEW_HEIGHT +
         keyboardHeight.value +
         (inputHeight > INPUT_OFFSET ? inputHeight - INPUT_OFFSET : 0)
       : 0;
