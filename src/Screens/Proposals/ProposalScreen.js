@@ -139,10 +139,10 @@ const ProposalScreen = ({
       const asyncData = async () => {
         try {
           const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
-          //if (value === null) {
+          if (value === null) {
             await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
             start();
-          //}
+          }
         } catch (error){
           logger.log(error);
         }
