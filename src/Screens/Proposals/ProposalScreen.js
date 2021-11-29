@@ -91,6 +91,7 @@ const ProposalScreen = ({
   const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
   const {conversionRate} = uiStore;
+  console.log('userInfo', proposalStore)
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -135,25 +136,6 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
-      const asyncData = async () => {
-        try {
-          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
-          if (value === null) {
-            await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
-            start();
-          }
-        } catch (error){
-          logger.log(error);
-        }
-      };
-      asyncData();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  useEffect(() => {
     const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
       proposalId,
     );
@@ -174,6 +156,31 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+  let currentUserVote = {};
+  const filteredVotes = proposalInfo.votes.filter((item) => item.voterId === userInfo.uid);
+  if (filteredVotes.length !== 0) {
+    currentUserVote = filteredVotes[0];
+  }
+    const userVoted = Object.values(currentUserVote).length !== 0;
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      const asyncData = async () => {
+        try {
+          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
+          if (value === null && !userVoted) {
+            await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
+            start();
+          }
+        } catch (error){
+          logger.log(error);
+        }
+      };
+      asyncData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   let viewerPermission = '';
   if (proposalInfo) {
@@ -1242,7 +1249,8 @@ export default inject('rootStore')(observer(copilot({
   tooltipStyle: {
     backgroundColor: colors.mainBlue,
     borderRadius: 17,
-    width: 300,
+    width: screenWidth * 0.75,
+    alignItems: 'center',
     height: 190,
   },
   arrowColor: colors.mainBlue,
