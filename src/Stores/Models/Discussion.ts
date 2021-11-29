@@ -4,6 +4,7 @@ import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEnt
 import {BaseModel} from './BaseModel';
 import {firebase} from '~/Firebase';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {CommonFile, CommonImage} from '~/Types/shared';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
   @observable
@@ -29,10 +30,10 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
   lastMessage: Date;
 
   @observable
-  files: string[];
+  files: CommonFile[];
 
   @observable
-  images: string[];
+  images: CommonImage[];
 
   @observable
   followers: string[];

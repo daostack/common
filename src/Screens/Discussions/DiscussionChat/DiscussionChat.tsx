@@ -17,6 +17,7 @@ import Animated, {
   Easing,
   useAnimatedScrollHandler,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -218,20 +219,24 @@ const Chat = ({
     [isHeaderExpanded],
   );
 
+  const inputTranslateY = useDerivedValue(() => {
+    const textInputCalc = isMember
+      ? 100 +
+        keyboardHeight.value +
+        (inputHeight > INPUT_OFFSET ? inputHeight - INPUT_OFFSET : 0)
+      : 0;
+    return translationY.value + scrollViewHeight.value - textInputCalc;
+  }, [keyboardHeight, inputHeight, isMember]);
+
   const rTextInputStyle = useAnimatedStyle(
     () => ({
       transform: [
         {
-          translateY:
-            translationY.value +
-            scrollViewHeight.value -
-            100 -
-            keyboardHeight.value -
-            (inputHeight > INPUT_OFFSET ? inputHeight - INPUT_OFFSET : 0),
+          translateY: inputTranslateY.value,
         },
       ],
     }),
-    [keyboardHeight, inputHeight],
+    [],
   );
 
   function handleScrollViewOnLayout(event: LayoutChangeEvent) {
@@ -296,11 +301,13 @@ const Chat = ({
           </KeyboardAvoidingView>
         </Animated.View>
       ) : (
-        <View style={styles.nonMemberContainer}>
-          <Text style={{...styles.joinCommonText}}>
-            Only members can send messages
-          </Text>
-        </View>
+        <Animated.View style={[styles.inputContainer, rTextInputStyle]}>
+          <View style={styles.nonMemberContainer}>
+            <Text style={{...styles.joinCommonText}}>
+              Only members can send messages
+            </Text>
+          </View>
+        </Animated.View>
       )}
     </Animated.ScrollView>
   );

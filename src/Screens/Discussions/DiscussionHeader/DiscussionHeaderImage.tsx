@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {CommonImage} from '~/Types/shared';
 import {styles} from './styles';
 const {width} = Dimensions.get('window');
 
 type Props = {
-  images: {value: string}[];
+  images: CommonImage[];
   handleImageGallery: (index: number) => void;
 };
 

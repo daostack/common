@@ -1,24 +1,10 @@
 import auth from '@react-native-firebase/auth';
 // import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {inject, observer} from 'mobx-react';
-import moment from 'moment';
 import {object, shape, string} from 'prop-types';
 import React, {useEffect, useState} from 'react';
-import {
-  Dimensions,
-  Image,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Hyperlink from 'react-native-hyperlink';
+import {Dimensions, SafeAreaView, StyleSheet, View} from 'react-native';
 import ImageView from 'react-native-image-viewing';
-import NavigationBar from 'react-native-navbar';
-import Icon from '~/Assets/iconfont/Icon';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import Loader from '~/Components/Loader';
 import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
@@ -27,13 +13,13 @@ import ModerationModal from '~/Components/Moderation/ModerationModal';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ModerationService from '~/Services/ModerationService';
-import {colors, font, layout, sizeM, sizeS, sizeXL, text} from '~/Theme';
+import {colors, layout} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import Toast from '~/Util/Toast.js';
 import {DiscussionChat} from './DiscussionChat';
-const {width} = Dimensions.get('window');
+import {DiscussionHeader} from './DiscussionHeader';
 
-console.log('000DiscussionChat', DiscussionChat);
+const {width} = Dimensions.get('window');
 
 const Discussions = ({
   navigation,
@@ -42,25 +28,17 @@ const Discussions = ({
   },
   rootStore,
 }) => {
-  const redirectBack = !commonId && fromNotificationItem;
   const discussionStore = rootStore.discussionStore;
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const userStore = rootStore.userStore;
 
   const currentUser = auth().currentUser;
 
   const dataState = discussionStore.getDiscussionById(discussionId);
 
-  console.log('--dataState', dataState);
-
   if (!commonId && dataState) {
     commonId = dataState.commonId;
   }
-
-  const user = dataState?.ownerId
-    ? userStore.getUserById(dataState?.ownerId)
-    : null;
   const hasPermission = authStore.getPermission(
     commonId,
     authStore?.userInfo?.uid,
@@ -91,185 +69,6 @@ const Discussions = ({
   const handleImageGallery = (index) => {
     setImageGalleryIndex(index);
   };
-
-  const headerImages = () => (
-    <>
-      {dataState.images ? (
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{marginBottom: 20}}>
-          <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {dataState.images.map((currImage, currIndex) => (
-              <View key={`proposalImg_${currIndex}`}>
-                <TouchableOpacity
-                  onPress={() => setImageGalleryIndex(currIndex)}>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: width * 0.8},
-                    }}
-                    resizeMode="cover"
-                    source={{uri: currImage.value}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-            <View style={{width: 20}} />
-          </View>
-        </ScrollView>
-      ) : null}
-    </>
-  );
-
-  const headerFiles = () => (
-    <>
-      {dataState.files &&
-        dataState.files.map((f, index) => (
-          <View style={styles.adRow} key={`discussion_file_${index}`}>
-            <Icon name="file" color={colors.mainBlue} size={16} />
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Browser', {
-                  url: f.value,
-                })
-              }>
-              <Text style={styles.adsText}>{fileName(f.value)}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-    </>
-  );
-
-  const fileName = (url) => {
-    url = url.split('_');
-    return url[url.length - 2];
-  };
-
-  const navigateBack = () =>
-    fromNotificationItem && !redirectBack
-      ? navigation.replace('CommonProfile', {commonId})
-      : navigation.pop();
-
-  const header = () => (
-    <>
-      <NavigationBar
-        statusBar={{hidden: true}}
-        style={{
-          height: 48,
-        }}
-        title={{
-          title: dataState.title,
-          style: {...text.h2Black, maxWidth: '70%'},
-          ellipsizeMode: 'tail',
-          numberOfLines: 1,
-        }}
-        leftButton={
-          <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => navigateBack()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-          </TouchableOpacity>
-        }
-        // rightButton={
-        //   <TouchableOpacity
-        //     style={{justifyContent: 'center'}}
-        //     onPress={openOptionsMenu}>
-        //     <Icon
-        //       name="menu-horizontal"
-        //       size={32}
-        //       style={{marginRight: 10}}
-        //     />
-        //   </TouchableOpacity>
-        // }
-      />
-      <View
-        style={{
-          overflow: 'hidden',
-          paddingBottom: 5,
-          maxHeight: '50%',
-        }}>
-        <View style={styles.headerContainer}>
-          {dataState.isExpanded ? (
-            <View
-              style={{
-                paddingTop: 20,
-                paddingHorizontal: 20,
-                shadowColor: 'rgba(0, 0, 0, 0.12)',
-              }}>
-              <ScrollView style={{maxHeight: '90%'}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    paddingVertical: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={styles.avatar}
-                    source={user.photoURL ? {uri: user.photoURL} : null}
-                  />
-                  <View style={{flex: 1, paddingHorizontal: 10}}>
-                    <Text style={styles.displayName}>{user.displayName}</Text>
-                    {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
-                    <Text style={styles.date}>
-                      {moment(dataState.createTime.toDate()).fromNow()}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <Hyperlink
-                    linkDefault={true}
-                    linkStyle={styles.hyperLinkStyle}>
-                    <Text style={styles.message}>{dataState.message}</Text>
-                  </Hyperlink>
-                </View>
-
-                {headerImages()}
-                {headerFiles()}
-              </ScrollView>
-
-              <TouchableOpacity
-                style={{alignItems: 'center', paddingVertical: 10}}
-                onPress={() => {
-                  dataState.isExpanded = !dataState.isExpanded;
-                }}>
-                <Image
-                  style={{height: 10, width: 60}}
-                  source={require('../../Assets/collapse.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={{alignItems: 'center', paddingVertical: 10}}
-                onPress={() => {
-                  dataState.isExpanded = !dataState.isExpanded;
-                }}>
-                <Image
-                  style={{height: 10, width: 60}}
-                  source={require('../../Assets/expand.png')}
-                />
-              </TouchableOpacity>
-            </>
-          )}
-          {/* <View
-            style={{
-              height: 4,
-              marginTop: 10,
-              // paddingHorizontal: -20,
-              marginHorizontal: -20,
-              backgroundColor: colors.grey4,
-            }}
-          /> */}
-        </View>
-      </View>
-    </>
-  );
 
   /**
    * For discussionMessages
@@ -338,7 +137,13 @@ const Discussions = ({
 
   return (
     <SafeAreaView style={styles.safeView}>
-      {header()}
+      <DiscussionHeader
+        rootStore={rootStore}
+        discussionId={discussionId}
+        commonId={commonId}
+        fromNotificationItem={fromNotificationItem}
+        handleImageGallery={handleImageGallery}
+      />
       <ModerationModal
         title={TITLES.comment}
         visible={showModerationModal}
@@ -387,120 +192,9 @@ Discussions.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  message: {
-    marginVertical: 10,
-    lineHeight: 24,
-    color: colors.black,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-  date: {
-    color: colors.formPlaceholderColor,
-    ...font.primary.regular,
-    ...font.fontSize(2),
-  },
-  displayName: {
-    ...font.primary.regular,
-    ...font.fontSize(2),
-    color: colors.black,
-  },
-  galleryImage: {
-    marginRight: 15,
-    width: 120,
-    height: 250,
-    borderRadius: 10,
-    backgroundColor: colors.grey4,
-  },
   safeView: {
     flex: 1,
-    backgroundColor: colors.paleGrey,
-  },
-  imageGallery: {
-    ...layout.flexRow,
-    ...layout.flexStart,
-
-    width: '100%',
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    backgroundColor: colors.grey4,
-    borderRadius: 17.5,
-  },
-  inputContainer: {
-    width,
-    display: 'flex',
-    alignItems: 'center',
-    alignContent: 'center',
     backgroundColor: colors.white,
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: -1,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 0.5,
-    elevation: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 10,
-  },
-  input: {
-    backgroundColor: colors.paleLilacTwo,
-    borderTopColor: colors.grey4,
-    borderTopWidth: 1,
-    width: '75%',
-    flexDirection: 'row',
-    borderRadius: 40,
-    textAlignVertical: 'center',
-    paddingTop: Platform.OS === 'ios' ? 15 : 10,
-    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
-    paddingHorizontal: 15,
-  },
-  adsText: {
-    ...font.fontSize(2),
-    textDecorationLine: 'underline',
-    ...font.primary.regular,
-    ...layout.marginLeftXS,
-  },
-  adRow: {
-    alignItems: 'center',
-    ...layout.flexRow,
-    alignSelf: 'stretch',
-    paddingVertical: sizeM,
-  },
-  joinCommonText: {
-    ...text.textFieldplaceholder,
-    width,
-    textAlign: 'center',
-    color: colors.greySubtitle,
-    paddingTop: sizeS,
-    paddingBottom: sizeXL,
-    alignSelf: 'center',
-  },
-  headerContainer: {
-    backgroundColor: colors.white,
-    // flex: 1,
-    paddingBottom: 0,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    shadowColor: 'rgba(0, 0, 0, 0.12)',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 5,
-    shadowOpacity: 0.8,
-    elevation: 5,
-  },
-  hyperLinkStyle: {
-    textDecorationLine: 'underline',
-    color: colors.mainBlue,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
   },
 });
 

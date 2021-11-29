@@ -56,5 +56,6 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
     position: 'absolute',
     bottom: 0,
+    backgroundColor: colors.white,
   },
 });

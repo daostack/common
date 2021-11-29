@@ -4,9 +4,10 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 import {styles} from './styles';
+import {CommonFile} from '~/Types/shared';
 
 type Props = {
-  files: {url: string; value: string}[];
+  files: CommonFile[];
 };
 
 export const DiscussionHeaderFiles = ({files}: Props): ReactElement => {

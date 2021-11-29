@@ -1,4 +1,3 @@
-// import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import moment from 'moment';
@@ -13,6 +12,7 @@ import {RootStore} from '~/Types/store';
 import {styles} from './styles';
 import {DiscussionHeaderImage} from './DiscussionHeaderImage';
 import {DiscussionHeaderFiles} from './DiscussionHeaderFiles';
+import {inject, observer} from 'mobx-react';
 
 interface Props {
   rootStore: RootStore;
@@ -22,7 +22,7 @@ interface Props {
   handleImageGallery: (index: number) => void;
 }
 
-export const DiscussionHeader = ({
+const Header = ({
   rootStore,
   discussionId,
   commonId,
@@ -86,10 +86,7 @@ export const DiscussionHeader = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Image
-                    style={styles.avatar}
-                    source={user?.photoURL ? {uri: user.photoURL} : null}
-                  />
+                  <Image style={styles.avatar} source={{uri: user?.photoURL}} />
                   <View style={{flex: 1, paddingHorizontal: 10}}>
                     <Text style={styles.displayName}>{user?.displayName}</Text>
                     {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
@@ -121,7 +118,7 @@ export const DiscussionHeader = ({
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
-                  source={require('../../Assets/collapse.png')}
+                  source={require('../../../Assets/collapse.png')}
                 />
               </TouchableOpacity>
             </View>
@@ -134,7 +131,7 @@ export const DiscussionHeader = ({
                 }}>
                 <Image
                   style={{height: 10, width: 60}}
-                  source={require('../../Assets/expand.png')}
+                  source={require('../../../Assets/expand.png')}
                 />
               </TouchableOpacity>
             </>
@@ -153,3 +150,5 @@ export const DiscussionHeader = ({
     </>
   );
 };
+
+export const DiscussionHeader = inject('rootStore')(observer(Header));
