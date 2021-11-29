@@ -139,10 +139,10 @@ const ProposalScreen = ({
       const asyncData = async () => {
         try {
           const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
-          if (value === null) {
+          //if (value === null) {
             await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
             start();
-          }
+          //}
         } catch (error){
           logger.log(error);
         }
@@ -1232,7 +1232,7 @@ const styles = StyleSheet.create({
 });
 
 const circleSvgPath = ({position, canvasSize, size}) => (
-  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${position.y._value}H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${position.y._value + size.y._value}a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${position.y._value + 20}a 20 20 0 0 1 20 -20Z`
+  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${position.y._value}H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${position.y._value + size.y._value - 20}a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${position.y._value + 20}a 20 20 0 0 1 20 -20Z`
   );
 
 export default inject('rootStore')(observer(copilot({
