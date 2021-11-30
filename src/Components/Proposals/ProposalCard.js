@@ -41,6 +41,7 @@ const ProposalCard = ({
   rootStore,
   isMember,
   viewerPermission,
+  type,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
@@ -65,13 +66,12 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -134,7 +134,9 @@ const ProposalCard = ({
               proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
-          moderation={proposalInfo.moderation}
+          moderation={
+            proposalInfo.moderation && {...proposalInfo.moderation, type}
+          }
           reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
@@ -233,6 +235,7 @@ ProposalCard.propTypes = {
   rootStore: rootStorePropTypes,
   isMember: bool,
   viewerPermission: string,
+  type: string,
 };
 
 const styles = StyleSheet.create({

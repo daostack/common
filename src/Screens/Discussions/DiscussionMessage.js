@@ -18,9 +18,8 @@ import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
-import {reporterName} from '../../Components/Moderation/Reported';
+import {reporterName} from '../../Components/Moderation/helper';
 import {FLAGS} from '../../Components/Moderation/constants';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import Icon from '~/Assets/iconfont/Icon';
 import _ from 'lodash';
 
@@ -43,8 +42,6 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-
-  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -83,7 +80,7 @@ const DiscussionMessage = ({
       )}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
-        {isHidden && !isModerator ? ' by a moderator' : ` by ${moderatorName}`}
+        {` by ${moderatorName}`}
       </Text>
     </View>
   );

@@ -44,9 +44,7 @@ const DiscussionCard = ({
   );
   const showHeader =
     data.moderation?.flag === FLAGS.hidden ||
-    (data.moderation?.flag === FLAGS.reported);
-
-
+    data.moderation?.flag === FLAGS.reported;
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);

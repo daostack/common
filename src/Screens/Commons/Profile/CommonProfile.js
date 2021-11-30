@@ -48,7 +48,7 @@ import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
@@ -523,7 +523,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        userName: reporterName(
+          userStore.getUserById(moderation.moderator),
+          authStore.userInfo?.uid,
+        ),
         date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,

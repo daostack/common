@@ -91,8 +91,7 @@ const ProposalCardHeader = ({
   const showCountdown =
     !moderation?.flag ||
     moderation?.flag === FLAGS.visible ||
-    (moderation?.flag !== FLAGS.hidden &&
-      moderation?.flag === FLAGS.reported);
+    (moderation?.flag !== FLAGS.hidden && moderation?.flag === FLAGS.reported);
 
   return isScreenHeader ? (
     <TouchableWithoutFeedback onPress={onPress}>
@@ -132,8 +131,8 @@ const ProposalCardHeader = ({
           ? {
               ...styles.proposalCardHeader,
               backgroundColor: headerStatus.lightColor,
-              flexDirection: moderation?.flag === FLAGS.reported ? 'column' : 'row',
-
+              flexDirection:
+                moderation?.flag === FLAGS.reported ? 'column' : 'row',
             }
           : {
               ...styles.hiddenCardHeader,
