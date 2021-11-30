@@ -91,7 +91,6 @@ const ProposalScreen = ({
   const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
   const {conversionRate} = uiStore;
-  console.log('userInfo', proposalStore)
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
