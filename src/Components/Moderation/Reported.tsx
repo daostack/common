@@ -12,7 +12,8 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
   viewerPermission,
 }) => {
   const reporterUserName =
-    viewerPermission === PERMISSIONS.MODERATOR
+    viewerPermission === PERMISSIONS.MODERATOR ||
+    (!viewerPermission && reporter)
       ? ` by ${reporterName(reporter, currentUID)}`
       : ' by a moderator';
 

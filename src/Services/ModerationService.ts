@@ -50,14 +50,12 @@ class ModerationService {
 
   async report(
     type: keyof typeof ENTITY_TYPES,
-    commonId: string,
     moderationData: Record<string, string>,
   ): Promise<void> {
     await this.axiosClient.post(
       this.endpoints.report,
       {
         moderationData,
-        commonId,
         type,
       },
       {

@@ -59,6 +59,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {TITLES} from '~/Components/Moderation/constants';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -618,8 +619,7 @@ const ProposalScreen = ({
     Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
     await ModerationService.report(
-      'discussionMessage',
-      proposalInfo.commonId,
+      TITLES.discussionMessage,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();

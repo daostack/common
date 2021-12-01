@@ -509,7 +509,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
     await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
