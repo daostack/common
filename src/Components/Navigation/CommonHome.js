@@ -1,7 +1,7 @@
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
-import {Image, Platform, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -10,6 +10,7 @@ import NotificationList from '~/Screens/Notifications/NotificationList';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {inject, observer} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 
 const CommonHome = ({rootStore}) => (
   <Tab.Navigator
@@ -56,7 +57,7 @@ const CommonHome = ({rootStore}) => (
         shadowOffset: {height: 5},
         shadowOpacity: 0.75,
         shadowRadius: 5,
-        height: Platform.OS === 'ios' ? 100 : 60,
+        height: TAB_BAR_HEIGHT,
       },
     }}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />

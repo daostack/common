@@ -82,6 +82,7 @@ const CreateDiscussionForm = ({
             autoCapitalize="sentences"
             autoCorrect={false}
             style={styles.textInputStyle}
+            maxLength={49}
             validation={{
               name: TITLE,
               formStore: createDiscussionStore,

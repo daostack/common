@@ -52,7 +52,7 @@ import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -284,7 +284,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, ENTITY_TYPES.proposal)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -488,7 +488,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
       {
         onAction: item
           ? (actionType) =>
@@ -497,6 +497,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         hasPermission,
         moderatorOptions: {
           item,
+          isMember,
         },
       },
     );

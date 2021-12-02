@@ -48,7 +48,6 @@ const DiscussionCard = ({
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
