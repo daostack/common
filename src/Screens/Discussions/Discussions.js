@@ -76,8 +76,9 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -89,10 +90,9 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
+      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+        discussionId,
+      );
     }
 
     return () => {
@@ -363,7 +363,7 @@ const Discussions = ({
 
   const openMessageOptions = (message, itemType) => {
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,

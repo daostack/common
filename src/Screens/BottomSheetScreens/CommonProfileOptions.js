@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {text, layout, colors} from '~/Theme';
+import {text, layout, colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func, string} from 'prop-types';
@@ -17,10 +17,10 @@ const CommonProfileOptions = ({
   hasPermission,
 }) => {
   const [actions, setActions] = useState(
-    moderatorOptions.actions || ['Hide', 'Report'],
+    moderatorOptions.actions || ['Hide', 'Report', 'Share', 'Copy link'],
   );
   const [iconName, setIconName] = useState('hidden');
-  const {item} = moderatorOptions;
+  const {item, isMember} = moderatorOptions;
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
@@ -40,7 +40,7 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Text style={styles.text}>Options</Text>
+        <Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>
         {!item && (
           <>
             <TouchableOpacity
@@ -67,20 +67,47 @@ const CommonProfileOptions = ({
         )}
         {item && (
           <>
-            {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction(actions[2])}>
+              <Icon
+                name="share-32"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={{...text.buttonblack, lineHeight: 20}}>
+                {actions[2]}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction(actions[3])}>
+              <Icon
+                name="link"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={{...text.buttonblack, lineHeight: 20}}>
+                {actions[3]}
+              </Text>
+            </TouchableOpacity>
             {hasPermission && (
-              <TouchableOpacity
-                style={styles.optionBtn}
-                onPress={() => onAction(actions[0])}>
-                <Icon
-                  name={iconName}
-                  style={layout.marginRightS}
-                  color={colors.error}
-                />
-                <Text style={text.buttonred}>{actions[0]}</Text>
-              </TouchableOpacity>
+              <>
+                <View style={styles.lineHorizontal} />
+                <Text style={styles.text}>Moderator tools</Text>
+                <TouchableOpacity
+                  style={styles.optionBtn}
+                  onPress={() => onAction(actions[0])}>
+                  <Icon
+                    name={iconName}
+                    style={layout.marginRightS}
+                    color={colors.error}
+                  />
+                  <Text style={text.buttonred}>{actions[0]}</Text>
+                </TouchableOpacity>
+              </>
             )}
-            {actions[1] && (
+            {isMember && actions[1] && (
               <TouchableOpacity
                 style={styles.optionBtn}
                 onPress={() => onAction(actions[1])}>
@@ -107,6 +134,11 @@ CommonProfileOptions.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  lineHorizontal: {
+    width: '90%',
+    borderWidth: 1,
+    borderColor: colors.blueGray1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -118,7 +150,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    paddingVertical: 20,
   },
 
   safeArea: {
@@ -132,14 +163,12 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
-    borderBottomWidth: 1,
-    borderColor: colors.grey4,
     width: 350,
   },
   text: {
     ...text.h2Black,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginVertical: 30,
   },
 });
 

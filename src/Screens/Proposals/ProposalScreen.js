@@ -602,7 +602,7 @@ const ProposalScreen = ({
       );
     }
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,

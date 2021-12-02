@@ -50,7 +50,6 @@ const DiscussionCard = ({
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(data.ownerId);
 
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
@@ -97,12 +96,9 @@ const DiscussionCard = ({
                 <Text style={styles.title} numberOfLines={2}>
                   {data.title}
                 </Text>
-                {(!discussionMessageStore.isModerationHidden ||
-                  hasPermission) &&
-                  isMember &&
-                  !isOwner && (
-                    <ModerationMenu showOptions={openCommonOptions} />
-                  )}
+                {authStore.signedInUser && (
+                  <ModerationMenu showOptions={openCommonOptions} />
+                )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 {user.photoURL ? (

@@ -58,20 +58,18 @@ const ProposalCard = ({
     authStore?.userInfo?.uid,
   );
   const showCard = isVisible || (!isVisible && hasPermission);
-  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -147,10 +145,9 @@ const ProposalCard = ({
                 {isFundingRequest &&
                   (proposalInfo?.description?.title || 'Unknown title')}
               </Text>
-              {(!proposalInfo.isModerationHidden || hasPermission) &&
-                isMember &&
-                !isSwiper &&
-                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+              {authStore.signedInUser && !isSwiper && (
+                <ModerationMenu showOptions={openCommonOptions} />
+              )}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
