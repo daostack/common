@@ -215,13 +215,16 @@ const Discussions = ({
       <NavigationBar
         statusBar={{hidden: true}}
         style={{
-          height: 48,
+          height: 60,
         }}
         title={{
           title: dataState.title,
-          style: {...text.h2Black, maxWidth: '70%'},
+          style: {
+            ...text.h2Black,
+            maxWidth: '70%',
+            whiteSpace: 'wrap',
+          },
           ellipsizeMode: 'tail',
-          numberOfLines: 1,
         }}
         leftButton={
           <TouchableOpacity
