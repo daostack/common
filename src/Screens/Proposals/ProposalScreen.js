@@ -16,6 +16,7 @@ import {
   Pressable,
   Image,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -59,7 +60,11 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
+import {TooltipComponent} from './components/ModalTooltip';
+import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 
+const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -75,6 +80,7 @@ const ProposalScreen = ({
     },
   },
   rootStore,
+  start,
 }) => {
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -149,6 +155,31 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+  let currentUserVote = {};
+  const filteredVotes = proposalInfo.votes.filter((item) => item.voterId === userInfo.uid);
+  if (filteredVotes.length !== 0) {
+    currentUserVote = filteredVotes[0];
+  }
+    const userVoted = Object.values(currentUserVote).length !== 0;
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      const asyncData = async () => {
+        try {
+          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
+          if (value === null && !userVoted) {
+            await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
+            start();
+          }
+        } catch (error){
+          logger.log(error);
+        }
+      };
+      asyncData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   let viewerPermission = '';
   if (proposalInfo) {
@@ -913,83 +944,91 @@ const ProposalScreen = ({
                 </View>
                 {renderDebWarningIfNeeded()}
 
-                <View
-                  style={{
-                    ...layout.content,
-                    width: '100%',
-                    paddingHorizontal: 0,
-                  }}>
-                  <View style={styles.proposalProgressInfo}>
+                <CopilotStep
+                  text="This is a hello world example!"
+                  order={1}
+                  name="hello"
+                >
+                  <CopilotView style={{width: '100%'}}>
                     <View
                       style={{
                         ...layout.content,
-                        ...layout.flexRow,
-                        padding: 0,
+                        width: '100%',
+                        paddingHorizontal: 0,
                       }}>
-                      <Icon
-                        name="user-approved"
-                        color={colors.lightishGreen}
-                        size={25}
-                        style={layout.marginRightXS}
-                      />
-                      <Text style={text.lightishGreenText}>
-                        {proposalInfo.votesFor}
-                      </Text>
-                    </View>
+                      <View style={styles.proposalProgressInfo}>
+                        <View
+                          style={{
+                            ...layout.content,
+                            ...layout.flexRow,
+                            padding: 0,
+                          }}>
+                          <Icon
+                            name="user-approved"
+                            color={colors.lightishGreen}
+                            size={25}
+                            style={layout.marginRightXS}
+                          />
+                          <Text style={text.lightishGreenText}>
+                            {proposalInfo.votesFor}
+                          </Text>
+                        </View>
 
-                    <Text style={text.smallBlackText}>
-                      {!proposalInfo.votesCount
-                        ? 'No votes yet'
-                        : `${proposalInfo.votesCount} ${
-                            proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                          }`}
-                    </Text>
+                        <Text style={text.smallBlackText}>
+                          {!proposalInfo.votesCount
+                            ? 'No votes yet'
+                            : `${proposalInfo.votesCount} ${
+                                proposalInfo.votesCount > 1 ? 'votes' : 'vote'
+                              }`}
+                        </Text>
+
+                        <View
+                          style={{
+                            ...layout.content,
+                            ...layout.flexRow,
+                            padding: 0,
+                          }}>
+                          <Text style={text.againstText}>
+                            {proposalInfo.votesAgainst}
+                          </Text>
+                          <Icon
+                            name="user-rejected"
+                            color={colors.against}
+                            size={25}
+                            style={layout.marginLeftXS}
+                          />
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          ...styles.proposalProgressBar,
+                          ...{
+                            backgroundColor: isNaN(
+                              proposalInfo?.progressBarWidthPercent,
+                            )
+                              ? colors.grey4
+                              : colors.against,
+                          },
+                        }}>
+                        <View
+                          style={{
+                            ...styles.proposalInnerProgressBar,
+                            width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
+                          }}
+                        />
+                      </View>
+                    </View>
 
                     <View
                       style={{
-                        ...layout.content,
                         ...layout.flexRow,
-                        padding: 0,
+                        justifyContent: 'space-between',
+                        width: '100%',
                       }}>
-                      <Text style={text.againstText}>
-                        {proposalInfo.votesAgainst}
-                      </Text>
-                      <Icon
-                        name="user-rejected"
-                        color={colors.against}
-                        size={25}
-                        style={layout.marginLeftXS}
-                      />
+                      {renderVoting && renderVotingButtons(topVotingButtonsRef)}
                     </View>
-                  </View>
-                  <View
-                    style={{
-                      ...styles.proposalProgressBar,
-                      ...{
-                        backgroundColor: isNaN(
-                          proposalInfo?.progressBarWidthPercent,
-                        )
-                          ? colors.grey4
-                          : colors.against,
-                      },
-                    }}>
-                    <View
-                      style={{
-                        ...styles.proposalInnerProgressBar,
-                        width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
-                      }}
-                    />
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    ...layout.flexRow,
-                    justifyContent: 'space-between',
-                    width: '100%',
-                  }}>
-                  {renderVoting && renderVotingButtons(topVotingButtonsRef)}
-                </View>
+                  </CopilotView>
+                </CopilotStep>
               </View>
             </View>
           )}
@@ -1198,4 +1237,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(ProposalScreen));
+const circleSvgPath = ({position, canvasSize, size}) => (
+  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${position.y._value}H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${position.y._value + size.y._value - 20}a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${position.y._value + 20}a 20 20 0 0 1 20 -20Z`
+  );
+
+export default inject('rootStore')(observer(copilot({
+  stepNumberComponent: () => <View />,
+  overlay: 'svg',
+  tooltipComponent: TooltipComponent,
+  tooltipStyle: {
+    backgroundColor: colors.mainBlue,
+    borderRadius: 17,
+    width: screenWidth * 0.75,
+    alignItems: 'center',
+    height: 190,
+  },
+  arrowColor: colors.mainBlue,
+  backdropColor: 'rgba(0, 0, 0, 0.2)',
+  svgMaskPath: circleSvgPath,
+})(ProposalScreen)));
