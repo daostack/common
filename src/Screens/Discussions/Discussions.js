@@ -51,7 +51,6 @@ const Discussions = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
 
-  const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
@@ -250,6 +249,7 @@ const Discussions = ({
           overflow: 'hidden',
           paddingBottom: 5,
           maxHeight: '50%',
+          backgroundColor: colors.paleLilacTwo,
         }}>
         <View style={styles.headerContainer}>
           {dataState.isExpanded ? (
@@ -418,17 +418,15 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={styles.scrollView} ref={scrollRef}>
-        <DiscussionMessagesList
-          discussionId={discussionId}
-          inputRef={inputRef}
-          scrollViewRef={scrollRef}
-          hasPermission={hasPermission}
-          commonId={commonId}
-          openMessageOptions={(message) => openMessageOptions(message)}
-          isMember={isMember}
-        />
-      </ScrollView>
+      <DiscussionMessagesList
+        discussionId={discussionId}
+        hasPermission={hasPermission}
+        commonId={commonId}
+        openMessageOptions={(message) => openMessageOptions(message)}
+        isMember={isMember}
+        inputHeight={inputHeight + 50}
+        isSending={isSending}
+      />
 
       {isMember ? (
         <KeyboardAvoidingView
@@ -621,11 +619,6 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
   },
 });
 
