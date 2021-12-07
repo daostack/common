@@ -26,6 +26,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
+import {CurrencySymbols} from '~/Util/locale';
 
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -297,10 +298,14 @@ const CreateStep4 = ({
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>Minimum contribution</Text>
           </View>
-          <Text style={styles.textContent}>
-            ${minContribution}{' '}
-            <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} /> contribution
-          </Text>
+          {minContribution > 0 && (
+            <Text style={styles.textContent}>
+              {CurrencySymbols.SHEKEL}
+              {minContribution}{' '}
+              <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} />{' '}
+              contribution
+            </Text>
+          )}
           {form.zeroContribution && (
             <Text style={styles.textContent}>
               Members will be able to join the Common without a personal
