@@ -181,12 +181,6 @@ const CreateStep2 = ({
             }${parseFloat(MAX_CONTRIBUTION).toLocaleString('en')}.`,
           }}
         />
-        {/* {isIsraelLocale && (
-          <Text style={styles.info2}>
-            All contributions are made in U.S. dollars. The actual contribution
-            amount in ILS may be different than the amounts estimated above.
-          </Text>
-        )} */}
         {contributionIndex === 0 && (
           <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
             <View style={styles.zeroContributionView}>
