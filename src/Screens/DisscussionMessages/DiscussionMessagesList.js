@@ -72,7 +72,7 @@ const DiscussionMessagesList = ({
     }
   };
 
-  const setPosition = (async (event) => {
+  const setPosition = async (event) => {
     getLastPosition();
     event.persist();
     if (lastMessagePoint < event.nativeEvent.contentOffset.y) {
@@ -82,7 +82,7 @@ const DiscussionMessagesList = ({
         logger.log('error', e);
       }
     }
-  });
+  };
 
   const onSizeChange = useCallback(() => {
     if (scrollRef) {
