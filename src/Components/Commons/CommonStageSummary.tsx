@@ -89,9 +89,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
 CommonStageSummary.propTypes = props;
 
 const styles = StyleSheet.create({
-  raisedContainer: {
-    ...layout.flexRow,
-  },
   commonProgressContainer: {
     ...layout.content,
     paddingVertical: 0,
@@ -112,10 +109,6 @@ const styles = StyleSheet.create({
   },
   headerTitleLight: {
     ...text.h3Black,
-  },
-  headerSmallText: {
-    ...text.smallBlackText,
-    ...text.fontColorGreySteel,
   },
   subtitleContainer: {
     marginTop: 5,
