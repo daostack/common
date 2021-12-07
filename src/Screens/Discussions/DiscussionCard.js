@@ -94,8 +94,7 @@ const DiscussionCard = ({
                 <Text style={styles.title} numberOfLines={2}>
                   {data.title}
                 </Text>
-                {(!discussionMessageStore.isModerationHidden ||
-                  hasPermission) &&
+                {(!discussionMessageStore.isModerationHidden) &&
                   !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}

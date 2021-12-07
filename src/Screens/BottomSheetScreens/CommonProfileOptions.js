@@ -107,7 +107,6 @@ const CommonProfileOptions = ({
                 </TouchableOpacity>
               </>
             )}
-            {isMember && actions[1] && (
               <TouchableOpacity
                 style={styles.optionBtn}
                 onPress={() => onAction(actions[1])}>
@@ -118,7 +117,6 @@ const CommonProfileOptions = ({
                 />
                 <Text style={text.buttonred}>{actions[1]}</Text>
               </TouchableOpacity>
-            )}
           </>
         )}
       </View>
