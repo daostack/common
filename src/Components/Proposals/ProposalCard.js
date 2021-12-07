@@ -59,6 +59,7 @@ const ProposalCard = ({
     authStore?.userInfo?.uid,
   );
   const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
