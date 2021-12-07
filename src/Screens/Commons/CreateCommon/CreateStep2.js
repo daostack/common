@@ -87,6 +87,8 @@ const CreateStep2 = ({
       null,
       minimumFieldRules,
     );
+
+    onCheckboxChecked(false);
   };
 
   const onCheckboxChecked = (state) => {
