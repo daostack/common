@@ -5,9 +5,14 @@ import {InferProps} from 'prop-types';
 import {bool, shape, number} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
 import ModalConversion from './ModalConversion';
-import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {
+  convertAmountToIls,
+  CurrencySymbols,
+  isIsraelLocale,
+} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {CommonNumberBox} from './CommonNumberBox';
 
 const props = {
   isCommonCard: bool,
@@ -56,60 +61,34 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         </>
       );
     }; */
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
       : Math.sign(num) * Math.abs(num);
 
-  const commonNumberBox = (
-    numberComponent: React.ReactNode,
-    title: string,
-    subtitle?: string,
-  ) => (
-    <View
-      style={{
-        alignItems: 'center',
-        flex: 1,
-      }}>
-      <Text style={styles.headerSmallText}>{title}</Text>
-      <View style={styles.raisedContainer}>{numberComponent}</View>
-      {subtitle &&
-        isIsraelLocale &&
-        !isCommonCard &&
-        subtitle !== convertAmountToIls(0, uiStore.conversionRate) && (
-          <View style={styles.subtitleContainer}>
-            <Text style={styles.subtitleText}>{subtitle}</Text>
-            <Pressable onPress={() => setModalVisible(!modalVisible)}>
-              <Icon name="questionMark" size={14} color={colors.grey2} />
-            </Pressable>
-          </View>
-        )}
-    </View>
-  );
   return (
     <View style={styles.commonProgressContainer}>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ModalConversion onPressClose={() => setModalVisible(!modalVisible)} />
-      </Modal>
       <View style={styles.commonNumbers}>
-        {commonNumberBox(
-          <Text style={styles.headerTitle}>
-            ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
-          </Text>,
-          isCommonCard ? 'Raised' : 'Available funds',
-          convertAmountToIls(
-            isCommonCard ? raised / 100 : balance / 100,
-            uiStore.conversionRate,
-          ),
-        )}
-        {commonNumberBox(
-          <Text style={styles.headerTitle}>
-            {isCommonCard ? members : '$' + formatNumber(raised / 100)}
-          </Text>,
-          isCommonCard ? 'Members' : 'Raised',
-        )}
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL}
+              {formatNumber(isCommonCard ? raised / 100 : balance / 100)}
+            </Text>
+          }
+          title={isCommonCard ? 'Raised' : 'Available funds'}
+        />
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {isCommonCard
+                ? members
+                : CurrencySymbols.SHEKEL + formatNumber(raised / 100)}
+            </Text>
+          }
+          title={isCommonCard ? 'Members' : 'Raised'}
+        />
       </View>
     </View>
   );
