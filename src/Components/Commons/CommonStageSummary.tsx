@@ -1,17 +1,10 @@
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
-import {layout, text, font, colors} from '~/Theme';
-import {InferProps} from 'prop-types';
-import {bool, shape, number} from 'prop-types';
-import Icon from '~/Assets/iconfont/Icon';
-import ModalConversion from './ModalConversion';
-import {
-  convertAmountToIls,
-  CurrencySymbols,
-  isIsraelLocale,
-} from '~/Util/locale';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
+import {bool, InferProps, number, shape} from 'prop-types';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {font, layout, text} from '~/Theme';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from './CommonNumberBox';
 
 const props = {
@@ -30,7 +23,6 @@ const props = {
 const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
-  uiStore,
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -137,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(observer(CommonStageSummary));
+export default observer(CommonStageSummary);
