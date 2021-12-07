@@ -8,6 +8,7 @@ import ModalConversion from './ModalConversion';
 import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import {CurrencySymbols} from '~/Util/locale';
 
 const props = {
   isCommonCard: bool,
@@ -96,7 +97,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
       <View style={styles.commonNumbers}>
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            ${formatNumber(isCommonCard ? raised / 100 : balance / 100)}
+            {CurrencySymbols.SHEKEL}{formatNumber(isCommonCard ? raised / 100 : balance / 100)}
           </Text>,
           isCommonCard ? 'Raised' : 'Available funds',
           convertAmountToIls(
@@ -106,7 +107,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         )}
         {commonNumberBox(
           <Text style={styles.headerTitle}>
-            {isCommonCard ? members : '$' + formatNumber(raised / 100)}
+            {isCommonCard ? members : `${CurrencySymbols.SHEKEL}` + formatNumber(raised / 100)}
           </Text>,
           isCommonCard ? 'Members' : 'Raised',
         )}

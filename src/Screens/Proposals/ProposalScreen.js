@@ -63,6 +63,7 @@ import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
 import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
+import {CurrencySymbols} from '~/Util/locale';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -907,7 +908,7 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {amount > 0 ? `$${amount}` : '$0'}
+                      {amount > 0 ? `${CurrencySymbols.SHEKEL}${amount}` : `${CurrencySymbols.SHEKEL}0`}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -939,7 +940,7 @@ const ProposalScreen = ({
                     <Text
                       style={
                         text.smallBlackText
-                      }>{`Available funds: $${getAvailableFundsText()}`}</Text>
+                      }>{`Available funds: ${CurrencySymbols.SHEKEL}${getAvailableFundsText()}`}</Text>
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}

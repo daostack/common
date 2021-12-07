@@ -65,6 +65,7 @@ import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {CurrencySymbols} from '~/Util/locale';
 
 const {width} = Dimensions.get('window');
 
@@ -761,7 +762,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
+        {CurrencySymbols.SHEKEL}{currCommon.minFeeToJoinFormatted}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
