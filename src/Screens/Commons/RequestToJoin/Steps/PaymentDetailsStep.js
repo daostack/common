@@ -78,11 +78,12 @@ const PaymentDetailsStep = ({
           ...userInfo,
         });
 
-        const createRequestToJoinResponse =
-          await ProposalService.createRequestToJoin({
+        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
+          {
             ...data,
             cardId: createdCard.id,
-          });
+          },
+        );
 
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
@@ -235,25 +236,6 @@ const PaymentDetailsStep = ({
               name: RequestToJoinForm.FIELD_CVV,
               formStore: paymentFormStore,
               validateRule: 'required|numeric|digits_between:3,4',
-            }}
-          />
-        </View>
-
-        <View style={styles.circleContainer}>
-          <Text
-            style={{
-              ...text.regularText,
-              color: colors.grey2,
-              marginBottom: -25,
-            }}>
-            Powered by
-          </Text>
-
-          <Image
-            resizeMode="contain"
-            source={require('../../../../Assets/circle.png')}
-            style={{
-              width: width * 0.3,
             }}
           />
         </View>
