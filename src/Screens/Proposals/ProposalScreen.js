@@ -81,7 +81,6 @@ const ProposalScreen = ({
     },
   },
   rootStore,
-  start,
 }) => {
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -157,11 +156,13 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   let currentUserVote = {};
-  const filteredVotes = proposalInfo.votes.filter((item) => item.voterId === userInfo.uid);
+  const filteredVotes = proposalInfo.votes.filter(
+    (item) => item.voterId === userInfo.uid,
+  );
   if (filteredVotes.length !== 0) {
     currentUserVote = filteredVotes[0];
   }
-    const userVoted = Object.values(currentUserVote).length !== 0;
+  const userVoted = Object.values(currentUserVote).length !== 0;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('transitionEnd', (e) => {
@@ -169,10 +170,13 @@ const ProposalScreen = ({
         try {
           const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
           if (value === null && !userVoted) {
-            await AsyncStorage.setItem(TOOLTIP_PROPOSAL, TOOLTIP_PROPOSAL_SEEN.true);
+            await AsyncStorage.setItem(
+              TOOLTIP_PROPOSAL,
+              TOOLTIP_PROPOSAL_SEEN.true,
+            );
             start();
           }
-        } catch (error){
+        } catch (error) {
           logger.log(error);
         }
       };
@@ -908,7 +912,9 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {amount > 0 ? `${CurrencySymbols.SHEKEL}${amount}` : `${CurrencySymbols.SHEKEL}0`}
+                      {amount > 0
+                        ? `${CurrencySymbols.SHEKEL}${amount}`
+                        : `${CurrencySymbols.SHEKEL}0`}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -937,10 +943,9 @@ const ProposalScreen = ({
                     )}
 
                   {showDebtInfo && (
-                    <Text
-                      style={
-                        text.smallBlackText
-                      }>{`Available funds: ${CurrencySymbols.SHEKEL}${getAvailableFundsText()}`}</Text>
+                    <Text style={text.smallBlackText}>{`Available funds: ${
+                      CurrencySymbols.SHEKEL
+                    }${getAvailableFundsText()}`}</Text>
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
@@ -948,8 +953,7 @@ const ProposalScreen = ({
                 <CopilotStep
                   text="This is a hello world example!"
                   order={1}
-                  name="hello"
-                >
+                  name="hello">
                   <CopilotView style={{width: '100%'}}>
                     <View
                       style={{
@@ -1014,7 +1018,9 @@ const ProposalScreen = ({
                         <View
                           style={{
                             ...styles.proposalInnerProgressBar,
-                            width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
+                            width: `${
+                              proposalInfo?.progressBarWidthPercent || 0
+                            }%`,
                           }}
                         />
                       </View>
@@ -1238,22 +1244,31 @@ const styles = StyleSheet.create({
   },
 });
 
-const circleSvgPath = ({position, canvasSize, size}) => (
-  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${position.y._value}H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${position.y._value + size.y._value - 20}a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${position.y._value + 20}a 20 20 0 0 1 20 -20Z`
-  );
+const circleSvgPath = ({position, canvasSize, size}) =>
+  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${
+    position.y._value
+  }H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${
+    position.y._value + size.y._value - 20
+  }a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${
+    position.y._value + 20
+  }a 20 20 0 0 1 20 -20Z`;
 
-export default inject('rootStore')(observer(copilot({
-  stepNumberComponent: () => <View />,
-  overlay: 'svg',
-  tooltipComponent: TooltipComponent,
-  tooltipStyle: {
-    backgroundColor: colors.mainBlue,
-    borderRadius: 17,
-    width: screenWidth * 0.75,
-    alignItems: 'center',
-    height: 190,
-  },
-  arrowColor: colors.mainBlue,
-  backdropColor: 'rgba(0, 0, 0, 0.2)',
-  svgMaskPath: circleSvgPath,
-})(ProposalScreen)));
+export default inject('rootStore')(
+  observer(
+    copilot({
+      stepNumberComponent: () => <View />,
+      overlay: 'svg',
+      tooltipComponent: TooltipComponent,
+      tooltipStyle: {
+        backgroundColor: colors.mainBlue,
+        borderRadius: 17,
+        width: screenWidth * 0.75,
+        alignItems: 'center',
+        height: 190,
+      },
+      arrowColor: colors.mainBlue,
+      backdropColor: 'rgba(0, 0, 0, 0.2)',
+      svgMaskPath: circleSvgPath,
+    })(ProposalScreen),
+  ),
+);

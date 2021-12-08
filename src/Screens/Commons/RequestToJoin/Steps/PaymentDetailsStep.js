@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Dimensions, Image, Platform} from 'react-native';
+import {Text, View, Dimensions, Platform} from 'react-native';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {colors, layout, text} from '~/Theme';
 import {inject} from 'mobx-react';
@@ -23,7 +23,6 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {CurrencySymbols} from '~/Util/locale';
 
 import {escapeUrl} from '~/Util';
-const {width} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
   navigation,
