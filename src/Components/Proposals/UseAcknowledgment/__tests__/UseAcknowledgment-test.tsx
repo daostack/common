@@ -6,6 +6,7 @@ import '@testing-library/jest-native/extend-expect';
 
 jest.mock('react-native-localize', () => ({
   getLocales: jest.fn(),
+  getCountry: jest.fn(),
 }));
 
 test('when user did not agree with the statement,  should keep next button disabled', () => {
