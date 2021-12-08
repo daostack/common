@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import {string} from 'prop-types';
 import {StyleSheet, View, Text} from 'react-native';
 import {colors, font, layout} from '~/Theme';
+import {CurrencySymbols} from '~/Util/locale';
 
 type Props = {
   minFeeToJoin: string;
@@ -11,7 +12,7 @@ type Props = {
 const MinimumContribution: FC<Props> = ({minFeeToJoin, contributionType}) => (
   <View>
     <Text style={styles.text}>
-      {`$${minFeeToJoin} `}
+      {`${CurrencySymbols.SHEKEL}${minFeeToJoin} `}
       <Text style={[styles.text, styles.bold]}>{contributionType}</Text>{' '}
       contribution
     </Text>

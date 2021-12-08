@@ -9,6 +9,7 @@ import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIc
 import logger from '~/Services/Logger';
 import {func, shape, object} from 'prop-types';
 import {formatNumber} from '~/Util';
+import {CurrencySymbols} from '~/Util/locale';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -71,7 +72,7 @@ class FundingRequestForm extends React.Component {
         />
 
         <TextInputFieldWithIcon
-          iconName="dollar"
+          iconName="shekel"
           iconSize={12}
           iconStyle={{paddingRight: 5}}
           maxLength={5}
@@ -81,7 +82,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${balance}`}
+          infoMessage={`Leave as ${CurrencySymbols.SHEKEL}0 if no funds are requested. Common balance: ${CurrencySymbols.SHEKEL}${balance}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
