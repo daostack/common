@@ -20,6 +20,7 @@ import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {CurrencySymbols} from '~/Util/locale';
 
 import {escapeUrl} from '~/Util';
 const {width} = Dimensions.get('window');
@@ -124,7 +125,7 @@ const PaymentDetailsStep = ({
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing $
+      You are contributing {CurrencySymbols.SHEKEL}
       {formatNumber(
         personalContributionFormStore.getFormField(
           RequestToJoinForm.FIELD_AMOUNT,

@@ -21,7 +21,7 @@ import {
   node,
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
-import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {convertAmountToIls} from '~/Util/locale';
 import {uiStorePropTypes} from '~/Types/propTypes';
 
 class TextInputFieldWithIcon extends React.Component {
@@ -252,7 +252,7 @@ class TextInputFieldWithIcon extends React.Component {
       return value;
     };
 
-    const getConversionValue = () => {
+    /*const getConversionValue = () => {
       let currValue = Number(
         validation.formStore.getFormField(validation.name, validation.multiName)
           ?.value,
@@ -261,7 +261,7 @@ class TextInputFieldWithIcon extends React.Component {
       if (currValue > 0) {
         return convertAmountToIls(currValue, uiStore.conversionRate);
       }
-    };
+    };*/
 
     return (
       <View style={{alignSelf: 'stretch'}}>
@@ -313,17 +313,6 @@ class TextInputFieldWithIcon extends React.Component {
           />
           {this.toggleValueBtn}
 
-          {toggleName && isIsraelLocale && unFormatNumber(getValue()) > 0 && (
-            <View style={styles.conversionRateStyle}>
-              <Text style={styles.rightText}>
-                {convertAmountToIls(
-                  unFormatNumber(getValue()),
-                  uiStore.conversionRate,
-                )}
-              </Text>
-            </View>
-          )}
-
           {iconEndName && (
             <View style={iconStyle}>
               <Icon
@@ -332,10 +321,6 @@ class TextInputFieldWithIcon extends React.Component {
                 color={getValue() === '' ? iconEmptyColor : iconFillColor}
               />
             </View>
-          )}
-
-          {iconName === 'dollar' && isIsraelLocale && (
-            <Text style={styles.rightText}>{getConversionValue()}</Text>
           )}
         </View>
       </View>

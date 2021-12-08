@@ -14,6 +14,7 @@ import {
   IFundingRequestProposal,
   IJoinRequestProposal,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {CurrencySymbols} from '~/Util/locale';
 
 const props = {
   item: notificationItemPropTypes.isRequired,
@@ -56,7 +57,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
       descriptionBold: `"${
         (proposal.description as IFundingRequestDescription).title
       }"`,
-      description: ` (${fundingFormatted}$ requested)`,
+      description: ` (${CurrencySymbols.SHEKEL}${fundingFormatted} requested)`,
       common,
       ownerAvatar: user.photoURL,
       proposal,
