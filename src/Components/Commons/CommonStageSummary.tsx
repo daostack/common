@@ -1,14 +1,11 @@
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
-import {layout, text, font, colors} from '~/Theme';
-import {InferProps} from 'prop-types';
-import {bool, shape, number} from 'prop-types';
-import Icon from '~/Assets/iconfont/Icon';
-import ModalConversion from './ModalConversion';
-import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
+import {bool, InferProps, number, shape} from 'prop-types';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {font, layout, text} from '~/Theme';
 import {uiStorePropTypes} from '~/Types/propTypes';
 import {CurrencySymbols} from '~/Util/locale';
+import {CommonNumberBox} from './CommonNumberBox';
 
 const props = {
   isCommonCard: bool,
@@ -26,7 +23,6 @@ const props = {
 const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   isCommonCard,
   commonProgressInfo: {raised, balance, members},
-  uiStore,
 }) => {
   // const deadlineMoment = moment.unix(time);
   // const deadlineHasPassed = moment().isAfter(deadlineMoment);
@@ -57,60 +53,34 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
         </>
       );
     }; */
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
       : Math.sign(num) * Math.abs(num);
 
-  const commonNumberBox = (
-    numberComponent: React.ReactNode,
-    title: string,
-    subtitle?: string,
-  ) => (
-    <View
-      style={{
-        alignItems: 'center',
-        flex: 1,
-      }}>
-      <Text style={styles.headerSmallText}>{title}</Text>
-      <View style={styles.raisedContainer}>{numberComponent}</View>
-      {subtitle &&
-        isIsraelLocale &&
-        !isCommonCard &&
-        subtitle !== convertAmountToIls(0, uiStore.conversionRate) && (
-          <View style={styles.subtitleContainer}>
-            <Text style={styles.subtitleText}>{subtitle}</Text>
-            <Pressable onPress={() => setModalVisible(!modalVisible)}>
-              <Icon name="questionMark" size={14} color={colors.grey2} />
-            </Pressable>
-          </View>
-        )}
-    </View>
-  );
   return (
     <View style={styles.commonProgressContainer}>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ModalConversion onPressClose={() => setModalVisible(!modalVisible)} />
-      </Modal>
       <View style={styles.commonNumbers}>
-        {commonNumberBox(
-          <Text style={styles.headerTitle}>
-            {CurrencySymbols.SHEKEL}{formatNumber(isCommonCard ? raised / 100 : balance / 100)}
-          </Text>,
-          isCommonCard ? 'Raised' : 'Available funds',
-          convertAmountToIls(
-            isCommonCard ? raised / 100 : balance / 100,
-            uiStore.conversionRate,
-          ),
-        )}
-        {commonNumberBox(
-          <Text style={styles.headerTitle}>
-            {isCommonCard ? members : `${CurrencySymbols.SHEKEL}` + formatNumber(raised / 100)}
-          </Text>,
-          isCommonCard ? 'Members' : 'Raised',
-        )}
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL}
+              {formatNumber(isCommonCard ? raised / 100 : balance / 100)}
+            </Text>
+          }
+          title={isCommonCard ? 'Raised' : 'Available funds'}
+        />
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {isCommonCard
+                ? members
+                : CurrencySymbols.SHEKEL + formatNumber(raised / 100)}
+            </Text>
+          }
+          title={isCommonCard ? 'Members' : 'Raised'}
+        />
       </View>
     </View>
   );
@@ -119,9 +89,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
 CommonStageSummary.propTypes = props;
 
 const styles = StyleSheet.create({
-  raisedContainer: {
-    ...layout.flexRow,
-  },
   commonProgressContainer: {
     ...layout.content,
     paddingVertical: 0,
@@ -143,10 +110,6 @@ const styles = StyleSheet.create({
   headerTitleLight: {
     ...text.h3Black,
   },
-  headerSmallText: {
-    ...text.smallBlackText,
-    ...text.fontColorGreySteel,
-  },
   subtitleContainer: {
     marginTop: 5,
     flexDirection: 'row',
@@ -159,4 +122,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(observer(CommonStageSummary));
+export default observer(CommonStageSummary);
