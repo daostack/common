@@ -18,9 +18,8 @@ import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
-import {reporterName} from '../../Components/Moderation/Reported';
+import {reporterName} from '../../Components/Moderation/helper';
 import {FLAGS} from '../../Components/Moderation/constants';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import Icon from '~/Assets/iconfont/Icon';
 import _ from 'lodash';
 
@@ -43,8 +42,6 @@ const DiscussionMessage = ({
   const authStore = rootStore.authStore;
   const isFlagged = !!flag && flag !== FLAGS.visible;
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-
-  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   if (auth().currentUser) {
     currentUserUid = auth().currentUser.uid;
@@ -72,12 +69,18 @@ const DiscussionMessage = ({
     }
   }, []);
 
-  const flagView = (isModerator || isHidden) && isFlagged && (
+  const flagView = (isHidden || isFlagged) && (
     <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
-      {isHidden && <Icon name={'hidden'} style={layout.marginRightS} color={colors.grey3} />}
+      {isHidden && (
+        <Icon
+          name={'hidden'}
+          style={layout.marginRightS}
+          color={colors.grey3}
+        />
+      )}
       <Text style={{...styles.hiddenTitle, color: colors.grey3}}>
         {_.upperFirst(flag)}
-        {isHidden && !isModerator ? '' : ` by ${moderatorName}`}
+        {` by ${moderatorName}`}
       </Text>
     </View>
   );
@@ -96,10 +99,7 @@ const DiscussionMessage = ({
     <Pressable
       style={styles.container}
       onLongPress={() =>
-        (!isHidden || viewerPermission) &&
-        isMember &&
-        !isOwner &&
-        openMessageOptions()
+        (!isHidden || viewerPermission) && !isOwner && openMessageOptions()
       }>
       {currentUserUid === data.ownerId ? (
         <View style={{display: 'flex', flexDirection: 'row-reverse'}}>
@@ -107,11 +107,10 @@ const DiscussionMessage = ({
             style={{
               ...styles.contentOwner,
               backgroundColor: isHidden ? colors.paleLilacTwo : colors.white,
-              alignItems: isHidden ? 'flex-start' : 'flex-end',
               elevation: 2,
             }}>
             {flagView}
-            {(!isHidden || viewerPermission) && (
+            {!isHidden && (
               <View style={styles.textContainer}>
                 <HyperText
                   textStyle={{
@@ -163,13 +162,13 @@ const DiscussionMessage = ({
                     }}>
                     {ownerInfo?.displayName}
                   </Text>
-                  {!isHidden && (
+                  {!isHidden && !flag && (
                     <Text style={styles.permission}>{permission}</Text>
                   )}
                   {flagView}
                 </View>
               </Hyperlink>
-              {(!isHidden || viewerPermission) && (
+              {(!isHidden) && (
                 <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{
@@ -216,6 +215,7 @@ const styles = StyleSheet.create({
   ownerName: {
     ...font.primary.bold,
     ...font.fontSize(2),
+    marginRight: 10,
   },
   permission: {
     ...font.primary.bold,

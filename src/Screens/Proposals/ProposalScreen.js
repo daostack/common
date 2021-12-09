@@ -60,6 +60,7 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {TITLES} from '~/Components/Moderation/constants';
 import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
 import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
@@ -650,8 +651,7 @@ const ProposalScreen = ({
     Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
     await ModerationService.report(
-      'discussionMessage',
-      proposalInfo.commonId,
+      TITLES.discussionMessage,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
