@@ -81,6 +81,7 @@ const ProposalScreen = ({
     },
   },
   rootStore,
+  start,
 }) => {
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
