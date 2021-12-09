@@ -284,7 +284,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, ENTITY_TYPES.proposal)
+          openCommonOptions(proposal, ENTITY_TYPES.proposals)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
