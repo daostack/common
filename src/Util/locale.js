@@ -15,7 +15,7 @@ export const getCurrentConversionRate = async () =>
   );
 
 export const convertAmountToIls = (value, conversionRate) =>
-  `~₪${Number(value * conversionRate).toFixed(2)}`;
+  `~${CurrencySymbols.SHEKEL}${Number(value * conversionRate).toFixed(2)}`;
 
 export const CurrencySymbols = {
   SHEKEL: '₪',
