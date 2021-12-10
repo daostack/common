@@ -13,6 +13,12 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
+import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
@@ -90,9 +96,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -135,9 +140,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -149,9 +153,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -166,12 +169,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-      currCommon.id,
-    );
-    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-      currCommon.id,
-    );
+    const unsubscribeFromCommonProposals =
+      proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonDiscussions =
+      discussionStore.subscribeToCommonDiscussions(currCommon.id);
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -436,13 +437,26 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = () => {
-    const options = {
-      url: `https://app.common.io/common/${currCommon.id}`,
-      title: "Let's make it happen",
-      message: `${currCommon.name} common`,
-    };
-    Share.open(options);
+  const shareCommon = async () => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: currCommon.name,
+          descriptionText: currCommon.metadata.description,
+          imageUrl: currCommon.image,
+        },
+      });
+      const options = {
+        url,
+        title: "Let's make it happen",
+        message: `${currCommon.name} common`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
   };
 
   const onEdit = (type) => {
