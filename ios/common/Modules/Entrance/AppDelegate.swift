@@ -9,6 +9,7 @@
 import UIKit
 import React
 import Firebase
+import FirebaseAnalytics
 import FirebaseCore
 import GoogleSignIn
 import CodePush
@@ -23,14 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
         open url: URL,
-        sourceApplication: String?,
-        annotation: Any
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
-        return RCTLinkingManager.application(
-            application,
-            open: url,
-            sourceApplication: sourceApplication,
-            annotation: annotation)
+        return RCTLinkingManager.application(application, open: url, options: options);
     }
     
     func application(
