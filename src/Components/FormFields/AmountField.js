@@ -6,6 +6,7 @@ import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
 import {number, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/FormStores/ValidationRules';
+import {CurrencySymbols} from '~/Util/locale';
 
 const AmountField = ({
   formStore,
@@ -27,8 +28,10 @@ const AmountField = ({
 
   const errorMessage =
     minFeeToJoin > 0
-      ? `The amount must be at least $${minFeeToJoin.toString()} and at most $2500.`
-      : 'The amount must be 0, or at least $5 and at most $2500.';
+      ? `The amount must be at least ${
+          CurrencySymbols.SHEKEL
+        }${minFeeToJoin.toString()} and at most ${CurrencySymbols.SHEKEL}2500.`
+      : `The amount must be 0, or at least ${CurrencySymbols.SHEKEL}5 and at most ${CurrencySymbols.SHEKEL}2500.`;
 
   // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
@@ -78,7 +81,7 @@ const AmountField = ({
 
       <TextInputFieldWithIcon
         forwardRef={textInputRef}
-        iconName="dollar"
+        iconName="shekel"
         iconSize={12}
         iconStyle={{paddingRight: 5}}
         iconEmptyColor={colors.grey3}

@@ -2,6 +2,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import logger from '~/Services/Logger';
 import {LayoutAnimation} from 'react-native';
 import moment from 'moment';
+import {CurrencySymbols} from './locale';
 
 export const LAYOUT_ANIMATION_CONFIG = {
   duration: 300,
@@ -113,13 +114,13 @@ export const formatCurrency = (amount) => {
   const formattedAmount = (amount / 100)
     .toLocaleString('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'ILS',
     })
     // If the amount is whole number don't show the centes
     .split('.00')[0];
 
-  return formattedAmount.indexOf('$') === -1
-    ? `$${formattedAmount}`
+  return formattedAmount.indexOf(CurrencySymbols.SHEKEL) === -1
+    ? `${CurrencySymbols.SHEKEL}${formattedAmount}`
     : formattedAmount;
 };
 

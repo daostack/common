@@ -18,6 +18,7 @@ import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
+import {CurrencySymbols} from '~/Util/locale';
 
 const AUTOFILL = {
   ios: {
@@ -82,7 +83,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing ${contributionAmount ? contributionAmount : 0}
+      You are contributing {CurrencySymbols.SHEKEL}{contributionAmount ? contributionAmount : 0}
       <Text style={{...font.primary.bold}}>
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}

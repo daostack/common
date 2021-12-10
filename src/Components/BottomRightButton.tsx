@@ -1,10 +1,23 @@
-import {TouchableOpacity, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {ReactElement} from 'react';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import colors from '~/Theme/colors';
-import Icon from '~/Assets/iconfont/Icon';
-import {string, func, number} from 'prop-types';
+import Icon, {IconNames} from '~/Assets/iconfont/Icon';
 
-const BottomRightButton = ({bottom, onPress, iconName, iconSize}) => (
+interface Props {
+  bottom?: number;
+  onPress: () => void;
+  iconName?: IconNames;
+  iconSize?: number;
+  isInModal?: boolean;
+}
+
+const BottomRightButton = ({
+  bottom,
+  onPress,
+  iconName,
+  iconSize,
+  isInModal,
+}: Props): ReactElement => (
   <TouchableOpacity
     style={{...styles.button, bottom: bottom || 12}}
     onPress={onPress}>
@@ -13,15 +26,9 @@ const BottomRightButton = ({bottom, onPress, iconName, iconSize}) => (
       color="white"
       size={iconSize ? iconSize : 28}
     />
+    {isInModal && <View style={styles.backgroundBtn} />}
   </TouchableOpacity>
 );
-
-BottomRightButton.propTypes = {
-  bottom: number,
-  onPress: func,
-  iconName: string,
-  iconSize: number,
-};
 
 const styles = StyleSheet.create({
   button: {
@@ -47,6 +54,15 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     width: 52,
     height: 52,
+  },
+  backgroundBtn: {
+    position: 'absolute',
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    borderWidth: 7,
+    borderColor: 'white',
+    opacity: 0.5,
   },
 });
 

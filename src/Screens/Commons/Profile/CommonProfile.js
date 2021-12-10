@@ -54,11 +54,11 @@ import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -71,6 +71,7 @@ import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {CurrencySymbols} from '~/Util/locale';
 
 const {width} = Dimensions.get('window');
 
@@ -285,7 +286,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, ENTITY_TYPES.proposals)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -502,7 +503,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
       {
         onAction: item
           ? (actionType) =>
@@ -511,6 +512,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         hasPermission,
         moderatorOptions: {
           item,
+          isMember,
         },
       },
     );
@@ -523,7 +525,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
     await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -537,7 +538,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        userName: reporterName(
+          userStore.getUserById(moderation.moderator),
+          authStore.userInfo?.uid,
+        ),
         date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,
@@ -774,7 +778,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
+        {CurrencySymbols.SHEKEL}
+        {currCommon.minFeeToJoinFormatted}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
