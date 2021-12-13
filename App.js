@@ -73,6 +73,12 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import {takeRightFromString} from '~/Util/stringUtil';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINKS_SCREENS,
+  DYNAMIC_LINKS_SCREEN_PARAMS,
+} from '~/Util/constants/dynamicLinks';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -133,7 +139,8 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -160,12 +167,8 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -254,7 +257,22 @@ const App = ({rootStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    if (url) {
+    const [screenName, entityId] = takeRightFromString({
+      str: url,
+      numberOfElements: 2,
+      separator: '/',
+    });
+
+    if (screenName === DYNAMIC_LINKS_TYPES.USER) {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+        {userId: entityId},
+      );
+    } else if (screenName && entityId) {
+      routing(DYNAMIC_LINKS_SCREENS[screenName], {
+        [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
+      });
+    } else if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
@@ -276,30 +294,30 @@ const App = ({rootStore, navigation}) => {
   };
 
   useEffect(() => {
-    DeepLinking.addScheme('common://');
-    DeepLinking.addScheme('com.daostack.common://');
-    DeepLinking.addScheme('https://app.common.io');
+    // DeepLinking.addScheme('common://');
+    // DeepLinking.addScheme('com.daostack.common://');
+    // DeepLinking.addScheme('https://app.common.io');
 
-    Linking.addEventListener('url', handleOpenURL);
+    // Linking.addEventListener('url', handleOpenURL);
 
-    DeepLinking.addRoute('/common/:id', (response) => {
-      routing('CommonProfile', {commonId: response.id});
-    });
+    // DeepLinking.addRoute('/common/:id', (response) => {
+    //   routing('CommonProfile', {commonId: response.id});
+    // });
 
-    DeepLinking.addRoute('/proposal/:id', (response) => {
-      routing('ProposalScreen', {proposalId: response.id});
-    });
+    // DeepLinking.addRoute('/proposal/:id', (response) => {
+    //   routing('ProposalScreen', {proposalId: response.id});
+    // });
 
-    DeepLinking.addRoute('/user/:id', (response) => {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id},
-      );
-    });
+    // DeepLinking.addRoute('/user/:id', (response) => {
+    //   bottomSheetStore.showBottomSheet(
+    //     BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+    //     {userId: response.id},
+    //   );
+    // });
 
-    DeepLinking.addRoute('/discussion/:id', (response) => {
-      routing('Discussions', {discussionId: response.id});
-    });
+    // DeepLinking.addRoute('/discussion/:id', (response) => {
+    //   routing('Discussions', {discussionId: response.id});
+    // });
 
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks()
