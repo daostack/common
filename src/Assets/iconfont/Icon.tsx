@@ -104,6 +104,8 @@ import IconrightArrow from './IconrightArrow';
 import IcondownArrow from './IcondownArrow';
 import IconupArrow from './IconupArrow';
 import Icongoogle from './Icongoogle';
+import IconAddAvatar from './IconAddAvatar';
+import IconAddDocument from './IconAddDocument';
 import {IconShekel} from './IconShekel';
 
 export type IconNames =
@@ -207,7 +209,9 @@ export type IconNames =
   | 'down-arrow'
   | 'up-arrow'
   | 'google'
-  | 'shekel';
+  | 'shekel'
+  | 'add-avatar'
+  | 'add-document';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -419,6 +423,10 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Icongoogle {...rest} />;
     case 'shekel':
       return <IconShekel {...rest} />;
+    case 'add-avatar':
+      return <IconAddAvatar {...rest} />;
+    case 'add-document':
+      return <IconAddDocument {...rest} />;
   }
 
   return null;
