@@ -35,6 +35,7 @@ export default class DiscussionStore extends BaseStore<
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            methodName: 'getDiscussionById',
           });
         });
       return undefined;

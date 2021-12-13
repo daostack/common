@@ -4,4 +4,19 @@ export enum DYNAMIC_LINKS_TYPES {
   COMMON = 'common',
   PROPOSAL = 'proposal',
   DISCUSSION = 'discussion',
+  DISCUSSION_MESSAGE = 'discussionMessage',
+  USER = 'user',
+}
+
+export enum DYNAMIC_LINKS_SCREENS {
+  discussion = 'Discussions',
+  proposal = 'ProposalScreen',
+  common = 'CommonScreen',
+}
+
+export enum DYNAMIC_LINKS_SCREEN_PARAMS {
+  discussion = 'discussionId',
+  proposal = 'proposalId',
+  common = 'commonId',
+  user = 'userId',
 }

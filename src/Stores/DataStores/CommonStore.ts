@@ -79,6 +79,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            methodName: 'getCommonById',
           });
         });
       return undefined;
@@ -93,6 +94,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        methodName: 'getUserCommons',
       });
       return [];
     }
