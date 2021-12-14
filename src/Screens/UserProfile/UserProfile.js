@@ -131,6 +131,10 @@ const UserProfile = ({authStore}) => {
                   title="About Common"
                 />
                 <AccordionBtn
+                  onPress={() => navigation.navigate('ReceiveFunds')}
+                  title="Receive funds"
+                />
+                <AccordionBtn
                   onPress={() => Linking.openURL('mailto:hi@common.io')}
                   title="Contact us"
                 />
