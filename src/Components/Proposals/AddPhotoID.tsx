@@ -81,7 +81,9 @@ export function AddPhotoID() {
         <Icon name="add-avatar" />
         {imageUrl ? (
           <View style={styles.imageNameContainer}>
-            <Text style={styles.title}>{filename}</Text>
+            <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
+              {filename}
+            </Text>
             <Pressable
               hitSlop={ICON_HIT_SLOP}
               onPress={() => {

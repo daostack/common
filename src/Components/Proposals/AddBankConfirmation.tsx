@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import DocumentPicker from 'react-native-document-picker';
 import Toast from '~/Util/Toast';
 import logger from '~/Services/Logger';
@@ -8,12 +9,14 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 
 export function AddBankConfirmation() {
-  const [imageUrl, setImageUrl] = useState<string>();
+  const navigation = useNavigation();
+
+  const [fileUrl, setFileUrl] = useState<string>();
   const [filename, setFilename] = useState<string>();
 
   function deleteFile(url: string): void {
     StorageService.deleteFromStorage(url);
-    setImageUrl(undefined);
+    setFileUrl(undefined);
     setFilename(undefined);
   }
 
@@ -29,7 +32,7 @@ export function AddBankConfirmation() {
         res.name,
         'private',
       );
-      setImageUrl(downloadUrl);
+      setFileUrl(downloadUrl);
       setFilename(StorageService.getFilename(downloadUrl));
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
@@ -41,16 +44,24 @@ export function AddBankConfirmation() {
     }
   }
 
+  function openFile() {
+    navigation.navigate('Browser', {
+      url: fileUrl,
+    });
+  }
+
   return (
-    <Pressable onPress={pickFile} style={styles.container}>
+    <Pressable onPress={fileUrl ? openFile : pickFile} style={styles.container}>
       <Icon name="add-document" />
-      {imageUrl ? (
+      {fileUrl ? (
         <View style={[styles.titleContainer, styles.fileNameContainer]}>
-          <Text style={styles.title}>{filename}</Text>
+          <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
+            {filename}
+          </Text>
           <Pressable
             hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
             onPress={() => {
-              deleteFile(imageUrl);
+              deleteFile(fileUrl);
             }}>
             <Icon name="delete" color={colors.black} />
           </Pressable>
