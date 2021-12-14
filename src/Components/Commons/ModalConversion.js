@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {colors, font, layout} from '~/Theme';
 import {bool, func, number, object} from 'prop-types';
+import {CurrencySymbols} from '~/Util/locale';
 
 const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
   <Pressable onPress={() => onPressClose()} style={styles.background}>
@@ -30,10 +31,13 @@ const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
               <View style={{marginBottom: 20}}>
                 <Text style={[styles.text, styles.centerText]}>
                   <Text>Requested amount:</Text>
-                  <Text style={{fontWeight: 'bold'}}>{` ~₪${amount}`}</Text>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                    }}>{` ~${CurrencySymbols.SHEKEL}${amount}`}</Text>
                 </Text>
                 <Text style={[styles.text, styles.centerText]}>
-                  {`Available funds: ~₪${funds}`}
+                  {`Available funds: ~${CurrencySymbols.SHEKEL}${funds}`}
                 </Text>
               </View>
             )}

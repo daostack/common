@@ -28,7 +28,9 @@ const AmountField = ({
 
   const errorMessage =
     minFeeToJoin > 0
-      ? `The amount must be at least ${CurrencySymbols.SHEKEL}${minFeeToJoin.toString()} and at most $2500.`
+      ? `The amount must be at least ${
+          CurrencySymbols.SHEKEL
+        }${minFeeToJoin.toString()} and at most ${CurrencySymbols.SHEKEL}2500.`
       : `The amount must be 0, or at least ${CurrencySymbols.SHEKEL}5 and at most ${CurrencySymbols.SHEKEL}2500.`;
 
   // from now on, there will be no option to create a common with 0 minFreeToJoin
