@@ -31,10 +31,14 @@ class StorageService {
     return `file://${fileUri.path}`;
   };
 
-  uploadFile = async (fileUri: string, name: string): Promise<string> => {
+  uploadFile = async (
+    fileUri: string,
+    name: string,
+    storagePath = 'public_file',
+  ): Promise<string> => {
     const path =
       Platform.OS === 'ios'
-        ? `public_file/${name}`
+        ? `${storagePath}/${name}`
         : await this.getPathForFirebaseStorage(fileUri, name);
 
     const ref = storage.ref(path);

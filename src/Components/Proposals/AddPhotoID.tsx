@@ -61,9 +61,11 @@ export function AddPhotoID() {
       <Icon name="add-avatar" />
       {imageUrl ? (
         <View style={styles.imageNameContainer}>
-          <Text style={styles.title}>{filename}</Text>
+          <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
+            {filename}
+          </Text>
           <Pressable
-            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+            hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
             onPress={() => {
               deleteImage(imageUrl);
             }}>
