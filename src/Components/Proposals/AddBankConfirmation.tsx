@@ -46,9 +46,7 @@ export function AddBankConfirmation() {
       <Icon name="add-document" />
       {imageUrl ? (
         <View style={[styles.titleContainer, styles.fileNameContainer]}>
-          <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
-            {filename}
-          </Text>
+          <Text style={styles.title}>{filename}</Text>
           <Pressable
             hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
             onPress={() => {
