@@ -1,11 +1,12 @@
 import {Formik} from 'formik';
 import React, {ReactElement, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
 import {object, string, number} from 'yup';
 
+const screenHeight = Dimensions.get('window').height;
 interface Props {
   onCancel: () => void;
   onDelete: () => void;
@@ -40,74 +41,76 @@ export const ModalAddBankAccount = ({onCancel, onDelete}: Props): ReactElement =
         handleSubmit,
         isValid,
       }): ReactElement => (
-        <View style={[styles.body, {marginBottom: insets.bottom}]}>
+        <View style={[styles.container, {marginBottom: insets.bottom}]}>
           <View style={styles.plug} />
-          <Text style={styles.title}>Add Bank Account</Text>
-          <Text style={styles.text}>The following details are required in order to wire a refund after you executed an approved proposal</Text>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.idNumber && errors.idNumber
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="12345678"
-              autoCapitalize="none"
-              label="ID Number"
-              autoCorrect={false}
-              onBlur={handleBlur('idNumber')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.bankName && errors.bankName
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="Bank Jeumi"
-              autoCapitalize="none"
-              label="Bank Name"
-              autoCorrect={false}
-              onBlur={handleBlur('bankName')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.branchNumber && errors.branchNumber
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="123"
-              autoCapitalize="none"
-              label="Branch Number"
-              autoCorrect={false}
-              onBlur={handleBlur('branchNumber')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.accountNumber && errors.accountNumber
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="12345678"
-              autoCapitalize="none"
-              label="Account Number"
-              autoCorrect={false}
-              onBlur={handleBlur('accountNumber')}
-            />
-          </>
+          <ScrollView contentContainerStyle={styles.body}>
+            <Text style={styles.title}>Add Bank Account</Text>
+            <Text style={styles.text}>The following details are required in order to wire a refund after you executed an approved proposal</Text>
             <>
-              <TouchableOpacity
-                style={[styles.btn, styles.deleteBtn]}
-                onPress={onCancel}>
-                <Text style={styles.btnDeleteText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={onDelete}>
-                <Text style={styles.btnText}>Remove Account</Text>
-              </TouchableOpacity>
+              <TextInputField
+                errorMessage={
+                  errors && touched.idNumber && errors.idNumber
+                }
+                viewStyle={{alignSelf: 'stretch'}}
+                placeholderText="12345678"
+                autoCapitalize="none"
+                label="ID Number"
+                autoCorrect={false}
+                onBlur={handleBlur('idNumber')}
+              />
             </>
+            <>
+              <TextInputField
+                errorMessage={
+                  errors && touched.bankName && errors.bankName
+                }
+                viewStyle={{alignSelf: 'stretch'}}
+                placeholderText="Bank Jeumi"
+                autoCapitalize="none"
+                label="Bank Name"
+                autoCorrect={false}
+                onBlur={handleBlur('bankName')}
+              />
+            </>
+            <>
+              <TextInputField
+                errorMessage={
+                  errors && touched.branchNumber && errors.branchNumber
+                }
+                viewStyle={{alignSelf: 'stretch'}}
+                placeholderText="123"
+                autoCapitalize="none"
+                label="Branch Number"
+                autoCorrect={false}
+                onBlur={handleBlur('branchNumber')}
+              />
+            </>
+            <>
+              <TextInputField
+                errorMessage={
+                  errors && touched.accountNumber && errors.accountNumber
+                }
+                viewStyle={{alignSelf: 'stretch'}}
+                placeholderText="12345678"
+                autoCapitalize="none"
+                label="Account Number"
+                autoCorrect={false}
+                onBlur={handleBlur('accountNumber')}
+              />
+            </>
+              <>
+                <TouchableOpacity
+                  style={[styles.btn, styles.deleteBtn]}
+                  onPress={onCancel}>
+                  <Text style={styles.btnDeleteText}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={onDelete}>
+                  <Text style={styles.btnText}>Remove Account</Text>
+                </TouchableOpacity>
+              </>
+          </ScrollView>
         </View>
       )}
     </Formik>
@@ -115,6 +118,10 @@ export const ModalAddBankAccount = ({onCancel, onDelete}: Props): ReactElement =
 };
 
   const styles = StyleSheet.create({
+    container: {
+      height: screenHeight * 0.75,
+      flexGrow: 1,
+    },
     body: {
       width: '100%',
       alignItems: 'center',
@@ -126,6 +133,7 @@ export const ModalAddBankAccount = ({onCancel, onDelete}: Props): ReactElement =
       height: 6,
       borderRadius: 2,
       alignSelf: 'center',
+      marginBottom: 16,
     },
     image: {
       height: 116,
@@ -136,7 +144,6 @@ export const ModalAddBankAccount = ({onCancel, onDelete}: Props): ReactElement =
       fontSize: 20,
       lineHeight: 28,
       alignSelf: 'center',
-      marginTop: 16,
       marginBottom: 16,
     },
     text: {
