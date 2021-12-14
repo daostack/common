@@ -3,11 +3,14 @@ import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 
 class StorageService {
-  uploadImage = async (imageUri: string): Promise<string> => {
+  uploadImage = async (
+    imageUri: string,
+    storagePath = 'public_img',
+  ): Promise<string> => {
     const ext = imageUri.split('.').pop();
     const timeStamp = new Date().getTime();
     const filename = `img_${timeStamp}.${ext}`;
-    const path = `public_img/${filename}`;
+    const path = `${storagePath}/${filename}`;
     const ref = storage.ref(path);
     await ref.putFile(imageUri);
     return await ref.getDownloadURL();
@@ -38,6 +41,16 @@ class StorageService {
     const putFilePath = Platform.OS === 'ios' ? fileUri : path;
     await ref.putFile(putFilePath);
     return await ref.getDownloadURL();
+  };
+
+  deleteFromStorage = async (fileUri: string): Promise<void> => {
+    const ref = storage.refFromURL(fileUri);
+    ref.delete();
+  };
+
+  getFilename = (fileUri: string): string => {
+    const ref = storage.refFromURL(fileUri) || '';
+    return ref.name.split('.').shift();
   };
 }
 

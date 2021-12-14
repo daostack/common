@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {AddBankAccount} from '~/Components/AddBankAccount';
+import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
 import {colors, font, layout, text} from '~/Theme';
@@ -91,44 +92,11 @@ class FundingRequestForm extends React.Component {
               'The amount requested cannot be greater than the Common balance.',
           }}
         />
-        <AddBankAccount />
-        <View
-          style={{
-            height: 64,
-            paddingHorizontal: 16,
-            backgroundColor: 'rgb(244,246,255)',
-            borderRadius: 12,
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginVertical: 8,
-          }}>
-          <Icon name="add-avatar" />
-          <Text style={[{fontSize: 11, color: colors.black, marginLeft: 16}]}>
-            Add photo ID
-          </Text>
-        </View>
-        <View
-          style={{
-            height: 64,
-            paddingHorizontal: 16,
-            backgroundColor: 'rgb(244,246,255)',
-            borderRadius: 12,
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginVertical: 8,
-          }}>
-          <Icon name="add-document" />
-          <View style={{marginLeft: 16}}>
-            <Text
-              style={[{fontSize: 11, color: colors.black, marginBottom: 8}]}>
-              Add bank account confirmation letter
-            </Text>
 
-            <Text style={[{fontSize: 11, color: 'rgb(86,102,245)'}]}>
-              Add bank account confirmation letter
-            </Text>
-          </View>
-        </View>
+        <AddBankAccount />
+        <AddPhotoID />
+        <AddBankConfirmation />
+
         <TextInputField
           infoLabel="Required"
           label="Description"

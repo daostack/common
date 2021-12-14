@@ -17,7 +17,7 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission} from '~Util/Permissions';
+import {handlePermission} from '~/Util/Permissions';
 import {observer} from 'mobx-react';
 
 class ImageField extends React.Component {
@@ -91,8 +91,7 @@ class ImageField extends React.Component {
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.getInstance()
-          .uploadImage(response.uri)
+        StorageService.uploadImage(response.uri)
           .then((url) => {
             Toast.hide();
             Toast.success('Done');
