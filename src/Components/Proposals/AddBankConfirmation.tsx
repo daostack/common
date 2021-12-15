@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import {StyleSheet, Text, View, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import DocumentPicker from 'react-native-document-picker';
@@ -8,7 +8,11 @@ import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 
-export function AddBankConfirmation() {
+type Props = {
+  onSelect: (value: string) => void;
+};
+
+export function AddBankConfirmation({onSelect}: Props): ReactElement {
   const navigation = useNavigation();
 
   const [fileUrl, setFileUrl] = useState<string>();
@@ -34,6 +38,7 @@ export function AddBankConfirmation() {
       );
       setFileUrl(downloadUrl);
       setFilename(StorageService.getFilename(downloadUrl));
+      onSelect(downloadUrl);
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
     } catch (err) {
@@ -82,6 +87,7 @@ export function AddBankConfirmation() {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     height: 64,
     paddingHorizontal: 16,
     backgroundColor: 'rgb(244,246,255)',

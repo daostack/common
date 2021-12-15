@@ -5,10 +5,12 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
 import {object, string, number} from 'yup';
+import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 
 interface Props {
   onCancel: () => void;
   onDelete: () => void;
+  isAddingNew: boolean;
 }
 
 const validationSchema = object({
@@ -21,6 +23,7 @@ const validationSchema = object({
 export const AddBankAccountForm = ({
   onCancel,
   onDelete,
+  isAddingNew = false,
 }: Props): ReactElement => {
   const formikRef = useRef();
   const insets = useSafeAreaInsets();
@@ -30,6 +33,10 @@ export const AddBankAccountForm = ({
   };
   return (
     <Formik
+      initialValues={{
+        photoID: null,
+        bankConfirmation: null,
+      }}
       innerRef={formikRef}
       enableReinitialize={true}
       validationSchema={validationSchema}
@@ -50,63 +57,64 @@ export const AddBankAccountForm = ({
             The following details are required in order to wire a refund after
             you executed an approved proposal
           </Text>
-          <>
-            <TextInputField
-              errorMessage={errors && touched.idNumber && errors.idNumber}
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="12345678"
-              autoCapitalize="none"
-              label="ID Number"
-              autoCorrect={false}
-              onBlur={handleBlur('idNumber')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={errors && touched.bankName && errors.bankName}
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="Bank Jeumi"
-              autoCapitalize="none"
-              label="Bank Name"
-              autoCorrect={false}
-              onBlur={handleBlur('bankName')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.branchNumber && errors.branchNumber
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="123"
-              autoCapitalize="none"
-              label="Branch Number"
-              autoCorrect={false}
-              onBlur={handleBlur('branchNumber')}
-            />
-          </>
-          <>
-            <TextInputField
-              errorMessage={
-                errors && touched.accountNumber && errors.accountNumber
-              }
-              viewStyle={{alignSelf: 'stretch'}}
-              placeholderText="12345678"
-              autoCapitalize="none"
-              label="Account Number"
-              autoCorrect={false}
-              onBlur={handleBlur('accountNumber')}
-            />
-          </>
+          <TextInputField
+            errorMessage={errors && touched.idNumber && errors.idNumber}
+            viewStyle={{alignSelf: 'stretch'}}
+            placeholderText="12345678"
+            autoCapitalize="none"
+            label="ID Number"
+            autoCorrect={false}
+            onBlur={handleBlur('idNumber')}
+          />
+          <TextInputField
+            errorMessage={errors && touched.bankName && errors.bankName}
+            viewStyle={{alignSelf: 'stretch'}}
+            placeholderText="Bank Jeumi"
+            autoCapitalize="none"
+            label="Bank Name"
+            autoCorrect={false}
+            onBlur={handleBlur('bankName')}
+          />
+          <TextInputField
+            errorMessage={errors && touched.branchNumber && errors.branchNumber}
+            viewStyle={{alignSelf: 'stretch'}}
+            placeholderText="123"
+            autoCapitalize="none"
+            label="Branch Number"
+            autoCorrect={false}
+            onBlur={handleBlur('branchNumber')}
+          />
+          <TextInputField
+            errorMessage={
+              errors && touched.accountNumber && errors.accountNumber
+            }
+            viewStyle={{alignSelf: 'stretch'}}
+            placeholderText="12345678"
+            autoCapitalize="none"
+            label="Account Number"
+            autoCorrect={false}
+            onBlur={handleBlur('accountNumber')}
+          />
+          {isAddingNew && (
+            <>
+              {' '}
+              <AddPhotoID onSelect={handleChange('photoID')} />
+              <AddBankConfirmation
+                onSelect={handleChange('bankConfirmation')}
+              />
+            </>
+          )}
           <>
             <TouchableOpacity
               style={[styles.btn, styles.deleteBtn]}
               onPress={onCancel}>
               <Text style={styles.btnDeleteText}>Save</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btn} onPress={onDelete}>
-              <Text style={styles.btnText}>Remove Account</Text>
-            </TouchableOpacity>
+            {!isAddingNew && (
+              <TouchableOpacity style={styles.btn} onPress={onDelete}>
+                <Text style={styles.btnText}>Remove Account</Text>
+              </TouchableOpacity>
+            )}
           </>
         </View>
       )}

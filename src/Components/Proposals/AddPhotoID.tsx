@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,7 +22,11 @@ const {width, height} = Dimensions.get('window');
 
 const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 
-export function AddPhotoID() {
+type Props = {
+  onSelect: (value: string) => void;
+};
+
+export function AddPhotoID({onSelect}: Props): ReactElement {
   const [imageUrl, setImageUrl] = useState<string>();
   const [localPath, setLocalPath] = useState<string>();
   const [filename, setFilename] = useState<string>();
@@ -60,6 +64,7 @@ export function AddPhotoID() {
             setLocalPath(response.uri);
             setFilename(StorageService.getFilename(url));
             setImageUrl(url);
+            onSelect(url);
           })
           .catch((error) => {
             Toast.error(error.toString());
@@ -128,6 +133,7 @@ export function AddPhotoID() {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     height: 64,
     paddingHorizontal: 16,
     backgroundColor: 'rgb(244,246,255)',

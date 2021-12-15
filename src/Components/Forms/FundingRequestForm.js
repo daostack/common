@@ -93,9 +93,7 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <AddBankAccountField />
-        <AddPhotoID />
-        <AddBankConfirmation />
+        <AddBankAccountField isAddingNew/>
 
         <TextInputField
           infoLabel="Required"

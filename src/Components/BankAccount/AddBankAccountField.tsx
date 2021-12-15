@@ -9,7 +9,7 @@ import {
 } from './AddBankAccountTitle';
 import {styles} from './styles';
 
-export function AddBankAccountField({hasError = false}: {hasError: boolean}) {
+export function AddBankAccountField({hasError = false, isAddingNew}: {hasError: boolean}) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const closeModal = () => {
@@ -44,7 +44,11 @@ export function AddBankAccountField({hasError = false}: {hasError: boolean}) {
         onClose={() => {
           setModalVisible(false);
         }}>
-        <AddBankAccountForm onCancel={closeModal} onDelete={removeAccount} />
+        <AddBankAccountForm
+          onCancel={closeModal}
+          onDelete={removeAccount}
+          isAddingNew
+        />
       </BottomSheetModal>
     </View>
   );
