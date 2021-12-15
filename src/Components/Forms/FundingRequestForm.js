@@ -2,7 +2,7 @@ import {func, object, shape} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {AddBankAccount} from '~/Components/AddBankAccount';
+import {AddBankAccountField} from '~/Components/BankAccount/AddBankAccountField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
@@ -93,7 +93,7 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <AddBankAccount />
+        <AddBankAccountField />
         <AddPhotoID />
         <AddBankConfirmation />
 

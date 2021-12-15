@@ -11,4 +11,4 @@ export {default as Report} from './Moderation/Report';
 export {default as HideContentSuccess} from './Moderation/HideContentSuccess';
 export {default as ModalPreview} from './ModalPreview/ModalPreview';
 export {ErrorExpand} from './ErrorExpand';
-export {AddBankAccount} from './AddBankAccount';
+export {AddBankAccountField} from './BankAccount/AddBankAccountField';
