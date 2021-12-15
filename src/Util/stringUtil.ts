@@ -12,7 +12,6 @@ export const truncateString = (
 
 
 export const takeRightFromString = ({str, separator = '/', numberOfElements = 0}: {str: string, separator: string, numberOfElements: number}): string[] => {
-
   if (!str) {
     return [];
   }
