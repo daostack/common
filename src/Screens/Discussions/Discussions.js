@@ -51,8 +51,6 @@ const Discussions = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
 
-  console.log('----discussionId', discussionId, commonId);
-
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
@@ -67,12 +65,12 @@ const Discussions = ({
     ? userStore.getUserById(dataState?.ownerId)
     : null;
 
-  console.log('---commonId', commonId, dataState?.commonId);
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const hasPermission = commonId
+    ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    : null;
+
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);

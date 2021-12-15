@@ -11,7 +11,7 @@ export enum DYNAMIC_LINKS_TYPES {
 export enum DYNAMIC_LINKS_SCREENS {
   discussion = 'Discussions',
   proposal = 'ProposalScreen',
-  common = 'CommonScreen',
+  common = 'CommonProfile',
 }
 
 export enum DYNAMIC_LINKS_SCREEN_PARAMS {

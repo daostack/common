@@ -80,7 +80,7 @@ export const showBackendError = ({
   subTitle = null,
   methodName,
 }) => {
-  logger.log(`Backend error: ${methodName}`);
+  logger.log(`Bottom Backend error ~> ${methodName}`);
   bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
     subTitle:
       subTitle || 'This took longer than expected, please try again later',

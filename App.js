@@ -294,31 +294,6 @@ const App = ({rootStore, navigation}) => {
   };
 
   useEffect(() => {
-    // DeepLinking.addScheme('common://');
-    // DeepLinking.addScheme('com.daostack.common://');
-    // DeepLinking.addScheme('https://app.common.io');
-
-    // Linking.addEventListener('url', handleOpenURL);
-
-    // DeepLinking.addRoute('/common/:id', (response) => {
-    //   routing('CommonProfile', {commonId: response.id});
-    // });
-
-    // DeepLinking.addRoute('/proposal/:id', (response) => {
-    //   routing('ProposalScreen', {proposalId: response.id});
-    // });
-
-    // DeepLinking.addRoute('/user/:id', (response) => {
-    //   bottomSheetStore.showBottomSheet(
-    //     BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-    //     {userId: response.id},
-    //   );
-    // });
-
-    // DeepLinking.addRoute('/discussion/:id', (response) => {
-    //   routing('Discussions', {discussionId: response.id});
-    // });
-
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks()
       .getInitialLink()
@@ -334,6 +309,7 @@ const App = ({rootStore, navigation}) => {
         }
       });
 
+    Linking.addEventListener('url', handleOpenURL);
     return () => {
       Linking.removeEventListener('url', handleOpenURL);
       foregroundLink();
