@@ -1,7 +1,7 @@
-export const CardName = 'CardName';
-export const City = 'City';
-export const Country = 'Country';
-export const Address = 'Address';
-export const PostalCode = 'PostalCode';
-export const District = 'District';
-export const ID = 'National ID/Passport Number';
+export const CardName = 'cardName';
+export const City = 'city';
+export const Country = 'country';
+export const Address = 'address';
+export const PostalCode = 'postalCode';
+export const District = 'district';
+export const ID = 'idNumber';
