@@ -27,7 +27,7 @@ import {object, shape, string} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {updateDiscussionLastMessage} from '~/Services/ListServices/DiscussionListService';
+import DiscussionService from '~/Services/DiscussionService';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
@@ -51,7 +51,6 @@ const Discussions = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
 
-  const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
@@ -132,7 +131,10 @@ const Discussions = ({
         .then(async (msg) => {
           Keyboard.dismiss();
           setInputText('');
-          await updateDiscussionLastMessage(discussionId, currentUser.uid);
+          await DiscussionService.updateDiscussionLastMessage(
+            discussionId,
+            currentUser.uid,
+          );
         })
         .catch((error) => {
           Toast.error(error);
@@ -212,13 +214,16 @@ const Discussions = ({
       <NavigationBar
         statusBar={{hidden: true}}
         style={{
-          height: 48,
+          height: 60,
         }}
         title={{
           title: dataState.title,
-          style: {...text.h2Black, maxWidth: '70%'},
+          style: {
+            ...text.h2Black,
+            maxWidth: '70%',
+            whiteSpace: 'wrap',
+          },
           ellipsizeMode: 'tail',
-          numberOfLines: 1,
         }}
         leftButton={
           <TouchableOpacity
@@ -244,6 +249,7 @@ const Discussions = ({
           overflow: 'hidden',
           paddingBottom: 5,
           maxHeight: '50%',
+          backgroundColor: colors.paleLilacTwo,
         }}>
         <View style={styles.headerContainer}>
           {dataState.isExpanded ? (
@@ -343,7 +349,7 @@ const Discussions = ({
     }
     bottomSheetStore.hideBottomSheet();
 
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       messageId,
       commonId,
@@ -357,7 +363,7 @@ const Discussions = ({
 
   const openMessageOptions = (message, itemType) => {
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
@@ -372,7 +378,7 @@ const Discussions = ({
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       TITLES.discussionMessage,
       commonId,
       moderationFormStore.getFormFieldsJson(),
@@ -412,17 +418,15 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={styles.scrollView} ref={scrollRef}>
-        <DiscussionMessagesList
-          discussionId={discussionId}
-          inputRef={inputRef}
-          scrollViewRef={scrollRef}
-          hasPermission={hasPermission}
-          commonId={commonId}
-          openMessageOptions={(message) => openMessageOptions(message)}
-          isMember={isMember}
-        />
-      </ScrollView>
+      <DiscussionMessagesList
+        discussionId={discussionId}
+        hasPermission={hasPermission}
+        commonId={commonId}
+        openMessageOptions={(message) => openMessageOptions(message)}
+        isMember={isMember}
+        inputHeight={inputHeight + 50}
+        isSending={isSending}
+      />
 
       {isMember ? (
         <KeyboardAvoidingView
@@ -615,11 +619,6 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
   },
 });
 

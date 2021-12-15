@@ -14,6 +14,7 @@ import ProposalService from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
 import {isIsraelLocale} from '~/Util/locale';
+import {CurrencySymbols} from '~/Util/locale';
 
 const ContributionStep = ({
   navigation,
@@ -71,7 +72,7 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.getInstance().createRequestToJoin(
+    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
       {
         ...data,
       },
@@ -148,9 +149,9 @@ const ContributionStep = ({
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month ($${currCommon.minFeeToJoinFormatted}/mo min.)`
+    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0 ? `($${currCommon.minFeeToJoinFormatted} min.)` : ''
+        currCommon.minFeeToJoinFormatted !== 0 ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)` : ''
       }`;
 
   return (
@@ -208,13 +209,6 @@ const ContributionStep = ({
         {isMonthly && (
           <Text style={styles.monthlyBottomMessage}>
             You can cancel the recurring payment at any time.
-          </Text>
-        )}
-
-        {isIsraelLocale && (
-          <Text style={styles.monthlyBottomMessage}>
-            All contributions are made in U.S. dollars. The actual contribution
-            amount in ILS may be different than the amounts estimated above.
           </Text>
         )}
       </View>

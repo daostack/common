@@ -21,9 +21,10 @@ const IntroductionStep = ({
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   const push = () => {
+    const hasRules = !calcShouldSkipRules(currCommon);
     if (introduceYourselfFormStore.isFormValid()) {
       const navigate = CommonActions.navigate({
-        name: 'ContributionStep',
+        name: hasRules ? 'RulesStep' : 'ContributionStep',
         params: {
           formStores,
           currDaoId: currDaoId,
@@ -41,7 +42,7 @@ const IntroductionStep = ({
       navigation={navigation}
       stepDotHeaderTitle="Introduce Yourself"
       navTitle={currCommon.name}
-      currentIndex={2}
+      currentIndex={1}
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}

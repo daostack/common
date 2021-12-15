@@ -34,6 +34,7 @@ const props = {
   closeDialog: func,
   navigation: shape({
     popToTop: func.isRequired,
+    pop: func.isRequired,
   }).isRequired,
   stepDotHeaderTitle: string,
   navTitle: string,
@@ -56,10 +57,10 @@ const props = {
 
 const DOT_INFO_JOIN_REQUEST = [
   {
-    dotIconName: 'agenda-24',
+    dotIconName: 'account-selected',
   },
   {
-    dotIconName: 'account-selected',
+    dotIconName: 'agenda-24',
   },
   {
     dotIconName: 'contribution-24',
@@ -115,7 +116,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
     });
 
     // const height = scrollY.value > 100 ? 125 : 0;
-    setHeaderHeight(height);
+    setHeaderHeight(height as Animated.Value);
   }, [scrollY]);
 
   const closeDialog = () => {
@@ -149,7 +150,8 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           statusBar={{hidden: true}}
           style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
           title={{
-            title: navTitle,
+            title: navTitle || '',
+            style: [{marginLeft: 70, marginRight: 85}],
           }}
           leftButton={
             <TouchableOpacity

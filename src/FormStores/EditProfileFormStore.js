@@ -5,4 +5,5 @@ class EditProfileFormStore extends FormStore {
     super();
   }
 }
+
 export default EditProfileFormStore;

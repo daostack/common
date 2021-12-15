@@ -77,7 +77,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
     onFormSubmitStart();
 
     try {
-      await AuthService.getInstance().updateUserData(
+      await AuthService.updateUserData(
         {
           firstName: values.firstName,
           lastName: values.lastName,
@@ -173,6 +173,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
         errors,
         touched,
         handleSubmit,
+        isValid,
       }): ReactElement => (
         <>
           <StatusBar barStyle="dark-content" />
@@ -297,6 +298,7 @@ const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
                   ...layout.btnPrimary,
                   ...saveBtnStyle,
                 }}
+                disabled={!isValid}
                 onPress={handleSubmit}>
                 <Text style={text.buttoncenterwhite}>Save</Text>
               </TouchableOpacity>

@@ -8,6 +8,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import {inject, observer} from 'mobx-react';
 import {object, shape, number, array, string, func} from 'prop-types';
 import {layout, text, font, colors} from '~/Theme';
 import {useIsFocused} from '@react-navigation/native';
@@ -16,16 +17,27 @@ import Title from '~/Components/CommonAgenda/Title';
 import MinimumContribution from '~/Components/CommonAgenda/MinimumContribution';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
 import CommonRules from '~/Components/CommonAgenda/CommonRules';
+import {commonStorePropTypes} from '~/Types/propTypes';
+
+export const editType = {
+  info: 'info',
+  rules: 'rules',
+};
 
 const CommonAgenda = ({
-  // This destructuring is bloody awful
+  commonStore,
   navigation,
   route: {
-    params: {common, canEdit, onEdit},
+    params: {commonId, canEdit, onEdit},
   },
 }) => {
+  const common = commonStore.getCommonById(commonId);
   const isFocused = useIsFocused();
   useEffect(() => {}, [isFocused]);
+
+  navigation.setOptions({
+    title: common.name,
+  });
 
   return (
     <>
@@ -48,7 +60,7 @@ const CommonAgenda = ({
           <View style={styles.sectionContainer}>
             <Title
               title="About"
-              onPress={() => onEdit('info')}
+              onPress={() => onEdit(editType.info)}
               canEdit={canEdit}
             />
             <HyperText
@@ -83,7 +95,7 @@ const CommonAgenda = ({
           )}
 
           <CommonRules
-            onEdit={() => onEdit('rules')}
+            onEdit={() => onEdit(editType.rules)}
             canEdit={canEdit}
             rules={common.rules}
           />
@@ -104,6 +116,7 @@ const CommonAgenda = ({
 };
 
 CommonAgenda.propTypes = {
+  commonStore: commonStorePropTypes.isRequired,
   navigation: object,
   route: shape({
     params: shape({
@@ -138,8 +151,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: 170,
-    height: 170,
+    width: 160,
+    height: 160,
   },
   linkText: {
     ...layout.marginTopS,
@@ -168,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonAgenda;
+export default inject('commonStore')(observer(CommonAgenda));

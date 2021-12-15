@@ -20,12 +20,13 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
+import CommonService from '~/Services/CommonService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
+import {CurrencySymbols} from '~/Util/locale';
 
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -59,6 +60,10 @@ const CreateStep4 = ({
     ...agendaFormStore.getChangedFormFieldsJson(),
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
+
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
 
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
@@ -118,7 +123,7 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
+      const createCommonResponse = await CommonService.createCommon(
         formattedData,
       );
 
@@ -140,9 +145,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout
@@ -215,7 +218,7 @@ const CreateStep4 = ({
               title="Min. Contribution"
               value={displayString()}
               contribution
-              amount={form[CreateCommonForm.MINIMUM]}
+              amount={minContribution}
             />
           </View>
 
@@ -266,7 +269,7 @@ const CreateStep4 = ({
                       url: x.value,
                     });
                   }}
-                  style={{...styles.linkText, flex: 'row'}}>
+                  style={{...styles.linkText, flexDirection: 'row'}}>
                   {x.title}
                 </Text>
               </View>
@@ -295,10 +298,14 @@ const CreateStep4 = ({
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>Minimum contribution</Text>
           </View>
-          <Text style={styles.textContent}>
-            ${form[CreateCommonForm.MINIMUM]}{' '}
-            <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} /> contribution
-          </Text>
+          {minContribution > 0 && (
+            <Text style={styles.textContent}>
+              {CurrencySymbols.SHEKEL}
+              {minContribution}{' '}
+              <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} />{' '}
+              contribution
+            </Text>
+          )}
           {form.zeroContribution && (
             <Text style={styles.textContent}>
               Members will be able to join the Common without a personal

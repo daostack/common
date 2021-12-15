@@ -51,8 +51,8 @@ import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {reporterName, timeReported} from '~/Components/Moderation/Reported';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast.js';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Toast from '~/Util/Toast';
+import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
@@ -64,6 +64,8 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {CurrencySymbols} from '~/Util/locale';
 
 const {width} = Dimensions.get('window');
 
@@ -89,9 +91,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -134,9 +135,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -148,9 +148,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -165,12 +164,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-      currCommon.id,
-    );
-    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-      currCommon.id,
-    );
+    const unsubscribeFromCommonProposals =
+      proposalStore.subscribeToCommonProposals(currCommon.id);
+    const unsubscribeFromCommonDiscussions =
+      discussionStore.subscribeToCommonDiscussions(currCommon.id);
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -194,7 +191,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+      unsubscribe = await ProposalService.subscribeToPendingProposalsData(
         commonId,
         authStore.userInfo?.uid,
         (data) => {
@@ -230,7 +227,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+        const count = await ProposalService.getProposalDiscussionsCount(
           pendingProposalsData.usersPendingProposal.id,
         );
         if (userPendingPropDiscCount !== count) {
@@ -283,7 +280,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, ENTITY_TYPES.proposal)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -330,9 +327,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      screenTitle: currCommon.name,
-      common: currCommon,
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: currCommon.id,
     });
   };
 
@@ -423,7 +419,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const openCommonMembers = (e) => {
+  const openCommonMembers = () => {
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
@@ -436,7 +432,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = (event) => {
+  const shareCommon = () => {
     const options = {
       url: `https://app.common.io/common/${currCommon.id}`,
       title: "Let's make it happen",
@@ -447,9 +443,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    type === 'info'
-      ? navigateTo('Edit info and cover photo')
-      : navigateTo('Edit Rules');
+    navigateTo(type);
   };
 
   /**
@@ -462,7 +456,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       itemId,
       commonId,
@@ -490,7 +484,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
       {
         onAction: item
           ? (actionType) =>
@@ -499,6 +493,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         hasPermission,
         moderatorOptions: {
           item,
+          isMember,
         },
       },
     );
@@ -509,7 +504,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
       commonId,
       moderationFormStore.getFormFieldsJson(),
@@ -538,10 +533,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const getType = (title) =>
     title === TITLES.proposals ? TITLES.proposalText : title;
 
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
       currCommon: currCommon,
-      title: screenTitle,
+      type: type,
     });
   };
 
@@ -552,44 +547,36 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
   */
 
-  const calcShouldSkipRules = () => {
-    const rules = currCommon?.rules;
-    if (rules?.length > 0) {
-      // NOTE: value of multiple fields was stored in url prop before
-      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
-    } else {
-      return true;
-    }
-  };
+  const requestToJoin = () => {
+    const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+    const paymentFormStore = new PaymentFormStore();
+    const personalContributionFormStore = new PersonalContributionFormStore();
+    const billingDetailsFormStore = new BillingDetailsFormStore();
 
-  const requestToJoin = (event) => {
-    if (authStore.userInfo) {
-      const shouldSkipRules = calcShouldSkipRules();
-
-      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
-      const paymentFormStore = new PaymentFormStore();
-      const personalContributionFormStore = new PersonalContributionFormStore();
-      const billingDetailsFormStore = new BillingDetailsFormStore();
-
-      const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
-        params: {
-          formStores: {
-            paymentFormStore,
-            introduceYourselfFormStore,
-            personalContributionFormStore,
-            billingDetailsFormStore,
-          },
-          currCommon: currCommon,
-          currDaoId: currCommon.id,
-          skipFirstStep: shouldSkipRules,
-          refreshFeed,
+    const navigate = CommonActions.navigate({
+      name: 'IntroductionStep', // #498 we always go to Introduction first
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
         },
-      });
+        currCommon: currCommon,
+        currDaoId: currCommon.id,
+        skipFirstStep: false,
+        refreshFeed,
+      },
+    });
+
+    if (authStore.userInfo) {
       navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          goToNextScreen: () => navigation.dispatch(navigate),
+        },
       );
     }
   };
@@ -770,7 +757,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
+        {CurrencySymbols.SHEKEL}
+        {currCommon.minFeeToJoinFormatted}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
@@ -922,7 +910,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <Text style={styles.stickySectionText}>
+                  <Text style={styles.stickySectionText} numberOfLines={1}>
                     {currCommon.name}
                   </Text>
                 </View>
@@ -954,14 +942,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             {renderMembersRow()}
 
-            {!isMember && showReqToJoin && (
+            {/*!isMember && showReqToJoin && (
               <View
                 style={styles.upperActionButtonContainer}
                 ref={upperRequestToJoinBtnRef}
                 collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
-            )}
+            )*/}
 
             {renderAgendaForNonMembers()}
 
@@ -1210,6 +1198,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
     fontSize: 20,
+    marginHorizontal: 60,
     color: colors.black,
     textAlign: 'center',
   },
