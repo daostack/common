@@ -97,7 +97,6 @@ export const AddBankAccountForm = ({
           />
           {isAddingNew && (
             <>
-              {' '}
               <AddPhotoID onSelect={handleChange('photoID')} />
               <AddBankConfirmation
                 onSelect={handleChange('bankConfirmation')}
