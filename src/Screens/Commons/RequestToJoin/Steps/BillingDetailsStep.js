@@ -18,7 +18,6 @@ import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
-import {CurrencySymbols} from '~/Util/locale';
 
 const AUTOFILL = {
   ios: {
