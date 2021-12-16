@@ -954,14 +954,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             {renderMembersRow()}
 
-            {!isMember && showReqToJoin && (
+            {/*!isMember && showReqToJoin && (
               <View
                 style={styles.upperActionButtonContainer}
                 ref={upperRequestToJoinBtnRef}
                 collapsable={false}>
                 {renderRequestToJoinBtn()}
               </View>
-            )}
+            )*/}
 
             {renderAgendaForNonMembers()}
 
