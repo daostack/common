@@ -9,14 +9,26 @@ import {
 } from './AddBankAccountTitle';
 import {styles} from './styles';
 
-export function AddBankAccountField({hasError = false, isAddingNew}: {hasError: boolean}) {
+type Props = {
+  hasError: boolean;
+  isAddingNew: boolean;
+  onSubmit: () => void;
+};
+
+export function AddBankAccountField({
+  hasError = false,
+  isAddingNew,
+  onSubmit,
+}: Props) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const closeModal = () => {
-    setModalVisible(false);
-  };
   const removeAccount = () => {
     console.log('remove');
+  };
+
+  const handleSubmit = () => {
+    onSubmit();
+    setModalVisible(false);
   };
 
   return (
@@ -45,9 +57,9 @@ export function AddBankAccountField({hasError = false, isAddingNew}: {hasError: 
           setModalVisible(false);
         }}>
         <AddBankAccountForm
-          onCancel={closeModal}
+          onSubmit={handleSubmit}
           onDelete={removeAccount}
-          isAddingNew
+          isAddingNew={isAddingNew}
         />
       </BottomSheetModal>
     </View>

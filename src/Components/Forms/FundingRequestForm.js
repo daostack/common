@@ -1,9 +1,7 @@
-import {func, object, shape} from 'prop-types';
+import {func, object, shape, bool} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
-import Icon from '~/Assets/iconfont/Icon';
 import {AddBankAccountField} from '~/Components/BankAccount/AddBankAccountField';
-import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
 import {colors, font, layout, text} from '~/Theme';
@@ -22,15 +20,6 @@ class FundingRequestForm extends React.Component {
   static FIELD_IMAGES = 'images';
   static FIELD_FILES = '\files';
 
-  formSave = async (e) => {
-    const {fundingRequestFormStore} = this.props;
-    if (fundingRequestFormStore.isFormValid()) {
-      if (this.props.onFormSubmit) {
-        this.props.onFormSubmit(/* changedFields */);
-      }
-    }
-  };
-
   onFormClose = (e) => {
     const {onFormClose} = this.props;
     if (onFormClose) {
@@ -39,8 +28,13 @@ class FundingRequestForm extends React.Component {
   };
 
   render() {
-    const {fundingRequestFormStore, common, navigation, ...otherProps} =
-      this.props;
+    const {
+      fundingRequestFormStore,
+      common,
+      navigation,
+      handleAddBankAccount,
+      ...otherProps
+    } = this.props;
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
@@ -93,7 +87,11 @@ class FundingRequestForm extends React.Component {
           }}
         />
 
-        <AddBankAccountField isAddingNew/>
+        <AddBankAccountField
+          isAddingNew
+          hasError={this.props.hasBankAccountError}
+          onSubmit={handleAddBankAccount}
+        />
 
         <TextInputField
           infoLabel="Required"
@@ -188,6 +186,8 @@ FundingRequestForm.propTypes = {
   onFormSubmit: func,
   onFormClose: func,
   navigation: object,
+  handleAddBankAccount: func,
+  hasBankAccountError: bool,
 };
 
 export default FundingRequestForm;

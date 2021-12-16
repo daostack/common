@@ -8,8 +8,8 @@ import {object, string, number} from 'yup';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 
 interface Props {
-  onCancel: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
+  onSubmit: () => void;
   isAddingNew: boolean;
 }
 
@@ -21,16 +21,19 @@ const validationSchema = object({
 });
 
 export const AddBankAccountForm = ({
-  onCancel,
   onDelete,
+  onSubmit,
   isAddingNew = false,
 }: Props): ReactElement => {
   const formikRef = useRef();
   const insets = useSafeAreaInsets();
 
   const formSave = () => {
-    console.log('save');
+    if (isAddingNew) {
+      onSubmit();
+    }
   };
+
   return (
     <Formik
       initialValues={{
@@ -106,10 +109,10 @@ export const AddBankAccountForm = ({
           <>
             <TouchableOpacity
               style={[styles.btn, styles.deleteBtn]}
-              onPress={onCancel}>
+              onPress={handleSubmit}>
               <Text style={styles.btnDeleteText}>Save</Text>
             </TouchableOpacity>
-            {!isAddingNew && (
+            {!isAddingNew && onDelete && (
               <TouchableOpacity style={styles.btn} onPress={onDelete}>
                 <Text style={styles.btnText}>Remove Account</Text>
               </TouchableOpacity>

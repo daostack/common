@@ -37,6 +37,10 @@ const FundingProposal = ({
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
+  const [bankAccountState, setBankAccountState] = useState({
+    isAdded: false,
+    hasError: false,
+  });
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -103,7 +107,13 @@ const FundingProposal = ({
   };
 
   const onCreateProposalButtonPressed = async () => {
-    if (fundingRequestFormStore.isFormValid()) {
+    if (!bankAccountState.isAdded) {
+      setBankAccountState({
+        isAdded: true,
+        hasError: true,
+      });
+    }
+    if (fundingRequestFormStore.isFormValid() && bankAccountState.isAdded) {
       Keyboard.dismiss();
 
       navigation.setOptions({
@@ -123,6 +133,13 @@ const FundingProposal = ({
   const hideModal = () => {
     navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
+  };
+
+  const handleAddBankAccount = () => {
+    setBankAccountState({
+      isAdded: true,
+      hasError: false,
+    });
   };
 
   return (
@@ -161,6 +178,8 @@ const FundingProposal = ({
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
             navigation={navigation}
+            hasBankAccountError={bankAccountState.hasError}
+            handleAddBankAccount={handleAddBankAccount}
           />
           <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
