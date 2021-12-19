@@ -5,7 +5,7 @@ import {auth} from '~/Firebase';
 
 class BillingDetailsService {
   private axiosClient: AxiosInstance;
-  private endpoints: {create: string/*; update: string*/};
+  private endpoints: {add: string; createToken: string};
 
   constructor() {
     this.axiosClient = axios.create({
@@ -14,17 +14,38 @@ class BillingDetailsService {
     });
 
     this.endpoints = {
-      create: 'billingDetails/create-billing-details',
+      add: '/billing-details/add',
+      createToken: '/payme/payin/create-buyer-token-page',
       //update: '/update',
     };
   }
 
-  async create(billingDetails: object): Promise<void> {
-    console.log('billingDetails', billingDetails)
+  async add(billingDetails: object): Promise<void> {
+    console.log('billingDetails', this.endpoints.add)
     try {
       return await this.axiosClient.post(
-        this.endpoints.create,
+        this.endpoints.add,
         billingDetails,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      console.log('error', error);
+      //throw error;
+    }
+  }
+
+  async createBuyerTokenPage(userId: string): Promise<void> {
+    console.log('got here');
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.createToken,
+        {
+          cardId: userId,
+        },
         {
           headers: {
             Authorization: await auth().currentUser.getIdToken(true),

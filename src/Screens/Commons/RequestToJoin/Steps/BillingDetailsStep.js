@@ -19,6 +19,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {CurrencySymbols} from '~/Util/locale';
+import BillingDetailsService from '~/Services/BillingDetailsService';
 
 const AUTOFILL = {
   ios: {
@@ -59,8 +60,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
     return new RegExp(/^[a-zA-Z'’. ]*$/).test(name) ? name : '';
   };
 
-  const navigateToPaymentDetailsStep = () => {
+  const navigateToPaymentDetailsStep = async () => {
     if (billingDetailsFormStore.isFormValid()) {
+      const {data} = await BillingDetailsService.createBuyerTokenPage(authStore.userInfo.uid); 
       navigation.dispatch(
         CommonActions.navigate({
           name: 'PaymentDetailsStep',
@@ -70,6 +72,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             currCommon: currCommon,
             skipFirstStep: skipFirstStep,
             refreshFeed,
+            iFrameLink: data.link,
           },
         }),
       );
@@ -123,7 +126,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].name}
           validation={{
-            name: BillingDetailsConstants.CardName,
+            name: BillingDetailsConstants.Name,
             formStore: billingDetailsFormStore,
             validateRule: [
               'required',
@@ -174,16 +177,16 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             testCard
               ? '221B Baker Street'
               : billingDetailsFormStore.getFormField(
-                  BillingDetailsConstants.Address,
+                  BillingDetailsConstants.Line1,
                 )?.value
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].street}
           validation={{
-            name: BillingDetailsConstants.Address,
+            name: BillingDetailsConstants.Line1,
             formStore: billingDetailsFormStore,
             validateRule: 'required|string',
-            displayName: 'address',
+            displayName: 'line1',
           }}
         />
 
