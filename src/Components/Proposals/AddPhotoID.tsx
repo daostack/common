@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     maxHeight: height - 100,
   },
   iconContainer: {
+    zIndex: 1000,
     height: 48,
     width: 48,
     borderRadius: 24,
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: 'absolute',
+    zIndex: 1000,
     width: width - 48,
     ...layout.content,
     ...layout.flexRow,
