@@ -7,6 +7,8 @@ import {
   View,
   Modal,
   Dimensions,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import ImagePicker from 'react-native-image-picker';
@@ -16,7 +18,7 @@ import {handlePermission} from '~/Util/Permissions';
 import {TAB_BAR_HEIGHT, STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import Toast from '~/Util/Toast';
 import FastImage from 'react-native-fast-image';
-import {colors} from '~/Theme';
+import {colors, layout, font} from '~/Theme';
 
 const {width, height} = Dimensions.get('window');
 
@@ -31,15 +33,15 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
   const [localPath, setLocalPath] = useState<string>();
   const [filename, setFilename] = useState<string>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  function showImagePreview() {
-    setModalVisible(true);
-  }
-
-  function deleteImage(url: string): void {
-    StorageService.deleteFromStorage(url);
+  async function deleteImage(url: string): Promise<void> {
+    if (url) {
+      StorageService.deleteFromStorage(url);
+    }
     setImageUrl(undefined);
     setFilename(undefined);
+    setLocalPath(undefined);
   }
 
   function pickImage(): void {
@@ -48,6 +50,10 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
       allowsEditing: false,
     };
     ImagePicker.showImagePicker(options, async (response) => {
+      if (imageUrl) {
+        await deleteImage(imageUrl);
+      }
+
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
@@ -56,39 +62,50 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
         Toast.error(response.error);
         logger.log('ImagePicker Error: ', response.error);
       } else {
-        Toast.loading('Uploading...');
-        StorageService.uploadImage(response.uri, 'private')
-          .then((url) => {
-            Toast.hide();
-            Toast.success('Done');
-            setLocalPath(response.uri);
-            setFilename(StorageService.getFilename(url));
-            setImageUrl(url);
-            onSelect(url);
-          })
-          .catch((error) => {
-            Toast.error(error.toString());
-          });
+        setLocalPath(response.uri);
+        setModalVisible(true);
       }
     });
   }
 
+  function approveImage(): void {
+    Toast.loading('Uploading...');
+    setLoading(true);
+    StorageService.uploadImage(localPath as string, 'private')
+      .then((url) => {
+        Toast.hide();
+        Toast.success('Done');
+        setFilename(StorageService.getFilename(url, true));
+        setImageUrl(url);
+        onSelect(url);
+      })
+      .catch((error) => {
+        Toast.error(error.toString());
+      })
+      .finally(() => {
+        setModalVisible(false);
+        setLoading(false);
+      });
+  }
+
+  console.log('----isLoading', isLoading);
+
   return (
     <>
       <Pressable
-        onPress={imageUrl ? showImagePreview : pickImage}
+        onPress={imageUrl ? null : pickImage}
         style={({pressed}) => [
-          {
-            opacity: pressed ? 0.5 : 1.0,
-          },
+          imageUrl
+            ? {}
+            : {
+                opacity: pressed ? 0.5 : 1.0,
+              },
           styles.container,
         ]}>
         <Icon name="add-avatar" />
         {imageUrl ? (
           <View style={styles.imageNameContainer}>
-            <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
-              {filename}
-            </Text>
+            <Text style={styles.title}>{filename}</Text>
             <Pressable
               hitSlop={ICON_HIT_SLOP}
               onPress={() => {
@@ -104,27 +121,35 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
       <Modal animationType="fade" transparent visible={modalVisible}>
         <View style={styles.modalContainer}>
           <Pressable
-            style={styles.closeIcon}
+            style={[styles.iconContainer, styles.closeIcon]}
+            hitSlop={ICON_HIT_SLOP}
+            onPress={pickImage}>
+            <Icon name="camera" size={24} />
+          </Pressable>
+          <Pressable
+            style={[styles.iconContainer, styles.deleteIcon]}
             hitSlop={ICON_HIT_SLOP}
             onPress={() => {
               setModalVisible(false);
+              deleteImage(imageUrl as string);
             }}>
-            <Icon name="close" size={28} color={colors.white} />
+            <Icon name="delete" size={24} color={colors.white} />
           </Pressable>
           <FastImage
             resizeMode="cover"
             source={{uri: localPath}}
             style={styles.imagePreview}
           />
-          <Pressable
-            style={styles.deleteIcon}
-            hitSlop={ICON_HIT_SLOP}
-            onPress={() => {
-              setModalVisible(false);
-              deleteImage(imageUrl as string);
-            }}>
-            <Icon name="delete" size={28} color={colors.white} />
-          </Pressable>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            <TouchableOpacity
+              style={[styles.btn]}
+              onPress={approveImage}
+              disabled={isLoading}>
+              <Text style={styles.btnText}>Approve</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </Modal>
     </>
@@ -160,19 +185,46 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,26,54,0.4)',
   },
-  closeIcon: {
-    position: 'absolute',
-    top: STATUS_BAR_HEIGHT + 24,
-    right: 28,
-  },
   imagePreview: {
     width: width - 16,
     aspectRatio: 1,
     maxHeight: height - 100,
   },
+  iconContainer: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeIcon: {
+    position: 'absolute',
+    top: STATUS_BAR_HEIGHT + 24,
+    left: 28,
+  },
   deleteIcon: {
     position: 'absolute',
-    bottom: TAB_BAR_HEIGHT - 40,
+    top: STATUS_BAR_HEIGHT + 24,
     right: 28,
+  },
+  btn: {
+    position: 'absolute',
+    bottom: TAB_BAR_HEIGHT - 42,
+    width: width - 48,
+    ...layout.content,
+    ...layout.flexRow,
+    ...layout.flexStart,
+    paddingVertical: 14,
+    borderRadius: 32,
+    justifyContent: 'center',
+    backgroundColor: colors.mainBlue,
+  },
+  btnText: {
+    textAlign: 'center',
+    ...font.primary.regular,
+    fontSize: 16,
+    lineHeight: 20,
+    color: colors.white,
   },
 });

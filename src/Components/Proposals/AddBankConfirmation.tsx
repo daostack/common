@@ -37,7 +37,7 @@ export function AddBankConfirmation({onSelect}: Props): ReactElement {
         'private',
       );
       setFileUrl(downloadUrl);
-      setFilename(StorageService.getFilename(downloadUrl));
+      setFilename(StorageService.getFilename(downloadUrl, true));
       onSelect(downloadUrl);
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
@@ -60,9 +60,7 @@ export function AddBankConfirmation({onSelect}: Props): ReactElement {
       <Icon name="add-document" />
       {fileUrl ? (
         <View style={[styles.titleContainer, styles.fileNameContainer]}>
-          <Text style={[styles.title, {textDecorationLine: 'underline'}]}>
-            {filename}
-          </Text>
+          <Text style={styles.title}>{filename}</Text>
           <Pressable
             hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
             onPress={() => {

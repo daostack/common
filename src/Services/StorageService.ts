@@ -52,8 +52,11 @@ class StorageService {
     ref.delete();
   };
 
-  getFilename = (fileUri: string): string => {
+  getFilename = (fileUri: string, withExtension = false): string => {
     const ref = storage.refFromURL(fileUri) || '';
+    if (withExtension) {
+      return ref.name;
+    }
     return ref.name.split('.').shift();
   };
 }
