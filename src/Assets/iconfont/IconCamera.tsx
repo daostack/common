@@ -31,7 +31,7 @@ export const IconCamera: FunctionComponent<Props> = ({
         stroke="#000"
         opacity={0.5}
         strokeWidth="2"
-        d="M7.5 13.5a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0z"
+        d="M7.5 16a5 5.5 0 1 1 9 0 5.5 5.5 0 0 1-9 0z"
         fill={getIconColor(color, 0, colors.white)}
       />
     </Svg>

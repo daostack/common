@@ -140,16 +140,16 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
             source={{uri: localPath}}
             style={styles.imagePreview}
           />
-          {isLoading ? (
-            <ActivityIndicator size="large" color="white" />
-          ) : (
-            <TouchableOpacity
-              style={[styles.btn]}
-              onPress={approveImage}
-              disabled={isLoading}>
+          <TouchableOpacity
+            style={[styles.btnContainer, styles.btn]}
+            onPress={approveImage}
+            disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
               <Text style={styles.btnText}>Approve</Text>
-            </TouchableOpacity>
-          )}
+            )}
+          </TouchableOpacity>
         </View>
       </Modal>
     </>
@@ -208,9 +208,11 @@ const styles = StyleSheet.create({
     top: STATUS_BAR_HEIGHT + 24,
     right: 28,
   },
-  btn: {
+  btnContainer: {
     position: 'absolute',
     bottom: TAB_BAR_HEIGHT - 42,
+  },
+  btn: {
     width: width - 48,
     ...layout.content,
     ...layout.flexRow,
