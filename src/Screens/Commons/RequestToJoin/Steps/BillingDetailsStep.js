@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Dimensions, Platform} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
@@ -10,7 +10,7 @@ import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDe
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
-import {testCard} from '~/Config';
+//import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -20,7 +20,9 @@ import {authStorePropTypes} from '~/Types/propTypes';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {CurrencySymbols} from '~/Util/locale';
 import BillingDetailsService from '~/Services/BillingDetailsService';
-
+import PaymentService from '~/Services/PaymentsService';
+import Toast from '~/Util/Toast';
+const testCard = true;
 const AUTOFILL = {
   ios: {
     name: 'name',
@@ -45,6 +47,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
     formStores,
   } = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
+  const [savedBillingDetails, setSavedBillingDetails] = useState({});
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
@@ -54,15 +57,30 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
   const getUserFullName = () => {
     const name =
-      billingDetailsFormStore.getFormField(BillingDetailsConstants.City)
+      billingDetailsFormStore.getFormField(BillingDetailsConstants.Name)
         ?.value || authStore.userInfo.displayName;
 
     return new RegExp(/^[a-zA-Z'’. ]*$/).test(name) ? name : '';
   };
 
+  /*useEffect(() => {
+    (async () => {
+      //const {data} = await BillingDetailsService.getBillingDetails();
+      setSavedBillingDetails({
+        [BillingDetailsConstants.Name]: data.name,
+        [BillingDetailsConstants.City]: data.city,
+        [BillingDetailsConstants.Line1]: data.line1,
+        [BillingDetailsConstants.Country]: data.country,
+        [BillingDetailsConstants.PostalCode]: data.postalCode,
+        [BillingDetailsConstants.ID]: data.idNumber,
+      });
+    })();
+  });*/
+
   const navigateToPaymentDetailsStep = async () => {
     if (billingDetailsFormStore.isFormValid()) {
-      const {data} = await BillingDetailsService.createBuyerTokenPage(authStore.userInfo.uid); 
+      Toast.loading('One moment please');
+      const {data} = await PaymentService.createBuyerTokenPage(authStore.userInfo.uid); 
       navigation.dispatch(
         CommonActions.navigate({
           name: 'PaymentDetailsStep',
@@ -143,9 +161,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? 'Metropolis'
-              : billingDetailsFormStore.getFormField(
-                  BillingDetailsConstants.City,
-                )?.value
+              : (billingDetailsFormStore.getFormField(
+                                BillingDetailsConstants.City,
+                              )?.value || savedBillingDetails?.city)
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].city}
@@ -176,9 +194,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? '221B Baker Street'
-              : billingDetailsFormStore.getFormField(
-                  BillingDetailsConstants.Line1,
-                )?.value
+              : (billingDetailsFormStore.getFormField(
+                                BillingDetailsConstants.Line1,
+                              )?.value || savedBillingDetails?.line1)
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].street}
@@ -199,9 +217,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             value={
               testCard
                 ? 'TX'
-                : billingDetailsFormStore.getFormField(
-                    BillingDetailsConstants.District,
-                  )?.value
+                : (billingDetailsFormStore.getFormField(
+                                    BillingDetailsConstants.District,
+                                  )?.value || savedBillingDetails?.district)
             }
             validation={{
               name: BillingDetailsConstants.District,
@@ -221,9 +239,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             value={
               testCard
                 ? '012345678'
-                : billingDetailsFormStore.getFormField(
-                    BillingDetailsConstants.ID,
-                  )?.value
+                : (billingDetailsFormStore.getFormField(
+                                    BillingDetailsConstants.ID,
+                                  )?.value || savedBillingDetails?.ID)
             }
             validation={{
               name: BillingDetailsConstants.ID,
@@ -245,9 +263,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? '31415PI'
-              : billingDetailsFormStore.getFormField(
-                  BillingDetailsConstants.PostalCode,
-                )?.value
+              : (billingDetailsFormStore.getFormField(
+                                BillingDetailsConstants.PostalCode,
+                              )?.value || savedBillingDetails?.postalCode)
           }
           validation={{
             name: BillingDetailsConstants.PostalCode,

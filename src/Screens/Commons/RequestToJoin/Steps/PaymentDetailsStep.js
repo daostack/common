@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 import {colors, text} from '~/Theme';
 import {inject} from 'mobx-react';
@@ -10,6 +10,7 @@ import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {WebView} from 'react-native-webview';
 import {escapeUrl} from '~/Util';
+import Toast from '~/Util/Toast';
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -104,6 +105,10 @@ const PaymentDetailsStep = ({
     }
   };
 
+  const onMessage = async (event) => {
+    console.log('On Message', event);
+  };
+
   return (
     <StepDotLayout
       navigation={navigation}
@@ -120,26 +125,23 @@ const PaymentDetailsStep = ({
           onPress={push}
         />
       }>
-       <View style ={{height: height / 2, width: '90%'}} >
-        {<WebView scalesPageToFit={false}
-                source={{uri: iFrameLink}}/>}
-
+      <View style={{height: height / 2, width: '90%'}}>
+        {
+          <WebView
+            scalesPageToFit={false}
+            source={{uri: iFrameLink}}
+            onMessage={(m) => onMessage(m)}
+            onLoadEnd={(syntheticEvent) => {
+              Toast.done();
+              // update component to be aware of loading status
+              //const {nativeEvent} = syntheticEvent;
+              //this.isLoading = nativeEvent.loading;
+            }}
+          />
+        }
       </View>
     </StepDotLayout>
   );
-};
-
-const styles = {
-  circleContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  monthlyBottomMessage: {
-    ...text.regularText,
-    color: colors.grey2,
-    textAlign: 'center',
-  },
 };
 
 PaymentDetailsStep.propTypes = {

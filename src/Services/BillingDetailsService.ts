@@ -1,60 +1,46 @@
 import axios, {AxiosInstance} from 'axios';
 
-import {billingDetailsUrl} from '~/Config';
+import {payMeUrl} from '~/Config';
 import {auth} from '~/Firebase';
 
 class BillingDetailsService {
   private axiosClient: AxiosInstance;
-  private endpoints: {add: string; createToken: string};
+  private endpoints: {add: string; get: string};
 
   constructor() {
     this.axiosClient = axios.create({
-      baseURL: billingDetailsUrl(),
+      baseURL: payMeUrl(),
       timeout: 1000000,
     });
 
     this.endpoints = {
       add: '/billing-details/add',
-      createToken: '/payme/payin/create-buyer-token-page',
+      get: '/billing-details/get',
       //update: '/update',
     };
   }
 
-  async add(billingDetails: object): Promise<void> {
-    console.log('billingDetails', this.endpoints.add)
+  async addBillingDetails(billingDetails: object): Promise<void> {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.add,
-        billingDetails,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
+      return await this.axiosClient.post(this.endpoints.add, billingDetails, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
         },
-      );
+      });
     } catch (error) {
-      console.log('error', error);
-      //throw error;
+      throw error;
     }
   }
 
-  async createBuyerTokenPage(userId: string): Promise<void> {
-    console.log('got here');
+  async getBillingDetails(): Promise<void> {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.createToken,
-        {
-          cardId: userId,
+      return await this.axiosClient.get(this.endpoints.get, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
         },
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
+      });
     } catch (error) {
-      console.log('error', error);
-      //throw error;
+      throw error;
     }
   }
 }
