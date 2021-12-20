@@ -15,7 +15,7 @@ import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import logger from '~/Services/Logger';
 import {handlePermission} from '~/Util/Permissions';
-import {TAB_BAR_HEIGHT, STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/Util/Toast';
 import FastImage from 'react-native-fast-image';
 import {colors, layout, font} from '~/Theme';
@@ -34,6 +34,7 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
   const [filename, setFilename] = useState<string>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const insets = useSafeAreaInsets();
 
   async function deleteImage(url: string): Promise<void> {
     if (url) {
@@ -88,8 +89,6 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
       });
   }
 
-  console.log('----isLoading', isLoading);
-
   return (
     <>
       <Pressable
@@ -121,13 +120,21 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
       <Modal animationType="fade" transparent visible={modalVisible}>
         <View style={styles.modalContainer}>
           <Pressable
-            style={[styles.iconContainer, styles.closeIcon]}
+            style={[
+              styles.iconContainer,
+              styles.closeIcon,
+              {top: insets.top + 14},
+            ]}
             hitSlop={ICON_HIT_SLOP}
             onPress={pickImage}>
             <Icon name="camera" size={24} />
           </Pressable>
           <Pressable
-            style={[styles.iconContainer, styles.deleteIcon]}
+            style={[
+              styles.iconContainer,
+              styles.deleteIcon,
+              {top: insets.top + 14},
+            ]}
             hitSlop={ICON_HIT_SLOP}
             onPress={() => {
               setModalVisible(false);
@@ -141,7 +148,7 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
             style={styles.imagePreview}
           />
           <TouchableOpacity
-            style={[styles.btnContainer, styles.btn]}
+            style={[styles.btn, {bottom: insets.bottom + 42}]}
             onPress={approveImage}
             disabled={isLoading}>
             {isLoading ? (
@@ -200,19 +207,14 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    top: STATUS_BAR_HEIGHT + 24,
     left: 28,
   },
   deleteIcon: {
     position: 'absolute',
-    top: STATUS_BAR_HEIGHT + 24,
     right: 28,
   },
-  btnContainer: {
-    position: 'absolute',
-    bottom: TAB_BAR_HEIGHT - 42,
-  },
   btn: {
+    position: 'absolute',
     width: width - 48,
     ...layout.content,
     ...layout.flexRow,
