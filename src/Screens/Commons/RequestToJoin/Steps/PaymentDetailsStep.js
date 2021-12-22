@@ -16,7 +16,14 @@ const {height} = Dimensions.get('window');
 const PaymentDetailsStep = ({
   navigation,
   route: {
-    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed, iFrameLink},
+    params: {
+      formStores,
+      skipFirstStep,
+      currCommon,
+      currDaoId,
+      refreshFeed,
+      iFrameLink,
+    },
   },
   rootStore,
 }) => {
@@ -131,6 +138,9 @@ const PaymentDetailsStep = ({
             scalesPageToFit={false}
             source={{uri: iFrameLink}}
             onMessage={(m) => onMessage(m)}
+            onNavigationStateChange={(e) => {
+              console.log('onNavigationStateChange', e);
+            }}
             onLoadEnd={(syntheticEvent) => {
               Toast.done();
               // update component to be aware of loading status
