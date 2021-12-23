@@ -7,7 +7,6 @@ class PaymentService {
   private endpoints: {createToken: string};
 
   constructor() {
-    console.log('---payMeUrl()', payMeUrl());
     this.axiosClient = axios.create({
       baseURL: payMeUrl(),
       timeout: 1000000,
@@ -20,7 +19,6 @@ class PaymentService {
   }
 
   async createBuyerTokenPage(userId: string): Promise<void> {
-    console.log('---token', await auth().currentUser.getIdToken(true));
     try {
       return await this.axiosClient.post(
         this.endpoints.createToken,
