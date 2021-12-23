@@ -78,9 +78,19 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   });*/
 
   const navigateToPaymentDetailsStep = async () => {
+    Toast.loading('One moment please');
+    try {
+      await BillingDetailsService.getBillingDetails();
+    } catch (e) {
+      await BillingDetailsService.addBillingDetails(
+        billingDetailsFormStore.getFormFieldsJson(),
+      );
+    }
+
     if (billingDetailsFormStore.isFormValid()) {
-      Toast.loading('One moment please');
-      const {data} = await PaymentService.createBuyerTokenPage(authStore.userInfo.uid); 
+      const {data} = await PaymentService.createBuyerTokenPage(
+        authStore.userInfo.uid,
+      );
       navigation.dispatch(
         CommonActions.navigate({
           name: 'PaymentDetailsStep',
@@ -104,7 +114,8 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
   const subtitle = (style) => (
     <Text style={style}>
-      You are contributing {CurrencySymbols.SHEKEL}{contributionAmount ? contributionAmount : 0}
+      You are contributing {CurrencySymbols.SHEKEL}
+      {contributionAmount ? contributionAmount : 0}
       <Text style={{...font.primary.bold}}>
         {' '}
         ({isMonthly ? 'monthly' : 'one time'}){' '}
@@ -161,9 +172,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? 'Metropolis'
-              : (billingDetailsFormStore.getFormField(
-                                BillingDetailsConstants.City,
-                              )?.value || savedBillingDetails?.city)
+              : billingDetailsFormStore.getFormField(
+                  BillingDetailsConstants.City,
+                )?.value || savedBillingDetails?.city
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].city}
@@ -194,9 +205,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? '221B Baker Street'
-              : (billingDetailsFormStore.getFormField(
-                                BillingDetailsConstants.Line1,
-                              )?.value || savedBillingDetails?.line1)
+              : billingDetailsFormStore.getFormField(
+                  BillingDetailsConstants.Line1,
+                )?.value || savedBillingDetails?.line1
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].street}
@@ -217,9 +228,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             value={
               testCard
                 ? 'TX'
-                : (billingDetailsFormStore.getFormField(
-                                    BillingDetailsConstants.District,
-                                  )?.value || savedBillingDetails?.district)
+                : billingDetailsFormStore.getFormField(
+                    BillingDetailsConstants.District,
+                  )?.value || savedBillingDetails?.district
             }
             validation={{
               name: BillingDetailsConstants.District,
@@ -239,9 +250,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             value={
               testCard
                 ? '012345678'
-                : (billingDetailsFormStore.getFormField(
-                                    BillingDetailsConstants.ID,
-                                  )?.value || savedBillingDetails?.ID)
+                : billingDetailsFormStore.getFormField(
+                    BillingDetailsConstants.ID,
+                  )?.value || savedBillingDetails?.ID
             }
             validation={{
               name: BillingDetailsConstants.ID,
@@ -263,9 +274,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={
             testCard
               ? '31415PI'
-              : (billingDetailsFormStore.getFormField(
-                                BillingDetailsConstants.PostalCode,
-                              )?.value || savedBillingDetails?.postalCode)
+              : billingDetailsFormStore.getFormField(
+                  BillingDetailsConstants.PostalCode,
+                )?.value || savedBillingDetails?.postalCode
           }
           validation={{
             name: BillingDetailsConstants.PostalCode,

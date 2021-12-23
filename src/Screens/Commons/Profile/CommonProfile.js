@@ -165,9 +165,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   useEffect(() => {
     const unsubscribeFromCommonProposals =
-      proposalStore.subscribeToCommonProposals(currCommon.id);
+      proposalStore.subscribeToCommonProposals(currCommon?.id);
     const unsubscribeFromCommonDiscussions =
-      discussionStore.subscribeToCommonDiscussions(currCommon.id);
+      discussionStore.subscribeToCommonDiscussions(currCommon?.id);
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
