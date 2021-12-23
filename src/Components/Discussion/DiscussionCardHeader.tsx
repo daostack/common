@@ -5,7 +5,7 @@ import {observer, inject} from 'mobx-react';
 import {Reported} from '../../Components/Moderation/Reported';
 import {bool, object, InferProps, string} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {FLAGS, ENTITY_TYPES} from '../../Components/Moderation/constants';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
@@ -36,7 +36,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
       style={showIcon ? styles.hiddenCardHeader : styles.discussionCardHeader}>
       {isReported && moderation && (
         <Reported
-          moderation={moderation}
+          moderation={{...moderation, type: ENTITY_TYPES.discussion}}
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
           viewerPermission={viewerPermission}

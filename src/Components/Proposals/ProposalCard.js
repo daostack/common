@@ -41,6 +41,7 @@ const ProposalCard = ({
   rootStore,
   isMember,
   viewerPermission,
+  type,
 }) => {
   // Stores
   const userStore = rootStore.userStore;
@@ -58,6 +59,7 @@ const ProposalCard = ({
     authStore?.userInfo?.uid,
   );
   const showCard = isVisible || (!isVisible && hasPermission);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -132,7 +134,9 @@ const ProposalCard = ({
               proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
-          moderation={proposalInfo.moderation}
+          moderation={
+            proposalInfo.moderation && {...proposalInfo.moderation, type}
+          }
           reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
@@ -145,9 +149,9 @@ const ProposalCard = ({
                 {isFundingRequest &&
                   (proposalInfo?.description?.title || 'Unknown title')}
               </Text>
-              {authStore.signedInUser && !isSwiper && (
-                <ModerationMenu showOptions={openCommonOptions} />
-              )}
+              {(!proposalInfo.isModerationHidden || hasPermission) &&
+                !isSwiper &&
+                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
             <MemberCard
               showDate={proposalInfo.isJoinRequest}
@@ -231,6 +235,7 @@ ProposalCard.propTypes = {
   rootStore: rootStorePropTypes,
   isMember: bool,
   viewerPermission: string,
+  type: string,
 };
 
 const styles = StyleSheet.create({
