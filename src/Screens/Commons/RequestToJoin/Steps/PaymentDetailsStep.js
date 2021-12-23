@@ -117,8 +117,7 @@ const PaymentDetailsStep = ({
 
   const redirectUser = (event) => {
     if (!respLink) {
-      if (event.title === 'Google') {
-        console.log('event', event.url);
+      if (event.title === 'Home') {
         setRespLink(event.url);
         push();
       }
