@@ -224,7 +224,6 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           value={country}
           label="Country"
           onChange={(x) => {
-            console.log('-=---x', x);
             setCountry(x);
           }}
           validation={{
