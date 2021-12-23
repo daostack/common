@@ -70,7 +70,6 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
     route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
-  const [savedBillingDetails, setSavedBillingDetails] = useState({});
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
@@ -210,7 +209,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? 'Metropolis'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.City,
-                )?.value || savedBillingDetails?.city
+                )?.value
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].city}
@@ -267,7 +266,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? 'TX'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.District,
-                  )?.value || savedBillingDetails?.district
+                  )?.value
             }
             validation={{
               name: BillingDetailsConstants.District,
@@ -289,7 +288,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? '012345678'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.ID,
-                  )?.value || savedBillingDetails?.ID
+                  )?.value
             }
             validation={{
               name: BillingDetailsConstants.ID,
@@ -308,7 +307,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? '31415PI'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.PostalCode,
-                )?.value || savedBillingDetails?.postalCode
+                )?.value
           }
           validation={{
             name: BillingDetailsConstants.PostalCode,
