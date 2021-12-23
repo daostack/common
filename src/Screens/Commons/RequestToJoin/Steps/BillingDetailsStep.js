@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Dimensions, Platform} from 'react-native';
 import {bool, func, object, shape, string} from 'prop-types';
 
@@ -10,7 +10,7 @@ import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDe
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
-import {testCard} from '~/Config';
+//import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
@@ -70,6 +70,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
     route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
+  const [savedBillingDetails, setSavedBillingDetails] = useState({});
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
@@ -79,7 +80,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
   const getUserFullName = () => {
     const name =
-      billingDetailsFormStore.getFormField(BillingDetailsConstants.City)
+      billingDetailsFormStore.getFormField(BillingDetailsConstants.Name)
         ?.value || authStore.userInfo.displayName;
 
     return new RegExp(/^[a-zA-Z'’. ]*$/).test(name) ? name : '';
@@ -139,6 +140,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             currCommon: currCommon,
             skipFirstStep: skipFirstStep,
             refreshFeed,
+            iFrameLink: data.link,
           },
         }),
       );
@@ -193,7 +195,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].name}
           validation={{
-            name: BillingDetailsConstants.CardName,
+            name: BillingDetailsConstants.Name,
             formStore: billingDetailsFormStore,
             validateRule: FORM_RULES[BillingDetailsConstants.Name],
             displayName: 'full name',
@@ -208,7 +210,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? 'Metropolis'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.City,
-                )?.value
+                )?.value || savedBillingDetails?.city
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].city}
@@ -247,7 +249,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].street}
           validation={{
-            name: BillingDetailsConstants.Address,
+            name: BillingDetailsConstants.Line1,
             formStore: billingDetailsFormStore,
             validateRule: FORM_RULES[BillingDetailsConstants.Line1],
             displayName: 'line1',
@@ -265,7 +267,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? 'TX'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.District,
-                  )?.value
+                  )?.value || savedBillingDetails?.district
             }
             validation={{
               name: BillingDetailsConstants.District,
@@ -287,7 +289,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? '012345678'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.ID,
-                  )?.value
+                  )?.value || savedBillingDetails?.ID
             }
             validation={{
               name: BillingDetailsConstants.ID,
@@ -306,7 +308,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? '31415PI'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.PostalCode,
-                )?.value
+                )?.value || savedBillingDetails?.postalCode
           }
           validation={{
             name: BillingDetailsConstants.PostalCode,

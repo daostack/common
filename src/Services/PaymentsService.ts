@@ -1,6 +1,9 @@
+import axios, {AxiosInstance} from 'axios';
 import {db} from '../Firebase';
+import {auth} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {IPaymentEntity} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
+import {payMeUrl} from '~/Config';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
