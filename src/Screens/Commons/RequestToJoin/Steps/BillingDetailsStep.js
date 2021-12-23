@@ -74,6 +74,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
   const [country, setCountry] = useState(country);
+  const [billingDetailsExist, setBillingDetailsExist] = useState(false);
 
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
@@ -88,6 +89,9 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   useEffect(() => {
     (async () => {
       const {data} = await BillingDetailsService.getBillingDetails();
+      if (data) {
+        setBillingDetailsExist(true);
+      }
       setCountry(data.country.toString().toUpperCase());
       billingDetailsFormStore.initFormStoreState({
         [BillingDetailsConstants.City]: {
@@ -125,8 +129,16 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   }, []);
 
   const navigateToPaymentDetailsStep = async () => {
+
+    Toast.loading('One moment please');
+
+     if (!billingDetailsExist) {
+       await BillingDetailsService.addBillingDetails(
+         billingDetailsFormStore.getFormFieldsJson(),
+       );
+     }
+
     if (billingDetailsFormStore.isFormValid()) {
-      Toast.loading('One moment please');
       const {data} = await PaymentService.createBuyerTokenPage(
         authStore.userInfo.uid,
       );
