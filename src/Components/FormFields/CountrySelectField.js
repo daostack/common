@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {View} from 'react-native';
 import {bool, func, object, oneOfType, shape, string} from 'prop-types';
+import {useUpdateEffect} from '~/Util/hooks';
 
 import * as RNLocalize from 'react-native-localize';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -11,11 +12,11 @@ import {colors} from '../../Theme';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import {Label} from './TextInputField';
 
-const getCountryIndex = (countryArr, country) => countryArr.findIndex(
-  (countryObj) => countryObj.value === country
-);
+const getCountryIndex = (countryArr, country) =>
+  countryArr.findIndex((countryObj) => countryObj.value === country);
 
 export const CountrySelectField = ({onChange, value, ...props}) => {
+  const ref = useRef();
   const countries = countryList.filter((country) => country.payin);
 
   const [selectedCountryIndex, setSelectedCountryIndex] = React.useState(
@@ -25,10 +26,17 @@ export const CountrySelectField = ({onChange, value, ...props}) => {
     countries[selectedCountryIndex].value,
   );
 
+  useUpdateEffect(() => {
+    ref.current.setState({
+      item: countryList[
+        getCountryIndex(countries, value || RNLocalize.getCountry())
+      ],
+    });
+  }, [value]);
+
   // Call the callback with the initial country value
   React.useEffect(() => {
-    typeof onChange === 'function'
-      && onChange(selectedCountry);
+    typeof onChange === 'function' && onChange(selectedCountry);
   }, []);
 
   const onCountrySelected = (country) => {
@@ -41,17 +49,17 @@ export const CountrySelectField = ({onChange, value, ...props}) => {
       formStore.fieldChanged(name, country.value, false);
     }
 
-    typeof onChange === 'function'
-      && onChange(country.value);
+    typeof onChange === 'function' && onChange(country.value);
   };
 
   return (
     <View style={styles.container}>
       {(props.label || props.infoLabel) && (
-        <Label label={props.label} infoLabel={props.infoLabel}/>
+        <Label label={props.label} infoLabel={props.infoLabel} />
       )}
 
       <SearchableDropdown
+        ref={ref}
         onItemSelect={onCountrySelected}
         itemStyle={styles.itemStyle}
         itemTextStyle={{color: 'black'}}

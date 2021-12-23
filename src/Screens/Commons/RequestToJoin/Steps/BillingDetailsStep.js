@@ -22,7 +22,8 @@ import {CurrencySymbols} from '~/Util/locale';
 import BillingDetailsService from '~/Services/BillingDetailsService';
 import PaymentService from '~/Services/PaymentsService';
 import Toast from '~/Util/Toast';
-const testCard = true;
+import {formInitialState} from '~/Util/constants/form';
+const testCard = false;
 const AUTOFILL = {
   ios: {
     name: 'name',
@@ -38,16 +39,37 @@ const AUTOFILL = {
   },
 };
 
+const FORM_RULES = {
+  [BillingDetailsConstants.City]: ['required', VALIDATION_RULES.LATIN_ONLY],
+  [BillingDetailsConstants.Name]: [
+    'required',
+    VALIDATION_RULES.LATIN_ONLY,
+    VALIDATION_RULES.FIRST_LAST_NAME,
+  ],
+  [BillingDetailsConstants.PostalCode]: [
+    'required',
+    VALIDATION_RULES.POSTAL_CODE,
+  ],
+  [BillingDetailsConstants.Country]: 'required|string',
+  [BillingDetailsConstants.Line1]: 'required|string',
+  [BillingDetailsConstants.PostalCode]: 'required|string',
+  [BillingDetailsConstants.District]: [
+    'required',
+    'min:2',
+    VALIDATION_RULES.LATIN_ONLY,
+  ],
+  [BillingDetailsConstants.ID]: [
+    'required',
+    'min:9',
+    'max:9',
+    VALIDATION_RULES.VALID_ID_PASSPORT,
+  ],
+};
+
 const BillingDetailsStep = ({navigation, route, authStore}) => {
-  const {
-    skipFirstStep,
-    currCommon,
-    currDaoId,
-    refreshFeed,
-    formStores,
-  } = route.params;
+  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
+    route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
-  const [savedBillingDetails, setSavedBillingDetails] = useState({});
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const {width} = Dimensions.get('window');
@@ -63,31 +85,48 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
     return new RegExp(/^[a-zA-Z'’. ]*$/).test(name) ? name : '';
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     (async () => {
-      //const {data} = await BillingDetailsService.getBillingDetails();
-      setSavedBillingDetails({
-        [BillingDetailsConstants.Name]: data.name,
-        [BillingDetailsConstants.City]: data.city,
-        [BillingDetailsConstants.Line1]: data.line1,
-        [BillingDetailsConstants.Country]: data.country,
-        [BillingDetailsConstants.PostalCode]: data.postalCode,
-        [BillingDetailsConstants.ID]: data.idNumber,
+      const {data} = await BillingDetailsService.getBillingDetails();
+      setCountry(data.country.toString().toUpperCase());
+      billingDetailsFormStore.initFormStoreState({
+        [BillingDetailsConstants.City]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.City],
+          value: data.city,
+        },
+        [BillingDetailsConstants.Name]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.Name],
+          value: data.name,
+        },
+        [BillingDetailsConstants.Country]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.Country],
+          value: data.country.toString().toUpperCase(),
+        },
+        [BillingDetailsConstants.Line1]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.Line1],
+          value: data.line1,
+        },
+        [BillingDetailsConstants.PostalCode]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.PostalCode],
+          value: data.postalCode,
+        },
+        [BillingDetailsConstants.District]: {
+          ...formInitialState,
+          rule: FORM_RULES[BillingDetailsConstants.District],
+          value: data.district,
+        },
       });
     })();
-  });*/
+  }, []);
 
   const navigateToPaymentDetailsStep = async () => {
-    Toast.loading('One moment please');
-    try {
-      await BillingDetailsService.getBillingDetails();
-    } catch (e) {
-      await BillingDetailsService.addBillingDetails(
-        billingDetailsFormStore.getFormFieldsJson(),
-      );
-    }
-
     if (billingDetailsFormStore.isFormValid()) {
+      Toast.loading('One moment please');
       const {data} = await PaymentService.createBuyerTokenPage(
         authStore.userInfo.uid,
       );
@@ -157,11 +196,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           validation={{
             name: BillingDetailsConstants.Name,
             formStore: billingDetailsFormStore,
-            validateRule: [
-              'required',
-              VALIDATION_RULES.LATIN_ONLY,
-              VALIDATION_RULES.FIRST_LAST_NAME,
-            ],
+            validateRule: FORM_RULES[BillingDetailsConstants.Name],
             displayName: 'full name',
           }}
         />
@@ -174,19 +209,20 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? 'Metropolis'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.City,
-                )?.value || savedBillingDetails?.city
+                )?.value
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].city}
           validation={{
             name: BillingDetailsConstants.City,
             formStore: billingDetailsFormStore,
-            validateRule: ['required', VALIDATION_RULES.LATIN_ONLY],
+            validateRule: FORM_RULES[BillingDetailsConstants.City],
             displayName: 'city',
           }}
         />
 
         <CountrySelectField
+          value={country}
           label="Country"
           onChange={(x) => {
             setCountry(x);
@@ -194,7 +230,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
           validation={{
             name: BillingDetailsConstants.Country,
             formStore: billingDetailsFormStore,
-            validateRule: 'required|string',
+            validateRule: FORM_RULES[BillingDetailsConstants.Country],
             displayName: 'country',
           }}
         />
@@ -207,14 +243,14 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? '221B Baker Street'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.Line1,
-                )?.value || savedBillingDetails?.line1
+                )?.value
           }
           autoCapitalize="words"
           autofill={AUTOFILL[Platform.OS].street}
           validation={{
             name: BillingDetailsConstants.Line1,
             formStore: billingDetailsFormStore,
-            validateRule: 'required|string',
+            validateRule: FORM_RULES[BillingDetailsConstants.Line1],
             displayName: 'line1',
           }}
         />
@@ -230,12 +266,12 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? 'TX'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.District,
-                  )?.value || savedBillingDetails?.district
+                  )?.value
             }
             validation={{
               name: BillingDetailsConstants.District,
               formStore: billingDetailsFormStore,
-              validateRule: ['required', 'min:2', VALIDATION_RULES.LATIN_ONLY],
+              validateRule: FORM_RULES[BillingDetailsConstants.District],
               displayName: 'district',
             }}
           />
@@ -252,17 +288,12 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
                 ? '012345678'
                 : billingDetailsFormStore.getFormField(
                     BillingDetailsConstants.ID,
-                  )?.value || savedBillingDetails?.ID
+                  )?.value
             }
             validation={{
               name: BillingDetailsConstants.ID,
               formStore: billingDetailsFormStore,
-              validateRule: [
-                'required',
-                'min:9',
-                'max:9',
-                VALIDATION_RULES.VALID_ID_PASSPORT,
-              ],
+              validateRule: FORM_RULES[BillingDetailsConstants.ID],
             }}
           />
         )}
@@ -276,12 +307,12 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               ? '31415PI'
               : billingDetailsFormStore.getFormField(
                   BillingDetailsConstants.PostalCode,
-                )?.value || savedBillingDetails?.postalCode
+                )?.value
           }
           validation={{
             name: BillingDetailsConstants.PostalCode,
             formStore: billingDetailsFormStore,
-            validateRule: 'required|string',
+            validateRule: FORM_RULES[BillingDetailsConstants.PostalCode],
             displayName: 'postal code',
           }}
         />
