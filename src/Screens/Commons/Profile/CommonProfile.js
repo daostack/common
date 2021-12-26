@@ -66,6 +66,7 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {CurrencySymbols} from '~/Util/locale';
+import {subscribeToCard} from '~/Services/CardsService';
 
 const {width} = Dimensions.get('window');
 
@@ -162,6 +163,13 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     Platform.OS === 'ios' &&
       LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
   };
+
+  useEffect(() => {
+    // const unsubscribeFromCard = subscribeToCard(authStore?.userInfo?.uid);
+    return () => {
+      // unsubscribeFromCard && unsubscribeFromCard();
+    };
+  }, [authStore?.userInfo?.uid]);
 
   useEffect(() => {
     const unsubscribeFromCommonProposals =
