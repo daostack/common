@@ -8,6 +8,7 @@ export enum NAVIGATION_SCREENS {
   EDIT_COMMON = 'EditCommon',
   COMMON_EXPLANATION = 'CommonExplanation',
   PROPOSAL_SCREEN = 'ProposalScreen',
+  ADD_INVOICES_PROPOSAL = 'AddInvoicesScreen',
   RULES_STEP = 'RulesStep',
   INTRODUCTION_STEP = 'IntroductionStep',
   CONTRIBUTION_STEP = 'ContributionStep',

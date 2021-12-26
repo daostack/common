@@ -256,6 +256,14 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
   join: IProposalJoin;
 }
 
+export interface InvoiceImage {
+  url: string;
+  type: string;
+  amount: number;
+}
+
+export type InvoiceImageType = 'image' | 'file';
+
 export type ProposalType = 'join' | 'fundingRequest';
 
 export interface JoinRequestPayload {

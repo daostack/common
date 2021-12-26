@@ -106,10 +106,14 @@ const ProposalCard = ({
           proposalInfo?.commonId,
         );
       }
-      navigation.navigate('ProposalScreen', {
+      // navigation.navigate('ProposalScreen', {
+      //   proposalId: proposalInfo.id,
+      //   hasPermission,
+      //   commonId: proposalInfo.commonId,
+      // });
+
+      navigation.navigate('AddInvoicesScreen', {
         proposalId: proposalInfo.id,
-        hasPermission,
-        commonId: proposalInfo.commonId,
       });
     }
   };

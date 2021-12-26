@@ -48,6 +48,7 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
   EditCommon,
+  AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -451,6 +452,13 @@ const App = ({rootStore, navigation}) => {
                   )}
                 </View>
               ),
+            })}
+          />
+          <Stack.Screen
+            name="AddInvoicesScreen"
+            component={AddInvoicesScreen}
+            options={({nav, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen
