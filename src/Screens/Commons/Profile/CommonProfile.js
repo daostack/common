@@ -165,9 +165,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const userId = authStore?.userInfo?.uid;
-    const cardId =
-    // const unsubscribeFromCard = subscribeToCard(userId, );
+    // const unsubscribeFromCard = subscribeToCard(authStore?.userInfo?.uid);
     return () => {
       // unsubscribeFromCard && unsubscribeFromCard();
     };
