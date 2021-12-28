@@ -210,7 +210,7 @@ export type IconNames =
   | 'shekel';
 
 interface Props extends GProps, ViewProps {
-  name: IconNames;
+  name: IconNames | string;
   size?: number;
   color?: string | string[];
 }

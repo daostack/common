@@ -5,7 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {TabBar} from 'react-native-tab-view';
 import {object} from 'prop-types';
 
-const CommonTabBar = (props) => (
+const CommonTabBar = (props: any) => (
   <TabBar
     {...props}
     indicatorStyle={{

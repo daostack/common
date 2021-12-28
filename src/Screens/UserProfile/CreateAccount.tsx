@@ -14,10 +14,17 @@ import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
-import {bool, func} from 'prop-types';
+import {func, InferProps, bool} from 'prop-types';
+import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-const CreateAccount = ({onSignedIn, hidePlaceholder, goToNextScreen}) => {
-  const onSignIn = async (userInfo, isSignedWithApple = false) => {
+const props = {
+  onSignedIn: func,
+  hidePlaceholder: bool,
+  goToNextScreen: func,
+};
+
+const CreateAccount: React.FC<InferProps<typeof props>> = ({onSignedIn, hidePlaceholder, goToNextScreen}) => {
+  const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
       await onSignedIn(
         userInfo.additionalUserInfo.isNewUser,
@@ -51,7 +58,7 @@ const CreateAccount = ({onSignedIn, hidePlaceholder, goToNextScreen}) => {
         />
       )}
 
-      <GSignInButton style={styles.googleSignInButton} onSignIn={onSignIn} />
+      <GSignInButton onSignIn={onSignIn} />
 
       <View style={styles.termsOfUseContainer}>
         <Text style={styles.termsOfUseText}>

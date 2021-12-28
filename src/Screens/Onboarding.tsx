@@ -8,9 +8,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import AsyncStorage from '@react-native-community/async-storage';
 import messaging from '@react-native-firebase/messaging';
@@ -20,8 +19,9 @@ import {NAVIGATION_SCREENS} from '../Util/constants/routes.enum';
 
 const ONBOARDING_SLIDERS_AMOUNT = 3;
 
-const Onboarding = ({navigation}) => {
-  const ref = useRef(null);
+const Onboarding = () => {
+  const navigation = useNavigation();
+  const ref = useRef<Swiper>(null);
   const [index, setIndex] = useState(0);
   const _onboardingClick = async () => {
     try {
@@ -45,9 +45,9 @@ const Onboarding = ({navigation}) => {
 
   const onPress = () => {
     if (index === ONBOARDING_SLIDERS_AMOUNT) {
-      _onboardingClick(navigation);
+      _onboardingClick();
     } else {
-      ref.current.scrollBy(1);
+      ref?.current?.scrollBy(1);
       setIndex(index + 1);
     }
   };
@@ -140,10 +140,10 @@ Onboarding.propTypes = {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
   },
   body: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     flex: 1,
     flexDirection: 'column',
   },
@@ -176,10 +176,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: Colors.black,
+    color: 'black',
     textAlign: 'center',
   },
-
   image: {
     top: 0,
     width: '100%',
