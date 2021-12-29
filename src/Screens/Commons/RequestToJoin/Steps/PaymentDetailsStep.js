@@ -14,7 +14,6 @@ import ProposalService from '~/Services/ProposalService';
 import {escapeUrl} from '~/Util';
 import Toast from '~/Util/Toast';
 import {showErrorPopUp} from '~/Util';
-import PaymentService from '~/Services/PaymentsService';
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -28,6 +27,7 @@ const PaymentDetailsStep = ({
       refreshFeed,
       iFrameLink,
       cardId,
+      skipPaymentStep,
     },
   },
   rootStore,
@@ -37,7 +37,6 @@ const PaymentDetailsStep = ({
   const [respLink, setRespLink] = useState('');
   const cardStore = rootStore.cardStore;
   let currCard = cardStore.getCardById(cardId);
-  const isMonthly = currCommon.metadata.contributionType === 'monthly';
 
   useEffect(() => {
     const unsubscribeFromCard = cardStore.subscribeToCard(cardId);
@@ -47,10 +46,8 @@ const PaymentDetailsStep = ({
   }, [userInfo, respLink]);
 
   useEffect(() => {
-    console.log('after size changed', 'cardStore?.data?.size', cardStore?.data?.size);
  }, [cardStore?.data?.size]);
 
-  const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -75,7 +72,6 @@ const PaymentDetailsStep = ({
       }
 
       currCard = cardStore.getCardById(cardId);
-      console.log('pushed ! currCard', currCard, 'getCard');
 
       if (currCard.token) {
         navigation.navigate({
@@ -108,7 +104,6 @@ const PaymentDetailsStep = ({
 
           navigation.dispatch(navigate);
         } else {
-          navigation.pop();
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
       } else {
@@ -128,8 +123,12 @@ const PaymentDetailsStep = ({
   };
 
   const redirectUser = (event) => {
+    if (event === 'skipped' && !respLink) {
+      setRespLink(true);
+      push();
+    }
     if (!respLink) {
-      if (event.title === 'Home') {
+      if (event.title.includes('loader')) {
         setRespLink(true);
       }
     }
@@ -159,7 +158,11 @@ const PaymentDetailsStep = ({
             source={{uri: iFrameLink}}
             onMessage={(m) => onMessage(m)}
             onNavigationStateChange={(event) => {
-              redirectUser(event);
+              if (skipPaymentStep) {
+                redirectUser('skipped');
+              } else {
+                redirectUser(event);
+              }
             }}
             onLoadEnd={(syntheticEvent) => {
               Toast.done('All done!');

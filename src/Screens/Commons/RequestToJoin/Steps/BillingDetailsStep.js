@@ -10,22 +10,22 @@ import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDe
 import TextInputField from '~/Components/FormFields/TextInputField';
 import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
-//import {testCard} from '~/Config';
+import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {authStorePropTypes} from '~/Types/propTypes';
+import {authStorePropTypes, rootStorePropTypes} from '~/Types/propTypes';
 import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {CurrencySymbols} from '~/Util/locale';
 import BillingDetailsService from '~/Services/BillingDetailsService';
 import PaymentService from '~/Services/PaymentsService';
+import CardsService from '~/Services/CardsService';
 import Toast from '~/Util/Toast';
 import {formInitialState} from '~/Util/constants/form';
 import {v4} from 'uuid';
 
-const testCard = false;
 const AUTOFILL = {
   ios: {
     name: 'name',
@@ -68,7 +68,7 @@ const FORM_RULES = {
   ],
 };
 
-const BillingDetailsStep = ({navigation, route, authStore}) => {
+const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
   const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
     route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
@@ -91,6 +91,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
   useEffect(() => {
     (async () => {
       try {
+         Toast.loading('Loading');
          const {data} = await BillingDetailsService.getBillingDetails();
          if (data) {
           setBillingDetailsExist(true);
@@ -117,6 +118,11 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
               rule: FORM_RULES[BillingDetailsConstants.Line1],
               value: data.line1,
             },
+            [BillingDetailsConstants.ID]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.ID],
+              value: data.socialId,
+            },
             [BillingDetailsConstants.PostalCode]: {
               ...formInitialState,
               rule: FORM_RULES[BillingDetailsConstants.PostalCode],
@@ -129,17 +135,19 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
             },
           });
       } catch (e) {
+
         //throw e;
       }
+      Toast.done('All done!');
     })();
   }, []);
 
   const navigateToPaymentDetailsStep = async () => {
 
+     Toast.loading('One moment please');
      if (!billingDetailsExist) {
        try {
          if (billingDetailsFormStore.isFormValid()) {
-           Toast.loading('One moment please');
            await BillingDetailsService.addBillingDetails(
              billingDetailsFormStore.getFormFieldsJson(),
            );
@@ -150,25 +158,35 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
        }
      }
 
-    const cardId = v4();
-    const {data} = await PaymentService.createBuyerTokenPage(
-      cardId,
-    );
-    console.log('data', data);
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'PaymentDetailsStep',
-        params: {
-          formStores,
-          currDaoId: currDaoId,
-          currCommon: currCommon,
-          skipFirstStep: skipFirstStep,
-          refreshFeed,
-          iFrameLink: data.link,
-          cardId,
-        },
-      }),
-    );
+    let cardId = null;
+    let skipPaymentStep = false;
+
+    if (rootStore.cardStore.userCardExists()) {
+      const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
+      cardId = card.id;
+      skipPaymentStep = true;
+    } else {
+      cardId = v4();
+    }
+
+      const {data} = await PaymentService.createBuyerTokenPage(
+        cardId,
+      );
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'PaymentDetailsStep',
+          params: {
+            formStores,
+            currDaoId: currDaoId,
+            currCommon: currCommon,
+            skipFirstStep: skipFirstStep,
+            refreshFeed,
+            iFrameLink: data.link,
+            cardId,
+            skipPaymentStep,
+          },
+        }),
+      );
   };
 
   const contributionAmount = formatNumber(
@@ -349,6 +367,7 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 BillingDetailsStep.propTypes = {
   navigation: object,
   authStore: authStorePropTypes,
+  rootStore: rootStorePropTypes,
   route: shape({
     params: shape({
       skipFirstStep: bool,
@@ -366,4 +385,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default inject('authStore')(BillingDetailsStep);
+export default inject('authStore', 'rootStore')(BillingDetailsStep);

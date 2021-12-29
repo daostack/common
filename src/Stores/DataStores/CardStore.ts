@@ -23,6 +23,15 @@ export default class CardStore extends BaseStore<
     }
   }
 
+  userCardExists = (ownerId: string) => {
+    if (this.data.size !== 0) {
+      return this.data.forEach((card) => {
+        ownerId === card.ownerId;
+      });
+    }
+    return false;
+  }
+
   getEntityModel(entity: ICardEntity): Card {
     return new Card(entity);
   }

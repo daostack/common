@@ -7,6 +7,9 @@ export type cardLoadCallbackFunc = (updatedCard: IFirebaseSnapshot<ICardEntity>)
 
 class CardsService {
 
+  fetchCardByOwnerId = async (ownerId: string) =>
+    CardsCollection.where('ownerId', '==', ownerId).get().then((snapshot) => snapshot?.docs[0]?.data())
+
   subscribeToCard = (
     cardId: string,
     callback: cardLoadCallbackFunc,

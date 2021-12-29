@@ -21,12 +21,12 @@ class PaymentService {
     };
   }
 
-  async createBuyerTokenPage(userId: string): Promise<void> {
+  async createBuyerTokenPage(cardId: string): Promise<void> {
     try {
       return await this.axiosClient.post(
         this.endpoints.createToken,
         {
-          cardId: userId,
+          cardId,
         },
         {
           headers: {
