@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 //import {colors, text} from '~/Theme';
 import {inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
-//import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '../../RequestStepActionButton';
 import {string, func, bool, object, shape} from 'prop-types';
 import MembershipRequest from '../MembershipRequest';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -14,6 +14,7 @@ import ProposalService from '~/Services/ProposalService';
 import {escapeUrl} from '~/Util';
 import Toast from '~/Util/Toast';
 import {showErrorPopUp} from '~/Util';
+import PaymentService from '~/Services/PaymentsService';
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -26,6 +27,7 @@ const PaymentDetailsStep = ({
       currDaoId,
       refreshFeed,
       iFrameLink,
+      cardId,
     },
   },
   rootStore,
@@ -33,8 +35,20 @@ const PaymentDetailsStep = ({
   const userInfo = rootStore.authStore.userInfo;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const [respLink, setRespLink] = useState('');
-
+  const cardStore = rootStore.cardStore;
+  let currCard = cardStore.getCardById(cardId);
   const isMonthly = currCommon.metadata.contributionType === 'monthly';
+
+  useEffect(() => {
+    const unsubscribeFromCard = cardStore.subscribeToCard(cardId);
+    return () => {
+      unsubscribeFromCard && unsubscribeFromCard();
+    };
+  }, [userInfo, respLink]);
+
+  useEffect(() => {
+    console.log('after size changed', 'cardStore?.data?.size', cardStore?.data?.size);
+ }, [cardStore?.data?.size]);
 
   const paymentFormStore = formStores.paymentFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
@@ -60,31 +74,26 @@ const PaymentDetailsStep = ({
         data.links = escapeUrl(formData.links);
       }
 
-      //const resp = await BillingDetailsService.add(billingDetailsFormStore.getFormFieldsJson());
-      /*navigation.navigate({
-        name: 'FullScreenCreationLoader',
-        params: {
-          title: 'Creating your membership request',
-        },
-      });*/
+      currCard = cardStore.getCardById(cardId);
+      console.log('pushed ! currCard', currCard, 'getCard');
 
-      /*const createdCard = await CirclePayService.createCard({
-        ...formData,
-        links: escapeUrl(formData.links),
-        ...userInfo,
-      });*/
+      if (currCard.token) {
+        navigation.navigate({
+          name: 'FullScreenCreationLoader',
+          params: {
+            title: 'Creating your membership request',
+          },
+        });
 
-      const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-        {
-          ...data,
-          cardId: userInfo.uid,
-        },
-      );
-
-      if (createRequestToJoinResponse.status === 200) {
+        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
+          {
+            ...data,
+            cardId: cardId,
+          },
+        );
+        if (createRequestToJoinResponse.status === 200) {
         const proposalId = createRequestToJoinResponse.data.id;
 
-        //navigation.pop();
         const navigate = CommonActions.navigate({
           name: 'CommonProfile',
           params: {
@@ -97,10 +106,13 @@ const PaymentDetailsStep = ({
           refreshFeed();
         }
 
-        navigation.dispatch(navigate);
+          navigation.dispatch(navigate);
+        } else {
+          navigation.pop();
+          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        }
       } else {
-        navigation.pop();
-        showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+
       }
     } catch (e) {
       navigation.pop();
@@ -118,8 +130,7 @@ const PaymentDetailsStep = ({
   const redirectUser = (event) => {
     if (!respLink) {
       if (event.title === 'Home') {
-        setRespLink(event.url);
-        push();
+        setRespLink(true);
       }
     }
   };
@@ -133,13 +144,13 @@ const PaymentDetailsStep = ({
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}
-      /*requestStepActionButton={
-        <RequestStepActionButton
-          title="Pay Now"
-          formStore={paymentFormStore}
-          onPress={push}
-        />
-      }*/
+      requestStepActionButton={
+         <RequestStepActionButton
+           title="Continue"
+           disabled={!respLink}
+           onPress={push}
+         />
+       }
     >
       <View style={{height: height / 2, width: '90%'}}>
         {
@@ -151,10 +162,7 @@ const PaymentDetailsStep = ({
               redirectUser(event);
             }}
             onLoadEnd={(syntheticEvent) => {
-              Toast.done();
-              // update component to be aware of loading status
-              //const {nativeEvent} = syntheticEvent;
-              //this.isLoading = nativeEvent.loading;
+              Toast.done('All done!');
             }}
           />
         }
