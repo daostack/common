@@ -1,21 +1,25 @@
-import {DB_COLLECTIONS} from '~/Firebase/Databasee';
-import {db} from '~/Firebase';
-import Toast from '~/Util/Toast';
 import {IFirebaseSnapshot} from '~/Firebase/types';
-import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
+import {ICardEntity} from '~/Firebase/Databasee/EntityTypes/ICardEntity';
+import {CardsCollection} from '~/Firebase/Databasee/Collections/CardsCollection';
 
-export const subscribeToCard = async (
-    userId: string,
-    // callback: (value: number) => void,
+
+export type cardLoadCallbackFunc = (updatedCard: IFirebaseSnapshot<ICardEntity>) => void;
+
+class CardsService {
+
+  subscribeToCard = (
+    cardId: string,
+    callback: cardLoadCallbackFunc,
   ) => {
-    const card = db
-      .collection(DB_COLLECTIONS.cards)
-      .where('userId', '==', userId);
+    const cards =
+    CardsCollection.doc(cardId)
+      .onSnapshot((snapshot: any) => {
+        callback(snapshot);
+      });
 
-    return card.onSnapshot(
-      (snapshot: IFirebaseSnapshot<IDiscussionEntity>) => {
-        // callback(snapshot.docs.length);
-      },
-      (error: string) => Toast.error(error),
-    );
+      return cards;
   };
+
+}
+
+export default new CardsService();

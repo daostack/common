@@ -23,6 +23,8 @@ import BillingDetailsService from '~/Services/BillingDetailsService';
 import PaymentService from '~/Services/PaymentsService';
 import Toast from '~/Util/Toast';
 import {formInitialState} from '~/Util/constants/form';
+import {v4} from 'uuid';
+
 const testCard = false;
 const AUTOFILL = {
   ios: {
@@ -88,74 +90,85 @@ const BillingDetailsStep = ({navigation, route, authStore}) => {
 
   useEffect(() => {
     (async () => {
-      const {data} = await BillingDetailsService.getBillingDetails();
-      if (data) {
-        setBillingDetailsExist(true);
+      try {
+         const {data} = await BillingDetailsService.getBillingDetails();
+         if (data) {
+          setBillingDetailsExist(true);
+        }
+          setCountry(data.country.toString().toUpperCase());
+          billingDetailsFormStore.initFormStoreState({
+            [BillingDetailsConstants.City]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.City],
+              value: data.city,
+            },
+            [BillingDetailsConstants.Name]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.Name],
+              value: data.name,
+            },
+            [BillingDetailsConstants.Country]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.Country],
+              value: data.country.toString().toUpperCase(),
+            },
+            [BillingDetailsConstants.Line1]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.Line1],
+              value: data.line1,
+            },
+            [BillingDetailsConstants.PostalCode]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.PostalCode],
+              value: data.postalCode,
+            },
+            [BillingDetailsConstants.District]: {
+              ...formInitialState,
+              rule: FORM_RULES[BillingDetailsConstants.District],
+              value: data.district,
+            },
+          });
+      } catch (e) {
+        //throw e;
       }
-      setCountry(data.country.toString().toUpperCase());
-      billingDetailsFormStore.initFormStoreState({
-        [BillingDetailsConstants.City]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.City],
-          value: data.city,
-        },
-        [BillingDetailsConstants.Name]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.Name],
-          value: data.name,
-        },
-        [BillingDetailsConstants.Country]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.Country],
-          value: data.country.toString().toUpperCase(),
-        },
-        [BillingDetailsConstants.Line1]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.Line1],
-          value: data.line1,
-        },
-        [BillingDetailsConstants.PostalCode]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.PostalCode],
-          value: data.postalCode,
-        },
-        [BillingDetailsConstants.District]: {
-          ...formInitialState,
-          rule: FORM_RULES[BillingDetailsConstants.District],
-          value: data.district,
-        },
-      });
     })();
   }, []);
 
   const navigateToPaymentDetailsStep = async () => {
 
-    Toast.loading('One moment please');
-
      if (!billingDetailsExist) {
-       await BillingDetailsService.addBillingDetails(
-         billingDetailsFormStore.getFormFieldsJson(),
-       );
+       try {
+         if (billingDetailsFormStore.isFormValid()) {
+           Toast.loading('One moment please');
+           await BillingDetailsService.addBillingDetails(
+             billingDetailsFormStore.getFormFieldsJson(),
+           );
+         }
+       } catch (e) {
+         Toast.error('Error');
+         throw e;
+       }
      }
 
-    if (billingDetailsFormStore.isFormValid()) {
-      const {data} = await PaymentService.createBuyerTokenPage(
-        authStore.userInfo.uid,
-      );
-      navigation.dispatch(
-        CommonActions.navigate({
-          name: 'PaymentDetailsStep',
-          params: {
-            formStores,
-            currDaoId: currDaoId,
-            currCommon: currCommon,
-            skipFirstStep: skipFirstStep,
-            refreshFeed,
-            iFrameLink: data.link,
-          },
-        }),
-      );
-    }
+    const cardId = v4();
+    const {data} = await PaymentService.createBuyerTokenPage(
+      cardId,
+    );
+    console.log('data', data);
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'PaymentDetailsStep',
+        params: {
+          formStores,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
+          skipFirstStep: skipFirstStep,
+          refreshFeed,
+          iFrameLink: data.link,
+          cardId,
+        },
+      }),
+    );
   };
 
   const contributionAmount = formatNumber(
