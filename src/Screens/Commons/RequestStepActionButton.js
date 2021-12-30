@@ -18,6 +18,7 @@ const RequestStepActionButton = ({
   onPress,
   title,
   isSticky = true,
+  disabled = false,
 }) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
@@ -32,11 +33,12 @@ const RequestStepActionButton = ({
   }
 
   const isButtonEnabled = () =>
-    formStore ? formStore.isFormActionEnabled() : pass;
+    formStore ? formStore.isFormActionEnabled() : (pass || !disabled);
 
   return (
     <View style={actionBtnStyle}>
       <TouchableOpacity
+        disabled={disabled}
         style={{
           ...styles.continueButton,
           backgroundColor: isButtonEnabled() ? colors.mainBlue : colors.grey3,
@@ -56,6 +58,7 @@ RequestStepActionButton.propTypes = {
   formStore: object,
   messageBox: object,
   isSticky: bool,
+  disabled: bool,
 };
 
 const styles = StyleSheet.create({
