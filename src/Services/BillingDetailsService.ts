@@ -16,7 +16,6 @@ class BillingDetailsService {
     this.endpoints = {
       add: '/billing-details/add',
       get: '/billing-details/get',
-      //update: '/update',
     };
   }
 

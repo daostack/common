@@ -2,7 +2,10 @@ import axios, {AxiosInstance} from 'axios';
 import {db} from '../Firebase';
 import {auth} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
-import {IPaymentEntity} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
+import {
+  IPaymentEntity,
+  ISaleEntity,
+} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
 
 class PaymentService {
@@ -17,11 +20,10 @@ class PaymentService {
 
     this.endpoints = {
       createToken: '/payme/payin/create-buyer-token-page',
-      //update: '/update',
     };
   }
 
-  async createBuyerTokenPage(cardId: string): Promise<void> {
+  async createBuyerTokenPage(cardId: string): Promise<ISaleEntity> {
     try {
       return await this.axiosClient.post(
         this.endpoints.createToken,

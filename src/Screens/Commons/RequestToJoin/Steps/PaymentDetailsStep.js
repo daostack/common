@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
-//import {colors, text} from '~/Theme';
 import {inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
 import RequestStepActionButton from '../../RequestStepActionButton';
@@ -45,9 +44,6 @@ const PaymentDetailsStep = ({
     };
   }, [userInfo, respLink]);
 
-  useEffect(() => {
- }, [cardStore?.data?.size]);
-
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -88,26 +84,24 @@ const PaymentDetailsStep = ({
           },
         );
         if (createRequestToJoinResponse.status === 200) {
-        const proposalId = createRequestToJoinResponse.data.id;
+          const proposalId = createRequestToJoinResponse.data.id;
 
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            showRequestSentModal: true,
-            createdProposalId: proposalId,
-          },
-        });
+          const navigate = CommonActions.navigate({
+            name: 'CommonProfile',
+            params: {
+              showRequestSentModal: true,
+              createdProposalId: proposalId,
+            },
+          });
 
-        if (typeof refreshFeed === 'function') {
-          refreshFeed();
-        }
+          if (typeof refreshFeed === 'function') {
+            refreshFeed();
+          }
 
           navigation.dispatch(navigate);
         } else {
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
-      } else {
-
       }
     } catch (e) {
       navigation.pop();
@@ -118,18 +112,16 @@ const PaymentDetailsStep = ({
     }
   };
 
-  const onMessage = async (event) => {
-    console.log('On Message', event);
-  };
-
   const redirectUser = (event) => {
-    if (event === 'skipped' && !respLink) {
-      setRespLink(true);
-      push();
-    }
+    console.log('event', event, 'respLink', respLink);
     if (!respLink) {
-      if (event.title.includes('loader')) {
+      if (event === 'skipped') {
         setRespLink(true);
+        push();
+      } else {
+        if (event?.url?.includes('loader')) {
+          setRespLink(true);
+        }
       }
     }
   };
@@ -144,19 +136,18 @@ const PaymentDetailsStep = ({
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}
       requestStepActionButton={
-         <RequestStepActionButton
-           title="Continue"
-           disabled={!respLink}
-           onPress={push}
-         />
-       }
-    >
+        <RequestStepActionButton
+          title="Continue"
+          disabled={!respLink}
+          onPress={push}
+        />
+      }>
       <View style={{height: height / 2, width: '90%'}}>
         {
           <WebView
             scalesPageToFit={false}
             source={{uri: iFrameLink}}
-            onMessage={(m) => onMessage(m)}
+            onMessage={(m) => {}}
             onNavigationStateChange={(event) => {
               if (skipPaymentStep) {
                 redirectUser('skipped');

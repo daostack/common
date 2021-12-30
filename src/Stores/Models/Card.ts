@@ -3,9 +3,8 @@ import {ICardEntity} from '~/Firebase/Databasee/EntityTypes/ICardEntity';
 import {BaseModel} from './BaseModel';
 
 export class Card extends BaseModel<ICardEntity> {
-
   @observable
-	id: string;
+  id: string;
 
   @observable
   token: string;
@@ -17,7 +16,6 @@ export class Card extends BaseModel<ICardEntity> {
   ownerId: string;
 
   constructor(newCardInfo: ICardEntity) {
-
     super(newCardInfo);
 
     this.id = newCardInfo.id;
@@ -28,5 +26,4 @@ export class Card extends BaseModel<ICardEntity> {
 
     this.ownerId = newCardInfo.ownerId;
   }
-
 }

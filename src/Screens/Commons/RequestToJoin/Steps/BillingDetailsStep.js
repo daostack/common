@@ -69,8 +69,13 @@ const FORM_RULES = {
 };
 
 const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
-  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
-    route.params;
+  const {
+    skipFirstStep,
+    currCommon,
+    currDaoId,
+    refreshFeed,
+    formStores,
+  } = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -91,102 +96,95 @@ const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
   useEffect(() => {
     (async () => {
       try {
-         Toast.loading('Loading');
-         const {data} = await BillingDetailsService.getBillingDetails();
-         if (data) {
+        Toast.loading('Loading');
+        const {data} = await BillingDetailsService.getBillingDetails();
+        if (data) {
           setBillingDetailsExist(true);
         }
-          setCountry(data.country.toString().toUpperCase());
-          billingDetailsFormStore.initFormStoreState({
-            [BillingDetailsConstants.City]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.City],
-              value: data.city,
-            },
-            [BillingDetailsConstants.Name]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.Name],
-              value: data.name,
-            },
-            [BillingDetailsConstants.Country]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.Country],
-              value: data.country.toString().toUpperCase(),
-            },
-            [BillingDetailsConstants.Line1]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.Line1],
-              value: data.line1,
-            },
-            [BillingDetailsConstants.ID]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.ID],
-              value: data.socialId,
-            },
-            [BillingDetailsConstants.PostalCode]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.PostalCode],
-              value: data.postalCode,
-            },
-            [BillingDetailsConstants.District]: {
-              ...formInitialState,
-              rule: FORM_RULES[BillingDetailsConstants.District],
-              value: data.district,
-            },
-          });
-      } catch (e) {
-
-        //throw e;
-      }
+        setCountry(data.country.toString().toUpperCase());
+        billingDetailsFormStore.initFormStoreState({
+          [BillingDetailsConstants.City]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.City],
+            value: data.city,
+          },
+          [BillingDetailsConstants.Name]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.Name],
+            value: data.name,
+          },
+          [BillingDetailsConstants.Country]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.Country],
+            value: data.country.toString().toUpperCase(),
+          },
+          [BillingDetailsConstants.Line1]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.Line1],
+            value: data.line1,
+          },
+          [BillingDetailsConstants.ID]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.ID],
+            value: data.socialId,
+          },
+          [BillingDetailsConstants.PostalCode]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.PostalCode],
+            value: data.postalCode,
+          },
+          [BillingDetailsConstants.District]: {
+            ...formInitialState,
+            rule: FORM_RULES[BillingDetailsConstants.District],
+            value: data.district,
+          },
+        });
+      } catch (e) {}
       Toast.done('All done!');
     })();
   }, []);
 
   const navigateToPaymentDetailsStep = async () => {
-
-     Toast.loading('One moment please');
-     if (!billingDetailsExist) {
-       try {
-         if (billingDetailsFormStore.isFormValid()) {
-           await BillingDetailsService.addBillingDetails(
-             billingDetailsFormStore.getFormFieldsJson(),
-           );
-         }
-       } catch (e) {
-         Toast.error('Error');
-         throw e;
-       }
-     }
+    Toast.loading('One moment please');
+    if (!billingDetailsExist) {
+      try {
+        if (billingDetailsFormStore.isFormValid()) {
+          await BillingDetailsService.addBillingDetails(
+            billingDetailsFormStore.getFormFieldsJson(),
+          );
+        }
+      } catch (e) {
+        Toast.error('Error');
+        throw e;
+      }
+    }
 
     let cardId = null;
     let skipPaymentStep = false;
-
-    if (rootStore.cardStore.userCardExists()) {
-      const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
+    const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
+    if (card) {
       cardId = card.id;
       skipPaymentStep = true;
     } else {
       cardId = v4();
     }
 
-      const {data} = await PaymentService.createBuyerTokenPage(
-        cardId,
-      );
-      navigation.dispatch(
-        CommonActions.navigate({
-          name: 'PaymentDetailsStep',
-          params: {
-            formStores,
-            currDaoId: currDaoId,
-            currCommon: currCommon,
-            skipFirstStep: skipFirstStep,
-            refreshFeed,
-            iFrameLink: data.link,
-            cardId,
-            skipPaymentStep,
-          },
-        }),
-      );
+    const {data} = await PaymentService.createBuyerTokenPage(cardId);
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'PaymentDetailsStep',
+        params: {
+          formStores,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
+          skipFirstStep: skipFirstStep,
+          refreshFeed,
+          iFrameLink: data.link,
+          cardId,
+          skipPaymentStep,
+        },
+      }),
+    );
   };
 
   const contributionAmount = formatNumber(

@@ -27,11 +27,15 @@ export const CountrySelectField = ({onChange, value, ...props}) => {
   );
 
   useUpdateEffect(() => {
-    ref.current.setState({
-      item: countryList[
-        getCountryIndex(countries, value || RNLocalize.getCountry())
-      ],
-    });
+    const countryIndex = getCountryIndex(
+      countries,
+      value || RNLocalize.getCountry(),
+    );
+    if (Number.isInteger(countryIndex)) {
+      ref.current.setState({
+        item: countries[countryIndex],
+      });
+    }
   }, [value]);
 
   // Call the callback with the initial country value
