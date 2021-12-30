@@ -4,7 +4,7 @@ import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
-import {number, func, object, bool} from 'prop-types';
+import {string, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
 
@@ -116,7 +116,7 @@ AmountField.propTypes = {
   onCustomSelect: func,
   onCustomClose: func,
   onAmountSelected: func,
-  minFeeToJoin: number,
+  minFeeToJoin: string,
   isMonthly: bool,
   zeroContribution: bool,
 };

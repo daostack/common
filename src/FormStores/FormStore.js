@@ -22,6 +22,23 @@ class FormStore {
     this.registerValidationRule(linkRules.validateLink);
   }
 
+  initFormStoreState = (fields) => {
+    this.form = {
+      fields: {
+        ...this.form.fields,
+        ...fields,
+      },
+      meta: {
+        isValid: false,
+        formValidationMade: false,
+        error: '',
+        submitError: '',
+        isLoadingSubmit: false,
+      },
+    };
+    this.multiFieldsByValidatorKey = {};
+  };
+
   clearFormStoreState = () => {
     this.form = {
       fields: {},
@@ -35,7 +52,6 @@ class FormStore {
     };
     this.multiFieldsByValidatorKey = {};
   };
-
   getFormField = (name, multiName) => {
     if (multiName) {
       const multiIndexInfo = name.split('_');
@@ -178,10 +194,8 @@ class FormStore {
         // Multiple Field
         else {
           const multiNameInfo = this.multiFieldsByValidatorKey[key];
-          this.getFormField(
-            multiNameInfo.name,
-            multiNameInfo.multiName,
-          ).error = validation.errors.first(key);
+          this.getFormField(multiNameInfo.name, multiNameInfo.multiName).error =
+            validation.errors.first(key);
         }
       }
     }

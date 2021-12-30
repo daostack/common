@@ -125,7 +125,7 @@ export default abstract class BaseStore<
   }
 
   prepareDocData(docData: IEntity, id: string): IEntity {
-    if (!docData.id) {
+    if (!docData?.id) {
       docData = {
         ...docData,
         id,
