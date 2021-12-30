@@ -1,11 +1,8 @@
-import {observable} from 'mobx';
+import {makeObservable, observable} from 'mobx';
 import {ICardEntity} from '~/Firebase/Databasee/EntityTypes/ICardEntity';
 import {BaseModel} from './BaseModel';
 
 export class Card extends BaseModel<ICardEntity> {
-  @observable
-  id: string;
-
   @observable
   token: string;
 
@@ -25,5 +22,6 @@ export class Card extends BaseModel<ICardEntity> {
     this.provider = newCardInfo.provider;
 
     this.ownerId = newCardInfo.ownerId;
+    makeObservable(this);
   }
 }

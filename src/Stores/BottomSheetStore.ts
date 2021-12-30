@@ -2,7 +2,7 @@ import {makeAutoObservable} from 'mobx';
 import React from 'react';
 
 class BottomSheetStore {
-  template;
+  template: any;
   topSnap;
   isVisible;
   constructor() {
@@ -12,7 +12,7 @@ class BottomSheetStore {
     this.isVisible = false;
   }
 
-  showBottomSheet = (currTemplate, props) => {
+  showBottomSheet = (currTemplate: any, props: any) => {
     let allProps = props;
     if (currTemplate.props) {
       allProps = {...currTemplate.props, ...props};
@@ -29,15 +29,15 @@ class BottomSheetStore {
     this.template = null;
   };
 
-  increaseTopSnap = (increseVal) => {
+  increaseTopSnap = (increseVal: number) => {
     this.topSnap = this.topSnap + increseVal;
   };
 
-  decreaseTopSnap = (decreseVal) => {
+  decreaseTopSnap = (decreseVal: number) => {
     this.topSnap = this.topSnap - decreseVal;
   };
 
-  setSnap = (snap) => {
+  setSnap = (snap: number) => {
     this.topSnap = snap;
   };
 }
