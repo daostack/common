@@ -1,13 +1,10 @@
-import {observable, computed} from 'mobx';
+import {observable, computed, makeObservable} from 'mobx';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {BaseModel} from './BaseModel';
 import {FLAGS} from '~/Components/Moderation/constants';
 
 export class Discussion extends BaseModel<IDiscussionEntity> {
-  @observable
-  id: string;
-
   @observable
   title: string;
 
@@ -63,5 +60,6 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.followers = newDiscussionInfo.followers;
     this.moderation = newDiscussionInfo.moderation;
     this.isExpanded = isExpanded;
+    makeObservable(this);
   }
 }

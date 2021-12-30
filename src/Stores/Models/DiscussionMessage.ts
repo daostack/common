@@ -1,4 +1,4 @@
-import {observable, computed} from 'mobx';
+import {observable, computed, makeObservable} from 'mobx';
 import {
   IDiscussionMessageEntity,
   IModerationEntity,
@@ -43,5 +43,6 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
     this.createTime = newDiscussionMessageInfo.createTime;
     this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
     this.moderation = newDiscussionMessageInfo.moderation;
+    makeObservable(this);
   }
 }

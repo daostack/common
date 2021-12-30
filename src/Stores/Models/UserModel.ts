@@ -1,4 +1,4 @@
-import {observable, action, computed} from 'mobx';
+import {observable, action, computed, makeObservable} from 'mobx';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {filterObjectByKeys} from '~/Util';
 import {BaseModel} from './BaseModel';
@@ -50,6 +50,7 @@ export class UserModel extends BaseModel<IUserEntity> {
     ) as IUserEntity;
 
     this.setUser(filteredUser);
+    makeObservable(this);
   }
 
   @computed

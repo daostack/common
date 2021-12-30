@@ -1,4 +1,4 @@
-import {observable} from 'mobx';
+import {makeObservable, observable} from 'mobx';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {BaseModel} from './BaseModel';
 
@@ -8,9 +8,6 @@ export interface NotificationItemState {
 }
 
 export class Notification extends BaseModel<INotificationEntity> {
-  @observable
-  id: string;
-
   @observable
   eventObjectId: string;
 
@@ -34,5 +31,6 @@ export class Notification extends BaseModel<INotificationEntity> {
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
     this.notificationItemState = notificationItemState;
+    makeObservable(this);
   }
 }

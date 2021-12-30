@@ -1,11 +1,12 @@
+import {makeAutoObservable} from 'mobx';
 import React from 'react';
-import {observable, action, decorate} from 'mobx';
 
 class BottomSheetStore {
   template;
   topSnap;
   isVisible;
   constructor() {
+    makeAutoObservable(this);
     this.template = null;
     this.topSnap = 0;
     this.isVisible = false;
@@ -40,15 +41,5 @@ class BottomSheetStore {
     this.topSnap = snap;
   };
 }
-
-decorate(BottomSheetStore, {
-  showBottomSheet: action,
-  increaseTopSnap: action,
-  decreaseTopSnap: action,
-  setSnap: action,
-  topSnap: observable,
-  template: observable,
-  isVisible: observable,
-});
 
 export default BottomSheetStore;

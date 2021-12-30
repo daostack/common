@@ -1,13 +1,21 @@
-import {observable, action, decorate} from 'mobx';
+import {observable, action, makeObservable} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
 import {linkRules} from '~/FormStores/ValidationRules';
 
 class FormStore {
-  form;
+  form = null;
   multiFieldsByValidatorKey;
 
   constructor() {
+    makeObservable(this, {
+      registerFormField: action,
+      isFormValid: action,
+      setError: action,
+      fieldChanged: action,
+      fieldBlured: action,
+      form: observable,
+    });
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
     this.clearFormStoreState();
@@ -364,14 +372,5 @@ class FormStore {
     this.form.meta.error = errMsg;
   };
 }
-
-decorate(FormStore, {
-  registerFormField: action,
-  isFormValid: action,
-  setError: action,
-  fieldChanged: action,
-  fieldBlured: action,
-  form: observable,
-});
 
 export default FormStore;

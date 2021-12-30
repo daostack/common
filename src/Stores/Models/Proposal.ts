@@ -1,4 +1,4 @@
-import {observable, computed} from 'mobx';
+import {observable, computed, makeObservable} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {
@@ -16,15 +16,12 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {BaseModel} from './BaseModel';
 import ImageSize from 'react-native-image-size';
-import {promisedComputed} from 'computed-async-mobx';
 import Logger from '~/Services/Logger';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {fromPromise} from 'mobx-utils';
 
 export class Proposal extends BaseModel<IProposalEntity> {
-  @observable
-  id: string;
-
   @observable
   proposerId: string;
 
@@ -68,11 +65,10 @@ export class Proposal extends BaseModel<IProposalEntity> {
   moderation?: IModerationEntity;
 
   @observable
-  imagesPromised = promisedComputed(
-    [],
-    async (): Promise<IUIProposalImage[]> => {
+  imagesPromised = fromPromise(
+    (async (): Promise<IUIProposalImage[]> => {
       const tempImages: IUIProposalImage[] = [];
-      if (this.description.images?.length) {
+      if (this.description?.images?.length) {
         await Promise.all(
           this.description.images.map(async (currImage: IProposalImage) => {
             if (currImage.value) {
@@ -102,7 +98,7 @@ export class Proposal extends BaseModel<IProposalEntity> {
         );
       }
       return tempImages;
-    },
+    })()
   );
 
   @computed
@@ -192,5 +188,6 @@ export class Proposal extends BaseModel<IProposalEntity> {
       ).fundingRequest;
       // TODO: ... more props
     }
+    makeObservable(this);
   }
 }

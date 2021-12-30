@@ -1,4 +1,4 @@
-import {observable, computed} from 'mobx';
+import {observable, computed, makeObservable} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
   CommonRegister,
@@ -11,9 +11,6 @@ import {
 import {BaseModel} from './BaseModel';
 
 export class Common extends BaseModel<ICommonEntity> {
-  @observable
-  id: string;
-
   @observable
   name: string;
 
@@ -57,6 +54,7 @@ export class Common extends BaseModel<ICommonEntity> {
     this.links = newCommonInfo.links;
     this.metadata = newCommonInfo.metadata;
     this.register = newCommonInfo.register;
+    makeObservable(this);
   }
 
   @computed
