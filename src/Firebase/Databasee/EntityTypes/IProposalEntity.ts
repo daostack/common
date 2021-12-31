@@ -258,8 +258,9 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
 
 export interface InvoiceImage {
   url: string;
-  type: string;
+  mimeType: string;
   amount: number;
+  name?: string;
 }
 
 export type InvoiceImageType = 'image' | 'file';

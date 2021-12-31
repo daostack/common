@@ -18,6 +18,7 @@ import {colors, font, layout, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
+import PaymentsService from '~/Services/PaymentsService';
 import DocumentPicker from 'react-native-document-picker';
 import logger from '../../Services/Logger';
 import {handlePermission} from '../../Util/Permissions';
@@ -32,7 +33,7 @@ import ModalDeleteInvoice from './components/ModalDeleteInvoice';
 const props = {
   route: shape({
     params: shape({
-      proposalId: number,
+      proposalId: string,
     }).isRequired,
   }).isRequired,
   // Injected
@@ -62,8 +63,6 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const commonInfo = commonStore.getCommonById(proposalInfo.commonId);
-
-  console.log(proposalInfo);
 
   const closeSheet = () => {
     setIsBottomModalVisible(false);
@@ -97,8 +96,12 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
     setIsDeleteModalVisible(true);
   };
 
-  const uploadInvoices = () => {
-    //CALL TO ENDPOINT CREATED BY YURY
+  const uploadInvoices = async (): Promise<void> => {
+    try {
+      await PaymentsService.uploadInvoices(proposalId as string, invoiceImages);
+    } catch (err) {
+      console.log('-qweqwe', err);
+    }
   };
 
   const pickFile = async () => {
@@ -109,8 +112,12 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
         type: [DocumentPicker.types.pdf],
       });
 
-      const url = await StorageService.uploadFile(res.uri, res.name);
-      setInvoiceImages([...invoiceImages, {url, type: 'file', amount: 0}]);
+      console.log('res.type', res.name);
+
+      setInvoiceImages([
+        ...invoiceImages,
+        {url: res.uri, mimeType: res.type, amount: 0, name: res.name},
+      ]);
       setIsLoading(false);
 
       closeSheet();
@@ -133,8 +140,8 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
   };
 
   const launchCamera = () => {
+    setIsLoading(true);
     ImagePicker.launchCamera({}, async (response) => {
-      setIsLoading(true);
       if (response.didCancel) {
         logger.log('User cancelled image picker');
         setIsLoading(false);
@@ -144,45 +151,33 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
         logger.log('ImagePicker Error: ', response.error);
         setIsLoading(false);
       } else {
-        StorageService.uploadImage(response.uri)
-          .then((url: string): void => {
-            setInvoiceImages([
-              ...invoiceImages,
-              {url, type: 'image', amount: 0},
-            ]);
-            setIsLoading(false);
-            closeSheet();
-          })
-          .catch((error: any) => {
-            logger.log('ImagePicker Error: ', error.toString());
-          });
+        setInvoiceImages([
+          ...invoiceImages,
+          {url: response.uri, mimeType: response.type as string, amount: 0},
+        ]);
       }
+      setIsLoading(false);
+      closeSheet();
     });
   };
 
   const pickImage = () => {
+    setIsLoading(true);
     ImagePicker.launchImageLibrary({}, async (response) => {
-      setIsLoading(true);
       if (response.didCancel) {
         logger.log('User cancelled image picker');
       } else if (response.error) {
         logger.log('ImagePicker Error: ', response.error);
       } else {
         logger.log('Uploading image');
-        StorageService.uploadImage(response.uri)
-          .then((url: string): void => {
-            logger.log('Image Uploaded ', url);
-            setInvoiceImages([
-              ...invoiceImages,
-              {url, type: 'image', amount: 0},
-            ]);
-            setIsLoading(false);
-            closeSheet();
-          })
-          .catch((error: any) => {
-            logger.log('ImagePicker Error: ', error.toString());
-          });
+
+        setInvoiceImages([
+          ...invoiceImages,
+          {url: response.uri, mimeType: response.type as string, amount: 0},
+        ]);
       }
+      setIsLoading(false);
+      closeSheet();
     });
   };
 
@@ -217,8 +212,9 @@ const AddInvoicesScreen: React.FC<InferProps<typeof props>> = ({
         <ProposalInfo proposalInfo={proposalInfo} />
       </View>
       {invoiceImages.map((invoice, index) =>
-        invoice.type === 'image' ? (
+        invoice.mimeType?.includes('image') ? (
           <View style={{margin: 20}}>
+            {console.log('---invoice', invoice)}
             <View
               style={{
                 flexDirection: 'row',

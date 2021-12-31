@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {TabView} from 'react-native-tab-view';
+import {TabView, TabBarProps} from 'react-native-tab-view';
 import {observer, inject} from 'mobx-react';
 
 import CommonMembersList from '../CommonMembersList';

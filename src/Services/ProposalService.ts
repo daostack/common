@@ -7,6 +7,7 @@ import {
   CreateFundingRequestProposalPayload,
   IFundingRequestProposal,
   IJoinRequestProposal,
+  InvoiceImage,
   IProposalEntity,
   JoinRequestPayload,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -72,6 +73,7 @@ class ProposalService {
     createJoin: string;
     createFunding: string;
     createVote: string;
+    
   };
 
   constructor() {
@@ -330,6 +332,19 @@ class ProposalService {
       });
     } catch (err) {
       console.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  };
+
+  uploadInvoices = async (invoices: InvoiceImage[]): Promise<void> => {
+    try {
+      await this.axiosClient.post(this.endpoints.uploadInvoices, invoices, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (err) {
+      console.log('UPLOAD INVOICES ERROR -> ', getErrorObject(err));
       throw err;
     }
   };
