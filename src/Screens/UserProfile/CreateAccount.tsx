@@ -14,16 +14,17 @@ import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
-import {func, InferProps, bool} from 'prop-types';
+import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
-const props = {
-  onSignedIn: func,
-  hidePlaceholder: bool,
-  goToNextScreen: func,
-};
+interface CreateAccountProps {
+  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void,
+  hidePlaceholder: boolean,
+  goToNextScreen: () => void,
+}
 
-const CreateAccount: React.FC<InferProps<typeof props>> = ({onSignedIn, hidePlaceholder, goToNextScreen}) => {
+const CreateAccount = (props: CreateAccountProps) => {
+  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
       await onSignedIn(

@@ -12,7 +12,7 @@ import {CountrySelectField} from '~/Components/FormFields/CountrySelectField';
 import {font} from '../../../../Theme';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
-import {VALIDATION_RULES} from '~/FormStores/ValidationRules/billingDetailsRules';
+import {VALIDATION_RULES} from '~/Stores/FormStores/ValidationRules/billingDetailsRules';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';

@@ -1,7 +1,7 @@
 import {observable, action, makeObservable} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
-import {linkRules} from '~/FormStores/ValidationRules';
+import {linkRules} from '~/Stores/FormStores/ValidationRules';
 
 class FormStore {
   form = null;

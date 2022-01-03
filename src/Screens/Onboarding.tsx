@@ -1,4 +1,4 @@
-import React,{useState, useRef} from 'react';
+import React,{useState, useRef, ReactElement} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -19,7 +19,7 @@ import {NAVIGATION_SCREENS} from '../Util/constants/routes.enum';
 
 const ONBOARDING_SLIDERS_AMOUNT = 3;
 
-const Onboarding = () => {
+const Onboarding = (): ReactElement => {
   const navigation = useNavigation();
   const ref = useRef<Swiper>(null);
   const [index, setIndex] = useState(0);

@@ -1,51 +1,26 @@
-import {observable, computed, makeObservable} from 'mobx';
+import {makeAutoObservable} from 'mobx';
+import {FLAGS} from '~/Components/Moderation/constants';
+import {firebase} from '~/Firebase';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
-import {BaseModel} from './BaseModel';
-import {FLAGS} from '~/Components/Moderation/constants';
 
-export class Discussion extends BaseModel<IDiscussionEntity> {
-  @observable
+export class Discussion implements IDiscussionEntity {
+  id: string;
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp;
   title: string;
-
-  @observable
   message: string;
-
-  @observable
   ownerId: string;
-
-  @observable
   commonId: string;
-
-  // TODO: Remove that as we already have createAt in the BaseModel and every other collection follows that pattern
-  @observable
   createTime: Date;
-
-  @observable
   lastMessage: Date;
-
-  @observable
   files: string[];
-
-  @observable
   images: string[];
-
-  @observable
   followers: string[];
-
-  @observable
   moderation?: IModerationEntity;
-
-  @observable
   isExpanded: boolean;
 
-  @computed
-  get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
-  }
-
   constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
-    super(newDiscussionInfo);
     this.id = newDiscussionInfo.id;
     this.title = newDiscussionInfo.title;
     this.message = newDiscussionInfo.message;
@@ -60,6 +35,10 @@ export class Discussion extends BaseModel<IDiscussionEntity> {
     this.followers = newDiscussionInfo.followers;
     this.moderation = newDiscussionInfo.moderation;
     this.isExpanded = isExpanded;
-    makeObservable(this);
+    makeAutoObservable(this);
+  }
+
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 }

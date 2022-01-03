@@ -1,27 +1,20 @@
-import {makeObservable, observable} from 'mobx';
+import {makeAutoObservable} from 'mobx';
 import {ICardEntity} from '~/Firebase/Databasee/EntityTypes/ICardEntity';
-import {BaseModel} from './BaseModel';
+import {firebase} from '~/Firebase';
 
-export class Card extends BaseModel<ICardEntity> {
-  @observable
+export class Card implements ICardEntity {
+  id: string;
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp;
   token: string;
-
-  @observable
   provider: string;
-
-  @observable
   ownerId: string;
 
   constructor(newCardInfo: ICardEntity) {
-    super(newCardInfo);
-
     this.id = newCardInfo.id;
-
     this.token = newCardInfo.token;
-
     this.provider = newCardInfo.provider;
-
     this.ownerId = newCardInfo.ownerId;
-    makeObservable(this);
+    makeAutoObservable(this);
   }
 }
