@@ -1,18 +1,43 @@
-import {observable, action, decorate} from 'mobx';
+import {observable, action, makeObservable} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
-import {linkRules} from '~/FormStores/ValidationRules';
+import {linkRules} from '~/Stores/FormStores/ValidationRules';
 
 class FormStore {
-  form;
+  form = null;
   multiFieldsByValidatorKey;
 
   constructor() {
+    makeObservable(this, {
+      registerFormField: action,
+      isFormValid: action,
+      setError: action,
+      fieldChanged: action,
+      fieldBlured: action,
+      form: observable,
+    });
     // Hack for React Native - it's necessary to set a default language
     Validator.setMessages('en', en);
     this.clearFormStoreState();
     this.registerValidationRule(linkRules.validateLink);
   }
+
+  initFormStoreState = (fields) => {
+    this.form = {
+      fields: {
+        ...this.form.fields,
+        ...fields,
+      },
+      meta: {
+        isValid: false,
+        formValidationMade: false,
+        error: '',
+        submitError: '',
+        isLoadingSubmit: false,
+      },
+    };
+    this.multiFieldsByValidatorKey = {};
+  };
 
   clearFormStoreState = () => {
     this.form = {
@@ -27,7 +52,6 @@ class FormStore {
     };
     this.multiFieldsByValidatorKey = {};
   };
-
   getFormField = (name, multiName) => {
     if (multiName) {
       const multiIndexInfo = name.split('_');
@@ -170,10 +194,8 @@ class FormStore {
         // Multiple Field
         else {
           const multiNameInfo = this.multiFieldsByValidatorKey[key];
-          this.getFormField(
-            multiNameInfo.name,
-            multiNameInfo.multiName,
-          ).error = validation.errors.first(key);
+          this.getFormField(multiNameInfo.name, multiNameInfo.multiName).error =
+            validation.errors.first(key);
         }
       }
     }
@@ -364,14 +386,5 @@ class FormStore {
     this.form.meta.error = errMsg;
   };
 }
-
-decorate(FormStore, {
-  registerFormField: action,
-  isFormValid: action,
-  setError: action,
-  fieldChanged: action,
-  fieldBlured: action,
-  form: observable,
-});
 
 export default FormStore;

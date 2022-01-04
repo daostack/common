@@ -28,7 +28,7 @@ import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import DiscussionService from '~/Services/DiscussionService';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';

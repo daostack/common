@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {layout, colors, font} from '~/Theme';
-import Icon from '~/Assets/iconfont/Icon';
+import Icon, {IconNames} from '~/Assets/iconfont/Icon';
 import {TabBar} from 'react-native-tab-view';
 import {object} from 'prop-types';
+import {TabBarProps} from 'react-native-tab-view';
 
-const CommonTabBar = (props) => (
+const CommonTabBar = (props: TabBarProps<any>): ReactElement => (
   <TabBar
     {...props}
     indicatorStyle={{
@@ -21,7 +22,7 @@ const CommonTabBar = (props) => (
         }}>
         {route.icon ? (
           <Icon
-            name={route.icon}
+            name={route.icon as IconNames}
             size={30}
             color={focused ? colors.mainBlue : colors.grey3}
           />
