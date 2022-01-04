@@ -5,7 +5,9 @@ export interface IUserEntity extends IBaseEntity {
   // The users collection is the only one that has & use "uid" instead of "id" for representing the unique id.
   // However in the IBaseEntity there is "id" both in mobile app and clouldfunctions.
   uid: string;
-
+  additionalUserInfo: {
+    isNewUser: boolean;
+  };
   email: string;
   photoURL: string;
 

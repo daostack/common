@@ -55,7 +55,7 @@ import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsuffi
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';

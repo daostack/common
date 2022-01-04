@@ -1,4 +1,4 @@
-import {observable, action} from 'mobx';
+import {observable, action, makeObservable} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
@@ -42,6 +42,7 @@ class AuthStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
+    makeObservable(this);
   }
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
@@ -115,7 +116,7 @@ class AuthStore {
   getPermission = (commonId: string, userId: string): string => {
     try {
       const currCommon = this.rootStore.commonStore.getCommonById(commonId);
-      const memberObj = currCommon.members.find(
+      const memberObj = currCommon?.members.find(
         (member) => member.userId === userId,
       );
       if (currCommon?.metadata?.founderId === userId || memberObj?.permission) {

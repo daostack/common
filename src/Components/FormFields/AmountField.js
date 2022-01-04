@@ -5,7 +5,7 @@ import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
 import {string, func, object, bool} from 'prop-types';
-import {customAmountRules} from '~/FormStores/ValidationRules';
+import {customAmountRules} from '~/Stores/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
 
 const AmountField = ({
