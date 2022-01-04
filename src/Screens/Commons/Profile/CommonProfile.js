@@ -48,7 +48,7 @@ import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
@@ -135,8 +135,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -148,8 +147,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -164,10 +162,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals =
-      proposalStore.subscribeToCommonProposals(currCommon.id);
-    const unsubscribeFromCommonDiscussions =
-      discussionStore.subscribeToCommonDiscussions(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon?.id,
+    );
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon?.id,
+    );
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -280,7 +280,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, ENTITY_TYPES.proposal)
+          openCommonOptions(proposal, ENTITY_TYPES.proposals)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -506,7 +506,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
     await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -520,7 +519,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        userName: reporterName(
+          userStore.getUserById(moderation.moderator),
+          authStore.userInfo?.uid,
+        ),
         date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,

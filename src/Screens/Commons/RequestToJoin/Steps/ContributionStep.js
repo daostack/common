@@ -13,7 +13,6 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
 import {showErrorPopUp} from '~/Util';
 import {uiStorePropTypes} from '~/Types/propTypes';
-import {isIsraelLocale} from '~/Util/locale';
 import {CurrencySymbols} from '~/Util/locale';
 
 const ContributionStep = ({
@@ -151,7 +150,9 @@ const ContributionStep = ({
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0 ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)` : ''
+        currCommon.minFeeToJoinFormatted !== 0
+          ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)`
+          : ''
       }`;
 
   return (

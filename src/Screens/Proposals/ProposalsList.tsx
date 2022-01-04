@@ -125,6 +125,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             }
             isMember={isMember}
             viewerPermission={viewerPermission}
+            type={proposalFilter.type}
           />
         ) : (
           <TouchableOpacity
@@ -154,6 +155,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           }
           isMember={isMember}
           viewerPermission={viewerPermission}
+          type={proposalFilter.type}
         />
       );
 

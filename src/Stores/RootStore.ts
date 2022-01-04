@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import DiscussionStore from './DataStores/DiscussionStore';
 import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
+import CardStore from './DataStores/CardStore';
 import UIStore from './UIStore';
 
 const hydrate = create({
@@ -22,6 +23,7 @@ export default class RootStore {
   discussionStore: DiscussionStore;
   discussionMessageStore: DiscussionMessageStore;
   notificationStore: NotificationStore;
+  cardStore: CardStore;
   uiStore: UIStore;
 
   constructor() {
@@ -32,6 +34,7 @@ export default class RootStore {
     this.discussionStore = new DiscussionStore(this);
     this.discussionMessageStore = new DiscussionMessageStore(this);
     this.notificationStore = new NotificationStore(this);
+    this.cardStore = new CardStore(this);
     this.uiStore = new UIStore(this);
 
     Promise.all([
@@ -40,6 +43,7 @@ export default class RootStore {
       hydrate('commonStore', this.commonStore),
       hydrate('proposalStore', this.proposalStore),
       hydrate('notificationStore', this.notificationStore),
+      hydrate('cardStore', this.cardStore),
     ]);
   }
 }

@@ -4,7 +4,7 @@ import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
 import RequestToJoinForm from '../Forms/RequestToJoinForm';
-import {number, func, object, bool} from 'prop-types';
+import {string, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
 
@@ -28,7 +28,9 @@ const AmountField = ({
 
   const errorMessage =
     minFeeToJoin > 0
-      ? `The amount must be at least ${CurrencySymbols.SHEKEL}${minFeeToJoin.toString()} and at most $2500.`
+      ? `The amount must be at least ${
+          CurrencySymbols.SHEKEL
+        }${minFeeToJoin.toString()} and at most ${CurrencySymbols.SHEKEL}2500.`
       : `The amount must be 0, or at least ${CurrencySymbols.SHEKEL}5 and at most ${CurrencySymbols.SHEKEL}2500.`;
 
   // from now on, there will be no option to create a common with 0 minFreeToJoin
@@ -114,7 +116,7 @@ AmountField.propTypes = {
   onCustomSelect: func,
   onCustomClose: func,
   onAmountSelected: func,
-  minFeeToJoin: number,
+  minFeeToJoin: string,
   isMonthly: bool,
   zeroContribution: bool,
 };

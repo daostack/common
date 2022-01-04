@@ -381,7 +381,6 @@ const Discussions = ({
     bottomSheetStore.hideBottomSheet();
     await ModerationService.report(
       TITLES.discussionMessage,
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
