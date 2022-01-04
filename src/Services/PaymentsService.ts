@@ -1,5 +1,6 @@
 import {db} from '../Firebase';
 import axios, {AxiosInstance} from 'axios';
+import {auth} from '~/Firebase';
 
 import {payMeUrl} from '~/Config';
 
@@ -8,6 +9,7 @@ import {IPaymentEntity} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 import StorageService from './StorageService';
+import {STORAGE_PATH, FILE_TYPES} from '~/Util/constants/firebaseStorage';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
@@ -22,7 +24,7 @@ class PaymentService {
     });
 
     this.endpoints = {
-      uploadInvoices: '/payme/payout/save-legal-docs-info',
+      uploadInvoices: '/payout-docs/add',
     };
   }
 
@@ -30,41 +32,49 @@ class PaymentService {
     (await db.collection(DB_COLLECTIONS.payments).doc(paymentId).get()).data();
 
   uploadInvoices = async (
-    proposalId: string,
+    proposalID: string,
     invoices: InvoiceImage[],
+    payoutDocsComment: string,
   ): Promise<void> => {
     try {
-      const legalDocsInfo = await Promise.all(
+      const payoutDocs = await Promise.all(
         invoices.map(async (invoice) => {
-          const downloadUrl = invoice.mimeType.includes('application')
+          const downloadURL = invoice.mimeType.includes(FILE_TYPES.application)
             ? await StorageService.uploadFile(
                 invoice.url,
                 invoice.name as string,
-                'private',
+                `${STORAGE_PATH.payoutDocs}/${proposalID}`,
               )
-            : await StorageService.uploadImage(invoice.url, 'private');
+            : await StorageService.uploadImage(
+                invoice.url,
+                `${STORAGE_PATH.payoutDocs}/${proposalID}`,
+              );
 
           return {
-            name: StorageService.getFilename(downloadUrl),
+            name: StorageService.getFilename(downloadURL),
             amount: invoice.amount,
             mimeType: invoice.mimeType,
-            downloadUrl,
+            downloadURL,
             legalType: PAYME_TYPE_CODES.Invoice,
           };
         }),
       );
 
-      console.log('---legalDocsInfo', proposalId, legalDocsInfo);
-      const {data} = await this.axiosClient.post(
+      await this.axiosClient.post(
         this.endpoints.uploadInvoices,
         {
-          proposalId,
-          legalDocsInfo,
+          proposalID,
+          payoutDocs,
+          payoutDocsComment,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
         },
       );
-      console.log('----data');
-    } catch (err) {
-      console.log('--errr', err);
+    } catch (error) {
+      throw error;
     }
   };
 }

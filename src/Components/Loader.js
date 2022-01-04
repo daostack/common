@@ -9,9 +9,15 @@ import {showLoadingExpirationPopUp} from '../Util';
 
 const TIMEOUT = 100000;
 
-const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) => {
+const Loader = ({
+  color,
+  isBigger,
+  isFullScreen = false,
+  rootStore,
+  navigation,
+  isMedium,
+}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-
 
   useTimeoutFn(callbackFn, TIMEOUT);
 
@@ -20,10 +26,16 @@ const Loader = ({color, isBigger, isFullScreen = false, rootStore, navigation}) 
         ...styles.loader,
         ...{transform: [{scale: 1.6}]},
       }
-    : styles.loader;
+    : {...styles.loader, ...(isMedium ? {transform: [{scale: 1.2}]} : {})};
 
   function callbackFn() {
-    isFullScreen ? showLoadingExpirationPopUp(bottomSheetStore, "Oops... We couldn't load the app.", navigation) : null;
+    isFullScreen
+      ? showLoadingExpirationPopUp(
+          bottomSheetStore,
+          "Oops... We couldn't load the app.",
+          navigation,
+        )
+      : null;
   }
 
   return (
@@ -47,6 +59,7 @@ Loader.propTypes = {
   isFullScreen: bool,
   rootStore: rootStorePropTypes,
   navigation: object,
+  isMedium: bool,
 };
 
 const styles = StyleSheet.create({

@@ -30,7 +30,7 @@ export {default as Discussions} from './Discussions/Discussions';
 export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
-export {default as AddInvoicesScreen} from './Proposals/AddInvoicesScreen';
+export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
 
 //Viewers
 export {default as PDFViewer} from './Viewers/PDFViewer';
