@@ -47,14 +47,12 @@ const PaymentDetailsStep = ({
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
-  const billingDetailsFormStore = formStores.billingDetailsFormStore;
 
   const push = async () => {
     try {
       const formData = {
         ...introduceYourselfFormStore.getFormFieldsJson(),
         ...personalContributionFormStore.getFormFieldsJson(),
-        ...billingDetailsFormStore.getFormFieldsJson(),
       };
 
       const data = {
@@ -183,10 +181,6 @@ PaymentDetailsStep.propTypes = {
     getFormFieldsJson: func,
   }),
   personalContributionFormStore: shape({
-    getFormFieldsJson: func,
-    form: object,
-  }),
-  billingDetailsFormStore: shape({
     getFormFieldsJson: func,
     form: object,
   }),
