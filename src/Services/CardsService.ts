@@ -10,7 +10,7 @@ class CardsService {
   fetchCardByOwnerId = async (ownerId: string) => {
     try {
       const card = await CardsCollection.where('ownerId', '==', ownerId).get();
-      card.docs[0]?.data();
+      return card?.docs[0]?.data();
     } catch (e) {
       return null;
     }
