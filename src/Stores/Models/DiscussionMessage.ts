@@ -3,7 +3,7 @@ import {FLAGS} from '~/Components/Moderation/constants';
 import {firebase} from '~/Firebase';
 import {
   IDiscussionMessageEntity,
-  IModerationEntity
+  IModerationEntity,
 } from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 
 export class DiscussionMessage implements IDiscussionMessageEntity {
