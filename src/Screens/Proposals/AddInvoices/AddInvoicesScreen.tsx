@@ -136,6 +136,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           amount: 0,
         };
         setInvoiceImages(updatedInvoiceImages);
+        setIsPreviewModalVisible(false);
       } else {
         setInvoiceImages([
           ...invoiceImages,
@@ -183,6 +184,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
             amount: 0,
           };
           setInvoiceImages(updatedInvoiceImages);
+          setIsPreviewModalVisible(false);
         } else {
           setInvoiceImages([
             ...invoiceImages,
@@ -215,10 +217,34 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     });
   };
 
-  console.log(
-    '---isAddAmountModalVisible,isAddAmountModalVisible',
-    isAddAmountModalVisible,
-  );
+  function ModalTest() {
+    return (
+      <>
+        <ModalAddInvoiceAmount
+          isVisible={isAddAmountModalVisible && !isPreviewModalVisible}
+          onPressClose={closeAddAmount}
+          amount={amount}
+          onConfirm={(amountValue: number) => {
+            closeAddAmount();
+            const invoiceImagesTemp = invoiceImages.slice();
+            invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
+            setInvoiceImages(invoiceImagesTemp);
+            setAmount(0);
+          }}
+        />
+        <ModalDeleteInvoice
+          isVisible={isDeleteModalVisible && !isPreviewModalVisible}
+          onPressClose={closeDelete}
+          onConfirm={() => {
+            closeDelete();
+            const invoiceImagesTemp = invoiceImages.slice();
+            invoiceImagesTemp.splice(invoiceSelected, 1);
+            setInvoiceImages(invoiceImagesTemp);
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -235,77 +261,79 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         <View style={layout.marginHorizontalL}>
           <ProposalInfo proposalInfo={proposalInfo} />
         </View>
-        {invoiceImages.map((invoice, index) => (
-          <>
-            {invoice.mimeType?.includes(FILE_TYPES.image) ? (
-              <>
-                <View style={layout.marginL}>
-                  <View style={styles.invoiceHeader}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setAmount(invoice.amount);
-                        setInvoiceSelected(index);
-                        openAddAmount();
-                      }}>
-                      <Text
-                        style={
-                          styles.amountText
-                        }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
-                    </TouchableOpacity>
-                    <View>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setInvoiceSelected(index);
-                          openDelete();
-                        }}>
-                        <Icon name="delete" size={16} color={colors.black} />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <Pressable
-                    onPress={() => {
-                      setIsPreviewModalVisible(true);
-                    }}>
-                    <Image
-                      source={{
-                        uri: invoice.url,
-                      }}
-                      style={styles.invoicePreview}
-                    />
-                  </Pressable>
-                </View>
-              </>
-            ) : (
-              <View style={layout.marginL}>
-                <View style={styles.invoiceHeader}>
+        {invoiceImages.map((invoice, index) =>
+          invoice.mimeType?.includes(FILE_TYPES.image) ? (
+            <View style={layout.marginL}>
+              <View style={styles.invoiceHeader}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setAmount(invoice.amount);
+                    setInvoiceSelected(index);
+                    openAddAmount();
+                  }}>
+                  <Text
+                    style={
+                      styles.amountText
+                    }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
+                </TouchableOpacity>
+                <View>
                   <TouchableOpacity
                     onPress={() => {
-                      setAmount(invoice.amount);
                       setInvoiceSelected(index);
-                      openAddAmount();
+                      openDelete();
                     }}>
-                    <Text
-                      style={
-                        styles.amountText
-                      }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
+                    <Icon name="delete" size={16} color={colors.black} />
                   </TouchableOpacity>
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setInvoiceSelected(index);
-                        openDelete();
-                      }}>
-                      <Icon name="delete" size={16} color={colors.black} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.backgroundPdf}>
-                  <Icon name="noimage" size={16} />
                 </View>
               </View>
-            )}
-          </>
-        ))}
+              <Pressable
+                onPress={() => {
+                  setIsPreviewModalVisible(true);
+                }}>
+                <Image
+                  source={{
+                    uri: invoice.url,
+                  }}
+                  style={styles.invoicePreview}
+                />
+              </Pressable>
+            </View>
+          ) : (
+            <View style={layout.marginL}>
+              <View style={styles.invoiceHeader}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setAmount(invoice.amount);
+                    setInvoiceSelected(index);
+                    openAddAmount();
+                  }}>
+                  <Text
+                    style={
+                      styles.amountText
+                    }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
+                </TouchableOpacity>
+                <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setInvoiceSelected(index);
+                      openDelete();
+                    }}>
+                    <Icon name="delete" size={16} color={colors.black} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <Pressable
+                onPress={() => {
+                  setAmount(invoice.amount);
+                  setInvoiceSelected(index);
+                  openAddAmount();
+                }}
+                style={styles.backgroundPdf}>
+                <Icon name="noimage" size={16} />
+              </Pressable>
+            </View>
+          ),
+        )}
         <TouchableOpacity onPress={openSheet}>
           <View style={styles.imageFieldPlaceholderView}>
             <Image
@@ -359,16 +387,15 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           pickImage={() => {
             launchCamera(true);
           }}
-          onDelete={() => {
-            openDelete();
-          }}
+          onDelete={openDelete}
           imageUrl={invoiceImages[invoiceSelected]?.url as string}>
           <ModalAddInvoiceAmount
             isVisible={isAddAmountModalVisible}
             onPressClose={closeAddAmount}
-            amount={amount}
+            amount={invoiceImages[invoiceSelected]?.amount || amount}
             onConfirm={(amountValue: number) => {
               closeAddAmount();
+              setIsPreviewModalVisible(false);
               const invoiceImagesTemp = invoiceImages.slice();
               invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
               setInvoiceImages(invoiceImagesTemp);
@@ -380,6 +407,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
             onPressClose={closeDelete}
             onConfirm={() => {
               closeDelete();
+              setIsPreviewModalVisible(false);
               const invoiceImagesTemp = invoiceImages.slice();
               invoiceImagesTemp.splice(invoiceSelected, 1);
               setInvoiceImages(invoiceImagesTemp);
