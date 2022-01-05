@@ -5,7 +5,6 @@ import {
   SectionList,
   View,
   Image,
-  Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -44,19 +43,18 @@ const DiscussionMessagesList = ({
     date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
     data: msg,
   }))
-  .reverse()
-  .reduce((acc, curr) => {
+  .reduce((prev, curr) => {
     var key = curr.date;
-    let el = acc.find((x) => x && x.date === key);
+    let el = prev.find((x) => x && x.date === key);
     if (el) {
       el.data.push(curr.data);
     } else {
-      acc.push({
+      prev.push({
         date: key,
         data: [curr.data],
       });
     }
-    return acc;
+    return prev;
   }, []);
 
   useEffect(() => {
@@ -109,7 +107,6 @@ const DiscussionMessagesList = ({
             stickySectionHeadersEnabled={true}
             contentContainerStyle={{
               paddingBottom: 13,
-              width: Dimensions.get('screen').width * 0.9,
             }}
             renderItem={(x) => (
               <DiscussionMessage
@@ -167,6 +164,7 @@ DiscussionMessagesList.propTypes = {
   isMember: bool,
   inputHeight: string,
   isSending: bool,
+  inputFocusLost: bool,
 };
 
 const styles = StyleSheet.create({
