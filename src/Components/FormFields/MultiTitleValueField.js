@@ -13,7 +13,7 @@ import {
   func,
   array,
 } from 'prop-types';
-import {LINK_VALIDATION_RULES} from '~/FormStores/ValidationRules/linkRules';
+import {LINK_VALIDATION_RULES} from '~/Stores/FormStores/ValidationRules/linkRules';
 
 const RemoveLinkBtn = ({onFieldDeleted}) => (
   <TouchableOpacity

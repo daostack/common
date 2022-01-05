@@ -9,6 +9,7 @@ import {
   values,
   runInAction,
   has,
+  makeObservable,
 } from 'mobx';
 import RootStore from '../RootStore';
 import {persist} from 'mobx-persist';
@@ -36,6 +37,7 @@ export default abstract class BaseStore<
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.isLoading = false;
+    makeObservable(this);
   }
 
   @computed

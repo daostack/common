@@ -59,9 +59,9 @@ import {
   PersonalContributionFormStore,
   BillingDetailsFormStore,
   PaymentFormStore,
-} from '~/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';

@@ -3,20 +3,19 @@ import {colors, text, layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {func, InferProps} from 'prop-types';
-import {authStorePropTypes} from '~/Types/propTypes';
+import {useStore} from '~/Util/hooks/useStore';
 
 const props = {
   onSignIn: func,
-  authStore: authStorePropTypes.isRequired,
 };
 const GSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
-  authStore,
 }) => {
+  const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -26,7 +25,7 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({
         onSignIn(userInfo);
       }
       authStore.setSignInError(null);
-    } catch (error) {
+    } catch (error: any) {
       authStore.setIsLoading(false);
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
@@ -94,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(GSignInButton));
+export default observer(GSignInButton);

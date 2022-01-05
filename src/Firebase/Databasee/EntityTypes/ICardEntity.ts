@@ -22,7 +22,7 @@ export interface ICardEntity extends IBaseEntity {
   /**
    * Some metadata, useful for the UI
    */
-  metadata: ICardMetadata;
+  metadata?: ICardMetadata;
 }
 
 export interface ICardMetadata {
