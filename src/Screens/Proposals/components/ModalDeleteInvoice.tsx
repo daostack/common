@@ -41,11 +41,6 @@ const ModalDeleteInvoice = ({
   </BottomSheetModal>
 );
 
-ModalDeleteInvoice.propTypes = {
-  onPressClose: func,
-  children: object,
-};
-
 const styles = StyleSheet.create({
   modalContainer: {
     borderRadius: 25,

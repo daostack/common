@@ -63,11 +63,6 @@ const ModalAddInvoiceAmount = ({
   );
 };
 
-ModalAddInvoiceAmount.propTypes = {
-  onPressClose: func,
-  children: object,
-};
-
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',

@@ -6,37 +6,33 @@ import ProposalCardHeader from './ProposalCardHeader';
 import {FLAGS} from '../Moderation/constants';
 import {CurrencySymbols} from '~/Util/locale';
 
-const ProposalInfo = ({proposalInfo}) => {
-  console.log(proposalInfo);
+const ProposalInfo = ({proposalInfo}) => (
+  <View style={[styles.proposalCard, {width: '100%', borderRadius: 20}]}>
+    <ProposalCardHeader
+      state={proposalInfo?.state}
+      paymentStatus={proposalInfo?.paymentState}
+      closingAt={
+        (proposalInfo?.moderation?.updatedAt.seconds ||
+          proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
+      }
+      isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
+      moderation={proposalInfo.moderation && {...proposalInfo.moderation}}
+    />
 
-  return (
-    <View style={[styles.proposalCard, {width: '100%', borderRadius: 20}]}>
-      <ProposalCardHeader
-        state={proposalInfo?.state}
-        paymentStatus={proposalInfo?.paymentState}
-        closingAt={
-          (proposalInfo?.moderation?.updatedAt.seconds ||
-            proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
-        }
-        isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
-        moderation={proposalInfo.moderation && {...proposalInfo.moderation}}
-      />
-
-      <View style={styles.containerView}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{proposalInfo?.description?.title}</Text>
-        </View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            {`${CurrencySymbols.SHEKEL}${
-              proposalInfo?.fundingRequest?.amount / 100
-            }`}
-          </Text>
-        </View>
+    <View style={styles.containerView}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{proposalInfo?.description?.title}</Text>
+      </View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>
+          {`${CurrencySymbols.SHEKEL}${
+            proposalInfo?.fundingRequest?.amount / 100
+          }`}
+        </Text>
       </View>
     </View>
-  );
-};
+  </View>
+);
 
 const styles = StyleSheet.create({
   containerView: {
