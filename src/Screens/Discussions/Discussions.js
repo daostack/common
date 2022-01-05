@@ -28,7 +28,7 @@ import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import DiscussionService from '~/Services/DiscussionService';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
@@ -51,7 +51,6 @@ const Discussions = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const userStore = rootStore.userStore;
 
-  const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
   const currentUser = auth().currentUser;
@@ -76,8 +75,9 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -89,10 +89,9 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
+      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+        discussionId,
+      );
     }
 
     return () => {
@@ -215,13 +214,16 @@ const Discussions = ({
       <NavigationBar
         statusBar={{hidden: true}}
         style={{
-          height: 48,
+          height: 60,
         }}
         title={{
           title: dataState.title,
-          style: {...text.h2Black, maxWidth: '70%'},
+          style: {
+            ...text.h2Black,
+            maxWidth: '70%',
+            whiteSpace: 'wrap',
+          },
           ellipsizeMode: 'tail',
-          numberOfLines: 1,
         }}
         leftButton={
           <TouchableOpacity
@@ -247,6 +249,7 @@ const Discussions = ({
           overflow: 'hidden',
           paddingBottom: 5,
           maxHeight: '50%',
+          backgroundColor: colors.paleLilacTwo,
         }}>
         <View style={styles.headerContainer}>
           {dataState.isExpanded ? (
@@ -360,7 +363,7 @@ const Discussions = ({
 
   const openMessageOptions = (message, itemType) => {
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
@@ -377,7 +380,6 @@ const Discussions = ({
     bottomSheetStore.hideBottomSheet();
     await ModerationService.report(
       TITLES.discussionMessage,
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -415,17 +417,15 @@ const Discussions = ({
         }
         action={action}
       />
-      <ScrollView style={styles.scrollView} ref={scrollRef}>
-        <DiscussionMessagesList
-          discussionId={discussionId}
-          inputRef={inputRef}
-          scrollViewRef={scrollRef}
-          hasPermission={hasPermission}
-          commonId={commonId}
-          openMessageOptions={(message) => openMessageOptions(message)}
-          isMember={isMember}
-        />
-      </ScrollView>
+      <DiscussionMessagesList
+        discussionId={discussionId}
+        hasPermission={hasPermission}
+        commonId={commonId}
+        openMessageOptions={(message) => openMessageOptions(message)}
+        isMember={isMember}
+        inputHeight={inputHeight + 50}
+        isSending={isSending}
+      />
 
       {isMember ? (
         <KeyboardAvoidingView
@@ -618,11 +618,6 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
-  },
-  scrollView: {
-    flex: 1,
-    paddingBottom: 30,
-    backgroundColor: colors.paleLilacTwo,
   },
 });
 

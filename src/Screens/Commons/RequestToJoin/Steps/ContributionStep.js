@@ -11,9 +11,13 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import ProposalService from '~/Services/ProposalService';
+import CardsService from '~/Services/CardsService';
+import PaymentService from '~/Services/PaymentsService';
 import {showErrorPopUp} from '~/Util';
-import {uiStorePropTypes} from '~/Types/propTypes';
-import {isIsraelLocale} from '~/Util/locale';
+import {uiStorePropTypes, authStorePropTypes} from '~/Types/propTypes';
+import Toast from '~/Util/Toast';
+import {CurrencySymbols} from '~/Util/locale';
+import {v4} from 'uuid';
 
 const ContributionStep = ({
   navigation,
@@ -21,6 +25,7 @@ const ContributionStep = ({
     params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
   },
   uiStore,
+  authStore,
 }) => {
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
@@ -100,18 +105,34 @@ const ContributionStep = ({
     }
   };
 
-  const navigateToRequestStep4 = () => {
-    const navigate = CommonActions.navigate({
-      name: 'BillingDetailsStep',
-      params: {
-        formStores,
-        currDaoId: currDaoId,
-        currCommon: currCommon,
-        skipFirstStep,
-        refreshFeed,
-      },
-    });
-    navigation.dispatch(navigate);
+  const navigateToRequestStep4 = async () => {
+    let cardId = null;
+    let skipPaymentStep = false;
+    Toast.loading('One moment please');
+    const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
+    if (card) {
+      cardId = card.id;
+      skipPaymentStep = true;
+    } else {
+      cardId = v4();
+    }
+
+    const {data} = await PaymentService.createBuyerTokenPage(cardId);
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'PaymentDetailsStep',
+        params: {
+          formStores,
+          currDaoId: currDaoId,
+          currCommon: currCommon,
+          skipFirstStep: skipFirstStep,
+          refreshFeed,
+          iFrameLink: data.link,
+          cardId,
+          skipPaymentStep,
+        },
+      }),
+    );
   };
 
   const push = () => {
@@ -148,9 +169,11 @@ const ContributionStep = ({
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month ($${currCommon.minFeeToJoinFormatted}/mo min.)`
+    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0 ? `($${currCommon.minFeeToJoinFormatted} min.)` : ''
+        currCommon.minFeeToJoinFormatted !== 0
+          ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)`
+          : ''
       }`;
 
   return (
@@ -210,13 +233,6 @@ const ContributionStep = ({
             You can cancel the recurring payment at any time.
           </Text>
         )}
-
-        {isIsraelLocale && (
-          <Text style={styles.monthlyBottomMessage}>
-            All contributions are made in U.S. dollars. The actual contribution
-            amount in ILS may be different than the amounts estimated above.
-          </Text>
-        )}
       </View>
     </StepDotLayout>
   );
@@ -240,6 +256,7 @@ ContributionStep.propTypes = {
     }),
   }),
   uiStore: uiStorePropTypes,
+  authStore: authStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -251,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(ContributionStep);
+export default inject('uiStore', 'authStore')(ContributionStep);

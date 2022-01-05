@@ -4,7 +4,7 @@ import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
-import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
+import CreateDiscussionStore from '~/Stores/FormStores/CreateDiscussionStore';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import {db} from '~Firebase';
 import logger from '~/Services/Logger';
@@ -82,6 +82,7 @@ const CreateDiscussionForm = ({
             autoCapitalize="sentences"
             autoCorrect={false}
             style={styles.textInputStyle}
+            maxLength={49}
             validation={{
               name: TITLE,
               formStore: createDiscussionStore,

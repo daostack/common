@@ -22,13 +22,13 @@ export const BOTTOM_SHEET_TEMPLATES = {
       isCommonProfile: false,
     },
   },
-  SCREEN_COMMON_PROFILE_OPTIONS: {
-    topSnap: 280,
+  SCREEN_COMMON_PROFILE_OPTIONS: (item, hasPermission, isOwner) => ({
+    topSnap: item && hasPermission ? 480 : 420,
     content: CommonProfileOptions,
     props: {
       isCommonProfile: true,
     },
-  },
+  }),
   LOGIN_SHEET_SCREEN: {
     topSnap: 400,
     content: LoginSheetScreen,

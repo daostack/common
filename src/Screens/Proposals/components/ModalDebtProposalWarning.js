@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
 import ModalCommonDebt from './ModalCommonDebt';
+import {CurrencySymbols} from '~/Util/locale';
 
 const ModalDebtProposalWarning = ({onPressClose, amount}) => (
   <ModalCommonDebt onPressClose={onPressClose}>
@@ -12,7 +13,7 @@ const ModalDebtProposalWarning = ({onPressClose, amount}) => (
     <Text style={[styles.text, styles.centerText]}>
       <Text>
         {`The Common is currently voting on other proposals, and the balance might change before your proposal is decided. \n
-If the Common balance is lower than $${amount}, the proposal `}
+If the Common balance is lower than ${CurrencySymbols.SHEKEL}${amount}, the proposal `}
       </Text>
       <Text style={{fontWeight: 'bold'}}>
         will be rejected even if a majority of members approve it

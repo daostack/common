@@ -14,7 +14,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
@@ -45,13 +44,11 @@ const DiscussionCard = ({
   );
   const showHeader =
     data.moderation?.flag === FLAGS.hidden ||
-    (data.moderation?.flag === FLAGS.reported &&
-      viewerPermission === PERMISSIONS.MODERATOR);
+    data.moderation?.flag === FLAGS.reported;
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
       hiddenDiscussionNote();
@@ -97,9 +94,7 @@ const DiscussionCard = ({
                 <Text style={styles.title} numberOfLines={2}>
                   {data.title}
                 </Text>
-                {(!discussionMessageStore.isModerationHidden ||
-                  hasPermission) &&
-                  isMember &&
+                {(!discussionMessageStore.isModerationHidden) &&
                   !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}

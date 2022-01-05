@@ -129,6 +129,8 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: colors.white,
     zIndex: 6,
+    borderTopLeftRadius: 27,
+    borderTopRightRadius: 27,
   },
 
   contentContainerShadow: {

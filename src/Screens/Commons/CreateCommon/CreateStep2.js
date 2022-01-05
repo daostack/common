@@ -9,12 +9,12 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import Icon from '~/Assets/iconfont/Icon';
-import {isIsraelLocale} from '~/Util/locale';
+import {CurrencySymbols} from '~/Util/locale';
 import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
-const MAX_CONTRIBUTION = '500';
-const MIN_CONTRIBUTION = '5';
+const MAX_CONTRIBUTION = '2000';
+const MIN_CONTRIBUTION = '10';
 
 const CreateStep2 = ({
   navigation,
@@ -68,7 +68,7 @@ const CreateStep2 = ({
   useEffect(() => {
     if (zeroContribution) {
       fundingFormStore.fieldChanged(CreateCommonForm.MINIMUM, {
-        value: 5,
+        value: 10,
       });
       setDisabledStyle(colors.grey3);
     } else {
@@ -87,6 +87,8 @@ const CreateStep2 = ({
       null,
       minimumFieldRules,
     );
+
+    onCheckboxChecked(false);
   };
 
   const onCheckboxChecked = (state) => {
@@ -145,7 +147,7 @@ const CreateStep2 = ({
         <TextInputFieldWithIcon
           key={contributionIndex}
           value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
-          iconName="dollar"
+          iconName="shekel"
           iconSize={12}
           editable={!zeroContribution}
           iconStyle={{paddingRight: 5}}
@@ -153,7 +155,9 @@ const CreateStep2 = ({
           iconFillColor={disabledStyle}
           viewStyle={{alignSelf: 'stretch'}}
           disabledLabelStyle={{color: disabledStyle}}
-          disabledBackgroundStyle={{backgroundColor: zeroContribution ? colors.grey5 : colors.white}}
+          disabledBackgroundStyle={{
+            backgroundColor: zeroContribution ? colors.grey5 : colors.white,
+          }}
           label={
             <React.Fragment>
               Minimum{' '}
@@ -161,7 +165,7 @@ const CreateStep2 = ({
               contribution
             </React.Fragment>
           }
-          subLabel="Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is $5."
+          subLabel={`Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is ${CurrencySymbols.SHEKEL}10.`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
@@ -170,17 +174,13 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules,
-            customErrorMessage: `The amount must be at least $${MIN_CONTRIBUTION} and at most $${parseFloat(
-              MAX_CONTRIBUTION,
-            ).toLocaleString('en')}.`,
+            customErrorMessage: `The amount must be at least ${
+              CurrencySymbols.SHEKEL
+            }${MIN_CONTRIBUTION} and at most ${
+              CurrencySymbols.SHEKEL
+            }${parseFloat(MAX_CONTRIBUTION).toLocaleString('en')}.`,
           }}
         />
-        {isIsraelLocale && (
-          <Text style={styles.info2}>
-            All contributions are made in U.S. dollars. The actual contribution
-            amount in ILS may be different than the amounts estimated above.
-          </Text>
-        )}
         {contributionIndex === 0 && (
           <Pressable onPress={() => onCheckboxChecked(!zeroContribution)}>
             <View style={styles.zeroContributionView}>
@@ -217,7 +217,7 @@ const CreateStep2 = ({
           /> */}
         {/* <View style={{width: '100%'}}>
             <Text style={styles.readMoreButton}>
-              Min. $5. Members can donate more if they want.{' '}
+              Min. ${CurrencySymbols.SHEKEL}5. Members can donate more if they want.{' '}
             </Text>
           </View> */}
       </View>
