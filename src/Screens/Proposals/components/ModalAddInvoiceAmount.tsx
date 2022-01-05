@@ -20,8 +20,6 @@ const ModalAddInvoiceAmount = ({
 }: Props): ReactElement => {
   const [amountText, setAmountText] = useState<number>(amount);
 
-  console.log('Amount,', amount);
-
   useEffect(() => {
     setAmountText(amount);
   }, [amount]);
