@@ -35,7 +35,7 @@ const ModalAddInvoiceAmount = ({
           iconSize={12}
           editable
           iconStyle={{paddingRight: 5}}
-          iconEmptyColor={colors.grey3}
+          iconFillColor={colors.white}
           viewStyle={{alignSelf: 'stretch'}}
           autoCapitalize="none"
           autoCorrect={false}
