@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  GestureResponderEvent,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import ImagePicker from 'react-native-image-picker';
@@ -121,7 +122,9 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     }
   };
 
-  const pickFile = async (isRetake = false) => {
+  const pickFile = async ({
+    isRetake = false,
+  }: Partial<GestureResponderEvent & {isRetake: boolean}>) => {
     try {
       setIsLoading(true);
 
@@ -165,7 +168,9 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     return total;
   };
 
-  const launchCamera = (isRetake = false) => {
+  const launchCamera = ({
+    isRetake = false,
+  }: Partial<GestureResponderEvent & {isRetake: boolean}>) => {
     setIsLoading(true);
     ImagePicker.launchCamera({}, async (response) => {
       if (response.didCancel) {
@@ -217,15 +222,25 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     });
   };
 
-  function ModalTest() {
+  function ModalInvoiceOptions({
+    isInImagePreview = false,
+  }: {
+    isInImagePreview?: boolean;
+  }): ReactElement {
     return (
       <>
         <ModalAddInvoiceAmount
-          isVisible={isAddAmountModalVisible && !isPreviewModalVisible}
+          isVisible={
+            isAddAmountModalVisible &&
+            (isInImagePreview || !isPreviewModalVisible)
+          }
           onPressClose={closeAddAmount}
           amount={amount}
           onConfirm={(amountValue: number) => {
             closeAddAmount();
+            if (isInImagePreview) {
+              setIsPreviewModalVisible(false);
+            }
             const invoiceImagesTemp = invoiceImages.slice();
             invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
             setInvoiceImages(invoiceImagesTemp);
@@ -233,10 +248,15 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           }}
         />
         <ModalDeleteInvoice
-          isVisible={isDeleteModalVisible && !isPreviewModalVisible}
+          isVisible={
+            isDeleteModalVisible && (isInImagePreview || !isPreviewModalVisible)
+          }
           onPressClose={closeDelete}
           onConfirm={() => {
             closeDelete();
+            if (isInImagePreview) {
+              setIsPreviewModalVisible(false);
+            }
             const invoiceImagesTemp = invoiceImages.slice();
             invoiceImagesTemp.splice(invoiceSelected, 1);
             setInvoiceImages(invoiceImagesTemp);
@@ -289,6 +309,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
               <Pressable
                 onPress={() => {
                   setIsPreviewModalVisible(true);
+                  setInvoiceSelected(index);
                 }}>
                 <Image
                   source={{
@@ -358,61 +379,17 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
             </TouchableOpacity>
           </View>
         )}
-        <ModalAddInvoiceAmount
-          isVisible={isAddAmountModalVisible && !isPreviewModalVisible}
-          onPressClose={closeAddAmount}
-          amount={amount}
-          onConfirm={(amountValue: number) => {
-            closeAddAmount();
-            const invoiceImagesTemp = invoiceImages.slice();
-            invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
-            setInvoiceImages(invoiceImagesTemp);
-            setAmount(0);
-          }}
-        />
-        <ModalDeleteInvoice
-          isVisible={isDeleteModalVisible && !isPreviewModalVisible}
-          onPressClose={closeDelete}
-          onConfirm={() => {
-            closeDelete();
-            const invoiceImagesTemp = invoiceImages.slice();
-            invoiceImagesTemp.splice(invoiceSelected, 1);
-            setInvoiceImages(invoiceImagesTemp);
-          }}
-        />
+        <ModalInvoiceOptions />
         <ModalImagePreview
           isVisible={isPreviewModalVisible}
           buttonText="Add invoice amount"
           onPress={() => setIsAddAmountModalVisible(true)}
           pickImage={() => {
-            launchCamera(true);
+            launchCamera({isRetake: true});
           }}
           onDelete={openDelete}
           imageUrl={invoiceImages[invoiceSelected]?.url as string}>
-          <ModalAddInvoiceAmount
-            isVisible={isAddAmountModalVisible}
-            onPressClose={closeAddAmount}
-            amount={invoiceImages[invoiceSelected]?.amount || amount}
-            onConfirm={(amountValue: number) => {
-              closeAddAmount();
-              setIsPreviewModalVisible(false);
-              const invoiceImagesTemp = invoiceImages.slice();
-              invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
-              setInvoiceImages(invoiceImagesTemp);
-              setAmount(0);
-            }}
-          />
-          <ModalDeleteInvoice
-            isVisible={isDeleteModalVisible}
-            onPressClose={closeDelete}
-            onConfirm={() => {
-              closeDelete();
-              setIsPreviewModalVisible(false);
-              const invoiceImagesTemp = invoiceImages.slice();
-              invoiceImagesTemp.splice(invoiceSelected, 1);
-              setInvoiceImages(invoiceImagesTemp);
-            }}
-          />
+          <ModalInvoiceOptions isInImagePreview />
         </ModalImagePreview>
         <ModalUploadInvoice
           isVisible={isBottomModalVisible}

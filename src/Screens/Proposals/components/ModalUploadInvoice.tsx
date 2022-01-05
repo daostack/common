@@ -1,5 +1,11 @@
 import React, {ReactElement} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  GestureResponderEvent,
+} from 'react-native';
 import {colors, font} from '~/Theme';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import Icon from '~/Assets/iconfont/Icon';
@@ -9,8 +15,8 @@ type Props = {
   isVisible: boolean;
   closeSheet: () => void;
   pickImage: () => void;
-  launchCamera: () => void;
-  pickFile: () => void;
+  launchCamera: (value: GestureResponderEvent) => void;
+  pickFile: (value: GestureResponderEvent) => void;
   isLoading: boolean;
 };
 
