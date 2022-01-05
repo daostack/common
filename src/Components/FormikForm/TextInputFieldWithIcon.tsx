@@ -40,8 +40,8 @@ export type TextFieldProps = {
   onChangeText?: (value: string) => void;
   onBlur?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void;
   placeholderText?: string;
-  label: string | ReactNode;
-  infoLabel: string;
+  label?: string | ReactNode;
+  infoLabel?: string;
   password?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
@@ -67,6 +67,7 @@ export type TextFieldProps = {
   subLabel?: string;
   uiStore?: UiStore;
   textContentType?: TextContentType;
+  editable: boolean;
 };
 
 function TextField({
@@ -129,7 +130,7 @@ function TextField({
   }, [otherProps.onTogglePress, toggleName]);
 
   const styleTextfield = useMemo(() => {
-    let textFieldStyle = {};
+    let textFieldStyle = styles.textfield;
     if (error) {
       textFieldStyle = {...styles.textfield, ...styles.textfieldError};
     }
@@ -228,14 +229,14 @@ function TextField({
   return (
     <View style={{alignSelf: 'stretch'}}>
       <View style={{flexDirection: 'row'}}>
-        <Text style={styles.label}>{label}</Text>
-        <Text style={styles.infoLabel}>{infoLabel}</Text>
+        {label && <Text style={styles.label}>{label}</Text>}
+        {infoLabel && <Text style={styles.infoLabel}>{infoLabel}</Text>}
       </View>
       {subLabel && <Text style={styles.subLabel}>{subLabel}</Text>}
       <View style={styleTextfield}>
         <View style={iconStyle}>
           <Icon
-            name={iconName}
+            name={iconName as IconNames}
             size={iconSize}
             color={getValue() === '' ? iconEmptyColor : iconFillColor}
           />

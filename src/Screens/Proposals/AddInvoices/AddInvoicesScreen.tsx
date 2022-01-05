@@ -4,6 +4,7 @@ import React, {ReactElement, useState} from 'react';
 import {
   Image,
   Platform,
+  Pressable,
   SafeAreaView,
   ScrollView,
   Text,
@@ -26,6 +27,7 @@ import ModalAddInvoiceAmount from '../components/ModalAddInvoiceAmount';
 import ModalDeleteInvoice from '../components/ModalDeleteInvoice';
 import {ModalFinishUploadInvoices} from '../components/ModalFinishUploadInvoices/ModalFinishUploadInvoices';
 import {ModalUploadInvoice} from '../components/ModalUploadInvoice';
+import {ModalImagePreview} from '../components/ModalImagePreview';
 import {styles} from './styles';
 import {FILE_TYPES} from '~/Util/constants/firebaseStorage';
 
@@ -44,6 +46,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
 
   const [isBottomModalVisible, setIsBottomModalVisible] = useState(false);
   const [isFinishModalVisible, setIsFinishModalVisible] = useState(false);
+  const [isPreviewModalVisible, setIsPreviewModalVisible] = useState(false);
   const [isAddAmountModalVisible, setIsAddAmountModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,18 +121,28 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     }
   };
 
-  const pickFile = async () => {
+  const pickFile = async (isRetake = false) => {
     try {
       setIsLoading(true);
 
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.pdf],
       });
+      if (isRetake) {
+        const updatedInvoiceImages = [...invoiceImages];
+        updatedInvoiceImages[invoiceSelected] = {
+          url: res.uri,
+          mimeType: res.uri as string,
+          amount: 0,
+        };
+        setInvoiceImages(updatedInvoiceImages);
+      } else {
+        setInvoiceImages([
+          ...invoiceImages,
+          {url: res.uri, mimeType: res.type, amount: 0, name: res.name},
+        ]);
+      }
 
-      setInvoiceImages([
-        ...invoiceImages,
-        {url: res.uri, mimeType: res.type, amount: 0, name: res.name},
-      ]);
       setIsLoading(false);
 
       closeSheet();
@@ -151,7 +164,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     return total;
   };
 
-  const launchCamera = () => {
+  const launchCamera = (isRetake = false) => {
     setIsLoading(true);
     ImagePicker.launchCamera({}, async (response) => {
       if (response.didCancel) {
@@ -162,10 +175,20 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         logger.log('ImagePicker Error: ', response.error);
         setIsLoading(false);
       } else {
-        setInvoiceImages([
-          ...invoiceImages,
-          {url: response.uri, mimeType: response.type as string, amount: 0},
-        ]);
+        if (isRetake) {
+          const updatedInvoiceImages = [...invoiceImages];
+          updatedInvoiceImages[invoiceSelected] = {
+            url: response.uri,
+            mimeType: response.type as string,
+            amount: 0,
+          };
+          setInvoiceImages(updatedInvoiceImages);
+        } else {
+          setInvoiceImages([
+            ...invoiceImages,
+            {url: response.uri, mimeType: response.type as string, amount: 0},
+          ]);
+        }
       }
       setIsLoading(false);
       closeSheet();
@@ -192,6 +215,11 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     });
   };
 
+  console.log(
+    '---isAddAmountModalVisible,isAddAmountModalVisible',
+    isAddAmountModalVisible,
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -207,68 +235,77 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         <View style={layout.marginHorizontalL}>
           <ProposalInfo proposalInfo={proposalInfo} />
         </View>
-        {invoiceImages.map((invoice, index) =>
-          invoice.mimeType?.includes(FILE_TYPES.image) ? (
-            <View style={layout.marginL}>
-              <View style={styles.invoiceHeader}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setAmount(invoice.amount);
-                    setInvoiceSelected(index);
-                    openAddAmount();
-                  }}>
-                  <Text
-                    style={
-                      styles.amountText
-                    }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
-                </TouchableOpacity>
-                <View>
+        {invoiceImages.map((invoice, index) => (
+          <>
+            {invoice.mimeType?.includes(FILE_TYPES.image) ? (
+              <>
+                <View style={layout.marginL}>
+                  <View style={styles.invoiceHeader}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setAmount(invoice.amount);
+                        setInvoiceSelected(index);
+                        openAddAmount();
+                      }}>
+                      <Text
+                        style={
+                          styles.amountText
+                        }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
+                    </TouchableOpacity>
+                    <View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setInvoiceSelected(index);
+                          openDelete();
+                        }}>
+                        <Icon name="delete" size={16} color={colors.black} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <Pressable
+                    onPress={() => {
+                      setIsPreviewModalVisible(true);
+                    }}>
+                    <Image
+                      source={{
+                        uri: invoice.url,
+                      }}
+                      style={styles.invoicePreview}
+                    />
+                  </Pressable>
+                </View>
+              </>
+            ) : (
+              <View style={layout.marginL}>
+                <View style={styles.invoiceHeader}>
                   <TouchableOpacity
                     onPress={() => {
+                      setAmount(invoice.amount);
                       setInvoiceSelected(index);
-                      openDelete();
+                      openAddAmount();
                     }}>
-                    <Icon name="delete" size={16} color={colors.black} />
+                    <Text
+                      style={
+                        styles.amountText
+                      }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
                   </TouchableOpacity>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setInvoiceSelected(index);
+                        openDelete();
+                      }}>
+                      <Icon name="delete" size={16} color={colors.black} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.backgroundPdf}>
+                  <Icon name="noimage" size={16} />
                 </View>
               </View>
-              <Image
-                source={{
-                  uri: invoice.url,
-                }}
-                style={styles.invoicePreview}
-              />
-            </View>
-          ) : (
-            <View style={layout.marginL}>
-              <View style={styles.invoiceHeader}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setAmount(invoice.amount);
-                    setInvoiceSelected(index);
-                    openAddAmount();
-                  }}>
-                  <Text
-                    style={
-                      styles.amountText
-                    }>{`Amount: ${CurrencySymbols.SHEKEL} ${invoice.amount}`}</Text>
-                </TouchableOpacity>
-                <View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setInvoiceSelected(index);
-                      openDelete();
-                    }}>
-                    <Icon name="delete" size={16} color={colors.black} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View style={styles.backgroundPdf}>
-                <Icon name="noimage" size={16} />
-              </View>
-            </View>
-          ),
-        )}
+            )}
+          </>
+        ))}
         <TouchableOpacity onPress={openSheet}>
           <View style={styles.imageFieldPlaceholderView}>
             <Image
@@ -294,7 +331,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           </View>
         )}
         <ModalAddInvoiceAmount
-          isVisible={isAddAmountModalVisible}
+          isVisible={isAddAmountModalVisible && !isPreviewModalVisible}
           onPressClose={closeAddAmount}
           amount={amount}
           onConfirm={(amountValue: number) => {
@@ -306,7 +343,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           }}
         />
         <ModalDeleteInvoice
-          isVisible={isDeleteModalVisible}
+          isVisible={isDeleteModalVisible && !isPreviewModalVisible}
           onPressClose={closeDelete}
           onConfirm={() => {
             closeDelete();
@@ -315,6 +352,40 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
             setInvoiceImages(invoiceImagesTemp);
           }}
         />
+        <ModalImagePreview
+          isVisible={isPreviewModalVisible}
+          buttonText="Add invoice amount"
+          onPress={() => setIsAddAmountModalVisible(true)}
+          pickImage={() => {
+            launchCamera(true);
+          }}
+          onDelete={() => {
+            openDelete();
+          }}
+          imageUrl={invoiceImages[invoiceSelected]?.url as string}>
+          <ModalAddInvoiceAmount
+            isVisible={isAddAmountModalVisible}
+            onPressClose={closeAddAmount}
+            amount={amount}
+            onConfirm={(amountValue: number) => {
+              closeAddAmount();
+              const invoiceImagesTemp = invoiceImages.slice();
+              invoiceImagesTemp[invoiceSelected].amount = amountValue; //execute the manipulations
+              setInvoiceImages(invoiceImagesTemp);
+              setAmount(0);
+            }}
+          />
+          <ModalDeleteInvoice
+            isVisible={isDeleteModalVisible}
+            onPressClose={closeDelete}
+            onConfirm={() => {
+              closeDelete();
+              const invoiceImagesTemp = invoiceImages.slice();
+              invoiceImagesTemp.splice(invoiceSelected, 1);
+              setInvoiceImages(invoiceImagesTemp);
+            }}
+          />
+        </ModalImagePreview>
         <ModalUploadInvoice
           isVisible={isBottomModalVisible}
           closeSheet={closeSheet}

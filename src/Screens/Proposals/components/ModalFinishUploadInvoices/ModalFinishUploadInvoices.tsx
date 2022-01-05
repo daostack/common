@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
+import {StyleSheet} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import {styles} from './styles';
 import {UploadInvoicesInfo} from './UploadInvoicesInfo';
 import {UploadInvoicesLoader} from './UploadInvoicesLoader';
 import {UploadInvoicesSuccess} from './UploadInvoicesSuccess';
@@ -74,3 +74,9 @@ export const ModalFinishUploadInvoices = ({
     />
   </BottomSheetModal>
 );
+
+export const styles = StyleSheet.create({
+  modalContainer: {
+    borderRadius: 25,
+  },
+});
