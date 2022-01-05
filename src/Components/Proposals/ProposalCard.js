@@ -66,12 +66,13 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await ProposalService.subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -106,14 +107,10 @@ const ProposalCard = ({
           proposalInfo?.commonId,
         );
       }
-      // navigation.navigate('ProposalScreen', {
-      //   proposalId: proposalInfo.id,
-      //   hasPermission,
-      //   commonId: proposalInfo.commonId,
-      // });
-
-      navigation.navigate('AddInvoicesScreen', {
+      navigation.navigate('ProposalScreen', {
         proposalId: proposalInfo.id,
+        hasPermission,
+        commonId: proposalInfo.commonId,
       });
     }
   };
