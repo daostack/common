@@ -28,23 +28,21 @@ const ModalAddInvoiceAmount = ({
     <BottomSheetModal isVisible={isVisible} onClose={onPressClose}>
       <View style={styles.container}>
         <Text style={styles.title}>Invoice Amount</Text>
-        <View style={{width: '100%', backgroundColor: '#fff'}}>
-          <TextInputFieldWithIcon
-            key={1}
-            value={String(amountText)}
-            iconName="shekel"
-            iconSize={12}
-            editable
-            iconStyle={{paddingRight: 5}}
-            iconEmptyColor={colors.grey3}
-            viewStyle={{alignSelf: 'stretch'}}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="numeric"
-            maxLength={5}
-            onChangeText={(value) => setAmountText(Number(value))}
-          />
-        </View>
+        <TextInputFieldWithIcon
+          key={1}
+          value={String(amountText)}
+          iconName="shekel"
+          iconSize={12}
+          editable
+          iconStyle={{paddingRight: 5}}
+          iconEmptyColor={colors.grey3}
+          viewStyle={{alignSelf: 'stretch'}}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numeric"
+          maxLength={5}
+          onChangeText={(value) => setAmountText(Number(value))}
+        />
         <TouchableOpacity
           style={{
             ...layout.btnPrimary,
