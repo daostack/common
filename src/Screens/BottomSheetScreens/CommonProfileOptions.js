@@ -20,7 +20,7 @@ const CommonProfileOptions = ({
     moderatorOptions.actions || ['Hide', 'Report', 'Share', 'Copy link'],
   );
   const [iconName, setIconName] = useState('hidden');
-  const {item, isMember} = moderatorOptions;
+  const {item} = moderatorOptions;
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
