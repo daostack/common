@@ -1,4 +1,4 @@
-import {observable, runInAction} from 'mobx';
+import {makeObservable, observable, runInAction} from 'mobx';
 import BottomSheetStore from './BottomSheetStore';
 import AppLoaderStore from './AppLoaderStore';
 import RootStore from './RootStore';
@@ -25,5 +25,6 @@ export default class UIStore {
       .catch((error) => {
         console.log('ILS Conversion Error', error);
       });
+    makeObservable(this);
   }
 }

@@ -65,9 +65,9 @@ import {
   PersonalContributionFormStore,
   BillingDetailsFormStore,
   PaymentFormStore,
-} from '~/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
@@ -141,8 +141,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
-    useState(false);
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -154,8 +153,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
-    useState(false);
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -170,10 +168,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals =
-      proposalStore.subscribeToCommonProposals(currCommon.id);
-    const unsubscribeFromCommonDiscussions =
-      discussionStore.subscribeToCommonDiscussions(currCommon.id);
+    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+      currCommon?.id,
+    );
+    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+      currCommon?.id,
+    );
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();

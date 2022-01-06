@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import Toast from '~/Util/Toast';
 
 export default function HUDTest() {
-  const timerRef = useRef();
+  const timerRef = useRef<number>(null);
 
   const loading = useCallback(() => {
     Toast.loading('Loading...');

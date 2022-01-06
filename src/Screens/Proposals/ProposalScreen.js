@@ -36,7 +36,7 @@ import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, func} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -55,7 +55,7 @@ import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsuffi
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
@@ -82,7 +82,7 @@ const ProposalScreen = ({
     },
   },
   rootStore,
-  start,
+  start, // copilot modal tooltip start
 }) => {
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -1107,6 +1107,7 @@ ProposalScreen.propTypes = {
     }),
   }),
   rootStore: rootStorePropTypes,
+  start: func,
 };
 
 const styles = StyleSheet.create({

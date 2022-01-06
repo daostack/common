@@ -1,38 +1,30 @@
-import {observable} from 'mobx';
+import {makeAutoObservable} from 'mobx';
+import {firebase} from '~/Firebase';
 import {INotificationEntity} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {BaseModel} from './BaseModel';
 
 export interface NotificationItemState {
   seen: boolean;
   opened: boolean;
 }
 
-export class Notification extends BaseModel<INotificationEntity> {
-  @observable
+export class Notification implements INotificationEntity {
   id: string;
-
-  @observable
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp;
   eventObjectId: string;
-
-  @observable
   eventType: string;
-
-  @observable
   userFilter: Array<string>;
-
-  @observable
   notificationItemState: NotificationItemState;
 
   constructor(
     newNotificationInfo: INotificationEntity,
     notificationItemState: NotificationItemState,
   ) {
-    super(newNotificationInfo);
-
     this.id = newNotificationInfo.id;
     this.eventObjectId = newNotificationInfo.eventObjectId;
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
     this.notificationItemState = notificationItemState;
+    makeAutoObservable(this);
   }
 }

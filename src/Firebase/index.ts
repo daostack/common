@@ -9,7 +9,7 @@ import '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 import logger from '../Services/Logger';
 
-const db = firestore();
+export const db = firestore();
 
 if (Config.local === 'true' && __DEV__) {
   logger.warn('Using local firestore');

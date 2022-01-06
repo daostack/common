@@ -17,7 +17,7 @@ import {
   FundingFormStore,
   AgendaFormStore,
   ReviewFormStore,
-} from '~/FormStores/CreateCommon';
+} from '~/Stores/FormStores/CreateCommon';
 import {NAVIGATION_SCREENS} from '../../../Util/constants/routes.enum';
 
 const COMMON_EXPLANATION_SLIDERS_AMOUNT = 3;
