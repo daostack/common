@@ -17,12 +17,7 @@ export const IconCamera: FunctionComponent<Props> = ({
   ...rest
 }) => {
   return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${size} ${size}`}
-      fill="none"
-      {...rest}>
+    <Svg width={size} height={size} viewBox={`0 0 24 24`} fill="none" {...rest}>
       <Path
         fillRule="evenodd"
         clipRule="evenodd"
