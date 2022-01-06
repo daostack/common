@@ -1,4 +1,4 @@
-import {makeAutoObservable} from 'mobx';
+import {makeAutoObservable, observable} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {
@@ -35,11 +35,11 @@ export class Proposal implements BaseModel<IProposalEntity> {
   quietEndingPeriod: number;
   votesFor: number;
   votesAgainst: number;
-  paymentState?: string;
-  fundingRequest: IProposalFundingRequest | undefined;
-  join: IProposalJoin | undefined;
+  paymentState?: string | null = null;
+  fundingRequest: IProposalFundingRequest | undefined | null = null;
+  join: IProposalJoin | undefined | null = null;
   description: IFundingRequestDescription | IJoinReqDescription;
-  moderation?: IModerationEntity;
+  moderation?: IModerationEntity | null = null;
 
   imagesPromised = fromPromise(
     (async (): Promise<IUIProposalImage[]> => {
@@ -74,7 +74,7 @@ export class Proposal implements BaseModel<IProposalEntity> {
         );
       }
       return tempImages;
-    })()
+    })(),
   );
 
   get images() {
@@ -148,10 +148,10 @@ export class Proposal implements BaseModel<IProposalEntity> {
       // TODO: ... more props
     }
     //if (this.type === PROPOSAL_TYPE.FundingRequest) {
-      this.fundingRequest = (
-        newProposalInfo as IFundingRequestProposal
-      ).fundingRequest;
-      // TODO: ... more props
+    this.fundingRequest = (
+      newProposalInfo as IFundingRequestProposal
+    ).fundingRequest;
+    // TODO: ... more props
     //}
     makeAutoObservable(this);
   }

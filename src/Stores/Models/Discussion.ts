@@ -17,7 +17,7 @@ export class Discussion implements IDiscussionEntity {
   files: string[];
   images: string[];
   followers: string[];
-  moderation?: IModerationEntity;
+  moderation?: IModerationEntity | null = null;
   isExpanded: boolean;
 
   constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
