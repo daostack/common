@@ -51,7 +51,7 @@ export interface IDiscussionEntity extends IBaseEntity {
   /**
    * The moderation object that handles hiding/showing proposals
    */
-  moderation?: IModerationEntity;
+  moderation?: IModerationEntity | null;
 
   isModerationHidden: boolean;
 }
