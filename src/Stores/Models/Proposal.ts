@@ -1,4 +1,4 @@
-import {makeAutoObservable, observable} from 'mobx';
+import {makeAutoObservable} from 'mobx';
 import {PROPOSAL_TYPE} from '~/Config';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {
