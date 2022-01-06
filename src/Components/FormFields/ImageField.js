@@ -91,7 +91,7 @@ class ImageField extends React.Component {
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.getInstance()
+        StorageService
           .uploadImage(response.uri)
           .then((url) => {
             Toast.hide();
