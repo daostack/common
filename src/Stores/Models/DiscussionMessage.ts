@@ -1,10 +1,8 @@
 import {makeAutoObservable} from 'mobx';
 import {FLAGS} from '~/Components/Moderation/constants';
 import {firebase} from '~/Firebase';
-import {
-  IDiscussionMessageEntity,
-  IModerationEntity,
-} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
 export class DiscussionMessage implements IDiscussionMessageEntity {
   id: string;
@@ -16,7 +14,7 @@ export class DiscussionMessage implements IDiscussionMessageEntity {
   text: string;
   createTime: Date;
   ownerAvatar: string;
-  moderation?: IModerationEntity;
+  moderation?: IModerationEntity | null = null;
 
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
     this.id = newDiscussionMessageInfo.id;

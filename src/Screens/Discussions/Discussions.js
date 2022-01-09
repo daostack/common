@@ -69,6 +69,7 @@ const Discussions = ({
     commonId,
     authStore?.userInfo?.uid,
   );
+  const [inputFocusLost, setInputFocusLost] = useState(false);
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
@@ -425,6 +426,7 @@ const Discussions = ({
         isMember={isMember}
         inputHeight={inputHeight + 50}
         isSending={isSending}
+        inputFocusLost={inputFocusLost}
       />
 
       {isMember ? (
@@ -454,6 +456,8 @@ const Discussions = ({
               editable={true}
               fontSize={15}
               multiline
+              onFocus={() => setInputFocusLost(false) }
+              onBlur={() => setInputFocusLost(true) }
               placeholder="What do you think?"
               placeholderTextColor={colors.grey3}
               onChangeText={(currText) => setInputText(currText)}

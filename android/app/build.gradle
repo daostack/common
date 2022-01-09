@@ -222,6 +222,11 @@ android {
     packagingOptions {
         pickFirst '**/libc++_shared.so'
     }
+
+     lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 dependencies {
