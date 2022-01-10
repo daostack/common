@@ -760,7 +760,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
-        {currCommon.minFeeToJoinFormatted}
+        {currCommon.minFeeToJoinFormatted()}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
