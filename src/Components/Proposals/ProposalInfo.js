@@ -26,7 +26,7 @@ const ProposalInfo = ({proposalInfo}) => (
       <View style={styles.titleContainer}>
         <Text style={styles.title}>
           {`${CurrencySymbols.SHEKEL}${
-            proposalInfo?.fundingRequest?.amount / 100
+            (proposalInfo?.fundingRequest?.amount || 0) / 100
           }`}
         </Text>
       </View>
