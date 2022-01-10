@@ -74,11 +74,12 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-import {takeRightFromString} from '~/Util/stringUtil';
+import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import {
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
   DYNAMIC_LINKS_SCREEN_PARAMS,
+  DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
 
 const Stack = createStackNavigator();
@@ -258,9 +259,8 @@ const App = ({rootStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    const [screenName, entityId] = takeRightFromString({
-      str: url,
-      numberOfElements: 2,
+    const [screenName, entityId] = getUrlPathWithEntityId({
+      str: url.replace(DYNAMIC_LINK_URI_WITH_SLASH, ''),
       separator: '/',
     });
 
