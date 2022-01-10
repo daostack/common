@@ -13,6 +13,12 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
+import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
@@ -432,13 +438,26 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = () => {
-    const options = {
-      url: `https://app.common.io/common/${currCommon.id}`,
-      title: "Let's make it happen",
-      message: `${currCommon.name} common`,
-    };
-    Share.open(options);
+  const shareCommon = async () => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: currCommon.name,
+          descriptionText: currCommon.metadata.description,
+          imageUrl: currCommon.image,
+        },
+      });
+      const options = {
+        url,
+        title: "Let's make it happen",
+        message: `${currCommon.name} common`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
   };
 
   const onEdit = (type) => {

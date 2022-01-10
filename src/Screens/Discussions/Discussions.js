@@ -64,11 +64,13 @@ const Discussions = ({
   const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
+
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const hasPermission = commonId
+    ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    : null;
+
   const [inputFocusLost, setInputFocusLost] = useState(false);
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
@@ -76,9 +78,8 @@ const Discussions = ({
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -90,9 +91,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
