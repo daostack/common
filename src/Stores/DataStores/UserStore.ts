@@ -36,6 +36,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            methodName: 'getUserById',
           });
         });
       return {} as UserModel;
@@ -57,6 +58,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
       setTimeout(() => {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          methodName: 'getCommonUsersByMembersArray',
         });
       });
       return [];

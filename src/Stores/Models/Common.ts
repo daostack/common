@@ -1,4 +1,4 @@
-import {observable, computed} from 'mobx';
+import {makeAutoObservable} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
   CommonRegister,
@@ -8,44 +8,24 @@ import {
   ICommonMetadata,
   ICommonRule,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {BaseModel} from './BaseModel';
+import {firebase} from '~/Firebase';
 
-export class Common extends BaseModel<ICommonEntity> {
-  @observable
+export class Common implements ICommonEntity {
   id: string;
-
-  @observable
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp;
   name: string;
-
-  @observable
   image: string;
-
-  @observable
   balance: number;
-
-  @observable
   raised: number;
-
-  @observable
   fundingGoalDeadline: number;
-
-  @observable
   members: ICommonMember[];
-
-  @observable
   rules: ICommonRule[];
-
-  @observable
   links: ICommonLink[];
-
-  @observable
   metadata: ICommonMetadata;
-
-  @observable
   register: CommonRegister;
 
   constructor(newCommonInfo: ICommonEntity) {
-    super(newCommonInfo);
     this.id = newCommonInfo.id;
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;
@@ -57,19 +37,17 @@ export class Common extends BaseModel<ICommonEntity> {
     this.links = newCommonInfo.links;
     this.metadata = newCommonInfo.metadata;
     this.register = newCommonInfo.register;
+    makeAutoObservable(this);
   }
 
-  @computed
   get raisedFormatted(): string {
     return formatNumber(this.raised / 100).toString();
   }
 
-  @computed
   get balanceFormatted(): string {
     return formatNumber(this.balance / 100).toString();
   }
 
-  @computed
   get minFeeToJoinFormatted(): string {
     const minValue = this.metadata.zeroContribution
     ? 0

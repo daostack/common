@@ -14,7 +14,7 @@ import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
 const MAX_CONTRIBUTION = '2000';
-const MIN_CONTRIBUTION = '5';
+const MIN_CONTRIBUTION = '10';
 
 const CreateStep2 = ({
   navigation,
@@ -68,7 +68,7 @@ const CreateStep2 = ({
   useEffect(() => {
     if (zeroContribution) {
       fundingFormStore.fieldChanged(CreateCommonForm.MINIMUM, {
-        value: 5,
+        value: 10,
       });
       setDisabledStyle(colors.grey3);
     } else {
@@ -165,7 +165,7 @@ const CreateStep2 = ({
               contribution
             </React.Fragment>
           }
-          subLabel={`Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is ${CurrencySymbols.SHEKEL}5.`}
+          subLabel={`Set the minimum amount that new members will have to contribute in order to join this Common. The minimum contribution allowed by credit card is ${CurrencySymbols.SHEKEL}10.`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"

@@ -1,41 +1,23 @@
-import {observable, computed} from 'mobx';
-import {
-  IDiscussionMessageEntity,
-  IModerationEntity,
-} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
-import {BaseModel} from './BaseModel';
+import {makeAutoObservable} from 'mobx';
 import {FLAGS} from '~/Components/Moderation/constants';
+import {firebase} from '~/Firebase';
+import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 
-
-export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
-  @observable
+export class DiscussionMessage implements IDiscussionMessageEntity {
+  id: string;
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp;
   discussionId: string;
-
-  @observable
   ownerId: string;
-
-  @observable
   ownerName: string;
-
-  @observable
   text: string;
-
-  @observable
   createTime: Date;
-
-  @observable
   ownerAvatar: string;
-
-  @observable
-  moderation?: IModerationEntity;
-
-  @computed
-  get isModerationHidden() {
-    return this.moderation && this.moderation?.flag === FLAGS.hidden;
-  }
+  moderation?: IModerationEntity | null = null;
 
   constructor(newDiscussionMessageInfo: IDiscussionMessageEntity) {
-    super(newDiscussionMessageInfo);
+    this.id = newDiscussionMessageInfo.id;
     this.discussionId = newDiscussionMessageInfo.discussionId;
     this.ownerId = newDiscussionMessageInfo.ownerId;
     this.ownerName = newDiscussionMessageInfo.ownerName;
@@ -43,5 +25,10 @@ export class DiscussionMessage extends BaseModel<IDiscussionMessageEntity> {
     this.createTime = newDiscussionMessageInfo.createTime;
     this.ownerAvatar = newDiscussionMessageInfo.ownerAvatar;
     this.moderation = newDiscussionMessageInfo.moderation;
+    makeAutoObservable(this);
+  }
+
+  get isModerationHidden() {
+    return this.moderation && this.moderation?.flag === FLAGS.hidden;
   }
 }

@@ -149,3 +149,24 @@ export type IPaymentEntity =
   | IConfirmedPayment
   | IPaidPayment
   | IFailedPayment;
+
+export interface ISaleEntity {
+  data: {
+    /**
+     * description of the link
+     */
+    message: string;
+
+    /**
+     * Link of iFrame created with cardId
+     */
+    link: string;
+
+    /**
+     * cardId that will be attached to the credit card details
+     * that the user will fill in paymentDetailsStep
+     * and will be used to create the proposal
+     */
+    cardId: string;
+  };
+}

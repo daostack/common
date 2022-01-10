@@ -28,7 +28,7 @@ import Hyperlink from 'react-native-hyperlink';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import DiscussionService from '~/Services/DiscussionService';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
@@ -64,20 +64,22 @@ const Discussions = ({
   const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
+
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const hasPermission = commonId
+    ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    : null;
+
+  const [inputFocusLost, setInputFocusLost] = useState(false);
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
 
   const isMember =
@@ -89,9 +91,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -425,6 +428,7 @@ const Discussions = ({
         isMember={isMember}
         inputHeight={inputHeight + 50}
         isSending={isSending}
+        inputFocusLost={inputFocusLost}
       />
 
       {isMember ? (
@@ -454,6 +458,8 @@ const Discussions = ({
               editable={true}
               fontSize={15}
               multiline
+              onFocus={() => setInputFocusLost(false) }
+              onBlur={() => setInputFocusLost(true) }
               placeholder="What do you think?"
               placeholderTextColor={colors.grey3}
               onChangeText={(currText) => setInputText(currText)}

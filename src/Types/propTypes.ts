@@ -31,6 +31,13 @@ export const authStorePropTypes = shape({
   getPermission: func.isRequired,
 });
 
+export const cardStorePropTypes = shape({
+  getCardById: func,
+  userCardExists: func,
+  getEntityModel: func,
+  subscribeToCard: func,
+});
+
 export const userStorePropTypes = shape({
   subscribeToAllUsers: func.isRequired,
   getUserById: func.isRequired,
@@ -84,4 +91,5 @@ export const rootStorePropTypes = shape({
   discussionMessageStore: discussionMessageStorePropTypes.isRequired,
   notificationStore: notificationStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
+  cardStore: cardStorePropTypes.isRequired,
 });

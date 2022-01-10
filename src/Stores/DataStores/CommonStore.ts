@@ -1,4 +1,4 @@
-import {computed, observable} from 'mobx';
+import {computed} from 'mobx';
 import BaseStore from './BaseStore';
 import CommonService from '~/Services/CommonService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
@@ -11,12 +11,8 @@ import {isDaoMemberByUserId, showBackendError} from '~/Util';
 import {runInAction} from 'mobx';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
-  @observable
-  isLoading: boolean;
-
   constructor(rootStore: RootStore) {
     super(rootStore);
-    this.isLoading = false;
   }
 
   @computed
@@ -79,6 +75,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            methodName: 'getCommonById',
           });
         });
       return undefined;
@@ -93,6 +90,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        methodName: 'getUserCommons',
       });
       return [];
     }

@@ -1,21 +1,23 @@
-import {db} from '../Firebase';
 import axios, {AxiosInstance} from 'axios';
+import {db} from '../Firebase';
 import {auth} from '~/Firebase';
-
-import {payMeUrl} from '~/Config';
-
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
-import {IPaymentEntity} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 import StorageService from './StorageService';
 import {STORAGE_PATH, FILE_TYPES} from '~/Util/constants/firebaseStorage';
+import {
+  IPaymentEntity,
+  ISaleEntity,
+} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
+import {payMeUrl} from '~/Config';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
   private endpoints: {
-    uploadInvoices: string;
-  };
+      createToken: string;
+      uploadInvoices: string;
+    };
 
   constructor() {
     this.axiosClient = axios.create({
@@ -24,8 +26,27 @@ class PaymentService {
     });
 
     this.endpoints = {
-      uploadInvoices: '/payout-docs/add',
+      createToken: '/payme/payin/create-buyer-token-page',
+      uploadInvoices: '/payout-docs/add'
     };
+  }
+
+  async createBuyerTokenPage(cardId: string): Promise<ISaleEntity> {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.createToken,
+        {
+          cardId,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   getPaymentById = async (paymentId: string): Promise<IPaymentEntity> =>

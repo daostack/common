@@ -5,7 +5,6 @@ import {
   SectionList,
   View,
   Image,
-  Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -27,40 +26,39 @@ const DiscussionMessagesList = ({
   isMember,
   inputHeight,
   isSending,
+  inputFocusLost,
 }) => {
   const scrollRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
   const [lastMessagePoint, setLastMessagePoint] = useState(0);
-  const [msgGroups, setMsgGroups] = useState([]);
 
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
     auth()?.currentUser?.uid,
   );
 
+  const msgGroups = discussionMessageStore
+  .getDiscussionMessagesByDiscussionId(discussionId)
+  .map((msg) => ({
+    date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+    data: msg,
+  }))
+  .reduce((prev, curr) => {
+    var key = curr.date;
+    let el = prev.find((x) => x && x.date === key);
+    if (el) {
+      el.data.push(curr.data);
+    } else {
+      prev.push({
+        date: key,
+        data: [curr.data],
+      });
+    }
+    return prev;
+  }, []);
+
   useEffect(() => {
     getLastPosition();
-    const messageGroups = discussionMessageStore
-    .getDiscussionMessagesByDiscussionId(discussionId)
-    .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-      data: msg,
-    }))
-    .reverse()
-    .reduce((acc, curr) => {
-      var key = curr.date;
-      let el = acc.find((x) => x && x.date === key);
-      if (el) {
-        el.data.push(curr.data);
-      } else {
-        acc.push({
-          date: key,
-          data: [curr.data],
-        });
-      }
-      return acc;
-    }, []);
-    setMsgGroups(messageGroups);
   }, [isSending]);
 
   const getLastPosition = async () => {
@@ -90,6 +88,12 @@ const DiscussionMessagesList = ({
     }
   }, [scrollRef, msgGroups, lastMessagePoint]);
 
+  useEffect(() => {
+    if (inputFocusLost && scrollRef) {
+      scrollRef?.current?.getScrollResponder()?.scrollToEnd({animated: true});
+    }
+  },[inputFocusLost]);
+
   return (
       <View style={[styles.viewContainer, {marginBottom: inputHeight}]}>
         {msgGroups.length > 0 ? (
@@ -102,7 +106,7 @@ const DiscussionMessagesList = ({
             keyExtractor={(x) => x.id}
             stickySectionHeadersEnabled={true}
             contentContainerStyle={{
-              width: Dimensions.get('screen').width * 0.9,
+              paddingBottom: 13,
             }}
             renderItem={(x) => (
               <DiscussionMessage
@@ -160,6 +164,7 @@ DiscussionMessagesList.propTypes = {
   isMember: bool,
   inputHeight: string,
   isSending: bool,
+  inputFocusLost: bool,
 };
 
 const styles = StyleSheet.create({
