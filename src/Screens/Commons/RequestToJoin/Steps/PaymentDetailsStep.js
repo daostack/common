@@ -32,9 +32,10 @@ const PaymentDetailsStep = ({
   rootStore,
 }) => {
   const userInfo = rootStore.authStore.userInfo;
+  const cardStore = rootStore.cardStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const [respLink, setRespLink] = useState('');
-  const cardStore = rootStore.cardStore;
+
   let currCard = cardStore.getCardById(cardId);
 
   useEffect(() => {
@@ -42,7 +43,13 @@ const PaymentDetailsStep = ({
     return () => {
       unsubscribeFromCard && unsubscribeFromCard();
     };
-  }, [userInfo, respLink]);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (respLink) {
+      push();
+    }
+  }, [rootStore.cardStore?.data?.size, respLink]);
 
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
@@ -133,13 +140,7 @@ const PaymentDetailsStep = ({
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}
-      requestStepActionButton={
-        <RequestStepActionButton
-          title="Continue"
-          disabled={!respLink}
-          onPress={push}
-        />
-      }>
+      >
       <View style={{height: height / 2, width: '90%'}}>
         {
           <WebView
