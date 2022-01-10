@@ -105,7 +105,7 @@ const CommonAgenda = ({
           <View style={styles.sectionContainer}>
             <Title title="Minimum Contribution" canEdit={false} />
             <MinimumContribution
-              minFeeToJoin={common.minFeeToJoinFormatted}
+              minFeeToJoin={common.minFeeToJoinFormatted()}
               contributionType={common.metadata.contributionType || 'one-time'}
             />
           </View>
