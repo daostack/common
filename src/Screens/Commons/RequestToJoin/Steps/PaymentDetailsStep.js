@@ -118,7 +118,6 @@ const PaymentDetailsStep = ({
   };
 
   const redirectUser = (event) => {
-    console.log('event', event, 'respLink', respLink);
     if (!respLink) {
       if (event === 'skipped') {
         setRespLink(true);
