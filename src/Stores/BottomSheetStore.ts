@@ -6,10 +6,10 @@ class BottomSheetStore {
   topSnap;
   isVisible;
   constructor() {
-    makeAutoObservable(this);
     this.template = null;
     this.topSnap = 0;
     this.isVisible = false;
+    makeAutoObservable(this);
   }
 
   showBottomSheet = (currTemplate: any, props: any) => {
