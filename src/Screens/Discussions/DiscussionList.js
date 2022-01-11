@@ -16,6 +16,7 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
+  console.log('call')
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
@@ -39,6 +40,8 @@ const DiscussionList = ({
     <>
       {list?.length > 0 ? (
         <FlatList
+          maxToRenderPerBatch={5}
+          initialNumToRender={5}
           data={list}
           renderItem={({item}) => (
             <DiscussionCard

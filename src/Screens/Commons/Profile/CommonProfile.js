@@ -21,7 +21,7 @@ import {
 import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {TabView} from 'react-native-tab-view';
+import {TabView, SceneMap} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -319,18 +319,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const renderScene = (scene) => {
-    switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
-    }
-  };
+  const renderScene = SceneMap({
+    discussions: Discussions,
+    proposals: Proposals,
+    history: History,
+  });
 
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
