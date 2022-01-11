@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 import {inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
-import RequestStepActionButton from '../../RequestStepActionButton';
 import {string, func, bool, object, shape} from 'prop-types';
 import MembershipRequest from '../MembershipRequest';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -138,8 +137,7 @@ const PaymentDetailsStep = ({
       currentIndex={5}
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
-      layoutTitle={<MembershipRequest />}
-      >
+      layoutTitle={<MembershipRequest />}>
       <View style={{height: height / 2, width: '90%'}}>
         {
           <WebView
