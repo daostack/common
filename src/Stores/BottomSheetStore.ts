@@ -2,9 +2,9 @@ import {makeAutoObservable} from 'mobx';
 import React from 'react';
 
 class BottomSheetStore {
-  template: any;
-  topSnap;
-  isVisible;
+  template: any = null;
+  topSnap: number = 0;
+  isVisible: boolean = false;
   constructor() {
     this.template = null;
     this.topSnap = 0;

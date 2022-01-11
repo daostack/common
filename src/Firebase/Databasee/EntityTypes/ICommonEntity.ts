@@ -104,6 +104,8 @@ export interface ICommonMetadata {
    * or only when they join
    */
   contributionType: ContributionType;
+
+  zeroContribution: boolean;
 }
 
 export type ContributionType = 'one-time' | 'monthly';
