@@ -16,7 +16,7 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
-  console.log('call')
+
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
