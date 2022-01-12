@@ -45,9 +45,9 @@ def reactnative
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-  pod 'react-native-fast-openpgp', :path => '../node_modules/react-native-fast-openpgp'
   pod 'Permission-PhotoLibrary', :path => '../node_modules/react-native-permissions/ios/PhotoLibrary.podspec'
   pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera.podspec'
+  pod 'react-native-blur', path: '../node_modules/@react-native-community/blur'
 end
 
 # -------------------------------------------------- #
@@ -55,7 +55,7 @@ def native
   # Native Dependencies
   pod 'web3swift', git: 'https://github.com/matter-labs/web3swift', branch: 'master'
   pod 'KeychainAccess'
-#  pod 'IQKeyboardManagerSwift'
+  pod 'IQKeyboardManagerSwift'
 end
 
 target 'common' do
