@@ -34,6 +34,7 @@ const ContributionStep = ({
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
+  const minFeeFormatted = currCommon.minFeeToJoinFormatted();
 
   const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
@@ -169,10 +170,10 @@ const ContributionStep = ({
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted}/mo min.)`
+    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${minFeeFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0
-          ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)`
+        minFeeFormatted !== 0
+          ? `(${CurrencySymbols.SHEKEL}${minFeeFormatted} min.)`
           : ''
       }`;
 
@@ -224,7 +225,7 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={currCommon.minFeeToJoinFormatted}
+          minFeeToJoin={currCommon.minFeeToJoinFormatted(true)}
           zeroContribution={zeroContribution}
         />
 

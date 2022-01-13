@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.paleLilacTwo,
     paddingHorizontal: 20,
+    zIndex: -1,
   },
 });
 
