@@ -550,6 +550,7 @@ PODS:
   - GTMSessionFetcher/Core (1.7.0)
   - Intercom (8.1.1)
   - IQKeyboardManager (4.0.13)
+  - IQKeyboardManagerSwift (6.5.9)
   - JWT (3.0.0-beta.14):
     - Base64 (~> 1.1.2)
   - KeychainAccess (4.2.2)
@@ -936,6 +937,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - IQKeyboardManagerSwift
   - KeychainAccess
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary.podspec`)
@@ -1034,6 +1036,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - Intercom
     - IQKeyboardManager
+    - IQKeyboardManagerSwift
     - JWT
     - KeychainAccess
     - leveldb-library
@@ -1230,6 +1233,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   Intercom: d9c8ad77472baa29bb0ef6101e46ff175d4d3473
   IQKeyboardManager: 8eab4d8111418414619d1df8e4779ce5d0f8d7e2
+  IQKeyboardManagerSwift: 6e839c575c4aa1078d58a596e41244e77abe918f
   JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
@@ -1307,6 +1311,6 @@ SPEC CHECKSUMS:
   web3swift: 31ecb7a7da543f851344cdd64badea94c439b0d9
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
-PODFILE CHECKSUM: 1d006691ce3e86023ecf8092981201aae9ceb022
+PODFILE CHECKSUM: 0c3dddda65f5550707bd3914c105ed227c3c5e6b
 
 COCOAPODS: 1.11.2
