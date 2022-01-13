@@ -19,7 +19,6 @@ import {
   IFirebaseSnapshot,
 } from '~/Firebase/types';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
-import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
   IEntityModel,

@@ -46,11 +46,9 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {object, shape, func} from 'prop-types';
-import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {BlurView} from '~/Components';
-import Logger from '~/Services/Logger';
+
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
@@ -72,6 +70,7 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {CurrencySymbols} from '~/Util/locale';
+import {CommonHeaderBar} from './CommonHeaderBar';
 
 const {width} = Dimensions.get('window');
 
@@ -130,8 +129,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  //const routeCommon = params.currCommon;
-  Logger.log('Common id ->', params.currCommon);
   const currCommon = commonStore.getCommonById(
     params.commonId || params.currCommon?.id,
   );
@@ -273,7 +270,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const Proposals = () => (
     <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
-
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -299,7 +295,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
-
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -716,54 +711,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   );
 
   const fixedHeaderHeight = () => (
-    <NavigationBar
-      statusBar={{hidden: true}}
-      containerStyle={{
-        ...styles.fixedSection,
-        ...{bottom: showStickyTabBar || isHeaderClosingInProgress ? 85 : 5},
-      }}
-      leftButton={
-        <TouchableOpacity
-          style={{justifyContent: 'center'}}
-          onPress={() => navigation.pop()}>
-          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
-            <Icon
-              name="left-arrow"
-              size={32}
-              color={dark ? 'black' : 'white'}
-            />
-          </BlurView>
-        </TouchableOpacity>
-      }
-      rightButton={
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity
-            style={{justifyContent: 'center', marginRight: 10}}
-            onPress={shareCommon}>
-            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
-              <Icon
-                name="share-32"
-                size={32}
-                color={dark ? 'black' : 'white'}
-              />
-            </BlurView>
-          </TouchableOpacity>
-          {hasPermission && (
-            <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 10}}
-              onPress={() => openCommonOptions()}>
-              <BlurView
-                style={{
-                  padding: 6,
-                  borderRadius: 15,
-                }}
-                isBlurring={dark}>
-                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
-              </BlurView>
-            </TouchableOpacity>
-          )}
-        </View>
-      }
+    <CommonHeaderBar
+      onLeftPress={() => navigation.pop()}
+      shareCommon={shareCommon}
+      openCommonOptions={openCommonOptions}
+      dark={dark}
+      hasPermission={hasPermission}
     />
   );
 
@@ -772,7 +725,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
-        {currCommon.minFeeToJoinFormatted()}
+        {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
