@@ -54,9 +54,9 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
     notificationData = {
       createdAt: item.createdAt,
       missingData: false,
-      descriptionBold: `"${
+      descriptionBold: `${
         (proposal.description as IFundingRequestDescription).title
-      }"`,
+      }`,
       description: ` (${CurrencySymbols.SHEKEL}${fundingFormatted} requested)`,
       common,
       ownerAvatar: user.photoURL,

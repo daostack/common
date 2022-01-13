@@ -36,6 +36,7 @@ export interface NotificationItemData {
   common?: Common;
   commonId?: string;
   proposal?: Proposal;
+  hideCommonName?: boolean;
 }
 
 export const EventTypeState = {

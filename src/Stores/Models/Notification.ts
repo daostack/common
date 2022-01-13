@@ -25,6 +25,8 @@ export class Notification implements INotificationEntity {
     this.eventType = newNotificationInfo.eventType;
     this.userFilter = newNotificationInfo.userFilter;
     this.notificationItemState = notificationItemState;
+    this.createdAt = newNotificationInfo.createdAt;
+    this.updatedAt = newNotificationInfo.updatedAt;
     makeAutoObservable(this);
   }
 }
