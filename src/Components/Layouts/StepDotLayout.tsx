@@ -66,9 +66,6 @@ const DOT_INFO_JOIN_REQUEST = [
     dotIconName: 'contribution-24',
   },
   {
-    dotIconName: 'billing-details-24-copy-4',
-  },
-  {
     dotIconName: 'wallet-24',
   },
 ];
