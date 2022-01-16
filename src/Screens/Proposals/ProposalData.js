@@ -28,7 +28,7 @@ const ProposalData = ({proposalId, rootStore}) => {
   const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>
       <Text style={styles.imageGalleryText}>
-        {proposalInfoState.images[imageGalleryIndex].title}
+        {proposalInfoState.images[imageGalleryIndex]?.title}
       </Text>
     </View>
   );
@@ -91,43 +91,41 @@ const ProposalData = ({proposalId, rootStore}) => {
           showsHorizontalScrollIndicator={false}
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
-            <View style={{width: 20}} />
-            {proposalInfoState.images?.map((currImage, currIndex) => (
-              <View
-                style={{width: currImage.widthRatio + 10}}
-                key={`proposalImg_${currIndex}`}>
-                <TouchableOpacity
-                  onPress={() => setImageGalleryIndex(currIndex)}>
-                  <Image
-                    key={currIndex}
-                    style={{
-                      ...styles.galleryImage,
-                      ...{width: currImage.widthRatio},
-                    }}
-                    resizeMode="cover"
-                    source={currImage.uri ? {uri: currImage.uri} : null}
-                  />
-                </TouchableOpacity>
-                <ReadMore
-                  numberOfLines={1}
-                  renderTruncatedFooter={() => <View />}
-                  renderRevealedFooter={() => <View />}>
-                  <Text
-                    style={{
-                      ...text.textFieldplaceholder,
-                      ...layout.marginTopS,
-                    }}>
-                    {currImage.title}
-                  </Text>
-                </ReadMore>
-              </View>
-            ))}
+            {proposalInfoState.description.images?.map(
+              (currImage, currIndex) => (
+                <View key={`proposalImg_${currIndex}`}>
+                  <TouchableOpacity
+                    onPress={() => /*setImageGalleryIndex(currIndex)*/ {}}>
+                    <Image
+                      key={currIndex}
+                      style={{
+                        ...styles.galleryImage,
+                      }}
+                      resizeMode="contain"
+                      source={currImage.value ? {uri: currImage.value} : null}
+                    />
+                  </TouchableOpacity>
+                  <ReadMore
+                    numberOfLines={1}
+                    renderTruncatedFooter={() => <View />}
+                    renderRevealedFooter={() => <View />}>
+                    <Text
+                      style={{
+                        ...text.textFieldplaceholder,
+                        ...layout.marginTopS,
+                      }}>
+                      {currImage?.title}
+                    </Text>
+                  </ReadMore>
+                </View>
+              ),
+            )}
             <View style={{width: 20}} />
           </View>
         </ScrollView>
       </View>
       <ImageView
-        images={proposalInfoState.images}
+        images={proposalInfoState.description.images}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
