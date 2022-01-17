@@ -38,7 +38,7 @@ const DiscussionMessagesList = ({
       data: msg,
     }))
     .reduce((prev, curr) => {
-      var key = curr.date;
+      const key = curr.date;
       let el = prev.find((x) => x && x.date === key);
       if (el) {
         el.data.push(curr.data);
