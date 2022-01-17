@@ -12,7 +12,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
-import {rootStorePropTypes} from '~/Types/propTypes';
 import {useStore} from '~/Util/hooks/useStore';
 
 import {
@@ -24,11 +23,8 @@ import {
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation}) => {
-  const rootStore = useStore('rootStore');
-  const userInfo = rootStore.authStore.userInfo;
-  const userStore = rootStore.userStore;
-  const proposalStore = rootStore.proposalStore;
-  const commonStore = rootStore.commonStore;
+  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  const userInfo = authStore.userInfo;
 
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
@@ -300,7 +296,6 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({

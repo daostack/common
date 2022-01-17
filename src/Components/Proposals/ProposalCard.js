@@ -41,11 +41,7 @@ const ProposalCard = ({
   viewerPermission,
   type,
 }) => {
-  const rootStore = useStore('rootStore');
-  const userStore = rootStore.userStore;
-  const proposalStore = rootStore.proposalStore;
-  const commonStore = rootStore.commonStore;
-  const authStore = rootStore.authStore;
+  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);

@@ -23,7 +23,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       <TouchableOpacity
         style={styles.leftButton}
         onPress={onLeftPress}>
-        <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+        <BlurView style={styles.blur} isBlurring={dark}>
           <Icon
             name="left-arrow"
             size={32}
@@ -33,9 +33,9 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       </TouchableOpacity>
       <View style={styles.rightContainer}>
           <TouchableOpacity
-            style={{justifyContent: 'center', marginRight: 10}}
+            style={styles.buttonContainer}
             onPress={shareCommon}>
-            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+            <BlurView style={styles.blur} isBlurring={dark}>
               <Icon
                 name="share-32"
                 size={32}
@@ -45,13 +45,10 @@ export const CommonHeaderBar = (props: HeaderProps) => {
           </TouchableOpacity>
           {hasPermission && (
             <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 10}}
+              style={styles.buttonContainer}
               onPress={() => openCommonOptions()}>
               <BlurView
-                style={{
-                  padding: 6,
-                  borderRadius: 15,
-                }}
+                style={styles.optionsBlur}
                 isBlurring={dark}>
                 <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
               </BlurView>
@@ -68,6 +65,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 5,
     backgroundColor: 'transparent',
+  },
+  blur: {
+    padding: 5,
+    borderRadius: 15,
+  },
+  optionsBlur: {
+    padding: 6,
+    borderRadius: 15,
+  },
+  buttonContainer: {
+    justifyContent: 'center',
+    marginRight: 10,
   },
   leftButton: {
     position: 'absolute',
