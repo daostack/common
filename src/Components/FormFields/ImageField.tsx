@@ -114,7 +114,6 @@ const ImageField: React.FC<InferProps<typeof props>> = observer(
           Toast.error(response.errorMessage);
           logger.log('ImagePicker Error: ', response.errorMessage);
         } else {
-          // const source = { uri: response.uri };
           Toast.loading('Uploading...');
           StorageService.uploadImage(response?.assets[0]?.uri)
             .then((url) => {
