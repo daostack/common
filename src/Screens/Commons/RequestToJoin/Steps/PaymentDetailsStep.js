@@ -12,6 +12,7 @@ import ProposalService from '~/Services/ProposalService';
 import {escapeUrl} from '~/Util';
 import Toast from '~/Util/Toast';
 import {showErrorPopUp} from '~/Util';
+import CardsService from '~/Services/CardsService';
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -81,12 +82,11 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-          {
+        const createRequestToJoinResponse =
+          await ProposalService.createRequestToJoin({
             ...data,
             cardId: cardId,
-          },
-        );
+          });
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
 
@@ -108,6 +108,7 @@ const PaymentDetailsStep = ({
         }
       }
     } catch (e) {
+      Toast.hide();
       navigation.pop();
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
         subTitle: "We couldn't create your proposal",
