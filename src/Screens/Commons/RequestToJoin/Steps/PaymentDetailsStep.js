@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 import {inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import {CommonActions} from '@react-navigation/native';
 import {string, func, bool, object, shape} from 'prop-types';
 import MembershipRequest from '../MembershipRequest';
@@ -12,7 +13,6 @@ import ProposalService from '~/Services/ProposalService';
 import {escapeUrl} from '~/Util';
 import Toast from '~/Util/Toast';
 import {showErrorPopUp} from '~/Util';
-import CardsService from '~/Services/CardsService';
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -26,7 +26,6 @@ const PaymentDetailsStep = ({
       refreshFeed,
       iFrameLink,
       cardId,
-      skipPaymentStep,
     },
   },
   rootStore,
@@ -34,7 +33,6 @@ const PaymentDetailsStep = ({
   const userInfo = rootStore.authStore.userInfo;
   const cardStore = rootStore.cardStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const [respLink, setRespLink] = useState('');
 
   let currCard = cardStore.getCardById(cardId);
 
@@ -46,10 +44,10 @@ const PaymentDetailsStep = ({
   }, [userInfo]);
 
   useEffect(() => {
-    if (respLink) {
+    if (currCard?.token) {
       push();
     }
-  }, [rootStore.cardStore?.data?.size, respLink]);
+  }, [currCard?.token]);
 
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
@@ -104,6 +102,7 @@ const PaymentDetailsStep = ({
 
           navigation.dispatch(navigate);
         } else {
+          Toast.hide();
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
       }
@@ -114,19 +113,6 @@ const PaymentDetailsStep = ({
         subTitle: "We couldn't create your proposal",
         error: e,
       });
-    }
-  };
-
-  const redirectUser = (event) => {
-    if (!respLink) {
-      if (event === 'skipped') {
-        setRespLink(true);
-        push();
-      } else {
-        if (event?.url?.includes('loader')) {
-          setRespLink(true);
-        }
-      }
     }
   };
 
@@ -144,14 +130,6 @@ const PaymentDetailsStep = ({
           <WebView
             scalesPageToFit={false}
             source={{uri: iFrameLink}}
-            onMessage={(m) => {}}
-            onNavigationStateChange={(event) => {
-              if (skipPaymentStep) {
-                redirectUser('skipped');
-              } else {
-                redirectUser(event);
-              }
-            }}
             onLoadEnd={(syntheticEvent) => {
               Toast.done('All done!');
             }}
@@ -186,4 +164,4 @@ PaymentDetailsStep.propTypes = {
   rootStore: rootStorePropTypes,
 };
 
-export default inject('rootStore')(PaymentDetailsStep);
+export default inject('rootStore')(observer(PaymentDetailsStep));

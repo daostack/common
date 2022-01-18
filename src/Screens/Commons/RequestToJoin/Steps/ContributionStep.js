@@ -77,11 +77,10 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-      {
+    const createRequestToJoinResponse =
+      await ProposalService.createRequestToJoin({
         ...data,
-      },
-    );
+      });
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;
@@ -108,17 +107,17 @@ const ContributionStep = ({
 
   const navigateToRequestStep4 = async () => {
     let cardId = null;
-    let skipPaymentStep = false;
+    let link = null;
     Toast.loading('One moment please');
     const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
     if (card) {
       cardId = card.id;
-      skipPaymentStep = true;
     } else {
       cardId = v4();
+      const {data} = await PaymentService.createBuyerTokenPage(cardId);
+      link = data.link;
     }
 
-    const {data} = await PaymentService.createBuyerTokenPage(cardId);
     navigation.dispatch(
       CommonActions.navigate({
         name: 'PaymentDetailsStep',
@@ -128,9 +127,8 @@ const ContributionStep = ({
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
-          iFrameLink: data.link,
+          iFrameLink: link,
           cardId,
-          skipPaymentStep,
         },
       }),
     );
