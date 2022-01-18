@@ -24,6 +24,7 @@
     "codepush:android:release:production": "code-push release-react DAOstack/common-android android -m -d Production"
   },
   "dependencies": {
+    "@babel/preset-typescript": "^7.16.7",
     "@invertase/react-native-apple-authentication": "^1.1.2",
     "@react-native-clipboard/clipboard": "^1.9.0",
     "@react-native-community/async-storage": "^1.12.0",
@@ -91,7 +92,7 @@
     "react-native-progress": "^4.1.2",
     "react-native-push-notification": "^7.3.1",
     "react-native-read-more-text": "^1.1.2",
-    "react-native-reanimated": "^1.7.0",
+    "react-native-reanimated": "^2.3.1",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.15.0",

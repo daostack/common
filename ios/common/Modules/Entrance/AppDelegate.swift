@@ -16,7 +16,14 @@ import CodePush
 import Intercom
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
+     func sourceURL(for bridge: RCTBridge!) -> URL! {
+         #if DEBUG
+             return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+         #else
+             return CodePush.bundleURL()
+         #endif
+     }
 
     var window: UIWindow?
     private var bridge: RCTBridge?
@@ -44,8 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
-        let jsCodeLocation = sourceURL()
-        bridge = RCTBridge(bundleURL: jsCodeLocation, moduleProvider: nil, launchOptions: nil)
+        bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
         
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)
         
@@ -60,14 +66,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-    
-    func sourceURL() -> URL? { 
-        #if DEBUG
-            return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
-        #else
-            return CodePush.bundleURL()
-        #endif
-    }
-
 }
 
