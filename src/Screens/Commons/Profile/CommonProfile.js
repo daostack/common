@@ -71,12 +71,13 @@ import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonHeaderBar} from './CommonHeaderBar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const {width} = Dimensions.get('window');
 
-let stickyHeightAddon = 56;
-const STICKY_HEADER_HEIGHT =
-  Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
+let stickyHeightAddon = 62;
+let statusBarHeight = Math.round(getStatusBarHeight(true));
+const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
@@ -87,6 +88,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   is this sth we plan on having in future?
    */
 
+  const insets = useSafeAreaInsets();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -748,7 +750,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const stickyTabBarStyle = {
     position: 'absolute',
-    top: Platform.OS === 'android' ? -25 : 0,
+    top: Platform.OS === 'android' ? -25 : insets.top > 20 ? 25 : 0,
     width: '100%',
     paddingBottom: 5,
     zIndex: 1,
@@ -877,9 +879,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <Text style={styles.stickySectionText} numberOfLines={1}>
-                    {currCommon.name}
-                  </Text>
+                  <View style={styles.stickyTextContainer}>
+                    <Text style={styles.stickySectionText} numberOfLines={1}>
+                      {currCommon.name}
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}
@@ -1153,7 +1157,6 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   stickySection: {
-    paddingBottom: 10,
     justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
@@ -1162,12 +1165,17 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   stickySectionText: {
-    paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    // paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     ...font.heading.bold,
-    fontSize: 20,
-    marginHorizontal: 60,
+    fontSize: 16,
     color: colors.black,
     textAlign: 'center',
+  },
+  stickyTextContainer: {
+    height: stickyHeightAddon,
+    justifyContent: 'center',
   },
   fixedSection: {
     width: '100%',

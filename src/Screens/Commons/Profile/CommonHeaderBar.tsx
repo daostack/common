@@ -33,7 +33,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       </TouchableOpacity>
       <View style={styles.rightContainer}>
           <TouchableOpacity
-            style={styles.buttonContainer}
+            style={styles.rightButton}
             onPress={shareCommon}>
             <BlurView style={styles.blur} isBlurring={dark}>
               <Icon
@@ -45,7 +45,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
           </TouchableOpacity>
           {hasPermission && (
             <TouchableOpacity
-              style={styles.buttonContainer}
+              style={styles.rightButton}
               onPress={() => openCommonOptions()}>
               <BlurView
                 style={styles.optionsBlur}
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     position: 'absolute',
-    left: 5,
     backgroundColor: 'transparent',
   },
   blur: {
@@ -74,17 +73,19 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 15,
   },
-  buttonContainer: {
+  rightButton: {
     justifyContent: 'center',
-    marginRight: 10,
+    marginLeft: 10,
   },
   leftButton: {
     position: 'absolute',
-    left: 0,
+    left: 16,
+    top: 10,
   },
   rightContainer: {
     position: 'absolute',
-    right: 0,
+    right: 16,
+    top: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
