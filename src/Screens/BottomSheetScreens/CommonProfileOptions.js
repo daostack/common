@@ -17,10 +17,12 @@ const CommonProfileOptions = ({
   hasPermission,
 }) => {
   const [actions, setActions] = useState(
-    moderatorOptions.actions || ['Hide', 'Report', 'Share', 'Copy link'],
+    moderatorOptions.actions || ['Hide', 'Report'],
   );
   const [iconName, setIconName] = useState('hidden');
   const {item} = moderatorOptions;
+  const isOptions = item ? false : true;
+
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
@@ -32,6 +34,86 @@ const CommonProfileOptions = ({
     }
   }, []);
 
+  const renderEditActions = () => (
+    <>
+      {<Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>}
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('info')}>
+        <Icon
+          name="dao-general-info-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit info and cover photo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('rules')}>
+        <Icon
+          name="agenda-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit rules</Text>
+      </TouchableOpacity>
+    </>
+  );
+
+  const renderCommonShare = () => (
+    <>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('Share')}>
+        <Icon
+          name="share-32"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={{...text.buttonblack, lineHeight: 20}}>Share</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('Copy link')}>
+        <Icon name="link" style={layout.marginRightS} color={colors.black} />
+        <Text style={{...text.buttonblack, lineHeight: 20}}>Copy Link</Text>
+      </TouchableOpacity>
+      <View style={styles.lineHorizontal} />
+    </>
+  );
+
+  const renderModeratorTools = () => (
+    <>
+      {hasPermission && (
+        <>
+          <Text style={styles.text}>Moderator tools</Text>
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onAction(actions[0])}>
+            <Icon
+              name={iconName}
+              style={layout.marginRightS}
+              color={colors.error}
+            />
+            <Text style={text.buttonred}>{actions[0]}</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {actions[1] && (
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onAction(actions[1])}>
+          <Icon
+            name="report-16"
+            style={layout.marginRightS}
+            color={colors.error}
+          />
+          <Text style={text.buttonred}>{actions[1]}</Text>
+        </TouchableOpacity>
+      )}
+    </>
+  );
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -40,86 +122,11 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>
-        {!item && (
-          <>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction('info')}>
-              <Icon
-                name="dao-general-info-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit info and cover photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction('rules')}>
-              <Icon
-                name="agenda-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit rules</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        {isOptions && renderEditActions()}
         {item && (
           <>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction(actions[2])}>
-              <Icon
-                name="share-32"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={{...text.buttonblack, lineHeight: 20}}>
-                {actions[2]}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction(actions[3])}>
-              <Icon
-                name="link"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={{...text.buttonblack, lineHeight: 20}}>
-                {actions[3]}
-              </Text>
-            </TouchableOpacity>
-            {hasPermission && (
-              <>
-                <View style={styles.lineHorizontal} />
-                <Text style={styles.text}>Moderator tools</Text>
-                <TouchableOpacity
-                  style={styles.optionBtn}
-                  onPress={() => onAction(actions[0])}>
-                  <Icon
-                    name={iconName}
-                    style={layout.marginRightS}
-                    color={colors.error}
-                  />
-                  <Text style={text.buttonred}>{actions[0]}</Text>
-                </TouchableOpacity>
-              </>
-            )}
-
-            {actions[1] && (
-              <TouchableOpacity
-                style={styles.optionBtn}
-                onPress={() => onAction(actions[1])}>
-                <Icon
-                  name="report-16"
-                  style={layout.marginRightS}
-                  color={colors.error}
-                />
-                <Text style={text.buttonred}>{actions[1]}</Text>
-              </TouchableOpacity>
-            )}
+            {isOptions && renderCommonShare()}
+            {renderModeratorTools()}
           </>
         )}
       </View>
