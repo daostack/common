@@ -16,17 +16,19 @@ type Props = {
   closeSheet: () => void;
   pickImage: () => void;
   launchCamera: (value: GestureResponderEvent) => void;
-  pickFile: (value: GestureResponderEvent) => void;
+  pickFile?: (value: GestureResponderEvent) => void;
   isLoading: boolean;
+  loaderText?: string;
 };
 
-export const ModalUploadInvoice = ({
+export const ModalUploadFile = ({
   isVisible,
   closeSheet,
   pickImage,
   launchCamera,
   pickFile,
   isLoading,
+  loaderText = 'Loading Invoice',
 }: Props): ReactElement => (
   <BottomSheetModal
     isVisible={isVisible}
@@ -35,7 +37,7 @@ export const ModalUploadInvoice = ({
     {isLoading ? (
       <View style={styles.loaderContainer}>
         <Loader color={colors.mainBlue} />
-        <Text style={styles.loaderText}>Loading Invoice</Text>
+        <Text style={styles.loaderText}>{loaderText}</Text>
       </View>
     ) : (
       <View style={styles.optionsContainer}>
@@ -51,12 +53,14 @@ export const ModalUploadInvoice = ({
             <Text style={styles.optionText}>Browse Photo Gallery</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={pickFile}>
-          <View style={{...styles.option, marginBottom: 90}}>
-            <Icon name="file" color={colors.black} size={16} />
-            <Text style={styles.optionText}>Upload file</Text>
-          </View>
-        </TouchableOpacity>
+        {pickFile && (
+          <TouchableOpacity onPress={pickFile}>
+            <View style={{...styles.option, marginBottom: 90}}>
+              <Icon name="file" color={colors.black} size={16} />
+              <Text style={styles.optionText}>Upload file</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     )}
   </BottomSheetModal>

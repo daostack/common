@@ -213,7 +213,9 @@ export type IconNames =
   | 'google'
   | 'shekel'
   | 'camera'
-  | 'noimage';
+  | 'noimage'
+  | 'add-avatar'
+  | 'add-document';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -429,6 +431,10 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconCamera {...rest} />;
     case 'noimage':
       return <IconNoImage {...rest} />;
+    case 'add-avatar':
+      return <IconAddAvatar {...rest} />;
+    case 'add-document':
+      return <IconAddDocument {...rest} />;
   }
 
   return null;
