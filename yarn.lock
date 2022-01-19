@@ -1525,11 +1525,6 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-14.2.2.tgz#8cd3d4e7e4511a7b0f82e24c5f350226db6d6bac"
   integrity sha512-bUhsNySnwklG0Fw9hH2YdMYS0uW/jA0kt05OgSrsQ1SmH4HHn4R2DyQP/LdRkfME/52by6kxBTtoL1qZ/ul0nQ==
 
-"@react-native-masked-view/masked-view@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.2.6.tgz#b26c52d5db3ad0926b13deea79c69620966a9221"
-  integrity sha512-303CxmetUmgiX9NSUxatZkNh9qTYYdiM8xkGf9I3Uj20U3eGY3M78ljeNQ4UVCJA+FNGS5nC1dtS9GjIqvB4dg==
-
 "@react-native/normalize-color@^2.0.0":
   version "2.0.0"
   resolved "https://registry.npmjs.org/@react-native/normalize-color/-/normalize-color-2.0.0.tgz#da955909432474a9a0fe1cbffc66576a0447f567"
