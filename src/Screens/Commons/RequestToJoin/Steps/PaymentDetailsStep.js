@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 import {inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
-import RequestStepActionButton from '../../RequestStepActionButton';
 import {string, func, bool, object, shape} from 'prop-types';
 import MembershipRequest from '../MembershipRequest';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -32,9 +31,10 @@ const PaymentDetailsStep = ({
   rootStore,
 }) => {
   const userInfo = rootStore.authStore.userInfo;
+  const cardStore = rootStore.cardStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const [respLink, setRespLink] = useState('');
-  const cardStore = rootStore.cardStore;
+
   let currCard = cardStore.getCardById(cardId);
 
   useEffect(() => {
@@ -42,7 +42,13 @@ const PaymentDetailsStep = ({
     return () => {
       unsubscribeFromCard && unsubscribeFromCard();
     };
-  }, [userInfo, respLink]);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (respLink) {
+      push();
+    }
+  }, [rootStore.cardStore?.data?.size, respLink]);
 
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
@@ -111,7 +117,6 @@ const PaymentDetailsStep = ({
   };
 
   const redirectUser = (event) => {
-    console.log('event', event, 'respLink', respLink);
     if (!respLink) {
       if (event === 'skipped') {
         setRespLink(true);
@@ -132,14 +137,7 @@ const PaymentDetailsStep = ({
       currentIndex={5}
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
-      layoutTitle={<MembershipRequest />}
-      requestStepActionButton={
-        <RequestStepActionButton
-          title="Continue"
-          disabled={!respLink}
-          onPress={push}
-        />
-      }>
+      layoutTitle={<MembershipRequest />}>
       <View style={{height: height / 2, width: '90%'}}>
         {
           <WebView

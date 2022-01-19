@@ -7,7 +7,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../Util/hooks/useTimeoutFn';
 import {showLoadingExpirationPopUp} from '../Util';
 
-const TIMEOUT = 100000;
+const TIMEOUT = 10000;
 
 const Loader = ({
   color,

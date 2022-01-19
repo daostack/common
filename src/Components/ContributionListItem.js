@@ -32,14 +32,14 @@ const ContributionListItem = ({subscription, navigation}) => {
   return (
     <TouchableOpacity onPress={onClick}>
       <View style={styles.container}>
-        <View>
+        <View style={styles.leftContainer}>
           <Text style={styles.title}>
             {subscription.metadata?.common?.name}
           </Text>
 
           <Text style={styles.bottomText}>
             {isCanceled
-              ? (subscription.dueDate.toDate() < new Date())
+              ? subscription.dueDate.toDate() < new Date()
                 ? 'Canceled by user'
                 : 'Cancels at'
               : `Payment Due: ${dueDate}`}
@@ -111,7 +111,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+  leftContainer: {
+    flex: 1,
+  },
   statusTextContainer: {
     alignItems: 'flex-end',
     justifyContent: 'center',

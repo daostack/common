@@ -144,7 +144,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
                 notificationData.createdAt.toDate &&
                   notificationData.createdAt.toDate(),
               )}
-            {notificationData.common && (
+            {notificationData.common && !notificationData.hideCommonName && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}
           </Text>

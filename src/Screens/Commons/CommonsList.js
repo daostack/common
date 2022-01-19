@@ -25,12 +25,9 @@ import {font, colors} from '~/Theme';
 import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
-import Loader from '~/Components/Loader';
 import {STORAGE_KEYS} from '~/Util/constants/storageKeys.enum';
 import {useVisitScreen} from '~/Util/hooks/useVisitScreen';
 
-const TIMEOUT = 1500;
 const numberOfVisits = 3;
 
 const groupTitle = (title, arrLength) =>
@@ -40,22 +37,15 @@ const CommonsList = ({navigation, rootStore}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
-  const [isLoading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const handleLoader = () => {
-    setLoading(false);
-  };
   const toggleModal = () => {
     setShowModal((flag) => !flag);
   };
 
-  useTimeoutFn(handleLoader, TIMEOUT);
-
   useVisitScreen({
     signedInUser: authStore.signedInUser,
     callback: toggleModal,
-    callbackDependencies: [isLoading],
-    callbackCondition: !isLoading,
+    callbackDependencies: [],
     storageKey: STORAGE_KEYS.VISIT_EXPLORE_COMMONS_DATA,
     numberOfVisits,
   });
@@ -238,7 +228,6 @@ const CommonsList = ({navigation, rootStore}) => {
           />
         </ModalPreview>
       </SafeAreaView>
-      {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
     </>
   );
 };
