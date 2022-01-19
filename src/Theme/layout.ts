@@ -73,6 +73,52 @@ export default StyleSheet.create({
     justifyContent: 'flex-end',
   },
 
+  // Margin
+  marginXXS: {
+    margin: sizeXXS,
+  },
+  marginXS: {
+    margin: sizeXS,
+  },
+  marginS: {
+    margin: sizeS,
+  },
+  marginM: {
+    margin: sizeM,
+  },
+  marginL: {
+    margin: sizeL,
+  },
+  marginXL: {
+    margin: sizeXL,
+  },
+  marginXXL: {
+    margin: sizeXXL,
+  },
+
+  // Margin Horizontal
+  marginHorizontalXXS: {
+    marginHorizontal: sizeXXS,
+  },
+  marginHorizontalXS: {
+    marginHorizontal: sizeXS,
+  },
+  marginHorizontalS: {
+    marginHorizontal: sizeS,
+  },
+  marginHorizontalM: {
+    marginHorizontal: sizeM,
+  },
+  marginHorizontalL: {
+    marginHorizontal: sizeL,
+  },
+  marginHorizontalXL: {
+    marginHorizontal: sizeXL,
+  },
+  marginHorizontalXXL: {
+    marginHorizontal: sizeXXL,
+  },
+
   // Margin TOP
   marginTopXXS: {
     marginTop: sizeXXS,

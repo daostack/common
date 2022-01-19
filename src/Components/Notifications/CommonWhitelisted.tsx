@@ -27,7 +27,8 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
     if (common) {
       notificationData = {
         missingData: false,
-        descriptionBold: `"${common.name}"`,
+        hideCommonName: true,
+        descriptionBold: `${common.name}`,
         description: ' - You might want to check it out.',
         ownerAvatar: common.image,
         createdAt: item.createdAt,

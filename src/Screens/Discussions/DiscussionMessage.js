@@ -168,7 +168,7 @@ const DiscussionMessage = ({
                   {flagView}
                 </View>
               </Hyperlink>
-              {(!isHidden) && (
+              {!isHidden && (
                 <View style={styles.textContainer}>
                   <HyperText
                     textStyle={{

@@ -1,4 +1,4 @@
-import {urlRegex} from '../../Util/constants/validation';
+import {urlRegex} from '../../../Util/constants/validation';
 
 export enum LINK_VALIDATION_RULES {
     LINKS = 'links',

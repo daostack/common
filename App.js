@@ -48,6 +48,7 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
   EditCommon,
+  AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -73,6 +74,13 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import {getUrlPathWithEntityId} from '~/Util/stringUtil';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINKS_SCREENS,
+  DYNAMIC_LINKS_SCREEN_PARAMS,
+  DYNAMIC_LINK_URI_WITH_SLASH,
+} from '~/Util/constants/dynamicLinks';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -133,7 +141,8 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -160,12 +169,8 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -254,7 +259,21 @@ const App = ({rootStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    if (url) {
+    const [screenName, entityId] = getUrlPathWithEntityId({
+      str: url.replace(DYNAMIC_LINK_URI_WITH_SLASH, ''),
+      separator: '/',
+    });
+
+    if (screenName === DYNAMIC_LINKS_TYPES.USER) {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+        {userId: entityId},
+      );
+    } else if (screenName && entityId) {
+      routing(DYNAMIC_LINKS_SCREENS[screenName], {
+        [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
+      });
+    } else if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
@@ -276,31 +295,6 @@ const App = ({rootStore, navigation}) => {
   };
 
   useEffect(() => {
-    DeepLinking.addScheme('common://');
-    DeepLinking.addScheme('com.daostack.common://');
-    DeepLinking.addScheme('https://app.common.io');
-
-    Linking.addEventListener('url', handleOpenURL);
-
-    DeepLinking.addRoute('/common/:id', (response) => {
-      routing('CommonProfile', {commonId: response.id});
-    });
-
-    DeepLinking.addRoute('/proposal/:id', (response) => {
-      routing('ProposalScreen', {proposalId: response.id});
-    });
-
-    DeepLinking.addRoute('/user/:id', (response) => {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id},
-      );
-    });
-
-    DeepLinking.addRoute('/discussion/:id', (response) => {
-      routing('Discussions', {discussionId: response.id});
-    });
-
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks()
       .getInitialLink()
@@ -316,6 +310,7 @@ const App = ({rootStore, navigation}) => {
         }
       });
 
+    Linking.addEventListener('url', handleOpenURL);
     return () => {
       Linking.removeEventListener('url', handleOpenURL);
       foregroundLink();
@@ -451,6 +446,13 @@ const App = ({rootStore, navigation}) => {
                   )}
                 </View>
               ),
+            })}
+          />
+          <Stack.Screen
+            name="AddInvoicesScreen"
+            component={AddInvoicesScreen}
+            options={({nav, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen

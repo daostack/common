@@ -1,9 +1,7 @@
 import {ReactElement} from 'react';
-import {
-  ICommonMember,
-  ICommonEntity,
-} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {Common} from '../Stores/Models/Common';
+import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import CommonStore from '~/Stores/DataStores/CommonStore';
+import ProposalStore from '~/Stores/DataStores/ProposalStore';
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -43,21 +41,11 @@ export type AuthStore = {
   isDaoMember: (members: ICommonMember[]) => boolean;
 };
 
-export type CommonStore = {
-  isLoading: boolean;
-  myCommons: Common[];
-  pendingCommons: Common[];
-  featuredCommons: Common[];
-  getEntityModel: (entity: ICommonEntity) => Common;
-  getCommonById: (id: string) => Common;
-  getUserCommons: (userId: string) => Common[];
-};
-
 export type RootStore = {
   uiStore: UiStore;
   authStore: AuthStore;
   commonStore: CommonStore;
+  proposalStore: ProposalStore;
 };
 // TODO: Add all Store types
 export type AppRootStore = {rootStore: RootStore};
-

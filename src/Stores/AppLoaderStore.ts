@@ -1,4 +1,4 @@
-import {action, observable} from 'mobx';
+import {action, makeObservable, observable} from 'mobx';
 
 class AppLoaderStore {
   @observable
@@ -13,6 +13,10 @@ class AppLoaderStore {
   hideLoader = (): void => {
     this.isLoading = false;
   };
+
+  constructor() {
+    makeObservable(this);
+  }
 }
 
 export default AppLoaderStore;

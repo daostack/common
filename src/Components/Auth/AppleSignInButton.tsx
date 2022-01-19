@@ -3,25 +3,24 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {colors, text, layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {func, object, InferProps} from 'prop-types';
-import {authStorePropTypes} from '~/Types/propTypes';
+import {useStore} from '~/Util/hooks/useStore';
 
 const props = {
   onSignIn: func,
-  authStore: authStorePropTypes.isRequired,
   customStyle: object,
 };
 
 const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
   onSignIn,
-  authStore,
   customStyle,
 }) => {
   const [signInError, setSignInError] = useState<any>(null);
+  const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
@@ -31,7 +30,7 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({
         onSignIn(userInfo, true);
       }
       setSignInError(null);
-    } catch (error) {
+    } catch (error: any) {
       authStore.setIsLoading(false);
       logger.log(error);
       switch (error.code) {
@@ -112,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('authStore')(observer(AppleSignInButton));
+export default observer(AppleSignInButton);

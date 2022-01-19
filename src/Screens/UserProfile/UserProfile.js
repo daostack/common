@@ -32,7 +32,6 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 
-
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
   const route = useRoute();

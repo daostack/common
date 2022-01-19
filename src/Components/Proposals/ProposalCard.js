@@ -66,12 +66,13 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
-          currProposalId,
-          (discussionsCount) => {
-            setProposalDiscussionCount(discussionsCount);
-          },
-        );
+        unsubscribeProposalDiscussionsCount =
+          await ProposalService.subscribeToProposalDiscussionsCount(
+            currProposalId,
+            (discussionsCount) => {
+              setProposalDiscussionCount(discussionsCount);
+            },
+          );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());

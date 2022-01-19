@@ -1,12 +1,5 @@
 import React, {useRef, useEffect, useCallback, useState} from 'react';
-import {
-  Text,
-  StyleSheet,
-  SectionList,
-  View,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {Text, StyleSheet, SectionList, View, Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, colors, font} from '~/Theme';
@@ -27,40 +20,39 @@ const DiscussionMessagesList = ({
   isMember,
   inputHeight,
   isSending,
+  inputFocusLost,
 }) => {
   const scrollRef = useRef(null);
   const discussionMessageStore = rootStore.discussionMessageStore;
   const [lastMessagePoint, setLastMessagePoint] = useState(0);
-  const [msgGroups, setMsgGroups] = useState([]);
 
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
     auth()?.currentUser?.uid,
   );
 
-  useEffect(() => {
-    getLastPosition();
-    const messageGroups = discussionMessageStore
+  const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
       date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
       data: msg,
     }))
-    .reverse()
-    .reduce((acc, curr) => {
-      var key = curr.date;
-      let el = acc.find((x) => x && x.date === key);
+    .reduce((prev, curr) => {
+      const key = curr.date;
+      let el = prev.find((x) => x && x.date === key);
       if (el) {
         el.data.push(curr.data);
       } else {
-        acc.push({
+        prev.push({
           date: key,
           data: [curr.data],
         });
       }
-      return acc;
+      return prev;
     }, []);
-    setMsgGroups(messageGroups);
+
+  useEffect(() => {
+    getLastPosition();
   }, [isSending]);
 
   const getLastPosition = async () => {
@@ -77,7 +69,10 @@ const DiscussionMessagesList = ({
     event.persist();
     if (lastMessagePoint < event.nativeEvent.contentOffset.y) {
       try {
-        await AsyncStorage.setItem(discussionId, event.nativeEvent.contentOffset.y.toString());
+        await AsyncStorage.setItem(
+          discussionId,
+          event.nativeEvent.contentOffset.y.toString(),
+        );
       } catch (e) {
         logger.log('error', e);
       }
@@ -86,65 +81,73 @@ const DiscussionMessagesList = ({
 
   const onSizeChange = useCallback(() => {
     if (scrollRef) {
-      scrollRef?.current?.getScrollResponder()?.scrollTo({x: 0, y: Number(lastMessagePoint), animated: true});
+      scrollRef?.current
+        ?.getScrollResponder()
+        ?.scrollTo({x: 0, y: Number(lastMessagePoint), animated: true});
     }
   }, [scrollRef, msgGroups, lastMessagePoint]);
 
-  return (
-      <View style={[styles.viewContainer, {marginBottom: inputHeight}]}>
-        {msgGroups.length > 0 ? (
-          <SectionList
-            scrollEventThrottle={100}
-            onScrollEndDrag={setPosition}
-            onMomentumScrollEnd={setPosition}
-            ref={scrollRef}
-            sections={msgGroups}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            contentContainerStyle={{
-              width: Dimensions.get('screen').width * 0.9,
-            }}
-            renderItem={(x) => (
-              <DiscussionMessage
-                data={x.item}
-                showCurrentUserAvatar
-                hasPermission={hasPermission}
-                viewerPermission={viewerPermission}
-                commonId={commonId}
-                openMessageOptions={() => openMessageOptions(x.item)}
-                isMember={isMember}
-              />
-            )}
-            onScrollToIndexFailed={(info) => {
-              logger.error('Something bad happened: ', info);
-            }}
-            renderSectionHeader={({section: {date}}) => (
-              <View style={styles.timeHeaderContainer}>
-                <Text style={styles.timeHeader}>
-                  {moment().isSame(date, 'day') ? 'Today' : date}
-                </Text>
-              </View>
-            )}
-            onContentSizeChange={onSizeChange}
-          />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Image
-              source={require('~/Assets/empty-discussion.png')}
-              style={{
-                width: 240,
-                height: 240,
-              }}
-            />
+  useEffect(() => {
+    if (inputFocusLost && scrollRef) {
+      scrollRef?.current?.getScrollResponder()?.scrollToEnd({animated: true});
+    }
+  }, [inputFocusLost]);
 
-            <Text style={styles.emptyTitle}>No comments yet</Text>
-            <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the first
-              comment.
-            </Text>
-          </View>
-        )}
-      </View>
+  return (
+    <View style={[styles.viewContainer, {marginBottom: inputHeight}]}>
+      {msgGroups.length > 0 ? (
+        <SectionList
+          scrollEventThrottle={100}
+          onScrollEndDrag={setPosition}
+          onMomentumScrollEnd={setPosition}
+          ref={scrollRef}
+          sections={msgGroups}
+          keyExtractor={(x) => x.id}
+          stickySectionHeadersEnabled={true}
+          contentContainerStyle={{
+            paddingBottom: 13,
+          }}
+          renderItem={(x) => (
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
+              commonId={commonId}
+              openMessageOptions={() => openMessageOptions(x.item)}
+              isMember={isMember}
+            />
+          )}
+          onScrollToIndexFailed={(info) => {
+            logger.error('Something bad happened: ', info);
+          }}
+          renderSectionHeader={({section: {date}}) => (
+            <View style={styles.timeHeaderContainer}>
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            </View>
+          )}
+          onContentSizeChange={onSizeChange}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Image
+            source={require('~/Assets/empty-discussion.png')}
+            style={{
+              width: 240,
+              height: 240,
+            }}
+          />
+
+          <Text style={styles.emptyTitle}>No comments yet</Text>
+          <Text style={styles.emptyBody}>
+            Have any thoughts? Share them with other members by adding the first
+            comment.
+          </Text>
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -160,6 +163,7 @@ DiscussionMessagesList.propTypes = {
   isMember: bool,
   inputHeight: string,
   isSending: bool,
+  inputFocusLost: bool,
 };
 
 const styles = StyleSheet.create({
@@ -198,6 +202,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.paleLilacTwo,
     paddingHorizontal: 20,
+    zIndex: -1,
   },
 });
 

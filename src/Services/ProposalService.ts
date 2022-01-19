@@ -7,6 +7,7 @@ import {
   CreateFundingRequestProposalPayload,
   IFundingRequestProposal,
   IJoinRequestProposal,
+  InvoiceImage,
   IProposalEntity,
   JoinRequestPayload,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';

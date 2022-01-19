@@ -1,17 +1,15 @@
+import {makeAutoObservable} from 'mobx';
 import React from 'react';
-import {observable, action, decorate} from 'mobx';
 
 class BottomSheetStore {
-  template;
-  topSnap;
-  isVisible;
+  template: any = null;
+  topSnap: number = 0;
+  isVisible: boolean = false;
   constructor() {
-    this.template = null;
-    this.topSnap = 0;
-    this.isVisible = false;
+    makeAutoObservable(this, {}, {autoBind: true});
   }
 
-  showBottomSheet = (currTemplate, props) => {
+  showBottomSheet = (currTemplate: any, props: any) => {
     let allProps = props;
     if (currTemplate.props) {
       allProps = {...currTemplate.props, ...props};
@@ -28,27 +26,17 @@ class BottomSheetStore {
     this.template = null;
   };
 
-  increaseTopSnap = (increseVal) => {
+  increaseTopSnap = (increseVal: number) => {
     this.topSnap = this.topSnap + increseVal;
   };
 
-  decreaseTopSnap = (decreseVal) => {
+  decreaseTopSnap = (decreseVal: number) => {
     this.topSnap = this.topSnap - decreseVal;
   };
 
-  setSnap = (snap) => {
+  setSnap = (snap: number) => {
     this.topSnap = snap;
   };
 }
-
-decorate(BottomSheetStore, {
-  showBottomSheet: action,
-  increaseTopSnap: action,
-  decreaseTopSnap: action,
-  setSnap: action,
-  topSnap: observable,
-  template: observable,
-  isVisible: observable,
-});
 
 export default BottomSheetStore;

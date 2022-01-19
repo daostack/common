@@ -3,7 +3,7 @@ import {
   paymentDetailsRules,
   billingDetailsRules,
   customAmountRules,
-} from '~/FormStores/ValidationRules';
+} from '~/Stores/FormStores/ValidationRules';
 
 export class PaymentFormStore extends FormStore {
   constructor() {
