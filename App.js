@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -411,11 +411,7 @@ const App = ({rootStore, navigation}) => {
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
               headerLeft: () => (
-                <HeaderBackButton
-                  backImage={() => (
-                    <Icon name="left-arrow" color={colors.black} size={32} />
-                  )}
-                  label=" "
+                <TouchableOpacity
                   onPress={() =>
                     route?.params.fromNotificationItem
                       ? route?.params.commonId
@@ -425,7 +421,9 @@ const App = ({rootStore, navigation}) => {
                         : rest?.navigation.pop()
                       : navigationRef.current.goBack()
                   }
-                />
+                >
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                </TouchableOpacity>
               ),
               headerTitle: () => (
                 <View style={{alignItems: 'center'}}>
