@@ -1,7 +1,6 @@
 import React, {ReactElement} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, font, layout, text} from '~/Theme';
-import {func, object} from 'prop-types';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 
 type Props = {

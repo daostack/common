@@ -1,4 +1,3 @@
-import {func, object} from 'prop-types';
 import React, {ReactElement, useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';

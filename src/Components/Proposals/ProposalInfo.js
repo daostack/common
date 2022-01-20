@@ -1,8 +1,9 @@
 import React from 'react';
 import {observer, inject} from 'mobx-react';
 import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors, font} from '~/Theme';
+import {text, layout, colors} from '~/Theme';
 import ProposalCardHeader from './ProposalCardHeader';
+import {shape, string, object, number} from 'prop-types';
 import {FLAGS} from '../Moderation/constants';
 import {CurrencySymbols} from '~/Util/locale';
 
@@ -33,6 +34,25 @@ const ProposalInfo = ({proposalInfo}) => (
     </View>
   </View>
 );
+
+ProposalInfo.propTypes = {
+  proposalInfo: shape({
+    state: string,
+    paymentState: string,
+    moderation: shape({
+      updatedAt: object,
+      createdAt: object,
+      flag: string,
+    }),
+    countdownPeriod: number,
+    description: shape({
+      title: string,
+    }),
+    fundingRequest: shape({
+      amount: number,
+    }),
+  }),
+};
 
 const styles = StyleSheet.create({
   containerView: {
