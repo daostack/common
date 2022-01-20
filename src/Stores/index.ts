@@ -1,9 +1,4 @@
 import RootStore from './RootStore';
-import {configure} from 'mobx';
-
-configure({
-  enforceActions: 'never',
-});
 
 const rootStore = new RootStore();
 

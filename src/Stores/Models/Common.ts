@@ -51,10 +51,9 @@ export class Common implements ICommonEntity {
   @computed
   minFeeToJoinFormatted(numberValue = false): string {
     const minValue = this.metadata.zeroContribution
-      ? 0
-      : +this.metadata.minFeeToJoin;
-    return !numberValue
-      ? formatNumber(minValue / 100).toString()
-      : (minValue / 100).toString();
+    ? 0
+    : +this.metadata.minFeeToJoin;
+    console.log('minValue', minValue);
+    return !numberValue ? formatNumber(minValue / 100).toString() : (minValue / 100).toString();
   }
 }

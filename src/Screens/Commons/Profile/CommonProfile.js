@@ -21,7 +21,7 @@ import {
 import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -46,9 +46,11 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {object, shape, func} from 'prop-types';
+import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-
+import {BlurView} from '~/Components';
+import Logger from '~/Services/Logger';
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
@@ -70,14 +72,12 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {CurrencySymbols} from '~/Util/locale';
-import {CommonHeaderBar} from './CommonHeaderBar';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const {width} = Dimensions.get('window');
 
-let stickyHeightAddon = 62;
-let statusBarHeight = Math.round(getStatusBarHeight(true));
-const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
+let stickyHeightAddon = 56;
+const STICKY_HEADER_HEIGHT =
+  Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
@@ -88,7 +88,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   is this sth we plan on having in future?
    */
 
-  const insets = useSafeAreaInsets();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -131,6 +130,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
+  //const routeCommon = params.currCommon;
+  Logger.log('Common id ->', params.currCommon);
   const currCommon = commonStore.getCommonById(
     params.commonId || params.currCommon?.id,
   );
@@ -272,6 +273,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const Proposals = () => (
     <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
+
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -297,6 +299,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
+
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -316,11 +319,18 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = (scene) => {
+    switch (scene.route.key) {
+      case 'discussions':
+        return Discussions();
+      case 'proposals':
+        return Proposals();
+      case 'history':
+        return History();
+      default:
+        return null;
+    }
+  };
 
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
@@ -713,12 +723,54 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   );
 
   const fixedHeaderHeight = () => (
-    <CommonHeaderBar
-      onLeftPress={() => navigation.pop()}
-      shareCommon={shareCommon}
-      openCommonOptions={openCommonOptions}
-      dark={dark}
-      hasPermission={hasPermission}
+    <NavigationBar
+      statusBar={{hidden: true}}
+      containerStyle={{
+        ...styles.fixedSection,
+        ...{bottom: showStickyTabBar || isHeaderClosingInProgress ? 85 : 5},
+      }}
+      leftButton={
+        <TouchableOpacity
+          style={{justifyContent: 'center'}}
+          onPress={() => navigation.pop()}>
+          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+            <Icon
+              name="left-arrow"
+              size={32}
+              color={dark ? 'black' : 'white'}
+            />
+          </BlurView>
+        </TouchableOpacity>
+      }
+      rightButton={
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{justifyContent: 'center', marginRight: 10}}
+            onPress={shareCommon}>
+            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
+              <Icon
+                name="share-32"
+                size={32}
+                color={dark ? 'black' : 'white'}
+              />
+            </BlurView>
+          </TouchableOpacity>
+          {hasPermission && (
+            <TouchableOpacity
+              style={{justifyContent: 'center', marginRight: 10}}
+              onPress={() => openCommonOptions()}>
+              <BlurView
+                style={{
+                  padding: 6,
+                  borderRadius: 15,
+                }}
+                isBlurring={dark}>
+                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
+              </BlurView>
+            </TouchableOpacity>
+          )}
+        </View>
+      }
     />
   );
 
@@ -727,7 +779,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
-        {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
+        {currCommon.minFeeToJoinFormatted()}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
@@ -750,7 +802,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const stickyTabBarStyle = {
     position: 'absolute',
-    top: Platform.OS === 'android' ? -25 : insets.top > 20 ? 25 : 0,
+    top: Platform.OS === 'android' ? -25 : 0,
     width: '100%',
     paddingBottom: 5,
     zIndex: 1,
@@ -879,11 +931,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <View style={styles.stickyTextContainer}>
-                    <Text style={styles.stickySectionText} numberOfLines={1}>
-                      {currCommon.name}
-                    </Text>
-                  </View>
+                  <Text style={styles.stickySectionText} numberOfLines={1}>
+                    {currCommon.name}
+                  </Text>
                 </View>
               </View>
             )}
@@ -1157,6 +1207,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   stickySection: {
+    paddingBottom: 10,
     justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
@@ -1165,17 +1216,12 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   stickySectionText: {
-    // paddingTop: Platform.OS === 'ios' ? 40 : 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: Platform.OS === 'ios' ? 40 : 20,
     ...font.heading.bold,
-    fontSize: 16,
+    fontSize: 20,
+    marginHorizontal: 60,
     color: colors.black,
     textAlign: 'center',
-  },
-  stickyTextContainer: {
-    height: stickyHeightAddon,
-    justifyContent: 'center',
   },
   fixedSection: {
     width: '100%',

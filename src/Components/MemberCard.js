@@ -21,7 +21,7 @@ const MemberCard = ({
 }) => {
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
-    userInfo.uid,
+    userInfo.id,
   );
 
   const isModerator = useMemo(

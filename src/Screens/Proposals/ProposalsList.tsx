@@ -16,14 +16,14 @@ import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {string, bool, number, shape, func, InferProps} from 'prop-types';
-import {observer} from 'mobx-react-lite';
+import {observer, inject} from 'mobx-react';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
-import {useStore} from '~/Util/hooks/useStore';
 
 const {width, height} = Dimensions.get('window');
 
@@ -48,6 +48,9 @@ const props = {
   openCommonOptions: func,
   showHiddenNote: func,
   isMember: bool,
+
+  // Injected
+  rootStore: rootStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -57,11 +60,11 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     isSwiper,
     commonInfo,
     userInfo,
+    rootStore,
     openCommonOptions,
     showHiddenNote,
     isMember,
   }) => {
-    const rootStore = useStore('rootStore');
     const [viewerPermission, setViewerPermission] = React.useState('');
     const navigation = useNavigation();
     const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
@@ -291,4 +294,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProposalsList;
+export default inject('rootStore')(ProposalsList);

@@ -12,7 +12,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors, font} from '~/Theme';
-import {launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
 import {handlePermission} from '~/Util/Permissions';
@@ -68,21 +68,21 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
 
     const pickImage = async () => {
       const options = {
-        mediaType: 'photo',
+        title: 'Select profile image',
         quality: 0.7,
         allowsEditing: false,
       };
-      launchImageLibrary(options, async (response) => {
+      ImagePicker.showImagePicker(options, async (response) => {
         if (response.didCancel) {
           logger.log('User cancelled image picker');
-        } else if (response.errorMessage) {
+        } else if (response.error) {
           // only for ios because android handles this
           Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.errorMessage);
-          logger.log('ImagePicker Error: ', response.errorMessage);
+          Toast.error(response.error);
+          logger.log('ImagePicker Error: ', response.error);
         } else {
           Toast.loading('Uploading...');
-          StorageService.uploadImage(response?.assets[0]?.uri)
+          StorageService.uploadImage(response.uri)
             .then((url: string) => {
               Toast.hide();
               Toast.success('Done');

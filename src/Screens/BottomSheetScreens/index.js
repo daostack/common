@@ -23,7 +23,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     },
   },
   SCREEN_COMMON_PROFILE_OPTIONS: (item, hasPermission, isOwner) => ({
-    topSnap: 380,
+    topSnap: item && hasPermission ? 480 : 420,
     content: CommonProfileOptions,
     props: {
       isCommonProfile: true,

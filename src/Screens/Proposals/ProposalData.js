@@ -28,7 +28,7 @@ const ProposalData = ({proposalId, rootStore}) => {
   const ImageGalleryFooter = ({}) => (
     <View style={styles.imageGalleryTextContainer}>
       <Text style={styles.imageGalleryText}>
-        {proposalInfoState.images[imageGalleryIndex]?.title}
+        {proposalInfoState.images[imageGalleryIndex].title}
       </Text>
     </View>
   );
@@ -91,38 +91,43 @@ const ProposalData = ({proposalId, rootStore}) => {
           showsHorizontalScrollIndicator={false}
           style={{marginBottom: 20}}>
           <View style={styles.imageGallery}>
-            {proposalInfoState.description.images?.map(
-              (currImage, currIndex) => (
-                <View key={`proposalImg_${currIndex}`}>
+            <View style={{width: 20}} />
+            {proposalInfoState.images?.map((currImage, currIndex) => (
+              <View
+                style={{width: currImage.widthRatio + 10}}
+                key={`proposalImg_${currIndex}`}>
+                <TouchableOpacity
+                  onPress={() => setImageGalleryIndex(currIndex)}>
                   <Image
                     key={currIndex}
                     style={{
                       ...styles.galleryImage,
+                      ...{width: currImage.widthRatio},
                     }}
-                    resizeMode="contain"
-                    source={currImage.value ? {uri: currImage.value} : null}
+                    resizeMode="cover"
+                    source={currImage.uri ? {uri: currImage.uri} : null}
                   />
-                  <ReadMore
-                    numberOfLines={1}
-                    renderTruncatedFooter={() => <View />}
-                    renderRevealedFooter={() => <View />}>
-                    <Text
-                      style={{
-                        ...text.textFieldplaceholder,
-                        ...layout.marginTopS,
-                      }}>
-                      {currImage?.title}
-                    </Text>
-                  </ReadMore>
-                </View>
-              ),
-            )}
+                </TouchableOpacity>
+                <ReadMore
+                  numberOfLines={1}
+                  renderTruncatedFooter={() => <View />}
+                  renderRevealedFooter={() => <View />}>
+                  <Text
+                    style={{
+                      ...text.textFieldplaceholder,
+                      ...layout.marginTopS,
+                    }}>
+                    {currImage.title}
+                  </Text>
+                </ReadMore>
+              </View>
+            ))}
             <View style={{width: 20}} />
           </View>
         </ScrollView>
       </View>
       <ImageView
-        images={proposalInfoState.description.images}
+        images={proposalInfoState.images}
         imageIndex={imageGalleryIndex}
         visible={imageGalleryIndex > -1}
         onRequestClose={() => setImageGalleryIndex(-1)}
@@ -176,6 +181,7 @@ const styles = StyleSheet.create({
   imageGallery: {
     ...layout.flexRow,
     ...layout.flexStart,
+
     width: '100%',
   },
 
@@ -186,12 +192,96 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  readMoreBtn: {
+    ...text.h3Black,
+    ...layout.flexStart,
+    ...layout.marginTopL,
+    textAlign: 'left',
+
+    color: colors.mainBlue,
+  },
   container: {
     ...layout.content,
     padding: 0,
     paddingTop: 20,
     backgroundColor: colors.paleGrey,
     paddingBottom: 130,
+  },
+
+  tabStyle: {
+    ...text.ashleyjquimbacom2,
+  },
+  tabStyleActive: {
+    ...text.ashleyjquimbacom2,
+
+    color: colors.mainBlue,
+  },
+
+  actionButtonContainer: {
+    padding: 20,
+    position: 'absolute',
+    bottom: -80,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.grey2,
+  },
+
+  proposalCard: {
+    marginHorizontal: 20,
+    ...layout.marginBottomL,
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    alignSelf: 'stretch',
+
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: colors.grey4,
+  },
+
+  proposalRowSubtitle: {
+    ...layout.content,
+    ...layout.flexRow,
+    alignSelf: 'stretch',
+    padding: 0,
+    paddingBottom: sizeM,
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
+    ...layout.marginBottomL,
+  },
+
+  proposalColumnSubtitle: {
+    ...layout.content,
+    alignSelf: 'stretch',
+    padding: 0,
+    paddingBottom: sizeM,
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
+    ...layout.marginBottomL,
+  },
+
+  proposalProgressBar: {
+    width: '100%',
+    borderRadius: 7,
+    backgroundColor: colors.against,
+    height: 8,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    ...layout.marginTopS,
+  },
+  proposalInnerProgressBar: {
+    borderRadius: 6,
+    backgroundColor: colors.lightishGreen,
+    height: 8,
+  },
+
+  proposalProgressInfo: {
+    ...layout.content,
+    ...layout.flexRow,
+    alignSelf: 'stretch',
+    padding: 0,
+    justifyContent: 'space-between',
   },
 
   adsText: {
@@ -205,6 +295,11 @@ const styles = StyleSheet.create({
     padding: 0,
     alignSelf: 'stretch',
     paddingVertical: sizeM,
+  },
+
+  messageShowMoreBtn: {
+    ...text.h3Black,
+    color: colors.mainBlue,
   },
 });
 

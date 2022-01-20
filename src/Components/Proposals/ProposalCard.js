@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {observer} from 'mobx-react-lite';
+import {observer, inject} from 'mobx-react';
 import {
   Text,
   StyleSheet,
@@ -26,7 +26,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {useStore} from '~/Util/hooks/useStore';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 
@@ -38,10 +38,16 @@ const ProposalCard = ({
   commonInfo,
   openCommonOptions,
   hiddenProposalNote,
+  rootStore,
+  isMember,
   viewerPermission,
   type,
 }) => {
-  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  // Stores
+  const userStore = rootStore.userStore;
+  const proposalStore = rootStore.proposalStore;
+  const commonStore = rootStore.commonStore;
+  const authStore = rootStore.authStore;
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -226,6 +232,8 @@ ProposalCard.propTypes = {
   hasPermission: bool,
   openCommonOptions: func,
   hiddenProposalNote: func,
+  rootStore: rootStorePropTypes,
+  isMember: bool,
   viewerPermission: string,
   type: string,
 };
@@ -288,4 +296,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default observer(ProposalCard);
+export default inject('rootStore')(observer(ProposalCard));

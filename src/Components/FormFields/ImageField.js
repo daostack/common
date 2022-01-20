@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import * as React from 'react';
 import {
   Image,
   View,
@@ -17,46 +17,64 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission} from '../../Util/Permissions';
+import {handlePermission} from '~Util/Permissions';
 import {observer} from 'mobx-react';
 
-type Props = {
-  errorMessage?: string | boolean;
-  value: string;
-  onChangeImage: (value: string) => void;
-  onFieldDeleted?: () => void;
-  title?: string;
-  quality?: number;
-  allowsEditing?: boolean;
-  isAvatar?: boolean;
-  disableEdit?: boolean;
-  multiName?: string;
-  displayName?: string;
-  name?: string;
-};
+class ImageField extends React.Component {
+  fieldValidation = null;
+  placeFieldActionComponent = null;
+  goBack = false;
 
-function ImageField({
-  title,
-  quality,
-  allowsEditing,
-  disableEdit,
-  errorMessage,
-  multiName,
-  isAvatar,
-  value,
-  ...props
-}: Props): ReactElement {
-  function onChangeValue(url: string): void {
-    props.onChangeImage && props.onChangeImage(url);
-  }
+  static defaultProps;
 
-  function onFieldDeleted(): void {
-    if (props.onFieldDeleted) {
-      props.onFieldDeleted();
+  constructor(props) {
+    super(props);
+
+    if (this.props.validation) {
+      const {
+        validation: {
+          name,
+          formStore,
+          validateRule,
+          multiName,
+          displayName,
+          customErrorMessage,
+        },
+        value,
+      } = this.props;
+
+      formStore.registerFormField(name, validateRule, value, multiName);
+
+      this.fieldValidation = (
+        <ValidationMessage
+          displayName={displayName}
+          customErrorMessage={customErrorMessage}
+          formStore={formStore}
+          name={name}
+          multiName={multiName}
+          invisibleContainer={true}
+        />
+      );
     }
   }
 
-  function pickImage(): void {
+  onChangeValue = (url) => {
+    const {formStore, name, multiName} = this.props.validation;
+    formStore.fieldChanged(name, url, false, multiName);
+    this.props.onChangeImage && this.props.onChangeImage(url);
+  };
+
+  onFieldDeleted = () => {
+    if (this.props.onFieldDeleted) {
+      this.props.onFieldDeleted();
+    } else {
+      const {formStore, name} = this.props.validation;
+      formStore.removeFormField(name);
+    }
+  };
+
+  pickImage = () => {
+    const {title, quality, allowsEditing} = this.props;
     const options = {
       title: title,
       quality: quality || 0.7,
@@ -73,31 +91,36 @@ function ImageField({
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.uploadImage(response.uri)
-          .then((url: string): void => {
+        StorageService
+          .uploadImage(response.uri)
+          .then((url) => {
             Toast.hide();
             Toast.success('Done');
-            onChangeValue(url);
+            this.onChangeValue(url);
           })
-          .catch((error: any) => {
+          .catch((error) => {
             Toast.error(error.toString());
           });
       }
     });
-  }
+  };
 
-  function renderImage(): ReactElement {
+  renderImage = (isAvatar, validation, value) => {
     const imageStyle = isAvatar
       ? styles.formImageFieldStyle
-      : styles.formImageFieldGeneralStyle;
+      : styles.formImageFueldGeneralStyle;
 
-    if (value) {
+    const currValue =
+      validation?.formStore.getFormField(validation.name, validation.multiName)
+        ?.value || value;
+
+    if (currValue) {
       return (
         <Image
           style={imageStyle}
           resizeMode="cover"
           source={{
-            uri: value,
+            uri: currValue,
           }}
         />
       );
@@ -136,52 +159,55 @@ function ImageField({
             }}>
             Get more attention to your proposal
           </Text>
-          <View style={layout.flexRow}>
-            <TouchableOpacity style={styles.btn} onPress={pickImage}>
+          <View styles={layout.flexRow}>
+            <TouchableOpacity style={styles.btn} onPress={this.pickImage}>
               <Text style={[text.buttonblue, {fontSize: 16}]}>Add Image</Text>
             </TouchableOpacity>
           </View>
         </View>
       );
     }
-  }
+  };
 
-  return (
-    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-      <View
-        style={
-          isAvatar
-            ? styles.formFieldContainer
-            : styles.formFieldContainerGeneral
-        }>
-        <View>
-          {renderImage()}
-          {!disableEdit && (isAvatar || value?.length > 0) && (
-            <TouchableOpacity
-              style={
-                isAvatar
-                  ? styles.formImageFieldAddIconAvatar
-                  : styles.formImageFieldAddIcon
-              }
-              onPress={() => {
-                isAvatar ? pickImage() : onFieldDeleted();
-              }}>
-              <Icon
-                name={isAvatar ? 'addpicture' : 'delete'}
-                size={16}
-                color={colors.white}
-              />
-            </TouchableOpacity>
-          )}
+  render() {
+    const {isAvatar, value, validation, disableEdit} = this.props;
+    const currValue =
+      validation?.formStore.getFormField(validation.name, validation.multiName)
+        ?.value || value;
+
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View
+          style={
+            isAvatar
+              ? styles.formFieldContainer
+              : styles.formFieldContainerGenral
+          }>
+          <View>
+            {this.renderImage(isAvatar, validation, value)}
+            {!disableEdit && (isAvatar || currValue?.length > 0) && (
+              <TouchableOpacity
+                style={
+                  isAvatar
+                    ? styles.formImageFielAddIconAvatar
+                    : styles.formImageFielAddIcon
+                }
+                onPress={() => {
+                  isAvatar ? this.pickImage() : this.onFieldDeleted();
+                }}>
+                <Icon
+                  name={isAvatar ? 'addpicture' : 'delete'}
+                  size={16}
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
+        {this.fieldValidation}
       </View>
-      <ValidationMessage
-        errorMessage={errorMessage}
-        multiName={multiName}
-        invisibleContainer={true}
-      />
-    </View>
-  );
+    );
+  }
 }
 
 ImageField.propTypes = {
@@ -230,7 +256,7 @@ const styles = StyleSheet.create({
     width: 100,
   },
 
-  formFieldContainerGeneral: {
+  formFieldContainerGenral: {
     width: '100%',
   },
 
@@ -249,7 +275,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     alignSelf: 'center',
   },
-  formImageFieldGeneralStyle: {
+  formImageFueldGeneralStyle: {
     width: '100%',
     height: 250,
     borderRadius: 20,
@@ -264,7 +290,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  formImageFieldAddIcon: {
+  formImageFielAddIcon: {
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
@@ -278,7 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
 
-  formImageFieldAddIconAvatar: {
+  formImageFielAddIconAvatar: {
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
@@ -293,7 +319,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.white,
   },
-  imageStyle: {},
 });
 
 export default observer(ImageField);
