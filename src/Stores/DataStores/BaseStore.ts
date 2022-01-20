@@ -19,7 +19,6 @@ import {
   IFirebaseSnapshot,
 } from '~/Firebase/types';
 import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
-import logger from '~/Services/Logger';
 
 export default abstract class BaseStore<
   IEntityModel,
@@ -76,7 +75,6 @@ export default abstract class BaseStore<
     if (!updatedSnapshot) {
       // TBD: Decide what to do in that case. Probably show a Toast with a warning.
       // That's happening sometimes when there is a problem with firebase like missing index, rules etc.
-      logger.log('Firestore returned null as a snapshot');
       return;
     }
 
