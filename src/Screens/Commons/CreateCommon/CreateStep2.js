@@ -13,7 +13,7 @@ import {CurrencySymbols} from '~/Util/locale';
 import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
-const MAX_CONTRIBUTION = '2000';
+const MAX_CONTRIBUTION = '500';
 const MIN_CONTRIBUTION = '10';
 
 const CreateStep2 = ({
