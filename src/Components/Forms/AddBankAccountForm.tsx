@@ -1,18 +1,31 @@
 import {Formik} from 'formik';
 import React, {ReactElement, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
 import {object, string, number} from 'yup';
+import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
+import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
+import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
+
+const {height} = Dimensions.get('window');
 
 interface Props {
   onDelete?: () => void;
-  onSubmit: () => void;
+  onSubmit: (values: any) => void;
   isAddingNew: boolean;
 }
 
+// TODO: Update validation schema
 const validationSchema = object({
   idNumber: number().label('12345678').moreThan(9999999),
   bankName: string().label('Bank Jeumi'),
@@ -28,15 +41,23 @@ export const AddBankAccountForm = ({
   const formikRef = useRef();
   const insets = useSafeAreaInsets();
 
-  const formSave = () => {
-    if (isAddingNew) {
-      onSubmit();
-    }
+  const formSave = (values: any): void => {
+    onSubmit(values);
   };
 
   return (
     <Formik
       initialValues={{
+        idNumber: '',
+        idIssuanceDate: '',
+        birth: '',
+        gender: '',
+        bankName: '',
+        branchNumber: '',
+        phoneNumber: '',
+        email: '',
+        bankAccountNumber: '',
+        bankCode: '',
         photoID: null,
         bankConfirmation: null,
       }}
@@ -51,74 +72,149 @@ export const AddBankAccountForm = ({
         errors,
         touched,
         handleSubmit,
-        isValid,
       }): ReactElement => (
-        <View style={[styles.body, {marginBottom: insets.bottom}]}>
+        <>
           <View style={styles.plug} />
-          <Text style={styles.title}>Add Bank Account</Text>
-          <Text style={styles.text}>
-            The following details are required in order to wire a refund after
-            you executed an approved proposal
-          </Text>
-          <TextInputField
-            errorMessage={errors && touched.idNumber && errors.idNumber}
-            viewStyle={{alignSelf: 'stretch'}}
-            placeholderText="12345678"
-            autoCapitalize="none"
-            label="ID Number"
-            autoCorrect={false}
-            onBlur={handleBlur('idNumber')}
-          />
-          <TextInputField
-            errorMessage={errors && touched.bankName && errors.bankName}
-            viewStyle={{alignSelf: 'stretch'}}
-            placeholderText="Bank Jeumi"
-            autoCapitalize="none"
-            label="Bank Name"
-            autoCorrect={false}
-            onBlur={handleBlur('bankName')}
-          />
-          <TextInputField
-            errorMessage={errors && touched.branchNumber && errors.branchNumber}
-            viewStyle={{alignSelf: 'stretch'}}
-            placeholderText="123"
-            autoCapitalize="none"
-            label="Branch Number"
-            autoCorrect={false}
-            onBlur={handleBlur('branchNumber')}
-          />
-          <TextInputField
-            errorMessage={
-              errors && touched.accountNumber && errors.accountNumber
-            }
-            viewStyle={{alignSelf: 'stretch'}}
-            placeholderText="12345678"
-            autoCapitalize="none"
-            label="Account Number"
-            autoCorrect={false}
-            onBlur={handleBlur('accountNumber')}
-          />
-          {isAddingNew && (
-            <>
-              <AddPhotoID onSelect={handleChange('photoID')} />
-              <AddBankConfirmation
-                onSelect={handleChange('bankConfirmation')}
+          <ScrollView
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled"
+            style={[styles.body, {marginBottom: insets.bottom}]}
+            contentContainerStyle={{alignItems: 'center'}}>
+            <Text style={styles.title}>Add Bank Account</Text>
+            <Text style={styles.text}>
+              The following details are required in order to wire a refund after
+              you executed an approved proposal
+            </Text>
+
+            <Text style={styles.sectionTitle}>Personal Info</Text>
+            <TextInputField
+              errorMessage={errors && touched.idNumber && errors.idNumber}
+              viewStyle={styles.textfieldView}
+              placeholderText="12345678"
+              autoCapitalize="none"
+              label="ID Number"
+              autoCorrect={false}
+              value={values.idNumber}
+              onChangeText={handleChange('idNumber')}
+              onBlur={handleBlur('idNumber')}
+            />
+            <DatePickerInput
+              viewStyle={styles.textfieldView}
+              label="ID Issuance day"
+              value={values.idIssuanceDate}
+              onChangeText={handleChange('idIssuanceDate')}
+            />
+
+            <View style={styles.rowFieldsView}>
+              <DatePickerInput
+                viewStyle={styles.rowLeftView}
+                label="Birth Date"
+                value={values.birth}
+                onChangeText={handleChange('birth')}
               />
-            </>
-          )}
-          <>
-            <TouchableOpacity
-              style={[styles.btn, styles.deleteBtn]}
-              onPress={handleSubmit}>
-              <Text style={styles.btnDeleteText}>Save</Text>
-            </TouchableOpacity>
-            {!isAddingNew && onDelete && (
-              <TouchableOpacity style={styles.btn} onPress={onDelete}>
-                <Text style={styles.btnText}>Remove Account</Text>
-              </TouchableOpacity>
+              <GenderSelectField
+                viewStyle={styles.rowRightView}
+                label="Gender"
+                onChange={handleChange('gender')}
+              />
+            </View>
+            <Text style={styles.sectionTitle}>Contact Info</Text>
+            <TextInputField
+              errorMessage={errors && touched.phoneNumber && errors.phoneNumber}
+              viewStyle={styles.textfieldView}
+              placeholderText="12345678"
+              autoCapitalize="none"
+              label="Phone Number"
+              autoCorrect={false}
+              value={values.phoneNumber}
+              onChangeText={handleChange('phoneNumber')}
+              onBlur={handleBlur('phoneNumber')}
+            />
+            <TextInputField
+              errorMessage={errors && touched.phoneNumber && errors.phoneNumber}
+              viewStyle={styles.textfieldView}
+              placeholderText="Name@email.com"
+              autoCapitalize="none"
+              label="Email"
+              autoCorrect={false}
+              value={values.email}
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+            />
+            <Text style={styles.sectionTitle}>Bank Details</Text>
+            <TextInputField
+              errorMessage={
+                errors && touched.bankAccountNumber && errors.bankAccountNumber
+              }
+              viewStyle={styles.textfieldView}
+              placeholderText="12345678"
+              autoCapitalize="none"
+              label="Bank Account Number"
+              autoCorrect={false}
+              value={values.bankAccountNumber}
+              onChangeText={handleChange('bankAccountNumber')}
+              onBlur={handleBlur('bankAccountNumber')}
+            />
+            <TextInputField
+              errorMessage={errors && touched.bankName && errors.bankName}
+              viewStyle={styles.textfieldView}
+              placeholderText="Bank Jeumi"
+              autoCapitalize="none"
+              label="Bank Name"
+              autoCorrect={false}
+              value={values.bankName}
+              onChangeText={handleChange('bankName')}
+              onBlur={handleBlur('bankName')}
+            />
+            <View style={styles.rowFieldsView}>
+              <TextInputField
+                errorMessage={
+                  errors && touched.branchNumber && errors.branchNumber
+                }
+                viewStyle={styles.rowLeftView}
+                placeholderText="123"
+                autoCapitalize="none"
+                label="Branch Number"
+                autoCorrect={false}
+                value={values.branchNumber}
+                onChangeText={handleChange('branchNumber')}
+                onBlur={handleBlur('branchNumber')}
+              />
+              <TextInputField
+                errorMessage={errors && touched.bankCode && errors.bankCode}
+                viewStyle={styles.rowRightView}
+                placeholderText="123"
+                autoCapitalize="none"
+                label="Bank Code"
+                autoCorrect={false}
+                value={values.bankCode}
+                onChangeText={handleChange('bankCode')}
+                onBlur={handleBlur('bankCode')}
+              />
+            </View>
+            {isAddingNew && (
+              <>
+                <AddPhotoID onSelect={handleChange('photoID')} />
+                <AddBankConfirmation
+                  onSelect={handleChange('bankConfirmation')}
+                />
+              </>
             )}
-          </>
-        </View>
+            <>
+              <TouchableOpacity
+                style={[styles.btn, styles.deleteBtn]}
+                onPress={handleSubmit}>
+                <Text style={styles.btnDeleteText}>Save</Text>
+              </TouchableOpacity>
+              {!isAddingNew && onDelete && (
+                <TouchableOpacity style={styles.btn} onPress={onDelete}>
+                  <Text style={styles.btnText}>Remove Account</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          </ScrollView>
+        </>
       )}
     </Formik>
   );
@@ -127,8 +223,8 @@ export const AddBankAccountForm = ({
 const styles = StyleSheet.create({
   body: {
     width: '100%',
-    alignItems: 'center',
     paddingHorizontal: 7,
+    maxHeight: height - 150 - STATUS_BAR_HEIGHT,
   },
   plug: {
     backgroundColor: colors.paleblue,
@@ -149,12 +245,44 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
   },
+  sectionTitle: {
+    ...font.primary.bold,
+    fontSize: 16,
+    lineHeight: 24,
+    color: colors.black,
+    textAlign: 'left',
+    width: '100%',
+    marginVertical: 14,
+  },
   text: {
     ...font.primary.regular,
     fontSize: 14,
     lineHeight: 20,
     textAlign: 'center',
-    marginBottom: 6,
+    marginBottom: 10,
+  },
+  rowFieldsView: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+    zIndex: 1000000,
+    marginTop: 16,
+  },
+  rowLeftView: {
+    flex: 1,
+    marginRight: 8,
+    marginTop: 0,
+  },
+  rowRightView: {
+    flex: 1,
+    marginLeft: 8,
+    marginTop: 0,
+  },
+  textfieldView: {
+    alignSelf: 'stretch',
+    marginTop: 16,
+    flex: 1,
+    paddingBottom: 0,
   },
   btn: {
     alignSelf: 'stretch',

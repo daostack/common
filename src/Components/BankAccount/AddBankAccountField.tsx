@@ -7,6 +7,8 @@ import {
   AddBankAccountTitle,
   AddBankAccountTitleError,
 } from './AddBankAccountTitle';
+import PaymentsService from '~/Services/PaymentsService';
+import {AddBankAccountDetailsPayload} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {styles} from './styles';
 
 type Props = {
@@ -26,8 +28,8 @@ export function AddBankAccountField({
     console.log('remove');
   };
 
-  const handleSubmit = () => {
-    onSubmit();
+  const handleSubmit = (values: AddBankAccountDetailsPayload): void => {
+    PaymentsService.addBankAccountDetails(values);
     setModalVisible(false);
   };
 

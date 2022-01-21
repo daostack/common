@@ -1,5 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {Nullable} from '../../types';
+import {IPaymeDocument} from './IPaymeDocument';
 
 export type PaymentType = 'one-time' | 'subscription';
 export type PaymentStatus = 'pending' | 'confirmed' | 'paid' | 'failed';
@@ -169,4 +170,21 @@ export interface ISaleEntity {
      */
     cardId: string;
   };
+}
+
+export interface AddBankAccountDetailsPayload {
+  bankName: string;
+  bankCode: number;
+  branchNumber: number;
+  accountNumber: number;
+  identificationDocs: IPaymeDocument[];
+  city: string;
+  country: string;
+  streetAddress: string;
+  streetNumber: number;
+  socialId: string;
+  socialIdIssueDate: string;
+  birthdate: string;
+  gender: number;
+  phoneNumber: string;
 }

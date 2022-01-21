@@ -33,9 +33,10 @@ export function AddBankConfirmation({onSelect}: Props): ReactElement {
       Toast.loading('Uploading...');
       const downloadUrl = await StorageService.uploadFile(
         res.uri,
-        res.name,
+        res.name.replace(' ', ''),
         'private',
       );
+
       setFileUrl(downloadUrl);
       setFilename(StorageService.getFilename(downloadUrl, true));
       onSelect(downloadUrl);

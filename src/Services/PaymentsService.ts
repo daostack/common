@@ -9,15 +9,17 @@ import {STORAGE_PATH, FILE_TYPES} from '~/Util/constants/firebaseStorage';
 import {
   IPaymentEntity,
   ISaleEntity,
+  AddBankAccountDetailsPayload,
 } from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
   private endpoints: {
-      createToken: string;
-      uploadInvoices: string;
-    };
+    createToken: string;
+    uploadInvoices: string;
+    addBankAccount: string;
+  };
 
   constructor() {
     this.axiosClient = axios.create({
@@ -27,7 +29,8 @@ class PaymentService {
 
     this.endpoints = {
       createToken: '/payme/payin/create-buyer-token-page',
-      uploadInvoices: '/payout-docs/add'
+      uploadInvoices: '/payout-docs/add',
+      addBankAccount: '/bank-account-details/add',
     };
   }
 
@@ -44,6 +47,20 @@ class PaymentService {
           },
         },
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addBankAccountDetails(
+    body: AddBankAccountDetailsPayload,
+  ): Promise<void> {
+    try {
+      return await this.axiosClient.post(this.endpoints.addBankAccount, body, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
     } catch (error) {
       throw error;
     }
