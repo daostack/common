@@ -1,5 +1,5 @@
 import {Formik} from 'formik';
-import React, {ReactElement, useRef} from 'react';
+import React, {ReactElement} from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
-import {object, string, number, date} from 'yup';
+import {object, string, number} from 'yup';
 import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
