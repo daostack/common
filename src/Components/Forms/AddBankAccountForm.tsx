@@ -132,10 +132,6 @@ export const AddBankAccountForm = ({
                 value={values.birth}
                 onChangeText={handleChange('birth')}
               />
-              {console.log(
-                errors && touched.gender && errors.gender,
-                values.gender,
-              )}
               <GenderSelectField
                 errorMessage={errors && touched.gender && errors.gender}
                 viewStyle={styles.rowRightView}
