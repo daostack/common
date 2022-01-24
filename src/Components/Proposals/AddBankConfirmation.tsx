@@ -7,9 +7,18 @@ import logger from '~/Services/Logger';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
+import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
+
+type LegalDocsProps = {
+  name?: string;
+  legalType: PAYME_TYPE_CODES;
+  amount: number;
+  mimeType?: string;
+  uri?: string;
+};
 
 type Props = {
-  onSelect: (value: string) => void;
+  onSelect: (value?: LegalDocsProps) => void;
   error: boolean;
 };
 
@@ -23,6 +32,7 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
     StorageService.deleteFromStorage(url);
     setFileUrl(undefined);
     setFilename(undefined);
+    onSelect(undefined);
   }
 
   async function pickFile(): Promise<void> {
@@ -40,7 +50,13 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
 
       setFileUrl(downloadUrl);
       setFilename(StorageService.getFilename(downloadUrl, true));
-      onSelect(downloadUrl);
+      onSelect({
+        name: res.name,
+        legalType: PAYME_TYPE_CODES['Bank Account Ownership'],
+        amount: 0,
+        mimeType: res.type,
+        uri: downloadUrl,
+      });
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
     } catch (err) {

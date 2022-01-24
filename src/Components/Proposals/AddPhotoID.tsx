@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {launchCamera} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import logger from '~/Services/Logger';
 import {handlePermission} from '~/Util/Permissions';
@@ -19,19 +19,28 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/Util/Toast';
 import FastImage from 'react-native-fast-image';
 import {colors, layout, font} from '~/Theme';
+import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 
 const {width, height} = Dimensions.get('window');
 
 const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 
+type LegalDocsProps = {
+  name?: string;
+  legalType: PAYME_TYPE_CODES;
+  amount: number;
+  mimeType?: string;
+  uri?: string;
+};
+
 type Props = {
-  onSelect: (value: string) => void;
+  onSelect: (value?: LegalDocsProps) => void;
   error: boolean;
 };
 
 export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
   const [imageUrl, setImageUrl] = useState<string>();
-  const [localPath, setLocalPath] = useState<string>();
+  const [localImage, setLocalImage] = useState<Omit<LegalDocsProps, 'name'>>();
   const [filename, setFilename] = useState<string>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -43,7 +52,8 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
     }
     setImageUrl(undefined);
     setFilename(undefined);
-    setLocalPath(undefined);
+    setLocalImage(undefined);
+    onSelect(undefined);
   }
 
   function pickImage(): void {
@@ -52,7 +62,7 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
       quality: 0.7,
       allowsEditing: false,
     };
-    launchCamera(options, async (response) => {
+    launchImageLibrary(options, async (response) => {
       if (imageUrl) {
         await deleteImage(imageUrl);
       }
@@ -65,7 +75,13 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
         Toast.error(response.errorMessage);
         logger.log('ImagePicker Error: ', response.errorMessage);
       } else {
-        setLocalPath(response?.assets[0]?.uri);
+        const image = response?.assets[0];
+        setLocalImage({
+          legalType: PAYME_TYPE_CODES['Social Id'],
+          uri: image?.uri,
+          amount: 0,
+          mimeType: image?.type,
+        });
         setModalVisible(true);
       }
     });
@@ -74,13 +90,18 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
   function approveImage(): void {
     Toast.loading('Uploading...');
     setLoading(true);
-    StorageService.uploadImage(localPath as string, 'private')
+    StorageService.uploadImage(localImage?.uri as string, 'private')
       .then((url) => {
         Toast.hide();
         Toast.success('Done');
-        setFilename(StorageService.getFilename(url, true));
+        const imageName = StorageService.getFilename(url, true);
+        setFilename(imageName);
         setImageUrl(url);
-        onSelect(url);
+        onSelect({
+          ...(localImage as LegalDocsProps),
+          uri: url,
+          name: imageName,
+        });
       })
       .catch((err) => {
         Toast.error(err.toString());
@@ -147,7 +168,7 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
           </Pressable>
           <FastImage
             resizeMode="cover"
-            source={{uri: localPath}}
+            source={{uri: localImage?.uri}}
             style={styles.imagePreview}
           />
           <TouchableOpacity

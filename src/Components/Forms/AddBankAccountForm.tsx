@@ -16,6 +16,7 @@ import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
 import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
+import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
 
 const {height} = Dimensions.get('window');
 
@@ -31,7 +32,7 @@ const validationSchema = object({
     .label('ID Issuance day')
     .min(10, 'Birth Date is a required field')
     .required(),
-  birth: string()
+  birthdate: string()
     .label('Birth Date')
     .min(10, 'Birth Date is a required field')
     .required(),
@@ -45,9 +46,42 @@ const validationSchema = object({
   email: string().label('Email').required(),
   bankAccountNumber: string().label('Bank Account Number').required(),
   bankCode: string().label('Bank Code').required(),
-  photoID: string().label('PhotoID').required(),
-  bankConfirmation: string().label('Bank Confirmation').required(),
+  country: string().label('Country').required(),
+  city: string().label('City').required(),
+  streetAddress: string().label('Street Address').required(),
+  streetNumber: string().label('Street Number').required(),
+  photoID: object()
+    .shape({
+      uri: string().required(),
+    })
+    .label('PhotoID')
+    .required(),
+  bankConfirmation: object()
+    .shape({
+      uri: string().required(),
+    })
+    .label('Bank Confirmation')
+    .required(),
 });
+
+const INITIAL_VALUES = {
+  idNumber: '',
+  idIssuanceDay: '',
+  birthdate: '',
+  gender: -1,
+  bankName: '',
+  branchNumber: '',
+  phoneNumber: '',
+  email: '',
+  bankAccountNumber: '',
+  bankCode: '',
+  photoID: '',
+  bankConfirmation: '',
+  country: '',
+  city: '',
+  streetAddress: '',
+  streetNumber: '',
+};
 
 export const AddBankAccountForm = ({
   onDelete,
@@ -56,26 +90,19 @@ export const AddBankAccountForm = ({
 }: Props): ReactElement => {
   const insets = useSafeAreaInsets();
 
-  const formSave = (values: any): void => {
-    onSubmit(values);
+  const formSave = (values: typeof INITIAL_VALUES): void => {
+    onSubmit({
+      ...values,
+      socialId: values.idNumber,
+      socialIdIssueDate: values.idIssuanceDay,
+      accountNumber: values.bankAccountNumber,
+      identificationDocs: [values.photoID, values.bankConfirmation],
+    });
   };
 
   return (
     <Formik
-      initialValues={{
-        idNumber: '',
-        idIssuanceDay: '',
-        birth: '',
-        gender: -1,
-        bankName: '',
-        branchNumber: '',
-        phoneNumber: '',
-        email: '',
-        bankAccountNumber: '',
-        bankCode: '',
-        photoID: '',
-        bankConfirmation: '',
-      }}
+      initialValues={INITIAL_VALUES}
       enableReinitialize={true}
       validationSchema={validationSchema}
       onSubmit={formSave}>
@@ -126,11 +153,11 @@ export const AddBankAccountForm = ({
 
             <View style={styles.rowFieldsView}>
               <DatePickerInput
-                errorMessage={errors && touched.birth && errors.birth}
+                errorMessage={errors && touched.birthdate && errors.birthdate}
                 viewStyle={styles.rowLeftView}
                 label="Birth Date"
-                value={values.birth}
-                onChangeText={handleChange('birth')}
+                value={values.birthdate}
+                onChangeText={handleChange('birthdate')}
               />
               <GenderSelectField
                 errorMessage={errors && touched.gender && errors.gender}
@@ -215,15 +242,65 @@ export const AddBankAccountForm = ({
                 onBlur={handleBlur('bankCode')}
               />
             </View>
+            <Text style={styles.sectionTitle}>Address Details</Text>
+            <CountryDropdownField
+              errorMessage={errors && touched.country && errors.country}
+              viewStyle={styles.textfieldView}
+              label="Country"
+              onChange={(countryValue) => {
+                setFieldValue('country', countryValue);
+              }}
+            />
+            <TextInputField
+              errorMessage={errors && touched.city && errors.city}
+              viewStyle={styles.textfieldView}
+              placeholderText="123"
+              autoCapitalize="none"
+              label="City"
+              autoCorrect={false}
+              value={values.city}
+              onChangeText={handleChange('city')}
+              onBlur={handleBlur('city')}
+            />
+            <TextInputField
+              errorMessage={
+                errors && touched.streetAddress && errors.streetAddress
+              }
+              viewStyle={styles.textfieldView}
+              placeholderText="123"
+              autoCapitalize="none"
+              label="Street Address"
+              autoCorrect={false}
+              value={values.streetAddress}
+              onChangeText={handleChange('streetAddress')}
+              onBlur={handleBlur('streetAddress')}
+            />
+            <TextInputField
+              errorMessage={
+                errors && touched.streetNumber && errors.streetNumber
+              }
+              viewStyle={styles.textfieldView}
+              placeholderText="123"
+              autoCapitalize="none"
+              label="Street Number"
+              autoCorrect={false}
+              value={values.streetNumber}
+              onChangeText={handleChange('streetNumber')}
+              onBlur={handleBlur('streetNumber')}
+            />
             {isAddingNew && (
               <>
                 <AddPhotoID
                   error={!!errors.photoID}
-                  onSelect={handleChange('photoID')}
+                  onSelect={(photoID) => {
+                    setFieldValue('photoID', photoID);
+                  }}
                 />
                 <AddBankConfirmation
-                  error={!!errors.photoID}
-                  onSelect={handleChange('bankConfirmation')}
+                  error={!!errors.bankConfirmation}
+                  onSelect={(bankConfirmation) => {
+                    setFieldValue('bankConfirmation', bankConfirmation);
+                  }}
                 />
               </>
             )}
@@ -249,7 +326,7 @@ export const AddBankAccountForm = ({
 const styles = StyleSheet.create({
   body: {
     width: '100%',
-    paddingHorizontal: 7,
+    // paddingHorizontal: 7,
     maxHeight: height - 150 - STATUS_BAR_HEIGHT,
   },
   plug: {

@@ -39,7 +39,7 @@ export const CountryDropdownField = ({
   const [items, setItems] = useState(countries);
 
   useEffect(() => {
-    if (Number.isInteger(value)) {
+    if (value) {
       onChange(value as string);
     }
   }, [value]);
