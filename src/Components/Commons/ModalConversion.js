@@ -41,10 +41,6 @@ const ModalConversion = ({onPressClose, showAmount, amount, funds}) => (
                 </Text>
               </View>
             )}
-            <Text style={[styles.text, styles.centerText]}>
-              All funds are received in U.S. dollars. The actual balance in ILS
-              may be different than the amount estimated above.
-            </Text>
             <TouchableOpacity
               style={{
                 ...styles.btns,
