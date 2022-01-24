@@ -221,7 +221,6 @@ export const AddBankAccountForm = ({
             </View>
             {isAddingNew && (
               <>
-                {console.log('---er', errors)}
                 <AddPhotoID
                   error={!!errors.photoID}
                   onSelect={handleChange('photoID')}
