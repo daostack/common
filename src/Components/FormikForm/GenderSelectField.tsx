@@ -1,7 +1,8 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
-import {colors, font} from '~/Theme';
+import {colors, font, layout} from '~/Theme';
+import ValidationMessage from './ValidationMessage';
 
 const GENDER_OPTIONS = [
   {
@@ -12,29 +13,33 @@ const GENDER_OPTIONS = [
     value: 1,
     label: 'Male',
   },
-  {
-    value: 2,
-    label: 'Other',
-  },
 ];
 
 type Props = {
   onChange: (value: string) => void;
   label: string;
   viewStyle?: ViewStyle | ViewStyle[];
+  errorMessage?: string | boolean;
 };
+
+function ErrorMessage({
+  errorMessage,
+}: Pick<Props, 'errorMessage'>): ReactElement {
+  return <ValidationMessage errorMessage={errorMessage} />;
+}
 
 export const GenderSelectField = ({
   onChange,
   viewStyle,
   label,
+  errorMessage,
 }: Props): ReactElement => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<ValueType | null>(null);
   const [items, setItems] = useState(GENDER_OPTIONS);
 
   useEffect(() => {
-    if (value) {
+    if (Number.isInteger(value)) {
       onChange(value as string);
     }
   }, [value]);
@@ -52,9 +57,17 @@ export const GenderSelectField = ({
         setValue={setValue}
         setItems={setItems}
         arrowIconStyle={styles.arrowIconStyle}
-        style={styles.dropdownInput}
+        style={[
+          styles.dropdownInput,
+          errorMessage ? {borderColor: colors.error} : {},
+        ]}
         dropDownContainerStyle={styles.dropdownContainer}
       />
+      {errorMessage && (
+        <View style={layout.marginTopXXS}>
+          <ErrorMessage errorMessage={errorMessage} />
+        </View>
+      )}
     </View>
   );
 };
@@ -69,7 +82,6 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.slate,
     alignSelf: 'flex-start',
-    flex: 1,
   },
   arrowIconStyle: {
     width: 15,

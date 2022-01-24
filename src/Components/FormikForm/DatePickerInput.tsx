@@ -16,6 +16,9 @@ import TextInputMask from 'react-native-text-input-mask';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 import {unFormatNumber} from '~/Util/FormatUtil';
+import ValidationMessage from './ValidationMessage';
+
+const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 
 export type DataPickerProps = {
   value: string;
@@ -24,15 +27,21 @@ export type DataPickerProps = {
   label?: string | ReactNode;
   error?: string;
   viewStyle?: ViewStyle | ViewStyle[];
+  errorMessage?: string | boolean;
 };
 
-const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
+function ErrorMessage({
+  errorMessage,
+}: Pick<DataPickerProps, 'errorMessage'>): ReactElement {
+  return <ValidationMessage errorMessage={errorMessage} />;
+}
 
 function DatePickerInput({
   error,
   label,
   viewStyle,
   value,
+  errorMessage,
   ...otherProps
 }: DataPickerProps): ReactElement {
   const [state, setState] = useState({
@@ -60,7 +69,8 @@ function DatePickerInput({
     const unformattedText = unFormatNumber(currText);
     otherProps.onChangeText && otherProps.onChangeText(unformattedText);
     const changedDate = new Date(unformattedText);
-    if (changedDate) {
+    if (changedDate && unformattedText.length === 10) {
+      changedDate.setDate(changedDate.getDate() + 1);
       setDate(changedDate);
     }
   }
@@ -78,16 +88,20 @@ function DatePickerInput({
     <>
       <View style={[{alignSelf: 'stretch'}, viewStyle]}>
         {label && <Text style={styles.label}>{label}</Text>}
-        <View style={styleTextfield}>
+        <View
+          style={[
+            styleTextfield,
+            errorMessage ? {borderColor: colors.error} : {},
+          ]}>
           <TextInputMask
             {...otherProps}
             onFocus={onFocus}
             onBlur={onBlur}
             textContentType="telephoneNumber"
-            placeholder={'00/00/00'}
+            placeholder={'00/00/0000'}
             onChangeText={onChangeText}
             style={styles.fieldStyle}
-            mask={'[00]/[00]/[00]'}
+            mask={'[00]/[00]/[0000]'}
             value={value}
           />
           <TextInput />
@@ -96,6 +110,11 @@ function DatePickerInput({
             <Icon name="calendar" />
           </Pressable>
         </View>
+        {errorMessage && (
+          <View style={layout.marginTopXXS}>
+            <ErrorMessage errorMessage={errorMessage} />
+          </View>
+        )}
       </View>
       <DatePicker
         modal
@@ -107,7 +126,7 @@ function DatePickerInput({
         onConfirm={(dateValue: Date) => {
           setOpen(false);
           setDate(dateValue);
-          onChangeText(moment(dateValue).format('MM/DD/YY'));
+          onChangeText(moment(dateValue).format('MM/DD/YYYY'));
         }}
         onCancel={() => {
           setOpen(false);
@@ -145,7 +164,6 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     color: colors.slate,
     alignSelf: 'flex-start',
-    flex: 1,
   },
 });
 

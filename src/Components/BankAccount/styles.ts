@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   containerError: {
     height: 152,
-    backgroundColor: 'rgba(255,174,38, 0.1)',
+    backgroundColor: colors.orangeBackgroundLight,
   },
   fundingImage: {
     aspectRatio: 1,

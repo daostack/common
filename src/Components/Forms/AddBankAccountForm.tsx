@@ -11,7 +11,7 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
-import {object, string, number} from 'yup';
+import {object, string, number, date} from 'yup';
 import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
@@ -25,12 +25,28 @@ interface Props {
   isAddingNew: boolean;
 }
 
-// TODO: Update validation schema
 const validationSchema = object({
-  idNumber: number().label('12345678').moreThan(9999999),
-  bankName: string().label('Bank Jeumi'),
-  branchNumber: number().label('123').moreThan(99),
-  accountNumber: number().label('12345678').moreThan(9999999),
+  idNumber: string().label('ID Number').min(9).max(9).required(),
+  idIssuanceDay: string()
+    .label('ID Issuance day')
+    .min(10, 'Birth Date is a required field')
+    .required(),
+  birth: string()
+    .label('Birth Date')
+    .min(10, 'Birth Date is a required field')
+    .required(),
+  gender: number()
+    .label('Gender')
+    .min(0, 'Gender is a required field')
+    .required(),
+  bankName: string().label('Bank Name').required(),
+  branchNumber: string().label('Branch Number').required(),
+  phoneNumber: string().label('Phone Number').required(),
+  email: string().label('Email').required(),
+  bankAccountNumber: string().label('Bank Account Number').required(),
+  bankCode: string().label('Bank Code').required(),
+  photoID: string().label('PhotoID').required(),
+  bankConfirmation: string().label('Bank Confirmation').required(),
 });
 
 export const AddBankAccountForm = ({
@@ -38,7 +54,6 @@ export const AddBankAccountForm = ({
   onSubmit,
   isAddingNew = false,
 }: Props): ReactElement => {
-  const formikRef = useRef();
   const insets = useSafeAreaInsets();
 
   const formSave = (values: any): void => {
@@ -49,19 +64,18 @@ export const AddBankAccountForm = ({
     <Formik
       initialValues={{
         idNumber: '',
-        idIssuanceDate: '',
+        idIssuanceDay: '',
         birth: '',
-        gender: '',
+        gender: -1,
         bankName: '',
         branchNumber: '',
         phoneNumber: '',
         email: '',
         bankAccountNumber: '',
         bankCode: '',
-        photoID: null,
-        bankConfirmation: null,
+        photoID: '',
+        bankConfirmation: '',
       }}
-      innerRef={formikRef}
       enableReinitialize={true}
       validationSchema={validationSchema}
       onSubmit={formSave}>
@@ -71,6 +85,7 @@ export const AddBankAccountForm = ({
         values,
         errors,
         touched,
+        setFieldValue,
         handleSubmit,
       }): ReactElement => (
         <>
@@ -100,23 +115,34 @@ export const AddBankAccountForm = ({
               onBlur={handleBlur('idNumber')}
             />
             <DatePickerInput
+              errorMessage={
+                errors && touched.idIssuanceDay && errors.idIssuanceDay
+              }
               viewStyle={styles.textfieldView}
               label="ID Issuance day"
-              value={values.idIssuanceDate}
-              onChangeText={handleChange('idIssuanceDate')}
+              value={values.idIssuanceDay}
+              onChangeText={handleChange('idIssuanceDay')}
             />
 
             <View style={styles.rowFieldsView}>
               <DatePickerInput
+                errorMessage={errors && touched.birth && errors.birth}
                 viewStyle={styles.rowLeftView}
                 label="Birth Date"
                 value={values.birth}
                 onChangeText={handleChange('birth')}
               />
+              {console.log(
+                errors && touched.gender && errors.gender,
+                values.gender,
+              )}
               <GenderSelectField
+                errorMessage={errors && touched.gender && errors.gender}
                 viewStyle={styles.rowRightView}
                 label="Gender"
-                onChange={handleChange('gender')}
+                onChange={(genderValue) => {
+                  setFieldValue('gender', genderValue);
+                }}
               />
             </View>
             <Text style={styles.sectionTitle}>Contact Info</Text>
@@ -195,8 +221,13 @@ export const AddBankAccountForm = ({
             </View>
             {isAddingNew && (
               <>
-                <AddPhotoID onSelect={handleChange('photoID')} />
+                {console.log('---er', errors)}
+                <AddPhotoID
+                  error={!!errors.photoID}
+                  onSelect={handleChange('photoID')}
+                />
                 <AddBankConfirmation
+                  error={!!errors.photoID}
                   onSelect={handleChange('bankConfirmation')}
                 />
               </>
@@ -252,7 +283,8 @@ const styles = StyleSheet.create({
     color: colors.black,
     textAlign: 'left',
     width: '100%',
-    marginVertical: 14,
+    marginTop: 14,
+    marginBottom: 4,
   },
   text: {
     ...font.primary.regular,
@@ -265,8 +297,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
     zIndex: 1000000,
     marginTop: 16,
+    marginBottom: 10,
   },
   rowLeftView: {
     flex: 1,

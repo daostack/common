@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import logger from '~/Services/Logger';
 import {handlePermission} from '~/Util/Permissions';
@@ -26,9 +26,10 @@ const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 
 type Props = {
   onSelect: (value: string) => void;
+  error: boolean;
 };
 
-export function AddPhotoID({onSelect}: Props): ReactElement {
+export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
   const [imageUrl, setImageUrl] = useState<string>();
   const [localPath, setLocalPath] = useState<string>();
   const [filename, setFilename] = useState<string>();
@@ -51,7 +52,7 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
       quality: 0.7,
       allowsEditing: false,
     };
-    launchImageLibrary(options, async (response) => {
+    launchCamera(options, async (response) => {
       if (imageUrl) {
         await deleteImage(imageUrl);
       }
@@ -81,8 +82,8 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
         setImageUrl(url);
         onSelect(url);
       })
-      .catch((error) => {
-        Toast.error(error.toString());
+      .catch((err) => {
+        Toast.error(err.toString());
       })
       .finally(() => {
         setModalVisible(false);
@@ -101,6 +102,7 @@ export function AddPhotoID({onSelect}: Props): ReactElement {
                 opacity: pressed ? 0.5 : 1.0,
               },
           styles.container,
+          error ? {backgroundColor: colors.orangeBackgroundLight} : {},
         ]}>
         <Icon name="add-avatar" />
         {imageUrl ? (

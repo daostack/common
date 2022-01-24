@@ -10,9 +10,10 @@ import {colors} from '~/Theme';
 
 type Props = {
   onSelect: (value: string) => void;
+  error: boolean;
 };
 
-export function AddBankConfirmation({onSelect}: Props): ReactElement {
+export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
   const navigation = useNavigation();
 
   const [fileUrl, setFileUrl] = useState<string>();
@@ -57,7 +58,12 @@ export function AddBankConfirmation({onSelect}: Props): ReactElement {
   }
 
   return (
-    <Pressable onPress={fileUrl ? openFile : pickFile} style={styles.container}>
+    <Pressable
+      onPress={fileUrl ? openFile : pickFile}
+      style={[
+        styles.container,
+        error ? {backgroundColor: colors.orangeBackgroundLight} : {},
+      ]}>
       <Icon name="add-document" />
       {fileUrl ? (
         <View style={[styles.titleContainer, styles.fileNameContainer]}>
