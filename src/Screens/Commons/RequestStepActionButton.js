@@ -33,12 +33,11 @@ const RequestStepActionButton = ({
   }
 
   const isButtonEnabled = () =>
-    formStore ? formStore.isFormActionEnabled() : (pass || !disabled);
+    formStore ? formStore.isFormActionEnabled() : pass;
 
   return (
     <View style={actionBtnStyle}>
       <TouchableOpacity
-        disabled={disabled}
         style={{
           ...styles.continueButton,
           backgroundColor: isButtonEnabled() ? colors.mainBlue : colors.grey3,
