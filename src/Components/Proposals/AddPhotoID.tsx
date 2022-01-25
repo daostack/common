@@ -31,11 +31,12 @@ type LegalDocsProps = {
   amount: number;
   mimeType?: string;
   uri?: string;
+  downloadURL?: string;
 };
 
 type Props = {
   onSelect: (value?: LegalDocsProps) => void;
-  error: boolean;
+  error?: boolean;
 };
 
 export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
@@ -98,8 +99,10 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
         setFilename(imageName);
         setImageUrl(url);
         onSelect({
-          ...(localImage as LegalDocsProps),
-          uri: url,
+          mimeType: localImage?.mimeType,
+          amount: 0,
+          legalType: localImage!.legalType,
+          downloadURL: url,
           name: imageName,
         });
       })

@@ -54,6 +54,7 @@ export const CountryDropdownField = ({
         value={value}
         items={items}
         placeholder=""
+        closeOnBackPressed
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}

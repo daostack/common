@@ -15,11 +15,12 @@ type LegalDocsProps = {
   amount: number;
   mimeType?: string;
   uri?: string;
+  downloadURL?: string;
 };
 
 type Props = {
   onSelect: (value?: LegalDocsProps) => void;
-  error: boolean;
+  error?: boolean;
 };
 
 export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
@@ -55,7 +56,7 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
         legalType: PAYME_TYPE_CODES['Bank Account Ownership'],
         amount: 0,
         mimeType: res.type,
-        uri: downloadUrl,
+        downloadURL: downloadUrl,
       });
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');

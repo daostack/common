@@ -52,6 +52,7 @@ export const GenderSelectField = ({
         open={open}
         value={value}
         items={items}
+        closeOnBackPressed
         placeholder=""
         setOpen={setOpen}
         setValue={setValue}

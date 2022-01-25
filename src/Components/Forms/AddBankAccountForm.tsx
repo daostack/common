@@ -8,6 +8,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import {omit} from 'lodash';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
@@ -27,10 +28,13 @@ interface Props {
 }
 
 const validationSchema = object({
-  idNumber: string().label('ID Number').min(9).max(9).required(),
-  idIssuanceDay: string()
+  socialId: number()
+    .label('ID Number')
+    .typeError('ID Number must contain only numbers')
+    .required(),
+  socialIdIssueDate: string()
     .label('ID Issuance day')
-    .min(10, 'Birth Date is a required field')
+    .min(10, 'ID Issuance day is a required field')
     .required(),
   birthdate: string()
     .label('Birth Date')
@@ -41,39 +45,51 @@ const validationSchema = object({
     .min(0, 'Gender is a required field')
     .required(),
   bankName: string().label('Bank Name').required(),
-  branchNumber: string().label('Branch Number').required(),
-  phoneNumber: string().label('Phone Number').required(),
+  branchNumber: number()
+    .typeError('Branch Number must contain only numbers')
+    .label('Branch Number')
+    .required(),
+  phoneNumber: number()
+    .typeError('Phone Number must contain only numbers')
+    .label('Phone Number')
+    .required(),
   email: string().label('Email').required(),
-  bankAccountNumber: string().label('Bank Account Number').required(),
-  bankCode: string().label('Bank Code').required(),
+  accountNumber: number()
+    .typeError('Bank Account Number must contain only numbers')
+    .label('Bank Account Number')
+    .required(),
+  bankCode: number().label('Bank Code').required(),
   country: string().label('Country').required(),
   city: string().label('City').required(),
   streetAddress: string().label('Street Address').required(),
-  streetNumber: string().label('Street Number').required(),
+  streetNumber: number()
+    .typeError('Street Number must contain only numbers')
+    .label('Street Number')
+    .required(),
   photoID: object()
     .shape({
-      uri: string().required(),
+      downloadURL: string().required(),
     })
     .label('PhotoID')
     .required(),
   bankConfirmation: object()
     .shape({
-      uri: string().required(),
+      downloadURL: string().required(),
     })
     .label('Bank Confirmation')
     .required(),
 });
 
 const INITIAL_VALUES = {
-  idNumber: '',
-  idIssuanceDay: '',
+  socialId: '',
+  socialIdIssueDate: '',
   birthdate: '',
   gender: -1,
   bankName: '',
   branchNumber: '',
   phoneNumber: '',
   email: '',
-  bankAccountNumber: '',
+  accountNumber: '',
   bankCode: '',
   photoID: '',
   bankConfirmation: '',
@@ -91,13 +107,20 @@ export const AddBankAccountForm = ({
   const insets = useSafeAreaInsets();
 
   const formSave = (values: typeof INITIAL_VALUES): void => {
-    onSubmit({
-      ...values,
-      socialId: values.idNumber,
-      socialIdIssueDate: values.idIssuanceDay,
-      accountNumber: values.bankAccountNumber,
-      identificationDocs: [values.photoID, values.bankConfirmation],
-    });
+    const identificationDocs = [values.photoID, values.bankConfirmation];
+    onSubmit(
+      omit(
+        {
+          ...values,
+          // streetNumber: Number(values.streetNumber),
+          // accountNumber: Number(values.accountNumber),
+          // branchNumber: Number(values.branchNumber),
+          // bankCode: Number(values.bankCode),
+          identificationDocs,
+        },
+        ['photoID', 'bankConfirmation', 'email'],
+      ),
+    );
   };
 
   return (
@@ -131,24 +154,24 @@ export const AddBankAccountForm = ({
 
             <Text style={styles.sectionTitle}>Personal Info</Text>
             <TextInputField
-              errorMessage={errors && touched.idNumber && errors.idNumber}
+              errorMessage={errors && touched.socialId && errors.socialId}
               viewStyle={styles.textfieldView}
               placeholderText="12345678"
               autoCapitalize="none"
               label="ID Number"
               autoCorrect={false}
-              value={values.idNumber}
-              onChangeText={handleChange('idNumber')}
-              onBlur={handleBlur('idNumber')}
+              value={values.socialId}
+              onChangeText={handleChange('socialId')}
+              onBlur={handleBlur('socialId')}
             />
             <DatePickerInput
               errorMessage={
-                errors && touched.idIssuanceDay && errors.idIssuanceDay
+                errors && touched.socialIdIssueDate && errors.socialIdIssueDate
               }
               viewStyle={styles.textfieldView}
               label="ID Issuance day"
-              value={values.idIssuanceDay}
-              onChangeText={handleChange('idIssuanceDay')}
+              value={values.socialIdIssueDate}
+              onChangeText={handleChange('socialIdIssueDate')}
             />
 
             <View style={styles.rowFieldsView}>
@@ -194,16 +217,16 @@ export const AddBankAccountForm = ({
             <Text style={styles.sectionTitle}>Bank Details</Text>
             <TextInputField
               errorMessage={
-                errors && touched.bankAccountNumber && errors.bankAccountNumber
+                errors && touched.accountNumber && errors.accountNumber
               }
               viewStyle={styles.textfieldView}
               placeholderText="12345678"
               autoCapitalize="none"
               label="Bank Account Number"
               autoCorrect={false}
-              value={values.bankAccountNumber}
-              onChangeText={handleChange('bankAccountNumber')}
-              onBlur={handleBlur('bankAccountNumber')}
+              value={values.accountNumber}
+              onChangeText={handleChange('accountNumber')}
+              onBlur={handleBlur('accountNumber')}
             />
             <TextInputField
               errorMessage={errors && touched.bankName && errors.bankName}
@@ -254,8 +277,7 @@ export const AddBankAccountForm = ({
             <TextInputField
               errorMessage={errors && touched.city && errors.city}
               viewStyle={styles.textfieldView}
-              placeholderText="123"
-              autoCapitalize="none"
+              placeholderText="City"
               label="City"
               autoCorrect={false}
               value={values.city}
@@ -267,8 +289,7 @@ export const AddBankAccountForm = ({
                 errors && touched.streetAddress && errors.streetAddress
               }
               viewStyle={styles.textfieldView}
-              placeholderText="123"
-              autoCapitalize="none"
+              placeholderText="Street Address"
               label="Street Address"
               autoCorrect={false}
               value={values.streetAddress}
