@@ -7,9 +7,9 @@ import {
   AddBankAccountTitle,
   AddBankAccountTitleError,
 } from './AddBankAccountTitle';
-import PaymentsService from '~/Services/PaymentsService';
-import {AddBankAccountDetailsPayload} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
+import {BankAccountDetails} from '~/Firebase/Databasee/EntityTypes/IBankAccountEntity';
 import {styles} from './styles';
+import BankAccountService from '~/Services/BankAccountService';
 
 type Props = {
   hasError: boolean;
@@ -28,9 +28,13 @@ export function AddBankAccountField({
     console.log('remove');
   };
 
-  const handleSubmit = (values: AddBankAccountDetailsPayload): void => {
-    PaymentsService.addBankAccountDetails(values);
-    setModalVisible(false);
+  const handleSubmit = async (values: BankAccountDetails): Promise<void> => {
+    try {
+      await BankAccountService.addBankAccountDetails(values);
+      setModalVisible(false);
+    } catch (err) {
+      setModalVisible(false);
+    }
   };
 
   return (

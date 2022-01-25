@@ -8,6 +8,7 @@ export const DB_COLLECTIONS = {
   event: 'event',
   payments: 'payments',
   cards: 'cards',
+  bankAccount: 'bankAccountDetails',
 
   // Old collections definitions.
   // Keep it here until all the migration to mobx store is finished.

@@ -11,5 +11,6 @@ export default {
   discussionStore: rootStore.discussionStore,
   discussionMessageStore: rootStore.discussionMessageStore,
   notificationStore: rootStore.notificationStore,
+  bankAccountStore: rootStore.bankAccountStore,
   uiStore: rootStore.uiStore,
 };

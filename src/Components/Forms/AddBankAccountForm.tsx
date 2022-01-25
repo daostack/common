@@ -112,10 +112,6 @@ export const AddBankAccountForm = ({
       omit(
         {
           ...values,
-          // streetNumber: Number(values.streetNumber),
-          // accountNumber: Number(values.accountNumber),
-          // branchNumber: Number(values.branchNumber),
-          // bankCode: Number(values.bankCode),
           identificationDocs,
         },
         ['photoID', 'bankConfirmation', 'email'],

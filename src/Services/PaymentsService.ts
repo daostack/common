@@ -9,7 +9,6 @@ import {STORAGE_PATH, FILE_TYPES} from '~/Util/constants/firebaseStorage';
 import {
   IPaymentEntity,
   ISaleEntity,
-  AddBankAccountDetailsPayload,
 } from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
 
@@ -47,20 +46,6 @@ class PaymentService {
           },
         },
       );
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async addBankAccountDetails(
-    body: AddBankAccountDetailsPayload,
-  ): Promise<void> {
-    try {
-      return await this.axiosClient.post(this.endpoints.addBankAccount, body, {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      });
     } catch (error) {
       throw error;
     }
