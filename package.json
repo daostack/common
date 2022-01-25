@@ -44,7 +44,6 @@
     "@react-native-firebase/firestore": "^14.2.2",
     "@react-native-firebase/messaging": "^14.2.2",
     "@react-native-firebase/storage": "^14.2.2",
-    "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/bottom-tabs": "^5.1.1",
     "@react-navigation/native": "^5.0.9",
     "@react-navigation/stack": "^5.1.1",
