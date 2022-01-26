@@ -7,9 +7,7 @@ import {
   AddBankAccountTitle,
   AddBankAccountTitleError,
 } from './AddBankAccountTitle';
-import {BankAccountDetails} from '~/Firebase/Databasee/EntityTypes/IBankAccountEntity';
 import {styles} from './styles';
-import BankAccountService from '~/Services/BankAccountService';
 
 type Props = {
   hasError: boolean;
@@ -24,17 +22,9 @@ export function AddBankAccountField({
 }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const removeAccount = () => {
-    console.log('remove');
-  };
-
-  const handleSubmit = async (values: BankAccountDetails): Promise<void> => {
-    try {
-      await BankAccountService.addBankAccountDetails(values);
-      setModalVisible(false);
-    } catch (err) {
-      setModalVisible(false);
-    }
+  const handleSubmit = async (): Promise<void> => {
+    onSubmit();
+    setModalVisible(false);
   };
 
   return (
@@ -62,11 +52,7 @@ export function AddBankAccountField({
         onClose={() => {
           setModalVisible(false);
         }}>
-        <AddBankAccountForm
-          onSubmit={handleSubmit}
-          onDelete={removeAccount}
-          isAddingNew={isAddingNew}
-        />
+        <AddBankAccountForm onSubmit={handleSubmit} isAddingNew={isAddingNew} />
       </BottomSheetModal>
     </View>
   );

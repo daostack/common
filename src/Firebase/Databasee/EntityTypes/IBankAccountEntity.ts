@@ -1,7 +1,7 @@
 import {IBaseEntity} from './IBaseEntity';
 import {IPaymeDocument} from './IPaymeDocument';
 
-export interface BankAccountDetails extends IBaseEntity {
+export interface BankAccountDetails {
   bankName: string;
   bankCode: number;
   branchNumber: number;

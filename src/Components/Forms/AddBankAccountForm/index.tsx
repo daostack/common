@@ -1,103 +1,30 @@
 import {Formik} from 'formik';
-import React, {ReactElement} from 'react';
+import {omit} from 'lodash';
+import React, {ReactElement, useState} from 'react';
 import {
+  ActivityIndicator,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
 } from 'react-native';
-import moment from 'moment';
-import {omit} from 'lodash';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import TextInputField from '~/Components/FormikForm/TextInputField';
-import {colors, font, layout} from '~/Theme';
-import {object, string, number, DateSchema, mixed, date, addMethod} from 'yup';
-import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
-import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
+import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
 import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
-import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
-import {DATE_FORMAT} from '~/Util/constants/date';
-
-const {height} = Dimensions.get('window');
+import TextInputField from '~/Components/FormikForm/TextInputField';
+import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
+import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
+import BankAccountService from '~/Services/BankAccountService';
+import Toast from '~/Util/Toast';
+import {styles} from './styles';
+import {validationSchema} from './validationSchema';
 
 interface Props {
   onDelete?: () => void;
-  onSubmit: (values: any) => void;
+  onSubmit: () => void;
   isAddingNew: boolean;
 }
-
-function validateDateFormat(msg: string): any {
-  return mixed().test({
-    name: 'validateDate',
-    exclusive: false,
-    message: msg,
-    test(value) {
-      if (value?.length < 10) {
-        return false;
-      }
-      return moment(value, DATE_FORMAT).isValid();
-    },
-  });
-}
-
-addMethod<DateSchema>(date, 'validateDateFormat', validateDateFormat);
-
-const validationSchema = object({
-  socialId: number()
-    .label('ID Number')
-    .typeError('ID Number must contain only numbers')
-    .required(),
-  socialIdIssueDate: date()
-    .validateDateFormat('Invalid date')
-    .label('ID Issuance day')
-    .required(),
-  birthdate: date()
-    .validateDateFormat('Invalid date')
-    .label('Birth Date')
-    .required(),
-  gender: number()
-    .label('Gender')
-    .min(0, 'Gender is a required field')
-    .required(),
-  bankName: string().label('Bank Name').required(),
-  branchNumber: number()
-    .typeError('Branch Number must contain only numbers')
-    .label('Branch Number')
-    .required(),
-  phoneNumber: number()
-    .typeError('Phone Number must contain only numbers')
-    .label('Phone Number')
-    .required(),
-  // TODO: Add when API will allow sent email with body
-  // email: string().email().label('Email').required(),
-  accountNumber: number()
-    .typeError('Bank Account Number must contain only numbers')
-    .label('Bank Account Number')
-    .required(),
-  bankCode: number().label('Bank Code').required(),
-  country: string().label('Country').required(),
-  city: string().label('City').required(),
-  streetAddress: string().label('Street Address').required(),
-  streetNumber: number()
-    .typeError('Street Number must contain only numbers')
-    .label('Street Number')
-    .required(),
-  photoID: object()
-    .shape({
-      downloadURL: string().required(),
-    })
-    .label('PhotoID')
-    .required(),
-  bankConfirmation: object()
-    .shape({
-      downloadURL: string().required(),
-    })
-    .label('Bank Confirmation')
-    .required(),
-});
 
 const INITIAL_VALUES = {
   socialId: '',
@@ -110,8 +37,8 @@ const INITIAL_VALUES = {
   email: '',
   accountNumber: '',
   bankCode: '',
-  photoID: '',
-  bankConfirmation: '',
+  photoID: {},
+  bankConfirmation: {},
   country: '',
   city: '',
   streetAddress: '',
@@ -125,18 +52,36 @@ export const AddBankAccountForm = ({
 }: Props): ReactElement => {
   const insets = useSafeAreaInsets();
 
-  const formSave = (values: typeof INITIAL_VALUES): void => {
-    const identificationDocs = [values.photoID, values.bankConfirmation];
-    onSubmit(
-      omit(
-        {
-          ...values,
-          identificationDocs,
-        },
-        ['photoID', 'bankConfirmation', 'email'],
-      ),
-    );
-  };
+  const [isLoading, setLoading] = useState(false);
+
+  async function formSave(values: typeof INITIAL_VALUES): Promise<void> {
+    try {
+      setLoading(true);
+      const identificationDocs = [
+        values.photoID,
+        values.bankConfirmation,
+      ] as IPaymeDocument[];
+      await BankAccountService.addBankAccountDetails(
+        omit(
+          {
+            ...values,
+            bankCode: Number(values.bankCode),
+            branchNumber: Number(values.branchNumber),
+            accountNumber: Number(values.accountNumber),
+            streetNumber: Number(values.streetNumber),
+            identificationDocs,
+          },
+          ['photoID', 'bankConfirmation', 'email'],
+        ),
+      );
+      onSubmit();
+      Toast.success('Done');
+    } catch (err) {
+      Toast.error('error');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Formik
@@ -346,7 +291,11 @@ export const AddBankAccountForm = ({
               <TouchableOpacity
                 style={[styles.btn, styles.deleteBtn]}
                 onPress={handleSubmit}>
-                <Text style={styles.btnDeleteText}>Save</Text>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={styles.btnDeleteText}>Save</Text>
+                )}
               </TouchableOpacity>
               {!isAddingNew && onDelete && (
                 <TouchableOpacity style={styles.btn} onPress={onDelete}>
@@ -360,108 +309,3 @@ export const AddBankAccountForm = ({
     </Formik>
   );
 };
-
-const styles = StyleSheet.create({
-  body: {
-    width: '100%',
-    maxHeight: height - 150 - STATUS_BAR_HEIGHT,
-  },
-  plug: {
-    backgroundColor: colors.paleblue,
-    width: 72,
-    height: 6,
-    borderRadius: 2,
-    alignSelf: 'center',
-  },
-  image: {
-    height: 116,
-    aspectRatio: 1,
-  },
-  title: {
-    ...font.primary.bold,
-    fontSize: 20,
-    lineHeight: 28,
-    alignSelf: 'center',
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    ...font.primary.bold,
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.black,
-    textAlign: 'left',
-    width: '100%',
-    marginTop: 14,
-    marginBottom: 4,
-  },
-  text: {
-    ...font.primary.regular,
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  rowFieldsView: {
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    zIndex: 1000000,
-    marginTop: 16,
-    marginBottom: 10,
-  },
-  rowLeftView: {
-    flex: 1,
-    marginRight: 8,
-    marginTop: 0,
-  },
-  rowRightView: {
-    flex: 1,
-    marginLeft: 8,
-    marginTop: 0,
-  },
-  textfieldView: {
-    alignSelf: 'stretch',
-    marginTop: 16,
-    flex: 1,
-    paddingBottom: 0,
-  },
-  btn: {
-    alignSelf: 'stretch',
-    ...layout.content,
-    ...layout.flexRow,
-    ...layout.flexStart,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderRadius: 32,
-    borderColor: colors.grey4,
-    justifyContent: 'center',
-  },
-  deleteBtn: {
-    marginTop: 35,
-    marginBottom: 16,
-    backgroundColor: colors.mainBlue,
-  },
-  btnText: {
-    textAlign: 'center',
-    ...font.primary.regular,
-    fontSize: 16,
-    lineHeight: 20,
-    color: colors.mainBlue,
-  },
-  btnDeleteText: {
-    textAlign: 'center',
-    ...font.primary.regular,
-    fontSize: 16,
-    lineHeight: 20,
-    color: colors.white,
-  },
-  inputTitle: {
-    ...font.primary.regular,
-    width: '100%',
-    textAlign: 'left',
-    lineHeight: 20,
-    fontSize: 14,
-  },
-});
