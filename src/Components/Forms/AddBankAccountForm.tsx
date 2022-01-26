@@ -35,6 +35,9 @@ function validateDateFormat(msg: string): any {
     exclusive: false,
     message: msg,
     test(value) {
+      if (value?.length < 10) {
+        return false;
+      }
       return moment(value, DATE_FORMAT).isValid();
     },
   });
