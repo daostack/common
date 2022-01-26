@@ -42,4 +42,12 @@ export default class BankAccountStore extends BaseStore<
   reset(): void {
     this.data.clear();
   }
+
+  subscribeToBankAccount = (userId: string): any =>
+    BankAccountService.subscribeToBankAccount(userId, (snapshot: any) => {
+      this.updateStoreData(snapshot);
+      if (snapshot._docs.length === 0) {
+        this.reset();
+      }
+    });
 }

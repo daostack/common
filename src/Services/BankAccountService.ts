@@ -5,8 +5,8 @@ import {
   BankAccountDetails,
   IBankAccountEntity,
 } from '~/Firebase/Databasee/EntityTypes/IBankAccountEntity';
-import {BanksAccountCollection} from '~/Firebase/Databasee/Collections/BankAccountCollection';
 import {IFirebaseSnapshot} from '~/Firebase/types';
+import {BanksAccountCollection} from '~/Firebase/Databasee/Collections/BankAccountCollection';
 
 export type bankAccountLoadCallbackFunc = (
   updatedBankAccount: IFirebaseSnapshot<IBankAccountEntity>,
@@ -54,6 +54,20 @@ class BankAccountService {
     } catch (e) {
       return null;
     }
+  };
+
+  subscribeToBankAccount = (
+    userId: string,
+    callback: bankAccountLoadCallbackFunc,
+  ) => {
+    const bankAccounts = BanksAccountCollection.where(
+      'userId',
+      '==',
+      userId,
+    ).onSnapshot((snapshot: any) => {
+      callback(snapshot);
+    });
+    return bankAccounts;
   };
 }
 

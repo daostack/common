@@ -53,7 +53,8 @@ const validationSchema = object({
     .typeError('Phone Number must contain only numbers')
     .label('Phone Number')
     .required(),
-  email: string().label('Email').required(),
+  // TODO: Add when API will allow sent email with body
+  // email: string().email().label('Email').required(),
   accountNumber: number()
     .typeError('Bank Account Number must contain only numbers')
     .label('Bank Account Number')
@@ -199,8 +200,8 @@ export const AddBankAccountForm = ({
               onChangeText={handleChange('phoneNumber')}
               onBlur={handleBlur('phoneNumber')}
             />
-            <TextInputField
-              errorMessage={errors && touched.phoneNumber && errors.phoneNumber}
+            {/* <TextInputField
+              errorMessage={errors && touched.email && errors.email}
               viewStyle={styles.textfieldView}
               placeholderText="Name@email.com"
               autoCapitalize="none"
@@ -209,7 +210,7 @@ export const AddBankAccountForm = ({
               value={values.email}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
-            />
+            /> */}
             <Text style={styles.sectionTitle}>Bank Details</Text>
             <TextInputField
               errorMessage={
@@ -343,7 +344,6 @@ export const AddBankAccountForm = ({
 const styles = StyleSheet.create({
   body: {
     width: '100%',
-    // paddingHorizontal: 7,
     maxHeight: height - 150 - STATUS_BAR_HEIGHT,
   },
   plug: {

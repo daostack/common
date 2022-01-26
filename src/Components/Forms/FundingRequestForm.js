@@ -1,9 +1,7 @@
 import {func, object, shape, bool} from 'prop-types';
 import React from 'react';
 import {Text, View} from 'react-native';
-import {inject} from 'mobx-react';
-import {observer} from 'mobx-react-lite';
-import {auth} from '~/Firebase';
+import {inject, observer} from 'mobx-react';
 import {AddBankAccountField} from '~/Components/BankAccount/AddBankAccountField';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
@@ -22,10 +20,6 @@ class FundingRequestForm extends React.Component {
   static FIELD_LINKS = 'links';
   static FIELD_IMAGES = 'images';
   static FIELD_FILES = '\files';
-
-  componentDidMount() {
-    this.props.rootStore.bankAccountStore.fetchBankAccount();
-  }
 
   onFormClose = (e) => {
     const {onFormClose} = this.props;
@@ -67,7 +61,7 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_TITLE,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required',
+            validateRule: 'required|string',
           }}
         />
         <TextInputFieldWithIcon
@@ -110,7 +104,7 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_DESCRIPTION,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required',
+            validateRule: 'required|string',
           }}
         />
         <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
