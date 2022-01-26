@@ -77,7 +77,7 @@ export const AddBankAccountForm = ({
       onSubmit();
       Toast.success('Done');
     } catch (err) {
-      Toast.error('Error');
+      Toast.error('Something went wrong');
     } finally {
       setLoading(false);
     }
