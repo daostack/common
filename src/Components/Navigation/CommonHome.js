@@ -1,7 +1,7 @@
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View, Platform} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -14,10 +14,20 @@ import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 
 const CommonHome = ({rootStore}) => (
   <Tab.Navigator
-    // initialRouteName="My feed"
     initialRouteName="Explore"
     lazy={false}
     screenOptions={({route}) => ({
+      headerShown: false,
+      tabBarActiveTintColor: colors.mainBlue,
+      tabBarShowLabel: false,
+      tabBarStyle: {
+        elevation: 5,
+        shadowColor: '#333',
+        shadowOffset: {height: 5},
+        shadowOpacity: 0.75,
+        shadowRadius: 5,
+        height: TAB_BAR_HEIGHT,
+      },
       tabBarIcon: ({focused}) => {
         switch (route.name) {
           case NAVIGATION_SCREENS.EXPLORE: {
@@ -47,19 +57,7 @@ const CommonHome = ({rootStore}) => (
           }
         }
       },
-    })}
-    tabBarOptions={{
-      activeTintColor: colors.mainBlue,
-      showLabel: false,
-      style: {
-        elevation: 5,
-        shadowColor: '#333',
-        shadowOffset: {height: 5},
-        shadowOpacity: 0.75,
-        shadowRadius: 5,
-        height: TAB_BAR_HEIGHT,
-      },
-    }}>
+    })}>
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
     {rootStore.authStore.signedInUser && (

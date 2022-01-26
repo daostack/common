@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
@@ -12,7 +12,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import logger from '~/Services/Logger';
 import {string, object} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {useStore} from '~/Util/hooks/useStore';
 
 import {
   Placeholder,
@@ -22,11 +22,9 @@ import {
 } from 'rn-placeholder';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
-const UserProfileData = ({userId, currUserInfo, navigation, rootStore}) => {
-  const userInfo = rootStore.authStore.userInfo;
-  const userStore = rootStore.userStore;
-  const proposalStore = rootStore.proposalStore;
-  const commonStore = rootStore.commonStore;
+const UserProfileData = ({userId, currUserInfo, navigation}) => {
+  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  const userInfo = authStore.userInfo;
 
   const providedUserId = userId || currUserInfo.uid;
   const isOwnProfile = providedUserId === userInfo?.uid;
@@ -298,7 +296,6 @@ UserProfileData.propTypes = {
   userId: string,
   currUserInfo: object,
   navigation: object,
-  rootStore: rootStorePropTypes,
 };
 
 const styles = StyleSheet.create({
@@ -362,4 +359,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(UserProfileData));
+export default observer(UserProfileData);
