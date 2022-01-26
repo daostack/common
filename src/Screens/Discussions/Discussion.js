@@ -36,8 +36,9 @@ import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
 import {Header} from '~/Screens/Header';
+import {useFocusEffect} from '@react-navigation/native';
 
-const Discussions = ({
+const Discussion = ({
   navigation,
   route: {
     params: {commonId, discussionId, fromNotificationItem},
@@ -88,7 +89,16 @@ const Discussions = ({
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
-  useEffect(() => {
+  useFocusEffect(() => {
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+      discussionId
+    );
+    return () => {
+      unsubscribeFromDiscussionMessages &&
+        unsubscribeFromDiscussionMessages();
+    };
+  }, [discussionId]);
+  /*useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
       unsubscribeFromDiscussionMessages =
@@ -100,7 +110,7 @@ const Discussions = ({
     return () => {
       unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
     };
-  }, [discussionId]);
+  }, [discussionId]);*/
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
@@ -463,7 +473,7 @@ const Discussions = ({
   );
 };
 
-Discussions.propTypes = {
+Discussion.propTypes = {
   rootStore: rootStorePropTypes.isRequired,
   navigation: object,
   route: shape({
@@ -586,4 +596,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(Discussions));
+export default inject('rootStore')(observer(Discussion));
