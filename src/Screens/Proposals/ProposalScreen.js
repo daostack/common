@@ -152,6 +152,7 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+
   let currentUserVote = {};
   const filteredVotes = proposalInfo.votes.filter(
     (item) => item.voterId === userInfo.uid,

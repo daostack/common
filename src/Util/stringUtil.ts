@@ -10,12 +10,19 @@ export const truncateString = (
   return str.slice(0, len) + end;
 };
 
-
-export const takeRightFromString = ({str, separator = '/', numberOfElements = 0}: {str: string, separator: string, numberOfElements: number}): string[] => {
+export const getUrlPathWithEntityId = ({
+  str,
+  separator = '/',
+}: {
+  str: string;
+  separator: string;
+}): string[] => {
   if (!str) {
     return [];
   }
 
   const elements = str.split(separator);
-  return elements.slice(-numberOfElements);
+  const entityId = elements.pop() as string;
+  const screenName = elements.join(separator);
+  return [screenName, entityId];
 };
