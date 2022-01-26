@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {TabView, TabBarProps} from 'react-native-tab-view';
+import {TabView} from 'react-native-tab-view';
 import {observer, inject} from 'mobx-react';
 
 import CommonMembersList from '../CommonMembersList';
@@ -30,13 +30,8 @@ const CommonMembers = ({rootStore}: CommonMembersProps) => {
   const commonStore = rootStore.commonStore;
   const router = useRoute<CommonMembersRouteProps>();
 
-  const {
-    commonId,
-    hasPermission,
-    openCommonOptions,
-    showHiddenNote,
-    isMember,
-  } = router.params;
+  const {commonId, hasPermission, openCommonOptions, showHiddenNote, isMember} =
+    router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,

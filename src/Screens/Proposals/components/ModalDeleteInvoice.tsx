@@ -1,8 +1,7 @@
 import React, {ReactElement} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import {colors, font, layout, text} from '~/Theme';
-import {func, object} from 'prop-types';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
+import {colors, font, layout, text} from '~/Theme';
 
 type Props = {
   isVisible: boolean;

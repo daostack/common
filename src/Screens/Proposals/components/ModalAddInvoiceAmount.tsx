@@ -1,9 +1,8 @@
-import {func, object} from 'prop-types';
 import React, {ReactElement, useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import TextInputFieldWithIcon from '~/Components/FormikForm/TextInputFieldWithIcon';
-import {font, layout, text, colors} from '~/Theme';
+import {colors, font, layout, text} from '~/Theme';
 
 type Props = {
   isVisible: boolean;
