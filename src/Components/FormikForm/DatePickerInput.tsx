@@ -69,7 +69,7 @@ function DatePickerInput({
   function onChangeText(currText: any) {
     const unformattedText = unFormatNumber(currText);
     otherProps.onChangeText && otherProps.onChangeText(unformattedText);
-    const changedDate = new Date(unformattedText);
+    const changedDate = moment(unformattedText, DATE_FORMAT).toDate();
     if (changedDate && unformattedText.length === 10) {
       changedDate.setDate(changedDate.getDate() + 1);
       setDate(changedDate);
@@ -98,6 +98,9 @@ function DatePickerInput({
             {...otherProps}
             onFocus={onFocus}
             onBlur={onBlur}
+            affineFormats={[]}
+            customNotations={[]}
+            affinityCalculationStrategy="WHOLE_STRING"
             textContentType="telephoneNumber"
             placeholder={'00/00/0000'}
             onChangeText={onChangeText}
