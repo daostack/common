@@ -18,7 +18,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
-import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
@@ -36,6 +35,7 @@ import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
+import {Header} from '~/Screens/Header';
 
 const Discussions = ({
   navigation,
@@ -212,40 +212,10 @@ const Discussions = ({
       : navigation.pop();
 
   const header = () => (
-    // <SafeAreaView flex={1}>
     <>
-      <NavigationBar
-        statusBar={{hidden: true}}
-        style={{
-          height: 60,
-        }}
-        title={{
-          title: dataState.title,
-          style: {
-            ...text.h2Black,
-            maxWidth: '70%',
-            whiteSpace: 'wrap',
-          },
-          ellipsizeMode: 'tail',
-        }}
-        leftButton={
-          <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => navigateBack()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-          </TouchableOpacity>
-        }
-        // rightButton={
-        //   <TouchableOpacity
-        //     style={{justifyContent: 'center'}}
-        //     onPress={openOptionsMenu}>
-        //     <Icon
-        //       name="menu-horizontal"
-        //       size={32}
-        //       style={{marginRight: 10}}
-        //     />
-        //   </TouchableOpacity>
-        // }
+      <Header
+        title={dataState.title}
+        onPress={() => navigateBack()}
       />
       <View
         style={{
@@ -320,18 +290,8 @@ const Discussions = ({
               </TouchableOpacity>
             </>
           )}
-          {/* <View
-            style={{
-              height: 4,
-              marginTop: 10,
-              // paddingHorizontal: -20,
-              marginHorizontal: -20,
-              backgroundColor: colors.grey4,
-            }}
-          /> */}
         </View>
       </View>
-      {/* </SafeAreaView> */}
     </>
   );
 
@@ -546,7 +506,6 @@ const styles = StyleSheet.create({
   imageGallery: {
     ...layout.flexRow,
     ...layout.flexStart,
-
     width: '100%',
   },
   avatar: {

@@ -13,7 +13,7 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from '~/Assets/iconfont/Icon';
 import ProposalInfo from '~/Components/Proposals/ProposalInfo';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -34,6 +34,12 @@ import {FILE_TYPES} from '~/Util/constants/firebaseStorage';
 
 type Props = {
   rootStore: RootStore;
+};
+
+const options = {
+  mediaType: 'photo',
+  quality: 0.7,
+  allowsEditing: false,
 };
 
 const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
@@ -172,20 +178,20 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
     isRetake = false,
   }: Partial<GestureResponderEvent & {isRetake: boolean}>) => {
     setIsLoading(true);
-    ImagePicker.launchCamera({}, async (response) => {
+    launchImageLibrary(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
         setIsLoading(false);
-      } else if (response.error) {
+      } else if (response.errorMessage) {
         Platform.OS === 'ios' && (await handlePermission());
-        logger.log('ImagePicker Error: ', response.error);
+        logger.log('ImagePicker Error: ', response.errorMessage);
         setIsLoading(false);
       } else {
         if (isRetake) {
           const updatedInvoiceImages = [...invoiceImages];
           updatedInvoiceImages[invoiceSelected] = {
-            url: response.uri,
-            mimeType: response.type as string,
+            url: response.assets[0]?.uri,
+            mimeType: response?.assets[0].type as string,
             amount: 0,
           };
           setInvoiceImages(updatedInvoiceImages);
@@ -193,7 +199,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         } else {
           setInvoiceImages([
             ...invoiceImages,
-            {url: response.uri, mimeType: response.type as string, amount: 0},
+            {url: response?.assets[0]?.uri as string, mimeType: response?.assets[0].type as string, amount: 0},
           ]);
         }
       }
@@ -204,17 +210,17 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
 
   const pickImage = () => {
     setIsLoading(true);
-    ImagePicker.launchImageLibrary({}, async (response) => {
+    launchImageLibrary(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
-      } else if (response.error) {
-        logger.log('ImagePicker Error: ', response.error);
+      } else if (response.errorMessage) {
+        logger.log('ImagePicker Error: ', response.errorMessage);
       } else {
         logger.log('Uploading image');
 
         setInvoiceImages([
           ...invoiceImages,
-          {url: response.uri, mimeType: response.type as string, amount: 0},
+          {url: response?.assets[0]?.uri as string, mimeType: response?.assets[0].type as string, amount: 0},
         ]);
       }
       setIsLoading(false);

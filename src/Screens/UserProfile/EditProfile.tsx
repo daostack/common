@@ -14,7 +14,7 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import ImageField from '~/Components/FormikForm/ImageField';
 import {CountrySelectField} from '~/Components/FormikForm/CountrySelectField';
 import {layout, text, font, colors} from '~/Theme';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -24,6 +24,8 @@ import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
+import {useStore} from '~/Util/hooks/useStore';
+import {useNavigation} from '@react-navigation/native';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -51,7 +53,9 @@ type Props = AppRootStore &
     };
   };
 
-const EditProfile = ({rootStore, route, navigation}: Props): ReactElement => {
+const EditProfile = ({route}: Props): ReactElement => {
+  const navigation = useNavigation();
+  const rootStore = useStore('rootStore');
   const authStore = rootStore.authStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
@@ -362,4 +366,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(EditProfile));
+export default observer(EditProfile);

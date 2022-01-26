@@ -1,5 +1,6 @@
 import React, {ReactElement} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {colors, font, layout, text} from '~/Theme';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {colors, font, layout, text} from '~/Theme';
 

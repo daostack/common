@@ -29,7 +29,6 @@ class PaymentService {
     this.endpoints = {
       createToken: '/payme/payin/create-buyer-token-page',
       uploadInvoices: '/payout-docs/add',
-      addBankAccount: '/bank-account-details/add',
     };
   }
 
