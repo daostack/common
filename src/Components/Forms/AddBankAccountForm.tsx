@@ -309,13 +309,13 @@ export const AddBankAccountForm = ({
             {isAddingNew && (
               <>
                 <AddPhotoID
-                  error={!!errors.photoID}
+                  error={touched.photoID && !!errors.photoID}
                   onSelect={(photoID) => {
                     setFieldValue('photoID', photoID);
                   }}
                 />
                 <AddBankConfirmation
-                  error={!!errors.bankConfirmation}
+                  error={touched.bankConfirmation && !!errors.bankConfirmation}
                   onSelect={(bankConfirmation) => {
                     setFieldValue('bankConfirmation', bankConfirmation);
                   }}
