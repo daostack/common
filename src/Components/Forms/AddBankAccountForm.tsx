@@ -8,16 +8,18 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import moment from 'moment';
 import {omit} from 'lodash';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {colors, font, layout} from '~/Theme';
-import {object, string, number} from 'yup';
+import {object, string, number, DateSchema, mixed, date, addMethod} from 'yup';
 import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
 import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
 import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
+import {DATE_FORMAT} from '~/Util/constants/date';
 
 const {height} = Dimensions.get('window');
 
@@ -27,18 +29,31 @@ interface Props {
   isAddingNew: boolean;
 }
 
+function validateDateFormat(msg: string): any {
+  return mixed().test({
+    name: 'validateDate',
+    exclusive: false,
+    message: msg,
+    test(value) {
+      return moment(value, DATE_FORMAT).isValid();
+    },
+  });
+}
+
+addMethod<DateSchema>(date, 'validateDateFormat', validateDateFormat);
+
 const validationSchema = object({
   socialId: number()
     .label('ID Number')
     .typeError('ID Number must contain only numbers')
     .required(),
-  socialIdIssueDate: string()
+  socialIdIssueDate: date()
+    .validateDateFormat('Invalid date')
     .label('ID Issuance day')
-    .min(10, 'ID Issuance day is a required field')
     .required(),
-  birthdate: string()
+  birthdate: date()
+    .validateDateFormat('Invalid date')
     .label('Birth Date')
-    .min(10, 'Birth Date is a required field')
     .required(),
   gender: number()
     .label('Gender')
@@ -169,6 +184,7 @@ export const AddBankAccountForm = ({
               label="ID Issuance day"
               value={values.socialIdIssueDate}
               onChangeText={handleChange('socialIdIssueDate')}
+              onBlur={handleBlur('socialIdIssueDate')}
             />
 
             <View style={styles.rowFieldsView}>
@@ -178,6 +194,7 @@ export const AddBankAccountForm = ({
                 label="Birth Date"
                 value={values.birthdate}
                 onChangeText={handleChange('birthdate')}
+                onBlur={handleBlur('birthdate')}
               />
               <GenderSelectField
                 errorMessage={errors && touched.gender && errors.gender}

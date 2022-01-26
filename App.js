@@ -103,6 +103,7 @@ const App = ({rootStore, navigation}) => {
   const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const bankAccountStore = rootStore.bankAccountStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -162,6 +163,13 @@ const App = ({rootStore, navigation}) => {
       Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
     } else {
       Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
+    }
+  }, [authStore.userInfo?.uid]);
+
+  // Fetch Bank Account Details
+  useEffect(() => {
+    if (authStore.userInfo?.uid) {
+      bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
     }
   }, [authStore.userInfo?.uid]);
 

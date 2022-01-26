@@ -17,6 +17,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout} from '~/Theme';
 import {unFormatNumber} from '~/Util/FormatUtil';
 import ValidationMessage from './ValidationMessage';
+import {DATE_FORMAT} from '~/Util/constants/date';
 
 const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 
@@ -121,12 +122,13 @@ function DatePickerInput({
         androidVariant="iosClone"
         mode="date"
         open={open}
+        locale="en-GB"
         maximumDate={new Date()}
         date={date}
         onConfirm={(dateValue: Date) => {
           setOpen(false);
           setDate(dateValue);
-          onChangeText(moment(dateValue).format('MM/DD/YYYY'));
+          onChangeText(moment(dateValue).format(DATE_FORMAT));
         }}
         onCancel={() => {
           setOpen(false);
