@@ -128,7 +128,7 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
           styles.container,
           error ? {backgroundColor: colors.orangeBackgroundLight} : {},
         ]}>
-        <Icon name="add-avatar" />
+        <Icon name={imageUrl ? 'add-avatar-approved' : 'add-avatar'} />
         {imageUrl ? (
           <View style={styles.imageNameContainer}>
             <Text style={styles.title}>{filename}</Text>

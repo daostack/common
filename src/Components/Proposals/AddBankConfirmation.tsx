@@ -81,7 +81,7 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
         styles.container,
         error ? {backgroundColor: colors.orangeBackgroundLight} : {},
       ]}>
-      <Icon name="add-document" />
+      <Icon name={fileUrl ? 'add-document-approved' : 'add-document'} />
       {fileUrl ? (
         <View style={[styles.titleContainer, styles.fileNameContainer]}>
           <Text style={styles.title}>{filename}</Text>
