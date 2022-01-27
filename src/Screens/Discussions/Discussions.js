@@ -218,10 +218,7 @@ const Discussions = ({
 
   const header = () => (
     <>
-      <Header
-        title={dataState.title}
-        onPress={() => navigateBack()}
-      />
+      <Header title={dataState.title} onPress={() => navigateBack()} />
       <View
         style={{
           overflow: 'hidden',
