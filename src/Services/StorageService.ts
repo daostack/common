@@ -47,6 +47,11 @@ class StorageService {
     return await ref.getDownloadURL();
   };
 
+  deleteFromStorage = async (fileUri: string): Promise<void> => {
+    const ref = storage.refFromURL(fileUri);
+    ref.delete();
+  };
+
   getFilename = (fileUri: string, withExtension = false): string => {
     const ref = storage.refFromURL(fileUri) || '';
     if (withExtension) {

@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ViewStyle} from 'react-native';
 
 import * as RNLocalize from 'react-native-localize';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -30,11 +30,13 @@ type Props = TextInputFieldWithIconProps &
     value: string;
     label: string;
     infoLabel: string;
+    viewStyle?: ViewStyle | ViewStyle[];
   };
 
 export const CountrySelectField = ({
   onChange,
   value,
+  viewStyle,
   ...props
 }: Omit<Props, 'uiStore'>): ReactElement => {
   const countries = countryList.filter((country) => country.payin) as Country[];
@@ -59,7 +61,7 @@ export const CountrySelectField = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, viewStyle]}>
       {(props.label || props.infoLabel) && (
         <Label label={props.label} infoLabel={props.infoLabel} />
       )}

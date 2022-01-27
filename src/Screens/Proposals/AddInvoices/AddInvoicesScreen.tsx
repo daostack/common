@@ -27,7 +27,7 @@ import {handlePermission} from '../../../Util/Permissions';
 import ModalAddInvoiceAmount from '../components/ModalAddInvoiceAmount';
 import ModalDeleteInvoice from '../components/ModalDeleteInvoice';
 import {ModalFinishUploadInvoices} from '../components/ModalFinishUploadInvoices/ModalFinishUploadInvoices';
-import {ModalUploadInvoice} from '../components/ModalUploadInvoice';
+import {ModalUploadFile} from '../components/ModalUploadFile';
 import {ModalImagePreview} from '../components/ModalImagePreview';
 import {styles} from './styles';
 import {FILE_TYPES} from '~/Util/constants/firebaseStorage';
@@ -397,7 +397,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           imageUrl={invoiceImages[invoiceSelected]?.url as string}>
           <ModalInvoiceOptions isInImagePreview />
         </ModalImagePreview>
-        <ModalUploadInvoice
+        <ModalUploadFile
           isVisible={isBottomModalVisible}
           closeSheet={closeSheet}
           pickImage={pickImage}
