@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
@@ -62,18 +62,18 @@ function ImageField({
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, async (response) => {
+    launchImageLibrary(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
-      } else if (response.error) {
+      } else if (response.errorMessage) {
         // only for ios because android handles this
         Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.error);
-        logger.log('ImagePicker Error: ', response.error);
+        Toast.error(response.errorMessage);
+        logger.log('ImagePicker Error: ', response.errorMessage);
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.uploadImage(response.uri)
+        StorageService.uploadImage(response?.assets[0]?.uri)
           .then((url: string): void => {
             Toast.hide();
             Toast.success('Done');

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object, func, bool} from 'prop-types';
+import {string, shape, object, func} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
@@ -27,7 +27,6 @@ const DiscussionCard = ({
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
-  isMember,
   viewerPermission,
 }) => {
   const userStore = rootStore.userStore;
@@ -68,12 +67,6 @@ const DiscussionCard = ({
   const getReporter = () =>
     data.moderation?.reporter &&
     userStore.getUserById(data.moderation?.reporter);
-
-  /*const follow = () => {
-    logger.log('Follow user id', data.ownerId);
-    NotificationService.follow(data.ownerId);
-    bottomSheetStore.hideBottomSheet();
-  };*/
 
   return (
     <>
@@ -191,7 +184,6 @@ DiscussionCard.propTypes = {
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
-  isMember: bool,
   viewerPermission: string,
 };
 
@@ -288,6 +280,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     marginBottom: 20,
     color: colors.black,
+    maxWidth: width * 0.67,
   },
   titleContainer: {
     flexDirection: 'row',

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -48,6 +48,7 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
   EditCommon,
+  AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -73,11 +74,12 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-import {takeRightFromString} from '~/Util/stringUtil';
+import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import {
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
   DYNAMIC_LINKS_SCREEN_PARAMS,
+  DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
 
 const Stack = createStackNavigator();
@@ -101,6 +103,7 @@ const App = ({rootStore, navigation}) => {
   const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const bankAccountStore = rootStore.bankAccountStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -160,6 +163,13 @@ const App = ({rootStore, navigation}) => {
       Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
     } else {
       Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
+    }
+  }, [authStore.userInfo?.uid]);
+
+  // Fetch Bank Account Details
+  useEffect(() => {
+    if (authStore.userInfo?.uid) {
+      bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
     }
   }, [authStore.userInfo?.uid]);
 
@@ -257,9 +267,8 @@ const App = ({rootStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    const [screenName, entityId] = takeRightFromString({
-      str: url,
-      numberOfElements: 2,
+    const [screenName, entityId] = getUrlPathWithEntityId({
+      str: url.replace(DYNAMIC_LINK_URI_WITH_SLASH, ''),
       separator: '/',
     });
 
@@ -411,11 +420,7 @@ const App = ({rootStore, navigation}) => {
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
               headerLeft: () => (
-                <HeaderBackButton
-                  backImage={() => (
-                    <Icon name="left-arrow" color={colors.black} size={32} />
-                  )}
-                  label=" "
+                <TouchableOpacity
                   onPress={() =>
                     route?.params.fromNotificationItem
                       ? route?.params.commonId
@@ -425,7 +430,9 @@ const App = ({rootStore, navigation}) => {
                         : rest?.navigation.pop()
                       : navigationRef.current.goBack()
                   }
-                />
+                >
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                </TouchableOpacity>
               ),
               headerTitle: () => (
                 <View style={{alignItems: 'center'}}>
@@ -445,6 +452,13 @@ const App = ({rootStore, navigation}) => {
                   )}
                 </View>
               ),
+            })}
+          />
+          <Stack.Screen
+            name="AddInvoicesScreen"
+            component={AddInvoicesScreen}
+            options={({nav, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen
@@ -531,9 +545,9 @@ const App = ({rootStore, navigation}) => {
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
-              headerRightContainerStyle: {marginRight: 20},
               headerRight: () => (
                 <TouchableOpacity
+                  style={styles.buttonRight}
                   onPress={() => navigationRef.current.goBack()}>
                   <Icon name="close" color={colors.black} size={20} />
                 </TouchableOpacity>
@@ -653,6 +667,9 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
+  },
+  buttonRight: {
+    marginRight: 20,
   },
 });
 

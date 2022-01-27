@@ -15,6 +15,7 @@ import {
   Modal,
   Pressable,
   Image,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -65,6 +66,7 @@ import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
 import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -84,6 +86,7 @@ const ProposalScreen = ({
   rootStore,
   start, // copilot modal tooltip start
 }) => {
+  const insets = useSafeAreaInsets();
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
@@ -100,7 +103,7 @@ const ProposalScreen = ({
   });
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
+  const [inputHeight, setInputHeight] = useState(48);
   const [
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
@@ -115,6 +118,7 @@ const ProposalScreen = ({
   const [showModerationModal, setShowModerationModal] = useState(false);
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
     useState(false);
+  const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -152,6 +156,7 @@ const ProposalScreen = ({
   }, [proposalId]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
+
   let currentUserVote = {};
   const filteredVotes = proposalInfo.votes.filter(
     (item) => item.voterId === userInfo.uid,
@@ -321,48 +326,37 @@ const ProposalScreen = ({
           flex: 1,
           color: '#fbfdff',
         }}>
-        <View style={viewStyle}>
-          <View style={styles.inputBorder}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              onChangeText={(currText) => setInputText(currText)}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height);
-              }}
-              style={{
-                flex: 1,
-                padding: 0,
-                marginHorizontal: 10,
-                maxHeight: 110,
-                height: Math.max(35, inputHeight + 10),
-              }}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                paddingRight: 15,
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={20}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
         <View
           style={{
-            height: 30,
-            backgroundColor: colors.white,
-          }}
-        />
+            ...styles.inputContainer,
+            height: actualInputHeight,
+          }}>
+          <TextInput
+            ref={inputRef}
+            editable={true}
+            fontSize={15}
+            multiline
+            placeholder="What do you think?"
+            placeholderTextColor={colors.grey3}
+            onChangeText={(currText) => setInputText(currText)}
+            onContentSizeChange={(event) => {
+              setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+            }}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            onPress={sendMessageToDiscussion}
+            style={{
+              justifyContent: 'center',
+            }}
+            disabled={isEmptyMessage()}>
+            <Icon
+              name="send-message"
+              size={25}
+              color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+            />
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     ) : (
       <View style={viewStyle}>
@@ -746,7 +740,7 @@ const ProposalScreen = ({
         )}
 
         <ScrollView
-          style={{}}
+          style={{marginBottom: index === 0 ? 0 : inputHeight + 50}}
           ref={scrollViewRef}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
@@ -1061,12 +1055,13 @@ const ProposalScreen = ({
                 <DiscussionMessagesList
                   discussionId={proposalId || proposalInfo.id}
                   proposal={proposalInfo}
-                  inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
                   hasPermission={hasPermission}
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
+                  inputHeight={-35}
+                  inputRef={inputRef}
                 />
               )}
             </View>
@@ -1111,6 +1106,36 @@ ProposalScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    width: screenWidth,
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: colors.white,
+    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowOffset: {
+      width: 0,
+      height: -1,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+  },
+  input: {
+    backgroundColor: colors.paleLilacTwo,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    width: '75%',
+    flexDirection: 'row',
+    borderRadius: 40,
+    textAlignVertical: 'center',
+    paddingTop: Platform.OS === 'ios' ? 15 : 10,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
+    paddingHorizontal: 15,
+  },
   // New styles
   contributionCard: {
     ...layout.content,
@@ -1199,27 +1224,6 @@ const styles = StyleSheet.create({
   votedByYouText: {
     ...text.buttonblue,
     ...text.bold,
-  },
-  input: {
-    backgroundColor: colors.white,
-    borderColor: colors.grey4,
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    width: screenWidth,
-    flexDirection: 'row',
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 0.5,
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-
-    borderTopWidth: 1,
-    borderTopColor: colors.grey2,
   },
   inputBorder: {
     flex: 1,

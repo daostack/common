@@ -10,7 +10,6 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {calcShouldSkipRules} from '~/Util/rules';
 
 const IntroductionStep = ({
@@ -65,8 +64,6 @@ const IntroductionStep = ({
           title="Introduce Yourself"
           subtitle="Let the Common members learn more about you and how you relate to the cause."
         />
-
-        <PurpleBoxMessage message="Please note: currently, credit cards issued by Mastercard are not supported." />
 
         <View
           style={{
