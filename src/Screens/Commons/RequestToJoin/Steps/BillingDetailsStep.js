@@ -226,8 +226,6 @@ const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
         }}>
         <RequestStepHeaderTitle title="Billing Details" subtitle={subtitle} />
 
-        <PurpleBoxMessage message="Please note: currently, credit cards issued by Mastercard are not supported." />
-
         <TextInputField
           editable
           label="Name on Card"
