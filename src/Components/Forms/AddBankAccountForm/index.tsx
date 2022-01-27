@@ -16,6 +16,7 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
+import {layout} from '~/Theme';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
 import {validationSchema} from './validationSchema';
@@ -108,8 +109,8 @@ export const AddBankAccountForm = ({
             contentContainerStyle={{alignItems: 'center'}}>
             <Text style={styles.title}>Add Bank Account</Text>
             <Text style={styles.text}>
-              The following details are required in order to wire a refund after
-              you executed an approved proposal
+              The following details are required in order to wire a {'\n'}{' '}
+              refund after you executed an approved proposal
             </Text>
 
             <Text style={styles.sectionTitle}>Personal Info</Text>
@@ -227,7 +228,7 @@ export const AddBankAccountForm = ({
                 onBlur={handleBlur('bankCode')}
               />
             </View>
-            <Text style={styles.sectionTitle}>Address Details</Text>
+            <Text style={styles.sectionTitle}>Personal Address</Text>
             <CountryDropdownField
               errorMessage={errors && touched.country && errors.country}
               viewStyle={styles.textfieldView}
@@ -262,10 +263,10 @@ export const AddBankAccountForm = ({
               errorMessage={
                 errors && touched.streetNumber && errors.streetNumber
               }
-              viewStyle={styles.textfieldView}
+              viewStyle={{...styles.textfieldView, ...layout.marginBottomS}}
               placeholderText="123"
               autoCapitalize="none"
-              label="Street Number"
+              label="House Number"
               autoCorrect={false}
               value={values.streetNumber}
               onChangeText={handleChange('streetNumber')}

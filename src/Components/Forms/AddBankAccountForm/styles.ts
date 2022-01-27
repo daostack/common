@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
   },
   textfieldView: {
     alignSelf: 'stretch',
-    marginTop: 16,
+    marginTop: 12,
     flex: 1,
     paddingBottom: 0,
   },

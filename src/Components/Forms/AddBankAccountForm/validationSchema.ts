@@ -8,10 +8,14 @@ function validateDateFormat(msg: string): any {
     exclusive: false,
     message: msg,
     test(value) {
+      const formattedDate = moment(value, DATE_FORMAT);
       if (value?.length < 10) {
         return false;
       }
-      return moment(value, DATE_FORMAT).isValid();
+      if (moment().diff(formattedDate) < 0) {
+        return false;
+      }
+      return formattedDate.isValid();
     },
   });
 }
@@ -55,8 +59,8 @@ export const validationSchema = object({
   city: string().label('City').required(),
   streetAddress: string().label('Street Address').required(),
   streetNumber: number()
-    .typeError('Street Number must contain only numbers')
-    .label('Street Number')
+    .typeError('House Number must contain only numbers')
+    .label('House Number')
     .required(),
   photoID: object()
     .shape({

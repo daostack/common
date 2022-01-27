@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -24,7 +24,6 @@ import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
-import {uiStorePropTypes} from '~/Types/propTypes';
 import {escapeUrl} from '~/Util';
 
 const FundingProposal = ({
@@ -32,15 +31,24 @@ const FundingProposal = ({
   route: {
     params: {commonId, common},
   },
-  uiStore,
+  rootStore,
 }) => {
+  const uiStore = rootStore.uiStore;
+  const bankAccountStore = rootStore.bankAccountStore;
+
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [bankAccountState, setBankAccountState] = useState({
-    isAdded: false,
+    isAdded: !!bankAccountStore?.data?.size,
     hasError: false,
   });
+
+  useEffect(() => {
+    if (bankAccountStore?.data?.size) {
+      setBankAccountState({isAdded: true, hasError: false});
+    }
+  }, [bankAccountStore?.data]);
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -81,6 +89,7 @@ const FundingProposal = ({
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
+              commonId,
             },
           });
           navigation.dispatch(navigate);
@@ -109,11 +118,15 @@ const FundingProposal = ({
   const onCreateProposalButtonPressed = async () => {
     if (!bankAccountState.isAdded) {
       setBankAccountState({
-        isAdded: true,
+        isAdded: false,
         hasError: true,
       });
     }
-    if (fundingRequestFormStore.isFormValid() && bankAccountState.isAdded) {
+    if (
+      fundingRequestFormStore.isFormValid() &&
+      bankAccountState.isAdded &&
+      !bankAccountState.hasError
+    ) {
       Keyboard.dismiss();
 
       navigation.setOptions({
@@ -210,7 +223,7 @@ FundingProposal.propTypes = {
       common: object,
     }),
   }),
-  uiStore: uiStorePropTypes,
+  rootStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -237,4 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(FundingProposal);
+export default inject('rootStore')(FundingProposal);
