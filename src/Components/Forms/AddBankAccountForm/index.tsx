@@ -228,49 +228,51 @@ export const AddBankAccountForm = ({
                 onBlur={handleBlur('bankCode')}
               />
             </View>
-            <Text style={styles.sectionTitle}>Personal Address</Text>
-            <CountryDropdownField
-              errorMessage={errors && touched.country && errors.country}
-              viewStyle={styles.textfieldView}
-              label="Country"
-              onChange={(countryValue) => {
-                setFieldValue('country', countryValue);
-              }}
-            />
-            <TextInputField
-              errorMessage={errors && touched.city && errors.city}
-              viewStyle={styles.textfieldView}
-              placeholderText="City"
-              label="City"
-              autoCorrect={false}
-              value={values.city}
-              onChangeText={handleChange('city')}
-              onBlur={handleBlur('city')}
-            />
+            <Text style={styles.sectionTitle}>Billing Details</Text>
             <TextInputField
               errorMessage={
                 errors && touched.streetAddress && errors.streetAddress
               }
               viewStyle={styles.textfieldView}
               placeholderText="Street Address"
-              label="Street Address"
+              label="Address"
               autoCorrect={false}
               value={values.streetAddress}
               onChangeText={handleChange('streetAddress')}
               onBlur={handleBlur('streetAddress')}
             />
-            <TextInputField
-              errorMessage={
-                errors && touched.streetNumber && errors.streetNumber
-              }
+            <View style={styles.rowFieldsView}>
+              <TextInputField
+                errorMessage={
+                  errors && touched.streetNumber && errors.streetNumber
+                }
+                viewStyle={styles.rowLeftView}
+                placeholderText="123"
+                autoCapitalize="none"
+                label="Street Number"
+                autoCorrect={false}
+                value={values.streetNumber}
+                onChangeText={handleChange('streetNumber')}
+                onBlur={handleBlur('streetNumber')}
+              />
+              <TextInputField
+                errorMessage={errors && touched.city && errors.city}
+                viewStyle={styles.rowRightView}
+                placeholderText="City"
+                label="City"
+                autoCorrect={false}
+                value={values.city}
+                onChangeText={handleChange('city')}
+                onBlur={handleBlur('city')}
+              />
+            </View>
+            <CountryDropdownField
+              errorMessage={errors && touched.country && errors.country}
               viewStyle={{...styles.textfieldView, ...layout.marginBottomS}}
-              placeholderText="123"
-              autoCapitalize="none"
-              label="House Number"
-              autoCorrect={false}
-              value={values.streetNumber}
-              onChangeText={handleChange('streetNumber')}
-              onBlur={handleBlur('streetNumber')}
+              label="Country/Region"
+              onChange={(countryValue) => {
+                setFieldValue('country', countryValue);
+              }}
             />
             {isAddingNew && (
               <>
