@@ -545,9 +545,9 @@ const App = ({rootStore, navigation}) => {
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
-              headerRightContainerStyle: {marginRight: 20},
               headerRight: () => (
                 <TouchableOpacity
+                  style={styles.buttonRight}
                   onPress={() => navigationRef.current.goBack()}>
                   <Icon name="close" color={colors.black} size={20} />
                 </TouchableOpacity>
@@ -667,6 +667,9 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
+  },
+  buttonRight: {
+    marginRight: 20,
   },
 });
 

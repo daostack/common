@@ -26,11 +26,9 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, authStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
-        logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         const images = changedFields[IMAGES] || [];
         const files = changedFields[FILES] || [];
@@ -63,12 +61,6 @@ const CreateDiscussionForm = ({
       throw err;
     }
   };
-
-  // const onFormClose = (e) => {
-  //   if (onFormClose) {
-  //     onFormClose();
-  //   }
-  // };
 
   return (
     <>
