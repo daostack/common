@@ -12,7 +12,7 @@ class DiscussionMessageService {
     callback: commonDiscussionMessagesListLoadCallbackFn,
   ) =>
     DiscussionMessagesCollection.where('discussionId', '==', proposalId)
-      .orderBy('createTime', 'asc')
+      .orderBy('createTime', 'desc')
       .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
         callback(snapshot);
       });
@@ -35,7 +35,7 @@ class DiscussionMessageService {
             'in',
             currDiscussionIdsChunk,
           )
-            .orderBy('createTime', 'asc')
+            .orderBy('createTime', 'desc')
             .onSnapshot(
               (snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
                 callback(snapshot);
