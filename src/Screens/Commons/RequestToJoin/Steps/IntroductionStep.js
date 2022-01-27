@@ -10,7 +10,6 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {calcShouldSkipRules} from '~/Util/rules';
 
 const IntroductionStep = ({
