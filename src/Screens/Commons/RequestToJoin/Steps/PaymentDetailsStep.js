@@ -22,7 +22,7 @@ const PaymentDetailsStep = ({
       formStores,
       skipFirstStep,
       currCommon,
-      currDaoId,
+      commonId,
       refreshFeed,
       iFrameLink,
       cardId,
@@ -63,7 +63,7 @@ const PaymentDetailsStep = ({
       const data = {
         description: formData.intro,
         funding: formData.amount * 100,
-        commonId: currDaoId,
+        commonId,
       };
 
       if (formData.links) {
@@ -93,6 +93,7 @@ const PaymentDetailsStep = ({
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
+              commonId,
             },
           });
 

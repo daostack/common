@@ -5,7 +5,7 @@ import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import {string, func, bool, object, shape} from 'prop-types';
@@ -27,7 +27,6 @@ const ContributionStep = ({
   uiStore,
   authStore,
 }) => {
-  const navigationR = useNavigation();
   const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
   const metadata = currCommon.metadata;
   const isMonthly = metadata.contributionType === 'monthly';
@@ -87,7 +86,6 @@ const ContributionStep = ({
       const proposalId = createRequestToJoinResponse.data.id;
 
       navigation.pop();
-      navigation.pop();
 
       navigation.navigate({
         name: 'CommonProfile',
@@ -121,7 +119,7 @@ const ContributionStep = ({
         name: 'PaymentDetailsStep',
         params: {
           formStores,
-          currDaoId: currDaoId,
+          commonId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
