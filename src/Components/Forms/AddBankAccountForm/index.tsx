@@ -105,6 +105,7 @@ export const AddBankAccountForm = ({
             scrollEnabled={true}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
             style={[styles.body, {marginBottom: insets.bottom}]}
             contentContainerStyle={{alignItems: 'center'}}>
             <Text style={styles.title}>Add Bank Account</Text>

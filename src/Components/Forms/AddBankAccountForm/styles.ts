@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     height: 6,
     borderRadius: 2,
     alignSelf: 'center',
+    marginBottom: 14,
   },
   image: {
     height: 116,
