@@ -29,6 +29,7 @@ export default {
   orange: '#ffae26',
   orangeDark: '#ff7c00',
   lightishOrange: '#ffc23d',
+  orangeBackgroundLight: 'rgba(255,174,38, 0.1)',
   against: '#ff603e',
   lightishBlue: '#eff9ff',
   lightBlue: '#dcd8f3',

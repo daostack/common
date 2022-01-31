@@ -43,7 +43,7 @@ type Props = {
   numberOfLines?: number;
   keyboardType?: KeyboardTypeOptions;
   maxLength?: number;
-  viewStyle?: ViewStyle;
+  viewStyle?: ViewStyle | ViewStyle[];
   forwardRef?: React.RefObject<TextInput>;
   onSubmit?: () => void;
   format?: (value: string) => string;

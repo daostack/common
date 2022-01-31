@@ -27,7 +27,12 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
-      : Math.sign(num) * Math.abs(num);
+      : isLessThanThousand(num);
+
+  const isLessThanThousand = (num: number) =>
+    Number.isInteger(Math.sign(num) * Math.abs(num))
+      ? Math.sign(num) * Math.abs(num)
+      : (Math.sign(num) * Math.abs(num)).toFixed(2);
 
   return (
     <View style={styles.commonProgressContainer}>

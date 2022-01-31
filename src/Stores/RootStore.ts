@@ -9,6 +9,7 @@ import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import CardStore from './DataStores/CardStore';
 import UIStore from './UIStore';
+import BankAccountStore from './DataStores/BankAccount';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -24,6 +25,7 @@ export default class RootStore {
   discussionMessageStore: DiscussionMessageStore;
   notificationStore: NotificationStore;
   cardStore: CardStore;
+  bankAccountStore: BankAccountStore;
   uiStore: UIStore;
 
   constructor() {
@@ -35,6 +37,7 @@ export default class RootStore {
     this.discussionMessageStore = new DiscussionMessageStore(this);
     this.notificationStore = new NotificationStore(this);
     this.cardStore = new CardStore(this);
+    this.bankAccountStore = new BankAccountStore(this);
     this.uiStore = new UIStore(this);
 
     Promise.all([
@@ -44,6 +47,7 @@ export default class RootStore {
       hydrate('proposalStore', this.proposalStore),
       hydrate('notificationStore', this.notificationStore),
       hydrate('cardStore', this.cardStore),
+      hydrate('bankAccountStore', this.bankAccountStore),
     ]);
   }
 }

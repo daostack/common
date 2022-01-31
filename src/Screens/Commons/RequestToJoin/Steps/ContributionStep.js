@@ -86,19 +86,15 @@ const ContributionStep = ({
       const proposalId = createRequestToJoinResponse.data.id;
 
       navigation.pop();
-      const navigate = CommonActions.navigate({
+
+      navigation.navigate({
         name: 'CommonProfile',
         params: {
+          currCommon: currCommon,
           showRequestSentModal: true,
           createdProposalId: proposalId,
         },
       });
-
-      if (typeof refreshFeed === 'function') {
-        refreshFeed();
-      }
-
-      navigation.dispatch(navigate);
     } else {
       navigation.pop();
       showErrorPopUp(uiStore.bottomSheetStore, createRequestToJoinResponse);
@@ -123,7 +119,7 @@ const ContributionStep = ({
         name: 'PaymentDetailsStep',
         params: {
           formStores,
-          currDaoId: currDaoId,
+          commonId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,

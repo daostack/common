@@ -15,9 +15,10 @@ import {payMeUrl} from '~/Config';
 class PaymentService {
   private axiosClient: AxiosInstance;
   private endpoints: {
-      createToken: string;
-      uploadInvoices: string;
-    };
+    createToken: string;
+    uploadInvoices: string;
+    addBankAccount: string;
+  };
 
   constructor() {
     this.axiosClient = axios.create({

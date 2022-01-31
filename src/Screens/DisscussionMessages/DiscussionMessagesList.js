@@ -1,30 +1,33 @@
-import React, {useRef, useEffect, useCallback, useState} from 'react';
-import {Text, StyleSheet, SectionList, View, Image} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
-import {text, colors, font} from '~/Theme';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import moment from 'moment';
-import logger from '../../Services/Logger';
-import PropTypes, {string, bool, func} from 'prop-types';
+import PropTypes, {bool, func, string} from 'prop-types';
+import React, {useRef} from 'react';
+import {
+  Image,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import logger from '../../Services/Logger';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
+import {useStore} from '~/Util/hooks/useStore';
 
 const DiscussionMessagesList = ({
   discussionId,
-  rootStore,
+  scrollViewRef,
   hasPermission,
   commonId,
   openMessageOptions,
   isMember,
   inputHeight,
-  isSending,
-  inputFocusLost,
 }) => {
-  const scrollRef = useRef(null);
+  const chatRef = useRef(null);
+  const rootStore = useStore('rootStore');
   const discussionMessageStore = rootStore.discussionMessageStore;
-  const [lastMessagePoint, setLastMessagePoint] = useState(0);
 
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
@@ -33,82 +36,35 @@ const DiscussionMessagesList = ({
 
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
-    .map((msg) => {
-      console.log("moment(msg.createTime.toDate()).format('YYYY-MM-DD')", moment(msg.createTime.toDate()).format('YYYY-MM-DD'))
-      return {
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-      data: msg,
-      }
-    })
-    .reduce((prev, curr) => {
+    .map((msg) => ({
+        date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+        data: msg,
+      }))
+    .reduce((acc, curr) => {
       const key = curr.date;
-      let el = prev.find((x) => x && x.date === key);
+      let el = acc.find((x) => x && x.date === key);
       if (el) {
         el.data.push(curr.data);
       } else {
-        prev.push({
+        acc.push({
           date: key,
           data: [curr.data],
         });
       }
-      return prev;
+      return acc;
     }, []);
 
-  useEffect(() => {
-    getLastPosition();
-  }, [isSending]);
-
-  const getLastPosition = async () => {
-    try {
-      const lastMessageNum = await AsyncStorage.getItem(discussionId);
-      setLastMessagePoint(lastMessageNum);
-    } catch {
-      setLastMessagePoint(0);
-    }
-  };
-
-  const setPosition = async (event) => {
-    getLastPosition();
-    event.persist();
-    if (lastMessagePoint < event.nativeEvent.contentOffset.y) {
-      try {
-        await AsyncStorage.setItem(
-          discussionId,
-          event.nativeEvent.contentOffset.y.toString(),
-        );
-      } catch (e) {
-        logger.log('error', e);
-      }
-    }
-  };
-
-  const onSizeChange = useCallback(() => {
-    if (scrollRef) {
-      scrollRef?.current
-        ?.getScrollResponder()
-        ?.scrollTo({x: 0, y: Number(lastMessagePoint), animated: true});
-    }
-  }, [scrollRef, msgGroups, lastMessagePoint]);
-
-  useEffect(() => {
-    if (inputFocusLost && scrollRef) {
-      scrollRef?.current?.getScrollResponder()?.scrollToEnd({animated: true});
-    }
-  }, [inputFocusLost]);
-
   return (
-    <View style={[styles.viewContainer, {marginBottom: inputHeight}]}>
+    <View style={[styles.viewContainer]}>
       {msgGroups.length > 0 ? (
         <SectionList
-          scrollEventThrottle={100}
-          onScrollEndDrag={setPosition}
-          onMomentumScrollEnd={setPosition}
-          ref={scrollRef}
+          inverted
+          ref={chatRef}
           sections={msgGroups}
           keyExtractor={(x) => x.id}
           stickySectionHeadersEnabled={true}
           contentContainerStyle={{
-            paddingBottom: 13,
+            paddingTop: 16,
           }}
           renderItem={(x) => (
             <DiscussionMessage
@@ -124,14 +80,13 @@ const DiscussionMessagesList = ({
           onScrollToIndexFailed={(info) => {
             logger.error('Something bad happened: ', info);
           }}
-          renderSectionHeader={({section: {date}}) => (
+          renderSectionFooter={({section: {date}}) => (
             <View style={styles.timeHeaderContainer}>
               <Text style={styles.timeHeader}>
                 {moment().isSame(date, 'day') ? 'Today' : date}
               </Text>
             </View>
           )}
-          onContentSizeChange={onSizeChange}
         />
       ) : (
         <View style={styles.emptyContainer}>
@@ -158,15 +113,12 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
-  rootStore: rootStorePropTypes.isRequired,
   hasPermission: string,
   commonId: string,
   action: func,
   openMessageOptions: func,
   isMember: bool,
   inputHeight: string,
-  isSending: bool,
-  inputFocusLost: bool,
 };
 
 const styles = StyleSheet.create({
@@ -178,6 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     paddingHorizontal: 20,
+    marginTop: 16,
   },
   timeHeader: {
     textAlign: 'center',
@@ -204,9 +157,9 @@ const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
     backgroundColor: colors.paleLilacTwo,
-    paddingHorizontal: 20,
+    paddingHorizontal: 6,
     zIndex: -1,
   },
 });
 
-export default inject('rootStore')(observer(DiscussionMessagesList));
+export default observer(DiscussionMessagesList);

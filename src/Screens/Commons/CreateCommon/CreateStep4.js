@@ -147,8 +147,9 @@ const CreateStep4 = ({
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
+        navigation.pop();
       } else {
-        //navigation.pop();
+        navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 

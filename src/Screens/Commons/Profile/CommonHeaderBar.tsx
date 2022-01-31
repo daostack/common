@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {text} from '~/Theme';
 import {BlurView} from '~/Components';
@@ -20,7 +20,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
 
   return (
     <View style={[styles.container, {top: insets.top}]}>
-      <TouchableOpacity
+      <Pressable
         style={styles.leftButton}
         onPress={onLeftPress}>
         <BlurView style={styles.blur} isBlurring={dark}>
@@ -30,9 +30,9 @@ export const CommonHeaderBar = (props: HeaderProps) => {
             color={dark ? 'black' : 'white'}
           />
         </BlurView>
-      </TouchableOpacity>
+      </Pressable>
       <View style={styles.rightContainer}>
-          <TouchableOpacity
+          <Pressable
             style={styles.rightButton}
             onPress={shareCommon}>
             <BlurView style={styles.blur} isBlurring={dark}>
@@ -42,9 +42,9 @@ export const CommonHeaderBar = (props: HeaderProps) => {
                 color={dark ? 'black' : 'white'}
               />
             </BlurView>
-          </TouchableOpacity>
+          </Pressable>
           {hasPermission && (
-            <TouchableOpacity
+            <Pressable
               style={styles.rightButton}
               onPress={() => openCommonOptions()}>
               <BlurView
@@ -52,7 +52,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
                 isBlurring={dark}>
                 <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
               </BlurView>
-            </TouchableOpacity>
+            </Pressable>
           )}
         </View>
     </View>
@@ -61,9 +61,13 @@ export const CommonHeaderBar = (props: HeaderProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'stretch',
     width: '100%',
     position: 'absolute',
+    top: 0,
     backgroundColor: 'transparent',
+    zIndex: 99,
   },
   blur: {
     padding: 5,
@@ -74,11 +78,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   rightButton: {
+    height: 42,
     justifyContent: 'center',
     marginLeft: 10,
   },
   leftButton: {
-    position: 'absolute',
+    width: 42,
     left: 16,
     top: 10,
   },
@@ -88,10 +93,6 @@ const styles = StyleSheet.create({
     top: 10,
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  shareButton: {
-    position: 'absolute',
-    right: 0,
   },
   text: {
     ...text.h2Black,

@@ -17,7 +17,6 @@ import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes, rootStorePropTypes} from '~/Types/propTypes';
-import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {CurrencySymbols} from '~/Util/locale';
 import BillingDetailsService from '~/Services/BillingDetailsService';
 import PaymentService from '~/Services/PaymentsService';
@@ -225,8 +224,6 @@ const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
           backgroundColor: 'white',
         }}>
         <RequestStepHeaderTitle title="Billing Details" subtitle={subtitle} />
-
-        <PurpleBoxMessage message="Please note: currently, credit cards issued by Mastercard are not supported." />
 
         <TextInputField
           editable
