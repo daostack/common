@@ -97,6 +97,8 @@ export const AddBankAccountForm = ({
         errors,
         touched,
         setFieldValue,
+        setFieldTouched,
+        setFieldError,
         handleSubmit,
       }): ReactElement => (
         <>
@@ -278,15 +280,34 @@ export const AddBankAccountForm = ({
             {isAddingNew && (
               <>
                 <AddPhotoID
-                  error={touched.photoID && !!errors.photoID}
+                  error={errors && touched.photoID && !!errors.photoID}
                   onSelect={(photoID) => {
-                    setFieldValue('photoID', photoID);
+                    if (photoID) {
+                      setFieldValue('photoID', photoID);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('photoID', null);
+                      setFieldError('photoID', 'Please select a Photo ID');
+                    }
                   }}
                 />
                 <AddBankConfirmation
-                  error={touched.bankConfirmation && !!errors.bankConfirmation}
+                  error={
+                    errors &&
+                    touched.bankConfirmation &&
+                    !!errors.bankConfirmation
+                  }
                   onSelect={(bankConfirmation) => {
-                    setFieldValue('bankConfirmation', bankConfirmation);
+                    if (bankConfirmation) {
+                      setFieldValue('bankConfirmation', bankConfirmation);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('bankConfirmation', null);
+                      setFieldError(
+                        'photoID',
+                        'Please select a Bank Confirmation',
+                      );
+                    }
                   }}
                 />
               </>
