@@ -912,6 +912,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   members: currCommon?.members?.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,
+                  reservedBalance: currCommon.reservedBalance,
                 }}
               />
             </View>

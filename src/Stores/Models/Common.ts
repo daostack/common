@@ -17,6 +17,7 @@ export class Common implements ICommonEntity {
   name: string;
   image: string;
   balance: number;
+  reservedBalance: number;
   raised: number;
   fundingGoalDeadline: number;
   members: ICommonMember[];
@@ -30,6 +31,7 @@ export class Common implements ICommonEntity {
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;
     this.balance = newCommonInfo.balance;
+    this.reservedBalance = newCommonInfo.reservedBalance || 0;
     this.raised = newCommonInfo.raised;
     this.fundingGoalDeadline = newCommonInfo.fundingGoalDeadline;
     this.members = newCommonInfo.members;
