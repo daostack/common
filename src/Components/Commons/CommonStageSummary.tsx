@@ -45,7 +45,7 @@ const CommonStageSummary = ({
             </Text>
           }
           title={isCommonCard ? 'Raised' : 'Available funds'}
-          inProcess={isCommonCard ? null : reservedBalance}
+          inProcessFunds={isCommonCard ? null : reservedBalance}
         />
         <CommonNumberBox
           numberComponent={

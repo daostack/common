@@ -7,18 +7,18 @@ import {CurrencySymbols} from '~/Util/locale';
 interface Props {
   numberComponent: ReactNode;
   title: string;
-  inProcess?: number | null;
+  inProcessFunds?: number | null;
 }
 
 export const CommonNumberBox = observer(
-  ({numberComponent, title, inProcess}: Props): ReactElement => (
+  ({numberComponent, title, inProcessFunds}: Props): ReactElement => (
     <View style={styles.numberBoxContainer}>
       <Text style={styles.headerSmallText}>{title}</Text>
       <View style={styles.raisedContainer}>{numberComponent}</View>
-      {Number(inProcess) > 0 && (
-        <Text style={styles.inProcessText}>
+      {Number(inProcessFunds) > 0 && (
+        <Text style={styles.inProcessFundsText}>
           In process: {CurrencySymbols.SHEKEL}
-          {inProcess}
+          {inProcessFunds}
         </Text>
       )}
     </View>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   raisedContainer: {
     ...layout.flexRow,
   },
-  inProcessText: {
+  inProcessFundsText: {
     ...text.smallBlackText,
   },
 });
