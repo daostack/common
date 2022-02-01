@@ -1,29 +1,29 @@
 import {observer} from 'mobx-react';
-import {bool, InferProps, number, shape} from 'prop-types';
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {font, layout, text} from '~/Theme';
-import {uiStorePropTypes} from '~/Types/propTypes';
+import {UiStore} from '~/Types/store';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from './CommonNumberBox';
 
-const props = {
-  isCommonCard: bool,
-  uiStore: uiStorePropTypes.isRequired,
-  commonProgressInfo: shape({
-    time: number,
-    activeProposals: number,
-    goal: number,
-    members: number,
-    raised: number,
-    balance: number,
-  }),
-};
+interface Props {
+  isCommonCard: boolean;
+  uiStore: UiStore;
+  commonProgressInfo: {
+    time: number;
+    activeProposals: number;
+    goal: number;
+    members: number;
+    raised: number;
+    balance: number;
+    reservedBalance: number;
+  };
+}
 
-const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
+const CommonStageSummary = ({
   isCommonCard,
-  commonProgressInfo: {raised, balance, members},
-}) => {
+  commonProgressInfo: {raised, balance, members, reservedBalance},
+}: Props): ReactElement => {
   const formatNumber = (num: number) =>
     Math.abs(num) > 999
       ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
@@ -45,6 +45,7 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
             </Text>
           }
           title={isCommonCard ? 'Raised' : 'Available funds'}
+          inProcess={isCommonCard ? null : reservedBalance}
         />
         <CommonNumberBox
           numberComponent={
@@ -60,8 +61,6 @@ const CommonStageSummary: React.FC<InferProps<typeof props>> = ({
     </View>
   );
 };
-
-CommonStageSummary.propTypes = props;
 
 const styles = StyleSheet.create({
   commonProgressContainer: {
