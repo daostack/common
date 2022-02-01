@@ -13,6 +13,10 @@ export const styles = StyleSheet.create({
     height: 152,
     backgroundColor: colors.orangeBackgroundLight,
   },
+  bottomSheetContainer: {
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
   fundingImage: {
     aspectRatio: 1,
     height: 137,
@@ -54,7 +58,6 @@ export const styles = StyleSheet.create({
     borderColor: colors.grey4,
   },
   buttonTitle: {
-    marginLeft: 24,
     textAlign: 'center',
     fontSize: 16,
   },
