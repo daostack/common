@@ -72,6 +72,9 @@ const PaymentDetailsStep = ({
 
       currCard = cardStore.getCardById(cardId);
 
+      Toast.done();
+      Toast.hide();
+
       if (currCard.token) {
         navigation.navigate({
           name: 'FullScreenCreationLoader',
