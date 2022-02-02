@@ -16,6 +16,7 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
+import {layout} from '~/Theme';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
 import {validationSchema} from './validationSchema';
@@ -270,6 +271,7 @@ export const AddBankAccountForm = ({
             </View>
             <CountryDropdownField
               errorMessage={errors && touched.country && errors.country}
+              viewStyle={{...styles.textfieldView, ...layout.marginBottomS}}
               label="Country/Region"
               onChange={(countryValue) => {
                 setFieldValue('country', countryValue);

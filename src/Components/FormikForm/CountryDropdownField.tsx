@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
 import {colors, font, layout} from '~/Theme';
 import ValidationMessage from './ValidationMessage';
@@ -18,6 +18,7 @@ const countries = countryList.filter((country) => country.payout) as Country[];
 type Props = {
   onChange: (value: string) => void;
   label: string;
+  viewStyle?: ViewStyle | ViewStyle[];
   errorMessage?: string | boolean;
 };
 
@@ -30,6 +31,7 @@ function ErrorMessage({
 export const CountryDropdownField = ({
   onChange,
   label,
+  viewStyle,
   errorMessage,
 }: Props): ReactElement => {
   const [open, setOpen] = useState(false);
@@ -65,6 +67,7 @@ export const CountryDropdownField = ({
         searchPlaceholder="Country"
         arrowIconStyle={styles.arrowIconStyle}
         style={[
+          viewStyle,
           styles.dropdownInput,
           errorMessage ? {borderColor: colors.error} : {},
         ]}
