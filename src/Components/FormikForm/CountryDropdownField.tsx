@@ -74,7 +74,7 @@ export const CountryDropdownField = ({
         dropDownContainerStyle={styles.dropdownContainer}
       />
       {errorMessage && (
-        <View style={layout.marginTopXXS}>
+        <View style={[layout.marginTopXXS, styles.errorMessage]}>
           <ErrorMessage errorMessage={errorMessage} />
         </View>
       )}
@@ -102,5 +102,8 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     borderColor: '#eee',
+  },
+  errorMessage: {
+    alignSelf: 'flex-start',
   },
 });
