@@ -52,6 +52,7 @@ const CommonBox = ({
         // TODO: get this value. Is it even tracked in the contract? need to check.
         raised: common.raised,
         currentBudget: common.balance,
+        reservedBalance: common.reservedBalance,
       }}
     />
   </TouchableOpacity>
