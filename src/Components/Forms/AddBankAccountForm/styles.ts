@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 
@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     marginTop: 14,
     marginBottom: 4,
+    zIndex: 10,
   },
   text: {
     ...font.primary.regular,
@@ -51,7 +52,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    zIndex: 1000000,
     marginTop: 16,
     marginBottom: 10,
   },
@@ -64,12 +64,18 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     marginTop: 0,
+    ...(Platform.OS === 'android' && {zIndex: 10000}),
   },
   textfieldView: {
     alignSelf: 'stretch',
     marginTop: 12,
     flex: 1,
     paddingBottom: 0,
+    zIndex: 10,
+  },
+  fileSelectorBlock: {
+    width: '100%',
+    ...layout.marginTopS,
   },
   btn: {
     alignSelf: 'stretch',
