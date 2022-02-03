@@ -113,16 +113,12 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
                 </Text>
                 {notificationData.headerBold && (
                   <>
-                    <Text style={styles.whereStyle}>{' "'}</Text>
                     <Text style={styles.whereStyle}>
                       {notificationData.headerBold}
                     </Text>
                   </>
                 )}
               </Text>
-              {notificationData.headerBold && (
-                <Text style={styles.whereStyle}>{'"'}</Text>
-              )}
             </View>
           </View>
           <View style={styles.messageContainer}>
@@ -144,7 +140,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
                 notificationData.createdAt.toDate &&
                   notificationData.createdAt.toDate(),
               )}
-            {notificationData.common && (
+            {notificationData.common && !notificationData.hideCommonName && (
               <Text>{`, ${notificationData.common.name}`}</Text>
             )}
           </Text>

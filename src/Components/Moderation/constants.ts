@@ -8,10 +8,19 @@ export const TITLES = {
   comment: 'Comment',
 };
 
+export const ENTITY_TYPES = {
+  proposals: 'proposals',
+  proposal: 'proposal',
+  discussion: 'discussion',
+  discussionMessage: 'discussionMessage',
+};
+
 export const ACTIONS = {
   report: 'Report',
   show: 'Show',
   hide: 'Hide',
+  share: 'Share',
+  copyLink: 'Copy link',
 };
 
 export const FLAGS = {

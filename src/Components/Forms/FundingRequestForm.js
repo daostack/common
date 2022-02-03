@@ -1,14 +1,17 @@
+import {func, object, shape, bool} from 'prop-types';
 import React from 'react';
-import {View, Text} from 'react-native';
-import TextInputField from '../FormFields/TextInputField';
-import MultiImageField from '../FormFields/MultiImageField';
-import MultiFileField from '../FormFields/MultiFileField';
-import MultiTitleValueField from '../FormFields/MultiTitleValueField';
-import {layout, text, colors, font} from '~/Theme';
+import {Text, View} from 'react-native';
+import {inject, observer} from 'mobx-react';
+import {AddBankAccountField} from '~/Components/BankAccount/AddBankAccountField';
 import TextInputFieldWithIcon from '~/Components/FormFields/TextInputFieldWithIcon';
 import logger from '~/Services/Logger';
-import {func, shape, object} from 'prop-types';
+import {colors, font, layout, text} from '~/Theme';
 import {formatNumber} from '~/Util';
+import {CurrencySymbols} from '~/Util/locale';
+import MultiFileField from '../FormFields/MultiFileField';
+import MultiImageField from '../FormFields/MultiImageField';
+import MultiTitleValueField from '../FormFields/MultiTitleValueField';
+import TextInputField from '../FormFields/TextInputField';
 
 class FundingRequestForm extends React.Component {
   static FIELD_TITLE = 'title';
@@ -16,16 +19,7 @@ class FundingRequestForm extends React.Component {
   static FIELD_DESCRIPTION = 'description';
   static FIELD_LINKS = 'links';
   static FIELD_IMAGES = 'images';
-  static FIELD_FILES = 'files';
-
-  formSave = async (e) => {
-    const {fundingRequestFormStore} = this.props;
-    if (fundingRequestFormStore.isFormValid()) {
-      if (this.props.onFormSubmit) {
-        this.props.onFormSubmit(/* changedFields */);
-      }
-    }
-  };
+  static FIELD_FILES = '\files';
 
   onFormClose = (e) => {
     const {onFormClose} = this.props;
@@ -39,6 +33,7 @@ class FundingRequestForm extends React.Component {
       fundingRequestFormStore,
       common,
       navigation,
+      handleAddBankAccount,
       ...otherProps
     } = this.props;
 
@@ -66,12 +61,11 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_TITLE,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required',
+            validateRule: 'required|string',
           }}
         />
-
         <TextInputFieldWithIcon
-          iconName="dollar"
+          iconName="shekel"
           iconSize={12}
           iconStyle={{paddingRight: 5}}
           maxLength={5}
@@ -81,7 +75,7 @@ class FundingRequestForm extends React.Component {
           label="Funding amount requested"
           placeholderText="0"
           infoLabel="Required"
-          infoMessage={`Leave as $0 if no funds are requested. Common balance: $${balance}`}
+          infoMessage={`Leave as ${CurrencySymbols.SHEKEL}0 if no funds are requested. Common balance: ${CurrencySymbols.SHEKEL}${balance}`}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="numeric"
@@ -93,6 +87,13 @@ class FundingRequestForm extends React.Component {
               'The amount requested cannot be greater than the Common balance.',
           }}
         />
+        {this.props.rootStore.bankAccountStore?.data?.size === 0 && (
+          <AddBankAccountField
+            isAddingNew
+            hasError={this.props.hasBankAccountError}
+            onSubmit={handleAddBankAccount}
+          />
+        )}
 
         <TextInputField
           infoLabel="Required"
@@ -103,10 +104,9 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_DESCRIPTION,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: 'required',
+            validateRule: 'required|string',
           }}
         />
-
         <Text style={{...text.h3Black, ...{textAlign: 'left'}}}>
           Related Links
         </Text>
@@ -120,7 +120,6 @@ class FundingRequestForm extends React.Component {
           }}>
           Add links to resources and content related to your proposal
         </Text>
-
         <MultiTitleValueField
           link
           allowsEditing={true}
@@ -131,7 +130,6 @@ class FundingRequestForm extends React.Component {
             formStore: fundingRequestFormStore,
           }}
         />
-
         <Text
           style={{
             ...text.h3Black,
@@ -150,7 +148,6 @@ class FundingRequestForm extends React.Component {
           }}>
           Attach documents and files
         </Text>
-
         <MultiFileField
           allowsEditing={true}
           title={'Add File'}
@@ -161,7 +158,6 @@ class FundingRequestForm extends React.Component {
           }}
           navigation={navigation}
         />
-
         <Text
           style={{
             ...text.h3Black,
@@ -170,7 +166,6 @@ class FundingRequestForm extends React.Component {
           }}>
           Images
         </Text>
-
         <MultiImageField
           allowsEditing={true}
           title={'Add Image'}
@@ -193,6 +188,9 @@ FundingRequestForm.propTypes = {
   onFormSubmit: func,
   onFormClose: func,
   navigation: object,
+  handleAddBankAccount: func,
+  hasBankAccountError: bool,
+  rootStore: object,
 };
 
-export default FundingRequestForm;
+export default inject('rootStore')(observer(FundingRequestForm));

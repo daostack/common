@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {
-  TouchableOpacity,
   ScrollView,
   Dimensions,
   SafeAreaView,
   Animated,
-  StyleSheet,
-  View,
 } from 'react-native';
 import {inject} from 'mobx-react';
 import {
@@ -21,19 +18,18 @@ import {
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
-import NavigationBar from 'react-native-navbar';
-import Icon from '~/Assets/iconfont/Icon';
 import StepDotHeader from './StepDotHeader';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {uiStorePropTypes} from '~/Types/propTypes';
-import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-// import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
+import {StepDotHeaderBar} from '~/Components/Layouts/StepDotHeaderBar';
+
 const {width} = Dimensions.get('window');
 
 const props = {
   closeDialog: func,
   navigation: shape({
     popToTop: func.isRequired,
+    pop: func.isRequired,
   }).isRequired,
   stepDotHeaderTitle: string,
   navTitle: string,
@@ -56,16 +52,13 @@ const props = {
 
 const DOT_INFO_JOIN_REQUEST = [
   {
-    dotIconName: 'agenda-24',
-  },
-  {
     dotIconName: 'account-selected',
   },
   {
-    dotIconName: 'contribution-24',
+    dotIconName: 'agenda-24',
   },
   {
-    dotIconName: 'billing-details-24-copy-4',
+    dotIconName: 'contribution-24',
   },
   {
     dotIconName: 'wallet-24',
@@ -114,8 +107,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
       extrapolate: 'clamp',
     });
 
-    // const height = scrollY.value > 100 ? 125 : 0;
-    setHeaderHeight(height);
+    setHeaderHeight(height as Animated.Value);
   }, [scrollY]);
 
   const closeDialog = () => {
@@ -145,36 +137,10 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           flex: 1,
           backgroundColor: colors.white,
         }}>
-        <NavigationBar
-          statusBar={{hidden: true}}
-          style={{borderBottomWidth: 1, borderBottomColor: colors.grey4}}
-          title={{
-            title: navTitle,
-          }}
-          leftButton={
-            <TouchableOpacity
-              style={styles.navBtn}
-              onPress={() => navigation.pop()}>
-              <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-            </TouchableOpacity>
-          }
-          rightButton={
-            <View style={styles.rightButtonsContainer}>
-              <IntercomShowButton />
-              <TouchableOpacity
-                style={styles.navBtn}
-                onPress={() => {
-                  closeDialog();
-                }}>
-                <Icon
-                  name="close"
-                  size={18}
-                  style={{marginRight: 20}}
-                  color="black"
-                />
-              </TouchableOpacity>
-            </View>
-          }
+        <StepDotHeaderBar
+          title={navTitle || ''}
+          closeDialog={closeDialog}
+          onLeftPress={() => navigation.pop()}
         />
         <StepDotHeader
           title={stepDotHeaderTitle}
@@ -185,7 +151,6 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           totalDots={currDotInfo.length}
           onClose={closeDialog}
         />
-        {/* )} */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -201,7 +166,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollY}}}],
             {useNativeDriver: false},
-          )}>
+        )}>
           {layoutTitle}
           <StepHeader
             skipFirstDot={Boolean(skipFirstStep)}
@@ -219,15 +184,5 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
 };
 
 StepDotLayout.propTypes = props;
-
-const styles = StyleSheet.create({
-  navBtn: {
-    justifyContent: 'center',
-  },
-  rightButtonsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
 
 export default inject('uiStore')(StepDotLayout);

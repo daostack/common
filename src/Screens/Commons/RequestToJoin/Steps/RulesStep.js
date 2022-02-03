@@ -32,7 +32,7 @@ const RulesStep = ({
   const push = () => {
     if (pass) {
       const navigate = CommonActions.navigate({
-        name: 'IntroductionStep',
+        name: 'ContributionStep',
         params: {
           formStores,
           currDaoId: currDaoId,
@@ -49,7 +49,7 @@ const RulesStep = ({
       navigation={navigation}
       stepDotHeaderTitle="Accept Common Rules"
       navTitle={currCommon.name}
-      currentIndex={1}
+      currentIndex={2}
       layoutTitle={<MembershipRequest />}
       isRequestToJoin={true}
       onScrollEndDrag={onScrollToBottom}

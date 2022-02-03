@@ -14,7 +14,7 @@ import {func, object} from 'prop-types';
 import {BlurView} from '@react-native-community/blur';
 
 const ModalCommonDebt = ({onPressClose, children}) => (
-  <Pressable onPress={() => onPressClose()} style={styles.background}>
+  <Pressable onPress={() => onPressClose()}>
     <BlurView
       style={styles.blurView}
       blurType="light"
@@ -55,14 +55,11 @@ ModalCommonDebt.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: '100%',
-    backgroundColor: colors.blackOpacity,
-  },
   root: {
     paddingTop: 100,
     height: '100%',
     justifyContent: 'flex-end',
+    backgroundColor: colors.blackOpacity,
   },
   view: {
     backgroundColor: colors.white,

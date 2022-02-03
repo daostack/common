@@ -21,6 +21,12 @@ export interface ICommonEntity extends IBaseEntity {
   balance: number;
 
   /**
+   * Funds already in processing
+   * the common in shekels
+   */
+  reservedBalance: number;
+
+  /**
    * The total amount of funds that the
    * common has raised to date in cents
    */
@@ -104,6 +110,8 @@ export interface ICommonMetadata {
    * or only when they join
    */
   contributionType: ContributionType;
+
+  zeroContribution: boolean;
 }
 
 export type ContributionType = 'one-time' | 'monthly';
@@ -119,4 +127,16 @@ export type CommonRegister = 'na' | 'registered';
 export interface ICommonMember {
   userId: string;
   joinedAt?: firebase.firestore.Timestamp;
+}
+
+export interface CommonCreatedBody {
+  name: string;
+  image: string;
+  rules: ICommonRule[];
+  links: ICommonLink[];
+  byline: string;
+  description: string;
+  contributionType: ContributionType;
+  contributionAmount: number;
+  zeroContribution: boolean;
 }

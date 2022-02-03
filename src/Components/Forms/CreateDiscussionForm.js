@@ -4,9 +4,9 @@ import TextInputField from '../FormFields/TextInputField';
 import {inject} from 'mobx-react';
 import {colors, font, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast';
-import CreateDiscussionStore from '~/FormStores/CreateDiscussionStore';
+import CreateDiscussionStore from '~/Stores/FormStores/CreateDiscussionStore';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
-import {db} from '~Firebase';
+import {db} from '~/Firebase';
 import logger from '~/Services/Logger';
 import {string, func, shape, object} from 'prop-types';
 import {authStorePropTypes} from '~/Types/propTypes';
@@ -26,11 +26,9 @@ const CreateDiscussionForm = ({
 
   const formSave = async (e) => {
     try {
-      //const {createDiscussionStore, authStore} = this.props;
       if (createDiscussionStore.isFormValid()) {
         Keyboard.dismiss();
         const changedFields = createDiscussionStore.getChangedFormFieldsJson();
-        logger.log('createDiscussionStore', changedFields);
         Toast.loading('Creating new discussion ...');
         const images = changedFields[IMAGES] || [];
         const files = changedFields[FILES] || [];
@@ -64,12 +62,6 @@ const CreateDiscussionForm = ({
     }
   };
 
-  // const onFormClose = (e) => {
-  //   if (onFormClose) {
-  //     onFormClose();
-  //   }
-  // };
-
   return (
     <>
       <ScrollView style={{flex: 1}} contentContainerStyle={{padding: 24}}>
@@ -82,6 +74,7 @@ const CreateDiscussionForm = ({
             autoCapitalize="sentences"
             autoCorrect={false}
             style={styles.textInputStyle}
+            maxLength={49}
             validation={{
               name: TITLE,
               formStore: createDiscussionStore,

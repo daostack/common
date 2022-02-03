@@ -4,9 +4,11 @@ import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
-import Animated, {Easing} from 'react-native-reanimated';
+import Animated, {Easing as OldEasing, EasingNode} from 'react-native-reanimated';
 import {bool, object} from 'prop-types';
 import {uiStorePropTypes} from '~/Types/propTypes';
+
+const Easing = EasingNode || OldEasing;
 
 const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
   let ref = useRef();
@@ -129,6 +131,8 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: colors.white,
     zIndex: 6,
+    borderTopLeftRadius: 27,
+    borderTopRightRadius: 27,
   },
 
   contentContainerShadow: {

@@ -75,10 +75,7 @@ class FileField extends React.Component {
       // );
 
       Toast.loading('Uploading...');
-      const downloadUrl = await StorageService.getInstance().uploadFile(
-        res.uri,
-        res.name,
-      );
+      const downloadUrl = await StorageService.uploadFile(res.uri, res.name);
       logger.log('downloadUrl', downloadUrl);
       Toast.done('Success');
       this.onChangeValue(downloadUrl);
@@ -100,8 +97,9 @@ class FileField extends React.Component {
       : value;
 
     if (currValue) {
-      let fileName = currValue.split('_');
-      fileName = fileName[fileName.length - 2];
+      let splittedValue = currValue.split('%2F');
+      splittedValue = splittedValue[splittedValue.length - 1];
+      const fileName = splittedValue.split('?')[0];
 
       return (
         <View style={styles.adRow}>

@@ -8,6 +8,11 @@ import {
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
 
 import moment from 'moment';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
@@ -20,12 +25,13 @@ import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
 import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import DaoService from '~/Services/DaoService';
+import CommonService from '~/Services/CommonService';
 import CommonImage from '~/Components/Commons/CommonImage';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {escapeUrl} from '~/Util';
 import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
+import {CurrencySymbols} from '~/Util/locale';
 
 import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
 import logger from '~/Services/Logger';
@@ -60,6 +66,10 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
+  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+    ? '0'
+    : form[CreateCommonForm.MINIMUM];
+
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
@@ -71,15 +81,28 @@ const CreateStep4 = ({
     navigation.dispatch(navigate);
   };
 
-  const shareCommon = () => {
-    const {name} = generalInfoFormStore.getChangedFormFieldsJson();
-    const currCommonId = newCommonAddress.toLowerCase();
-    const options = {
-      url: `https://app.common.io/common/${currCommonId}`,
-      title: "Let's make it happen",
-      message: `${name} common`,
-    };
-    Share.open(options);
+  const shareCommon = async () => {
+    try {
+      const {name, description, image} = form;
+      const currCommonId = newCommonAddress.toLowerCase();
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommonId}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: name,
+          descriptionText: description,
+          imageUrl: image,
+        },
+      });
+      const options = {
+        url,
+        title: "Let's make it happen",
+        message: `${name} common`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
   };
 
   const forgeCommon = async () => {
@@ -118,14 +141,15 @@ const CreateStep4 = ({
         },
       });
 
-      const createCommonResponse = await DaoService.getInstance().createCommon(
+      const createCommonResponse = await CommonService.createCommon(
         formattedData,
       );
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
+        navigation.pop();
       } else {
-        //navigation.pop();
+        navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
@@ -140,9 +164,7 @@ const CreateStep4 = ({
   };
 
   const displayString = () =>
-    `${numberFormatter(form[CreateCommonForm.MINIMUM])}${
-      CONTRIBUTION[form.contribution]
-    }`;
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
 
   return (
     <StepDotLayout
@@ -215,7 +237,7 @@ const CreateStep4 = ({
               title="Min. Contribution"
               value={displayString()}
               contribution
-              amount={form[CreateCommonForm.MINIMUM]}
+              amount={minContribution}
             />
           </View>
 
@@ -266,7 +288,7 @@ const CreateStep4 = ({
                       url: x.value,
                     });
                   }}
-                  style={{...styles.linkText, flex: 'row'}}>
+                  style={{...styles.linkText, flexDirection: 'row'}}>
                   {x.title}
                 </Text>
               </View>
@@ -295,10 +317,14 @@ const CreateStep4 = ({
           <View style={styles.sectionTitle}>
             <Text style={styles.textTitle}>Minimum contribution</Text>
           </View>
-          <Text style={styles.textContent}>
-            ${form[CreateCommonForm.MINIMUM]}{' '}
-            <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} /> contribution
-          </Text>
+          {minContribution > 0 && (
+            <Text style={styles.textContent}>
+              {CurrencySymbols.SHEKEL}
+              {minContribution}{' '}
+              <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} />{' '}
+              contribution
+            </Text>
+          )}
           {form.zeroContribution && (
             <Text style={styles.textContent}>
               Members will be able to join the Common without a personal

@@ -1,0 +1,20 @@
+export enum POSITION_ARROW {
+  TOP_LEFT = 'topLeft',
+  TOP_CENTER = 'topCenter',
+  TOP_RIGHT = 'topRight',
+  BOTTOM_LEFT = 'bottomLeft',
+  BOTTOM_CENTER = 'bottomCenter',
+  BOTTOM_RIGHT = 'bottomRight',
+}
+
+export const POSITION_ARROW_TOP = [
+  POSITION_ARROW.TOP_LEFT,
+  POSITION_ARROW.TOP_CENTER,
+  POSITION_ARROW.TOP_RIGHT,
+];
+
+export const POSITION_ARROW_BOTTOM = [
+  POSITION_ARROW.BOTTOM_LEFT,
+  POSITION_ARROW.BOTTOM_CENTER,
+  POSITION_ARROW.BOTTOM_RIGHT,
+];

@@ -3,7 +3,9 @@ import {Text, StyleSheet} from 'react-native';
 import {string, bool} from 'prop-types';
 
 import {colors, font} from '~/Theme';
-import {convertAmountToIls, isIsraelLocale} from '~/Util/locale';
+import {
+  CurrencySymbols,
+} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 import {uiStorePropTypes} from '~/Types/propTypes';
 
@@ -45,15 +47,11 @@ const CreateStep4Indicators = ({
   <>
     <Text style={styles.text}>{title}</Text>
 
-    <Text style={styles.val}>{contribution ? `$${value}` : value}</Text>
+    <Text style={styles.val}>
+      {contribution ? `${CurrencySymbols.SHEKEL}${value}` : value}
+    </Text>
 
     {!contribution && <Text style={styles.date}>{date}</Text>}
-
-    {contribution && isIsraelLocale && amount && (
-      <Text style={styles.conversion}>
-        {convertAmountToIls(amount, uiStore.conversionRate)}
-      </Text>
-    )}
   </>
 );
 

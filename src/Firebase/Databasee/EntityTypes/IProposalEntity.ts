@@ -1,5 +1,5 @@
 import {IBaseEntity} from './IBaseEntity';
-import {ContributionType} from './ICommonEntity';
+import {ContributionType, ICommonLink} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
 
@@ -196,6 +196,16 @@ export interface IFundingRequestProposal extends IBaseProposalEntity {
   fundingRequest: IProposalFundingRequest;
 }
 
+export interface CreateFundingRequestProposalPayload {
+  commonId: string;
+  title: string;
+  description: string;
+  amount: number;
+  links?: ICommonLink[];
+  files?: string[];
+  images?: string[];
+}
+
 export interface IProposalJoin {
   /**
    *  The amount that will be contributed
@@ -246,7 +256,24 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
   join: IProposalJoin;
 }
 
+export interface InvoiceImage {
+  url: string;
+  mimeType: string;
+  amount: number;
+  name?: string;
+}
+
+export type InvoiceImageType = 'image' | 'file';
+
 export type ProposalType = 'join' | 'fundingRequest';
+
+export interface JoinRequestPayload {
+  commonId: string;
+  cardId?: string;
+  description: string;
+  funding: number;
+  links: ICommonLink[];
+}
 
 /**
  * The proposal base type. This is advanced typing that will change the

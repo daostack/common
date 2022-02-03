@@ -72,10 +72,12 @@ export const subscriptionsUrl = () => functionEndpoint('subscriptions');
 export const commonsUrl = () => functionEndpoint('commons');
 export const metadataUrl = () => functionEndpoint('metadata');
 export const proposalsUrl = () => functionEndpoint('proposals');
+export const cardsUrl = () => functionEndpoint('cards');
 export const votesUrl = () => functionEndpoint('votes');
 export const discussionsUrl = () => functionEndpoint('discussions');
 export const permissionsUrl = () => functionEndpoint('permissions');
 export const moderationUrl = () => functionEndpoint('moderation');
+export const payMeUrl = () => functionEndpoint('payments');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;

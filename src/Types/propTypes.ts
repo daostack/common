@@ -31,6 +31,13 @@ export const authStorePropTypes = shape({
   getPermission: func.isRequired,
 });
 
+export const cardStorePropTypes = shape({
+  getCardById: func,
+  userCardExists: func,
+  getEntityModel: func,
+  subscribeToCard: func,
+});
+
 export const userStorePropTypes = shape({
   subscribeToAllUsers: func.isRequired,
   getUserById: func.isRequired,
@@ -41,6 +48,7 @@ export const commonStorePropTypes = shape({
   getUserCommons: func.isRequired,
   getCommonById: func.isRequired,
   myCommons: array.isRequired,
+  updateCommonInfo: func.isRequired,
 });
 
 export const proposalStorePropTypes = shape({
@@ -71,6 +79,7 @@ export const notificationStorePropTypes = shape({
   getProposalNotificationData: func.isRequired,
   getParentDiscussion: func.isRequired,
   addWelcomeNotification: func.isRequired,
+  hasNewNotifications: bool.isRequired,
 });
 
 export const rootStorePropTypes = shape({
@@ -82,4 +91,5 @@ export const rootStorePropTypes = shape({
   discussionMessageStore: discussionMessageStorePropTypes.isRequired,
   notificationStore: notificationStorePropTypes.isRequired,
   uiStore: uiStorePropTypes.isRequired,
+  cardStore: cardStorePropTypes.isRequired,
 });

@@ -1,9 +1,5 @@
 import BaseStore from './BaseStore';
-import {
-  fetchDiscussionMessageById,
-  subscribeToDiscussionsMessages,
-  subscribeToProposalDiscussionMessages,
-} from '~/Services/ListServices/DiscussionMessageListService';
+import DiscussionMessageService from '~/Services/DiscussionMessageService';
 import {
   FirestoreUnsubscribeFn,
   IFirebaseDoc,
@@ -29,7 +25,7 @@ export default class DiscussionMessageStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       // Temporary logic for fetching Discussion Message in case it's not in the store.
-      fetchDiscussionMessageById(id)
+      DiscussionMessageService.fetchDiscussionMessageById(id)
         .then((discussion: IFirebaseDoc<IDiscussionMessageEntity>) => {
           if (discussion.exists) {
             runInAction(() => {
@@ -43,6 +39,7 @@ export default class DiscussionMessageStore extends BaseStore<
         .catch(() => {
           showBackendError({
             bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+            methodName: 'getDiscussionMessageById',
           });
         });
       return undefined;
@@ -64,6 +61,7 @@ export default class DiscussionMessageStore extends BaseStore<
     } catch (error) {
       showBackendError({
         bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+        methodName: 'getDiscussionMessagesByDiscussionId',
       });
       return;
     }
@@ -72,12 +70,18 @@ export default class DiscussionMessageStore extends BaseStore<
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,
   ): FirestoreUnsubscribeFn =>
-    subscribeToDiscussionsMessages(discussionIds, this.updateStoreData);
+    DiscussionMessageService.subscribeToDiscussionsMessages(
+      discussionIds,
+      this.updateStoreData,
+    );
 
   subscribeToProposalDiscussionMessages = (
     proposalId: string,
   ): FirestoreUnsubscribeFn =>
-    subscribeToProposalDiscussionMessages(proposalId, this.updateStoreData);
+    DiscussionMessageService.subscribeToProposalDiscussionMessages(
+      proposalId,
+      this.updateStoreData,
+    );
 
   // Overriden methods
   getEntityModel(entity: IDiscussionMessageEntity): DiscussionMessage {

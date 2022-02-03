@@ -4,6 +4,11 @@ import data from '../data';
 import {render, fireEvent} from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
 
+jest.mock('react-native-localize', () => ({
+  getLocales: jest.fn(),
+  getCountry: jest.fn(),
+}));
+
 test('when user did not agree with the statement,  should keep next button disabled', () => {
   const {getByText} = render(<UseAcknowledgment onPressAgree={jest.fn()} />);
   const continueFundingButton = getByText(data.continueFunding);

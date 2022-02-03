@@ -9,24 +9,26 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import {CommonBox, BottomRightButton} from '~/Components';
 import {inject, observer} from 'mobx-react';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {font, colors} from '~/Theme';
 import {object} from 'prop-types';
-
+import {CommonActions} from '@react-navigation/native';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {CommonActions} from '@react-navigation/native';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {useTimeoutFn} from '../../Util/hooks/useTimeoutFn';
-import Loader from '~/Components/Loader';
 
-const TIMEOUT = 1500;
+import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {font, colors} from '~/Theme';
+import {POSITION_ARROW} from '~/Util/constants/positionArrow.enum';
+import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {STORAGE_KEYS} from '~/Util/constants/storageKeys.enum';
+import {useVisitScreen} from '~/Util/hooks/useVisitScreen';
+
+const numberOfVisits = 3;
 
 const groupTitle = (title, arrLength) =>
   arrLength > 0 ? `${title} (${arrLength})` : '';
@@ -35,12 +37,18 @@ const CommonsList = ({navigation, rootStore}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
-  const [isLoading, setLoading] = useState(true);
-  const handleLoader = () => {
-    setLoading(false);
+  const [showModal, setShowModal] = useState(false);
+  const toggleModal = () => {
+    setShowModal((flag) => !flag);
   };
 
-  useTimeoutFn(handleLoader, TIMEOUT);
+  useVisitScreen({
+    signedInUser: authStore.signedInUser,
+    callback: toggleModal,
+    callbackDependencies: [],
+    storageKey: STORAGE_KEYS.VISIT_EXPLORE_COMMONS_DATA,
+    numberOfVisits,
+  });
 
   const myDaosGroup = {
     title: groupTitle('My Commons', commonStore.myCommons.length),
@@ -65,6 +73,8 @@ const CommonsList = ({navigation, rootStore}) => {
   }, [refreshing]);
 
   const onAddCommon = () => {
+    showModal && toggleModal();
+
     if (authStore.signedInUser) {
       navigation.navigate('CommonExplanation');
     } else {
@@ -72,6 +82,7 @@ const CommonsList = ({navigation, rootStore}) => {
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
         {
           message: 'Connect your account to join this Common',
+          goToNextScreen: () => navigation.navigate('CommonExplanation'),
         },
       );
     }
@@ -198,10 +209,25 @@ const CommonsList = ({navigation, rootStore}) => {
         ) : (
           <LoadingPlaceholder />
         )}
-
-        <BottomRightButton onPress={onAddCommon} />
+        <ModalPreview
+          showModal={showModal}
+          closeModal={toggleModal}
+          title="Create your own Common"
+          description="Tell the world, invite friends, and work together to achieve common
+        goals. Start now!"
+          positionArrow={POSITION_ARROW.BOTTOM_RIGHT}
+          arrowMarginRight={25}
+          modalPosition={{
+            bottom: TAB_BAR_HEIGHT + 84,
+            right: 6,
+          }}>
+          <BottomRightButton
+            onPress={onAddCommon}
+            bottom={showModal && TAB_BAR_HEIGHT + 12}
+            isInModal={showModal}
+          />
+        </ModalPreview>
       </SafeAreaView>
-      {isLoading && <Loader isBigger isFullScreen navigation={navigation} />}
     </>
   );
 };

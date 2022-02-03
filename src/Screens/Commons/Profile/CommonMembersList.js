@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import MemberCard from '~/Components/MemberCard';
 import {layout, sizeS, colors} from '~/Theme';
 import MemberImage from '~/Components/Commons/MemberImage';
@@ -14,15 +15,10 @@ import {
 } from 'rn-placeholder';
 import {rootStorePropTypes} from '~/Types/propTypes';
 
-const CommonMembersList = ({
-  navigation,
-  commonId,
-  limit,
-  horizontal,
-  rootStore,
-}) => {
+const CommonMembersList = ({commonId, limit, horizontal, rootStore}) => {
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
+  const navigation = useNavigation();
 
   const currCommon = commonStore.getCommonById(commonId);
   const membersInfo = userStore.getCommonUsersByMembersArray(

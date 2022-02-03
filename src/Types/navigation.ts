@@ -15,3 +15,11 @@ export interface WithNavigationRef {
 export interface WithNavigation {
   navigation: NavigationProps;
 }
+
+export type RouteProps<T> = {
+  params: T;
+  key: string;
+  name: string;
+};
+
+export type AddInvoicesRouteProps = RouteProps<{proposalId: string}>;

@@ -3,6 +3,7 @@ import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font} from '~/Theme';
 import ModalCommonDebt from './ModalCommonDebt';
+import {CurrencySymbols} from '~/Util/locale';
 
 const ModalDebtProposalError = ({onPressClose, amount}) => (
   <ModalCommonDebt onPressClose={onPressClose}>
@@ -11,7 +12,7 @@ const ModalDebtProposalError = ({onPressClose, amount}) => (
     </Text>
     <Text style={[styles.text, styles.centerText]}>
       <Text>
-        {`The Common balance is currently lower than $${amount} (the requested amount). \n
+        {`The Common balance is currently lower than ${CurrencySymbols.SHEKEL}${amount} (the requested amount). \n
 If the balance would still be insufficient when the proposal is decided, `}
       </Text>
       <Text style={{fontWeight: 'bold'}}>

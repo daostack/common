@@ -18,6 +18,7 @@ const RequestStepActionButton = ({
   onPress,
   title,
   isSticky = true,
+  disabled = false,
 }) => {
   let actionBtnStyle = styles.actionBtnContainer;
 
@@ -56,6 +57,7 @@ RequestStepActionButton.propTypes = {
   formStore: object,
   messageBox: object,
   isSticky: bool,
+  disabled: bool,
 };
 
 const styles = StyleSheet.create({

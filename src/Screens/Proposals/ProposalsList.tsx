@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ViewTabNoData from '~/Components/ViewTabNoData';
 import ProposalCard from '~/Components/Proposals/ProposalCard';
@@ -15,22 +16,19 @@ import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import {string, bool, number, shape, func, InferProps} from 'prop-types';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,
   isStageFilterHistory,
 } from '~/Stores/DataStores/ProposalStore';
-import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {useStore} from '~/Util/hooks/useStore';
 
 const {width, height} = Dimensions.get('window');
 
 const props = {
   // Required
-  navigation: shape({
-    navigate: func.isRequired,
-  }).isRequired,
   proposalFilter: shape({
     type: string.isRequired,
     stage: string.isRequired,
@@ -44,30 +42,28 @@ const props = {
   userInfo: shape({
     id: string,
   }),
+  hasPermission: string,
   showMax: number,
   isSwiper: bool,
   openCommonOptions: func,
   showHiddenNote: func,
   isMember: bool,
-
-  // Injected
-  rootStore: rootStorePropTypes.isRequired,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
   ({
-    navigation,
     proposalFilter,
     showMax,
     isSwiper,
     commonInfo,
     userInfo,
-    rootStore,
     openCommonOptions,
     showHiddenNote,
     isMember,
   }) => {
+    const rootStore = useStore('rootStore');
     const [viewerPermission, setViewerPermission] = React.useState('');
+    const navigation = useNavigation();
     const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
     let list: Proposal[] = [];
     if (commonInfo) {
@@ -126,6 +122,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             }
             isMember={isMember}
             viewerPermission={viewerPermission}
+            type={proposalFilter.type}
           />
         ) : (
           <TouchableOpacity
@@ -155,6 +152,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           }
           isMember={isMember}
           viewerPermission={viewerPermission}
+          type={proposalFilter.type}
         />
       );
 
@@ -293,4 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(ProposalsList);
+export default ProposalsList;

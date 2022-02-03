@@ -13,9 +13,15 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
+import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {TabView} from 'react-native-tab-view';
+import {TabView, SceneMap} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
@@ -40,36 +46,38 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {object, shape, func} from 'prop-types';
-import NavigationBar from 'react-native-navbar';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {BlurView} from '~/Components';
-import Logger from '~/Services/Logger';
+
 import moment from 'moment';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {reporterName, timeReported} from '~/Components/Moderation/Reported';
+import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import Toast from '~/Util/Toast.js';
-import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
+import Toast from '~/Util/Toast';
+import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 
 import {
   IntroduceYourselfFormStore,
   PersonalContributionFormStore,
   BillingDetailsFormStore,
   PaymentFormStore,
-} from '~/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/RequestToJoin';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {CurrencySymbols} from '~/Util/locale';
+import {CommonHeaderBar} from './CommonHeaderBar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const {width} = Dimensions.get('window');
 
-let stickyHeightAddon = 56;
-const STICKY_HEADER_HEIGHT =
-  Math.round(getStatusBarHeight(true)) + stickyHeightAddon;
+let stickyHeightAddon = 62;
+let statusBarHeight = Math.round(getStatusBarHeight(true));
+const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
 const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
@@ -80,6 +88,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   is this sth we plan on having in future?
    */
 
+  const insets = useSafeAreaInsets();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -89,9 +98,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -123,8 +131,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     },
   ]);
 
-  //const routeCommon = params.currCommon;
-  Logger.log('Common id ->', params.currCommon);
   const currCommon = commonStore.getCommonById(
     params.commonId || params.currCommon?.id,
   );
@@ -134,9 +140,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -148,9 +153,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -165,12 +169,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   useEffect(() => {
-    const unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
-      currCommon.id,
-    );
-    const unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-      currCommon.id,
-    );
+    let unsubscribeFromCommonProposals = null;
+    let unsubscribeFromCommonDiscussions = null;
+    if (currCommon?.id) {
+      unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
+        currCommon?.id,
+      );
+      unsubscribeFromCommonDiscussions =
+        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
+    }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
       unsubscribeFromCommonDiscussions && unsubscribeFromCommonDiscussions();
@@ -194,7 +201,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     let unsubscribe = null;
     let getPendingProposalsData = async () => {
-      unsubscribe = await ProposalService.getInstance().subscribeToPendingProposalsData(
+      unsubscribe = await ProposalService.subscribeToPendingProposalsData(
         commonId,
         authStore.userInfo?.uid,
         (data) => {
@@ -230,7 +237,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
       const getPendingProposalsDiscussionCount = async () => {
-        const count = await ProposalService.getInstance().getProposalDiscussionsCount(
+        const count = await ProposalService.getProposalDiscussionsCount(
           pendingProposalsData.usersPendingProposal.id,
         );
         if (userPendingPropDiscCount !== count) {
@@ -270,7 +277,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const Proposals = () => (
     <View style={{...styles.paleBackground, padding: sizeL}}>
       <Text style={text.h1BlackTitle}>Proposals</Text>
-
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -283,7 +289,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           type: PROPOSAL_TYPE.FundingRequest,
         }}
         openCommonOptions={(proposal) =>
-          openCommonOptions(proposal, TITLES.proposals)
+          openCommonOptions(proposal, ENTITY_TYPES.proposals)
         }
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -296,7 +302,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const History = () => (
     <View style={{...styles.paleBackground, ...{padding: sizeL}}}>
       <Text style={text.h1BlackTitle}>History</Text>
-
       <ProposalsList
         navigation={navigation}
         commonInfo={{
@@ -316,23 +321,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const renderScene = (scene) => {
-    switch (scene.route.key) {
-      case 'discussions':
-        return Discussions();
-      case 'proposals':
-        return Proposals();
-      case 'history':
-        return History();
-      default:
-        return null;
-    }
-  };
+  const renderScene = SceneMap({
+    discussions: Discussions,
+    proposals: Proposals,
+    history: History,
+  });
 
   const openAgendaScreen = () => {
-    navigation.navigate('CommonAgenda', {
-      screenTitle: currCommon.name,
-      common: currCommon,
+    navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
+      commonId: currCommon.id,
     });
   };
 
@@ -423,7 +420,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const openCommonMembers = (e) => {
+  const openCommonMembers = () => {
     navigation.navigate('CommonMembers', {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
@@ -436,20 +433,31 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = (event) => {
-    const options = {
-      url: `https://app.common.io/common/${currCommon.id}`,
-      title: "Let's make it happen",
-      message: `${currCommon.name} common`,
-    };
-    Share.open(options);
+  const shareCommon = async () => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: currCommon.name,
+          descriptionText: currCommon.metadata.description,
+          imageUrl: currCommon.image,
+        },
+      });
+      const options = {
+        url,
+        title: "Let's make it happen",
+        message: `${currCommon.name} common`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
   };
 
   const onEdit = (type) => {
     bottomSheetStore.hideBottomSheet();
-    type === 'info'
-      ? navigateTo('Edit info and cover photo')
-      : navigateTo('Edit Rules');
+    navigateTo(type);
   };
 
   /**
@@ -462,7 +470,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const onModerate = async (actionType, itemType = '', itemId = null) => {
     setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.getInstance().onModerate(
+    const resp = await ModerationService.onModerate(
       actionType,
       itemId,
       commonId,
@@ -490,7 +498,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
       {
         onAction: item
           ? (actionType) =>
@@ -499,6 +507,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         hasPermission,
         moderatorOptions: {
           item,
+          isMember,
         },
       },
     );
@@ -509,9 +518,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.getInstance().report(
+    await ModerationService.report(
       membershipRequestType(moderationType).toLowerCase(),
-      commonId,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -525,7 +533,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.HIDDEN_CONTENT_INFO,
       {
-        userName: reporterName(userStore.getUserById(moderation.moderator)),
+        userName: reporterName(
+          userStore.getUserById(moderation.moderator),
+          authStore.userInfo?.uid,
+        ),
         date: timeReported(moderation.updatedAt),
         reasons: moderation.reasons,
         moderatorNote: moderation?.moderatorNote,
@@ -538,10 +549,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const getType = (title) =>
     title === TITLES.proposals ? TITLES.proposalText : title;
 
-  const navigateTo = (screenTitle) => {
-    navigation.navigate('EditCommon', {
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
       currCommon: currCommon,
-      title: screenTitle,
+      type: type,
     });
   };
 
@@ -552,44 +563,36 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
   */
 
-  const calcShouldSkipRules = () => {
-    const rules = currCommon?.rules;
-    if (rules?.length > 0) {
-      // NOTE: value of multiple fields was stored in url prop before
-      return !rules.some((rule) => rule?.title && (rule?.value || rule.url));
-    } else {
-      return true;
-    }
-  };
+  const requestToJoin = () => {
+    const introduceYourselfFormStore = new IntroduceYourselfFormStore();
+    const paymentFormStore = new PaymentFormStore();
+    const personalContributionFormStore = new PersonalContributionFormStore();
+    const billingDetailsFormStore = new BillingDetailsFormStore();
 
-  const requestToJoin = (event) => {
-    if (authStore.userInfo) {
-      const shouldSkipRules = calcShouldSkipRules();
-
-      const introduceYourselfFormStore = new IntroduceYourselfFormStore();
-      const paymentFormStore = new PaymentFormStore();
-      const personalContributionFormStore = new PersonalContributionFormStore();
-      const billingDetailsFormStore = new BillingDetailsFormStore();
-
-      const navigate = CommonActions.navigate({
-        name: shouldSkipRules ? 'IntroductionStep' : 'RulesStep',
-        params: {
-          formStores: {
-            paymentFormStore,
-            introduceYourselfFormStore,
-            personalContributionFormStore,
-            billingDetailsFormStore,
-          },
-          currCommon: currCommon,
-          currDaoId: currCommon.id,
-          skipFirstStep: shouldSkipRules,
-          refreshFeed,
+    const navigate = CommonActions.navigate({
+      name: 'IntroductionStep', // #498 we always go to Introduction first
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
         },
-      });
+        currCommon: currCommon,
+        currDaoId: currCommon.id,
+        skipFirstStep: false,
+        refreshFeed,
+      },
+    });
+
+    if (authStore.userInfo) {
       navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          goToNextScreen: () => navigation.dispatch(navigate),
+        },
       );
     }
   };
@@ -715,54 +718,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   );
 
   const fixedHeaderHeight = () => (
-    <NavigationBar
-      statusBar={{hidden: true}}
-      containerStyle={{
-        ...styles.fixedSection,
-        ...{bottom: showStickyTabBar || isHeaderClosingInProgress ? 85 : 5},
-      }}
-      leftButton={
-        <TouchableOpacity
-          style={{justifyContent: 'center'}}
-          onPress={() => navigation.pop()}>
-          <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
-            <Icon
-              name="left-arrow"
-              size={32}
-              color={dark ? 'black' : 'white'}
-            />
-          </BlurView>
-        </TouchableOpacity>
-      }
-      rightButton={
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity
-            style={{justifyContent: 'center', marginRight: 10}}
-            onPress={shareCommon}>
-            <BlurView style={{padding: 5, borderRadius: 15}} isBlurring={dark}>
-              <Icon
-                name="share-32"
-                size={32}
-                color={dark ? 'black' : 'white'}
-              />
-            </BlurView>
-          </TouchableOpacity>
-          {hasPermission && (
-            <TouchableOpacity
-              style={{justifyContent: 'center', marginRight: 10}}
-              onPress={() => openCommonOptions()}>
-              <BlurView
-                style={{
-                  padding: 6,
-                  borderRadius: 15,
-                }}
-                isBlurring={dark}>
-                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
-              </BlurView>
-            </TouchableOpacity>
-          )}
-        </View>
-      }
+    <CommonHeaderBar
+      onLeftPress={() => navigation.pop()}
+      shareCommon={shareCommon}
+      openCommonOptions={openCommonOptions}
+      dark={dark}
+      hasPermission={hasPermission}
     />
   );
 
@@ -770,7 +731,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
-        ${currCommon.minFeeToJoinFormatted}
+        {CurrencySymbols.SHEKEL}
+        {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
         {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
         contribution
       </Text>
@@ -793,7 +755,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const stickyTabBarStyle = {
     position: 'absolute',
-    top: Platform.OS === 'android' ? -25 : 0,
+    top: Platform.OS === 'android' ? -25 : insets.top > 20 ? 25 : 0,
     width: '100%',
     paddingBottom: 5,
     zIndex: 1,
@@ -922,9 +884,11 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   />
                 </Animated.View>
                 <View key="sticky-header" style={styles.stickySection}>
-                  <Text style={styles.stickySectionText}>
-                    {currCommon.name}
-                  </Text>
+                  <View style={styles.stickyTextContainer}>
+                    <Text style={styles.stickySectionText} numberOfLines={1}>
+                      {currCommon.name}
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}
@@ -948,6 +912,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                   members: currCommon?.members?.length,
                   balance: currCommon.balance,
                   raised: currCommon.raised,
+                  reservedBalance: currCommon.reservedBalance,
                 }}
               />
             </View>
@@ -1198,7 +1163,6 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   stickySection: {
-    paddingBottom: 10,
     justifyContent: 'flex-end',
     height: STICKY_HEADER_HEIGHT,
     borderBottomWidth: 1,
@@ -1207,11 +1171,17 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   stickySectionText: {
-    paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    // paddingTop: Platform.OS === 'ios' ? 40 : 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     ...font.heading.bold,
-    fontSize: 20,
+    fontSize: 16,
     color: colors.black,
     textAlign: 'center',
+  },
+  stickyTextContainer: {
+    height: stickyHeightAddon,
+    justifyContent: 'center',
   },
   fixedSection: {
     width: '100%',

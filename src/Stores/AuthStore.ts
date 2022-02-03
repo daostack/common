@@ -1,11 +1,11 @@
-import {observable, action} from 'mobx';
+import {observable, action, makeObservable} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
 import AuthService from '~/Services/AuthService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
-import {subscribeToUser} from '~/Services/ListServices/UserListService';
+import UserService from '~/Services/UserService';
 import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
@@ -42,6 +42,7 @@ class AuthStore {
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
+    makeObservable(this);
   }
 
   // TODO: Create type for incoming user from firebase onAuthStateChanged and reuse the type
@@ -115,7 +116,7 @@ class AuthStore {
   getPermission = (commonId: string, userId: string): string => {
     try {
       const currCommon = this.rootStore.commonStore.getCommonById(commonId);
-      const memberObj = currCommon.members.find(
+      const memberObj = currCommon?.members.find(
         (member) => member.userId === userId,
       );
       if (currCommon?.metadata?.founderId === userId || memberObj?.permission) {
@@ -139,23 +140,23 @@ class AuthStore {
   // Private functions
   async _processUser(user: any) {
     this.unsubscribeFromUser && this.unsubscribeFromUser();
-    this.unsubscribeFromUser = subscribeToUser(
+    this.unsubscribeFromUser = UserService.subscribeToUser(
       user?.uid,
       async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
         const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
         if (isNewUser) {
-          const providerUserInfo = await AuthService.getInstance().getCurrentLoggedUser(
+          const providerUserInfo = await AuthService.getCurrentLoggedUser(
             user.providerData[0].providerId,
           );
           const userInfo = {
             ...user._user,
             ...{
-              firstName: providerUserInfo.user.givenName,
-              lastName: providerUserInfo.user.familyName,
+              firstName: providerUserInfo?.user.givenName,
+              lastName: providerUserInfo?.user.familyName,
             },
           };
-          AuthService.getInstance().createUser(userInfo);
+          AuthService.createUser(userInfo);
         } else {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
           NotificationService.saveTokenToDatabase();

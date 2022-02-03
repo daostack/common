@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 7,
     borderRadius: 4,
+    overflow: 'hidden',
   },
 });
 
