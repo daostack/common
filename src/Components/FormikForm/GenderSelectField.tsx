@@ -45,7 +45,7 @@ export const GenderSelectField = ({
   }, [value]);
 
   return (
-    <View style={[viewStyle, Platform.OS === 'android' ? {} : {zIndex: 10000}]}>
+    <View style={viewStyle}>
       {label && <Text style={styles.label}>{label}</Text>}
 
       <DropDownPicker
