@@ -15,7 +15,6 @@ import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 const CommonHome = ({rootStore}) => (
   <Tab.Navigator
     initialRouteName="Explore"
-    lazy={false}
     screenOptions={({route}) => ({
       headerShown: false,
       tabBarActiveTintColor: colors.mainBlue,
@@ -27,6 +26,7 @@ const CommonHome = ({rootStore}) => (
         shadowOpacity: 0.75,
         shadowRadius: 5,
         height: TAB_BAR_HEIGHT,
+        lazy: false,
       },
       tabBarIcon: ({focused}) => {
         switch (route.name) {
