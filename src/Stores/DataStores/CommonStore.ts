@@ -1,4 +1,4 @@
-import {computed} from 'mobx';
+import {computed, makeObservable} from 'mobx';
 import BaseStore from './BaseStore';
 import CommonService from '~/Services/CommonService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
@@ -13,6 +13,7 @@ import {runInAction} from 'mobx';
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   constructor(rootStore: RootStore) {
     super(rootStore);
+    makeObservable(this);
   }
 
   @computed
