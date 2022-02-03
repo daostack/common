@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   TextInputFocusEventData,
   View,
   ViewStyle,
