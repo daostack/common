@@ -45,7 +45,7 @@ export const GenderSelectField = ({
   }, [value]);
 
   return (
-    <View style={[styles.container, viewStyle]}>
+    <View style={viewStyle}>
       {label && <Text style={styles.label}>{label}</Text>}
 
       <DropDownPicker
@@ -54,6 +54,8 @@ export const GenderSelectField = ({
         items={items}
         closeOnBackPressed
         placeholder=""
+        listMode="SCROLLVIEW"
+        zIndex={10000}
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
@@ -74,10 +76,6 @@ export const GenderSelectField = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    zIndex: 1000000,
-  },
   label: {
     ...font.primary.regular,
     ...font.fontSize(2),

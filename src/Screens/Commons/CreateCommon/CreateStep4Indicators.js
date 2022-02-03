@@ -4,8 +4,6 @@ import {string, bool} from 'prop-types';
 
 import {colors, font} from '~/Theme';
 import {
-  convertAmountToIls,
-  isIsraelLocale,
   CurrencySymbols,
 } from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
