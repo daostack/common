@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   TextInputFocusEventData,
   View,
   ViewStyle,
@@ -108,7 +107,6 @@ function DatePickerInput({
             mask={'[00]/[00]/[0000]'}
             value={value}
           />
-          <TextInput />
 
           <Pressable hitSlop={ICON_HIT_SLOP} onPress={() => setOpen(true)}>
             <Icon name="calendar" />

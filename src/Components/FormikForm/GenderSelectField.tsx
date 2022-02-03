@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle, Platform} from 'react-native';
 import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
 import {colors, font, layout} from '~/Theme';
 import ValidationMessage from './ValidationMessage';
@@ -45,7 +45,7 @@ export const GenderSelectField = ({
   }, [value]);
 
   return (
-    <View style={[styles.container, viewStyle]}>
+    <View style={[viewStyle, Platform.OS === 'android' ? {} : {zIndex: 10000}]}>
       {label && <Text style={styles.label}>{label}</Text>}
 
       <DropDownPicker
@@ -54,6 +54,8 @@ export const GenderSelectField = ({
         items={items}
         closeOnBackPressed
         placeholder=""
+        listMode="SCROLLVIEW"
+        zIndex={10000}
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
@@ -74,10 +76,6 @@ export const GenderSelectField = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    zIndex: 1000000,
-  },
   label: {
     ...font.primary.regular,
     ...font.fontSize(2),

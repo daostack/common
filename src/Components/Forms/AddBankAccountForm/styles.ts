@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     marginTop: 14,
     marginBottom: 4,
+    zIndex: 10,
   },
   text: {
     ...font.primary.regular,
@@ -51,7 +52,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    zIndex: 1000000,
     marginTop: 16,
     marginBottom: 10,
   },
@@ -70,6 +70,11 @@ export const styles = StyleSheet.create({
     marginTop: 12,
     flex: 1,
     paddingBottom: 0,
+    zIndex: 10,
+  },
+  fileSelectorBlock: {
+    width: '100%',
+    ...layout.marginTopS,
   },
   btn: {
     alignSelf: 'stretch',
