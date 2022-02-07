@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import {
   LayoutAnimation,
   Dimensions,
@@ -98,9 +98,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -141,9 +140,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
+  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] =
+    useState(false);
 
   const [dark, setDark] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
@@ -155,9 +153,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
   const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
+  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] =
+    useState(false);
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -178,9 +175,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
         currCommon?.id,
       );
-      unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-        currCommon?.id,
-      );
+      unsubscribeFromCommonDiscussions =
+        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
     }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
@@ -236,7 +232,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         unsubscribe();
       }
     };
-  }, [commonId, isMember, authStore.userInfo]);
+  }, [commonId, isMember, authStore.userInfo?.uid]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -252,13 +248,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     }
   }, [pendingProposalsData]);
 
-  const renderTabBar = (props) => (
-    <TabBarRenderer
-      originRef={originTabBarRef}
-      jumpTo={originTabBarRef.current?.props?.jumpTo}
-      indexChange={setIndex}
-      {...props}
-    />
+  const renderTabBar = useCallback(
+    (props) => (
+      <TabBarRenderer
+        originRef={originTabBarRef}
+        jumpTo={originTabBarRef.current?.props?.jumpTo}
+        indexChange={setIndex}
+        {...props}
+      />
+    ),
+    [originTabBarRef],
   );
 
   const Discussions = () => (
@@ -325,11 +324,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = useMemo(
+    () =>
+      SceneMap({
+        discussions: Discussions,
+        proposals: Proposals,
+        history: History,
+      }),
+    [],
+  );
 
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
@@ -906,18 +909,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
-                commonProgressInfo={{
-                  time: currCommon.fundingGoalDeadline,
-                  activeProposals:
-                    currCommon.numberOfBoostedProposals +
-                    currCommon.numberOfPreBoostedProposals +
-                    currCommon.numberOfQueuedProposals,
-                  /* goal: currCommon.fundingGoal, */
-                  members: currCommon?.members?.length,
-                  balance: currCommon.balance,
-                  raised: currCommon.raised,
-                  reservedBalance: currCommon.reservedBalance,
-                }}
+                time={currCommon.fundingGoalDeadline}
+                activeProposals={
+                  currCommon.numberOfBoostedProposals +
+                  currCommon.numberOfPreBoostedProposals +
+                  currCommon.numberOfQueuedProposals
+                }
+                /* goal: currCommon.fundingGoal, */
+                members={currCommon?.members?.length}
+                balance={currCommon.balance}
+                raised={currCommon.raised}
+                reservedBalance={currCommon.reservedBalance}
               />
             </View>
 
