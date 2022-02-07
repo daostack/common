@@ -1,18 +1,20 @@
-import React, {useEffect} from 'react';
-import {View, Dimensions} from 'react-native';
+import {CommonActions} from '@react-navigation/native';
 import {inject} from 'mobx-react';
 import {observer} from 'mobx-react-lite';
-import {CommonActions} from '@react-navigation/native';
-import {string, func, bool, object, shape} from 'prop-types';
-import MembershipRequest from '../MembershipRequest';
+import {bool, func, object, shape, string} from 'prop-types';
+import React, {useEffect} from 'react';
+import {Dimensions, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {WebView} from 'react-native-webview';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {WebView} from 'react-native-webview';
 import ProposalService from '~/Services/ProposalService';
-import {escapeUrl} from '~/Util';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl, showErrorPopUp} from '~/Util';
+import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import Toast from '~/Util/Toast';
-import {showErrorPopUp} from '~/Util';
+import MembershipRequest from '../MembershipRequest';
+
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -33,6 +35,8 @@ const PaymentDetailsStep = ({
   const userInfo = rootStore.authStore.userInfo;
   const cardStore = rootStore.cardStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
+  const insets = useSafeAreaInsets();
 
   let currCard = cardStore.getCardById(cardId);
 
@@ -129,16 +133,19 @@ const PaymentDetailsStep = ({
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
       layoutTitle={<MembershipRequest />}>
-      <View style={{height: height / 2, width: '90%'}}>
-        {
-          <WebView
-            scalesPageToFit={false}
-            source={{uri: iFrameLink}}
-            onLoadEnd={(syntheticEvent) => {
-              Toast.done('All done!');
-            }}
-          />
-        }
+      <View
+        style={{
+          height:
+            height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
+          width: '90%',
+        }}>
+        <WebView
+          scalesPageToFit={false}
+          source={{uri: iFrameLink}}
+          onLoadEnd={(syntheticEvent) => {
+            Toast.done('All done!');
+          }}
+        />
       </View>
     </StepDotLayout>
   );
