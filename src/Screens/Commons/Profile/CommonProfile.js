@@ -768,6 +768,102 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     zIndex: 1,
   };
 
+  const renderBackground = useCallback(
+    () => (
+      <FastImage
+        source={{
+          uri: currCommon.image,
+        }}
+        style={{
+          width: width,
+          height: headerHeight,
+          backgroundColor: colors.grey4,
+        }}>
+        <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
+      </FastImage>
+    ),
+    [currCommon.image, headerHeight, width],
+  );
+
+  const renderForeground = useCallback(
+    () => (
+      <CommonHeader
+        isMember={isMember}
+        navigation={navigation}
+        headerHeightLayouted={headerHeightLayouted}
+        onHeaderMenuOpen={() => openCommonOptions()}
+        commonInfo={{
+          logo: currCommon.metadata?.avatar,
+          name: currCommon.name,
+          description: currCommon.description,
+          byline: currCommon.metadata?.byline,
+          cover: currCommon.image,
+        }}
+        common={currCommon}
+        canEdit={hasPermission}
+        onEdit={onEdit}
+      />
+    ),
+    [isMember, currCommon, hasPermission, headerHeightLayouted],
+  );
+
+  const renderStickyHeader = useCallback(
+    () => (
+      <View style={{height: '100%'}}>
+        <Animated.View style={[stickyTabBarStyle, slideUp]}>
+          <TabBarRenderer
+            navigationState={{index, routes}}
+            jumpTo={originTabBarRef.current?.props?.jumpTo}
+            parentRef={originTabBarRef}
+            indexChange={setIndex}
+          />
+        </Animated.View>
+        <View key="sticky-header" style={styles.stickySection}>
+          <View style={styles.stickyTextContainer}>
+            <Text style={styles.stickySectionText} numberOfLines={1}>
+              {currCommon.name}
+            </Text>
+          </View>
+        </View>
+      </View>
+    ),
+    [currCommon.name, originTabBarRef, index, routes],
+  );
+
+  const handleScrollEvent = (e) => {
+    setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
+    upperRequestToJoinBtnRef?.current?.measure(
+      (fx, fy, mWidth, height, px, py) => {
+        setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
+      },
+    );
+    stickyTabBarRef?.current?.measure((fx, fy, mWidth, height, px, py) => {
+      const isVisible = py < STICKY_HEADER_HEIGHT - 80;
+      if (isVisible !== showStickyTabBar) {
+        if (isVisible) {
+          setShowStickyTabBar(isVisible);
+          Animated.timing(stickyTabBarState.animation).stop();
+          Animated.timing(stickyTabBarState.animation, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }).start();
+        } else if (!isHeaderClosingInProgress) {
+          setIsHeaderClosingInProgress(true);
+          setShowStickyTabBar(isVisible);
+          Animated.timing(stickyTabBarState.animation).stop();
+          Animated.timing(stickyTabBarState.animation, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(({finished}) => {
+            setIsHeaderClosingInProgress(!finished);
+          });
+        }
+      }
+    });
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
       <ModerationModal
@@ -814,91 +910,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 : STICKY_HEADER_HEIGHT
             }
             parallaxHeaderHeight={headerHeight}
-            renderBackground={() => (
-              <FastImage
-                source={{
-                  uri: currCommon.image,
-                }}
-                style={{
-                  width: width,
-                  height: headerHeight,
-                  backgroundColor: colors.grey4,
-                }}>
-                <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
-              </FastImage>
-            )}
-            scrollEvent={(e) => {
-              setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
-              upperRequestToJoinBtnRef?.current?.measure(
-                (fx, fy, mWidth, height, px, py) => {
-                  setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
-                },
-              );
-              stickyTabBarRef?.current?.measure(
-                (fx, fy, mWidth, height, px, py) => {
-                  const isVisible = py < STICKY_HEADER_HEIGHT - 80;
-                  if (isVisible !== showStickyTabBar) {
-                    if (isVisible) {
-                      setShowStickyTabBar(isVisible);
-                      Animated.timing(stickyTabBarState.animation).stop();
-                      Animated.timing(stickyTabBarState.animation, {
-                        toValue: 1,
-                        duration: 200,
-                        useNativeDriver: true,
-                      }).start();
-                    } else if (!isHeaderClosingInProgress) {
-                      setIsHeaderClosingInProgress(true);
-                      setShowStickyTabBar(isVisible);
-                      Animated.timing(stickyTabBarState.animation).stop();
-                      Animated.timing(stickyTabBarState.animation, {
-                        toValue: 0,
-                        duration: 300,
-                        useNativeDriver: true,
-                      }).start(({finished}) => {
-                        setIsHeaderClosingInProgress(!finished);
-                      });
-                    }
-                  }
-                },
-              );
-            }}
-            renderForeground={() => (
-              <CommonHeader
-                isMember={isMember}
-                navigation={navigation}
-                headerHeightLayouted={headerHeightLayouted}
-                onHeaderMenuOpen={() => openCommonOptions()}
-                commonInfo={{
-                  logo: currCommon.metadata?.avatar,
-                  name: currCommon.name,
-                  description: currCommon.description,
-                  byline: currCommon.metadata?.byline,
-                  cover: currCommon.image,
-                }}
-                common={currCommon}
-                canEdit={hasPermission}
-                onEdit={onEdit}
-              />
-            )}
-            renderStickyHeader={() => (
-              <View style={{height: '100%'}}>
-                <Animated.View style={[stickyTabBarStyle, slideUp]}>
-                  <TabBarRenderer
-                    navigationState={{index, routes}}
-                    jumpTo={originTabBarRef.current?.props?.jumpTo}
-                    parentRef={originTabBarRef}
-                    indexChange={setIndex}
-                  />
-                </Animated.View>
-                <View key="sticky-header" style={styles.stickySection}>
-                  <View style={styles.stickyTextContainer}>
-                    <Text style={styles.stickySectionText} numberOfLines={1}>
-                      {currCommon.name}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            )}
+            renderBackground={renderBackground}
+            scrollEvent={handleScrollEvent}
+            renderForeground={renderForeground}
+            renderStickyHeader={renderStickyHeader}
             renderFixedHeader={fixedHeaderHeight}>
             {showPending && (
               <React.Fragment>
