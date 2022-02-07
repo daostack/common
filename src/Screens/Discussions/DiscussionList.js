@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -16,7 +16,6 @@ const DiscussionList = ({
   showHiddenNote,
   isMember,
 }) => {
-
   const list = rootStore.discussionStore.getCommonDiscussions(commonId);
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
@@ -25,9 +24,10 @@ const DiscussionList = ({
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   useEffect(() => {
-    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
-      list.map((discussion) => discussion.id),
-    );
+    const unsubscribeFromDiscussionMessages =
+      rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
+        list.map((discussion) => discussion.id),
+      );
     return () => {
       unsubscribeFromDiscussionMessages &&
         unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>
@@ -36,6 +36,8 @@ const DiscussionList = ({
     };
   }, [list]);
 
+  const keyExtractor = useCallback((data) => data.id, []);
+
   return (
     <>
       {list?.length > 0 ? (
@@ -43,6 +45,7 @@ const DiscussionList = ({
           maxToRenderPerBatch={5}
           initialNumToRender={5}
           data={list}
+          keyExtractor={keyExtractor}
           renderItem={({item}) => (
             <DiscussionCard
               key={item.id}

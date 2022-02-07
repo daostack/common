@@ -33,3 +33,13 @@ export const formatNumber = (number: string | number) => {
   number = `${parseFloat(number?.toString()).toLocaleString('en-US')}${dec}`;
   return number;
 };
+
+export const formatCommonNumber = (num: number) =>
+  Math.abs(num) > 999
+    ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
+    : isLessThanThousand(num);
+
+const isLessThanThousand = (num: number) =>
+  Number.isInteger(Math.sign(num) * Math.abs(num))
+    ? Math.sign(num) * Math.abs(num)
+    : (Math.sign(num) * Math.abs(num)).toFixed(2);

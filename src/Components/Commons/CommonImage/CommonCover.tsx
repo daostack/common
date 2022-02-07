@@ -1,16 +1,11 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-} from 'react-native';
+import {bool, func, InferProps, shape, string} from 'prop-types';
 import React, {useCallback} from 'react';
+import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
-import {layout, colors, text, font} from '~/Theme';
-import {bool, func, string, shape, InferProps} from 'prop-types';
+import {colors, layout} from '~/Theme';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {styles} from './styles';
 
 const props = {
   navigation: shape({
@@ -121,58 +116,5 @@ const CommonCover: React.FC<InferProps<typeof props>> = ({
 };
 
 CommonCover.propTypes = props;
-
-const styles = StyleSheet.create({
-  coverBackground: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  coverOverlay: {
-    paddingBottom: 20,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  headerContainerWrap: {
-    ...layout.flexRow,
-    width: '100%',
-  },
-  headerContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    ...layout.flexStart,
-    alignSelf: 'stretch',
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    paddingBottom: 0,
-    paddingTop: 35,
-  },
-  headerContainerCenterContent: {
-    justifyContent: 'center',
-  },
-  headerTitleWhite: {
-    ...font.fontSize(4),
-    ...font.heading.bold,
-    color: colors.white,
-  },
-  headerDescription: {
-    ...text.greyText,
-    fontWeight: '600',
-    color: colors.grey4,
-    textAlign: 'center',
-  },
-  headerContent: {
-    alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingBottom: 5,
-  },
-  headerViewAgenda: {
-    ...text.smallGreyText,
-    color: colors.grey4,
-    marginTop: 30,
-  },
-});
 
 export default CommonCover;

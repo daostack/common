@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -164,17 +164,35 @@ const CommonsList = ({navigation, rootStore}) => {
     // filterCommons();
   };
 
-  const navigateToCommon = (common) => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        currCommon: common,
-        refreshFeed,
-      },
-    });
+  const navigateToCommon = useCallback(
+    (common) => () => {
+      const navigate = CommonActions.navigate({
+        name: 'CommonProfile',
+        params: {
+          currCommon: common,
+          refreshFeed,
+        },
+      });
 
-    navigation.dispatch(navigate);
-  };
+      navigation.dispatch(navigate);
+    },
+    [],
+  );
+
+  const renderCommonCard = useCallback(
+    (data) => (
+      <CommonBox
+        common={data.item}
+        width="100%"
+        key={data.item.id}
+        navigation={navigation}
+        onPress={navigateToCommon(data.item)}
+      />
+    ),
+    [],
+  );
+
+  const keyExtractor = useCallback((data) => data.id, []);
 
   return (
     <>
@@ -188,20 +206,14 @@ const CommonsList = ({navigation, rootStore}) => {
             }
             ListHeaderComponent={header}
             contentContainerStyle={{paddingHorizontal: 20}}
-            renderItem={(x) => (
-              <CommonBox
-                common={x.item}
-                width="100%"
-                key={x.item.id}
-                navigation={navigation}
-                onPress={() => navigateToCommon(x.item)}
-              />
-            )}
-            keyExtractor={(x) => x.id}
+            renderItem={(x) => renderCommonCard(x)}
+            keyExtractor={keyExtractor}
+            removeClippedSubviews={true}
             stickySectionHeadersEnabled={true}
             renderSectionHeader={({section: {title}}) => sectionHeader(title)}
             ListFooterComponent={listFooter}
             initialNumToRender={4}
+            maxToRenderPerBatch={5}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
