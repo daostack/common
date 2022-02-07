@@ -1,10 +1,9 @@
-import {observer} from 'mobx-react';
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {font, layout, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from './CommonNumberBox';
-import {formatCommonNumber} from '~/Util/FormatUtil';
+import {formatMoney} from '~/Util/FormatUtil';
 
 interface Props {
   isCommonCard: boolean;
@@ -34,7 +33,7 @@ const CommonStageSummary = ({
         numberComponent={
           <Text style={styles.headerTitle}>
             {CurrencySymbols.SHEKEL}
-            {formatCommonNumber(isCommonCard ? raised / 100 : balance / 100)}
+            {formatMoney(isCommonCard ? raised / 100 : balance / 100)}
           </Text>
         }
         title={isCommonCard ? 'Raised' : 'Available funds'}
@@ -45,7 +44,7 @@ const CommonStageSummary = ({
           <Text style={styles.headerTitle}>
             {isCommonCard
               ? members
-              : CurrencySymbols.SHEKEL + formatCommonNumber(raised / 100)}
+              : CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
           </Text>
         }
         title={isCommonCard ? 'Members' : 'Raised'}

@@ -34,7 +34,7 @@ export const formatNumber = (number: string | number) => {
   return number;
 };
 
-export const formatCommonNumber = (num: number) =>
+export const formatMoney = (num: number) =>
   Math.abs(num) > 999
     ? (Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'K'
     : isLessThanThousand(num);
