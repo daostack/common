@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import {
   LayoutAnimation,
   Dimensions,
@@ -232,7 +232,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         unsubscribe();
       }
     };
-  }, [commonId, isMember, authStore.userInfo]);
+  }, [commonId, isMember, authStore.userInfo?.uid]);
 
   useEffect(() => {
     if (pendingProposalsData && pendingProposalsData.usersPendingProposal) {
@@ -248,13 +248,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     }
   }, [pendingProposalsData]);
 
-  const renderTabBar = (props) => (
-    <TabBarRenderer
-      originRef={originTabBarRef}
-      jumpTo={originTabBarRef.current?.props?.jumpTo}
-      indexChange={setIndex}
-      {...props}
-    />
+  const renderTabBar = useCallback(
+    (props) => (
+      <TabBarRenderer
+        originRef={originTabBarRef}
+        jumpTo={originTabBarRef.current?.props?.jumpTo}
+        indexChange={setIndex}
+        {...props}
+      />
+    ),
+    [originTabBarRef],
   );
 
   const Discussions = () => (
@@ -321,11 +324,15 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </View>
   );
 
-  const renderScene = SceneMap({
-    discussions: Discussions,
-    proposals: Proposals,
-    history: History,
-  });
+  const renderScene = useMemo(
+    () =>
+      SceneMap({
+        discussions: Discussions,
+        proposals: Proposals,
+        history: History,
+      }),
+    [],
+  );
 
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
@@ -902,18 +909,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
             <View style={{paddingVertical: sizeS}}>
               <CommonStageSummary
-                commonProgressInfo={{
-                  time: currCommon.fundingGoalDeadline,
-                  activeProposals:
-                    currCommon.numberOfBoostedProposals +
-                    currCommon.numberOfPreBoostedProposals +
-                    currCommon.numberOfQueuedProposals,
-                  /* goal: currCommon.fundingGoal, */
-                  members: currCommon?.members?.length,
-                  balance: currCommon.balance,
-                  raised: currCommon.raised,
-                  reservedBalance: currCommon.reservedBalance,
-                }}
+                time={currCommon.fundingGoalDeadline}
+                activeProposals={
+                  currCommon.numberOfBoostedProposals +
+                  currCommon.numberOfPreBoostedProposals +
+                  currCommon.numberOfQueuedProposals
+                }
+                /* goal: currCommon.fundingGoal, */
+                members={currCommon?.members?.length}
+                balance={currCommon.balance}
+                raised={currCommon.raised}
+                reservedBalance={currCommon.reservedBalance}
               />
             </View>
 
