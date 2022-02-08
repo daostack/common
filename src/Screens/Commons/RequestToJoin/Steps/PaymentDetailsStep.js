@@ -137,7 +137,7 @@ const PaymentDetailsStep = ({
         style={{
           height:
             height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
-          width: '90%',
+          width: '100%',
         }}>
         <WebView
           scalesPageToFit={false}
