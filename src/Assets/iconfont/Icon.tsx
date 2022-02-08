@@ -104,7 +104,14 @@ import IconrightArrow from './IconrightArrow';
 import IcondownArrow from './IcondownArrow';
 import IconupArrow from './IconupArrow';
 import Icongoogle from './Icongoogle';
+import IconAddAvatar from './IconAddAvatar';
+import IconAddAvatarApproved from './IconAddAvatarApproved';
+import IconAddDocument from './IconAddDocument';
+import IconAddDocumentApproved from './IconAddDocumentApproved';
 import {IconShekel} from './IconShekel';
+import IconCamera from './IconCamera';
+import IconNoImage from './IconNoImage';
+import IconCalendar from './IconCalendar';
 
 export type IconNames =
   | 'lifebuoy-32'
@@ -207,7 +214,14 @@ export type IconNames =
   | 'down-arrow'
   | 'up-arrow'
   | 'google'
-  | 'shekel';
+  | 'shekel'
+  | 'camera'
+  | 'noimage'
+  | 'add-avatar'
+  | 'add-avatar-approved'
+  | 'add-document'
+  | 'add-document-approved'
+  | 'calendar';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -419,6 +433,20 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Icongoogle {...rest} />;
     case 'shekel':
       return <IconShekel {...rest} />;
+    case 'camera':
+      return <IconCamera {...rest} />;
+    case 'noimage':
+      return <IconNoImage {...rest} />;
+    case 'add-avatar':
+      return <IconAddAvatar {...rest} />;
+    case 'add-avatar-approved':
+      return <IconAddAvatarApproved {...rest} />;
+    case 'add-document':
+      return <IconAddDocument {...rest} />;
+    case 'add-document-approved':
+      return <IconAddDocumentApproved {...rest} />;
+    case 'calendar':
+      return <IconCalendar {...rest} />;
   }
 
   return null;

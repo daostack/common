@@ -8,6 +8,11 @@ import {
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {StackActions} from '@react-navigation/native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
 
 import moment from 'moment';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
@@ -76,15 +81,28 @@ const CreateStep4 = ({
     navigation.dispatch(navigate);
   };
 
-  const shareCommon = () => {
-    const {name} = generalInfoFormStore.getChangedFormFieldsJson();
-    const currCommonId = newCommonAddress.toLowerCase();
-    const options = {
-      url: `https://app.common.io/common/${currCommonId}`,
-      title: "Let's make it happen",
-      message: `${name} common`,
-    };
-    Share.open(options);
+  const shareCommon = async () => {
+    try {
+      const {name, description, image} = form;
+      const currCommonId = newCommonAddress.toLowerCase();
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommonId}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: name,
+          descriptionText: description,
+          imageUrl: image,
+        },
+      });
+      const options = {
+        url,
+        title: "Let's make it happen",
+        message: `${name} common`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
   };
 
   const forgeCommon = async () => {
@@ -129,15 +147,16 @@ const CreateStep4 = ({
 
       if (createCommonResponse.status === 200) {
         setNewCommonAddress(createCommonResponse.data.id);
+        navigation.pop();
       } else {
-        //navigation.pop();
+        navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
 
       return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
       //navigation.pop();
-      console.log('error -> ', e);
+      logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
       navigation.pop();

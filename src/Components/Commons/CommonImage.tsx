@@ -12,12 +12,13 @@ import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors, font} from '~/Theme';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
-import {handlePermission} from '~/Util/Permissions';
+import {handlePermission, requestAndroidCameraPermission} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
 import {number, string, shape, func, InferProps} from 'prop-types';
+import {ModalUploadFile} from '~/Screens/Proposals/components/ModalUploadFile';
 
 const props = {
   width: number.isRequired,
@@ -42,6 +43,8 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
     onImageChanged = null,
   }) => {
     const [templateIndex, setTemplateIndex] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isBottomModalVisible, setIsBottomModalVisible] = useState(false);
 
     //set default value for Image field
     useEffect(() => {
@@ -68,21 +71,21 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
 
     const pickImage = async () => {
       const options = {
-        title: 'Select profile image',
+        mediaType: 'photo',
         quality: 0.7,
         allowsEditing: false,
       };
-      ImagePicker.showImagePicker(options, async (response) => {
+      launchImageLibrary(options, async (response) => {
         if (response.didCancel) {
           logger.log('User cancelled image picker');
-        } else if (response.error) {
+        } else if (response.errorMessage) {
           // only for ios because android handles this
           Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.error);
-          logger.log('ImagePicker Error: ', response.error);
+          Toast.error(response.errorMessage);
+          logger.log('ImagePicker Error: ', response.errorMessage);
         } else {
           Toast.loading('Uploading...');
-          StorageService.uploadImage(response.uri)
+          StorageService.uploadImage(response?.assets[0]?.uri)
             .then((url: string) => {
               Toast.hide();
               Toast.success('Done');
@@ -91,7 +94,49 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
             })
             .catch((error: Error) => Toast.error(error));
         }
+        closeSheet();
       });
+    };
+
+    const takePhoto = () => {
+      setIsLoading(true);
+      const options = {
+        cameraType: 'front',
+        mediaType: 'photo',
+      };
+      launchCamera(options, async (response) => {
+        if (response.didCancel) {
+          logger.log('User cancelled image picker');
+        } else if (response.errorCode) {
+          Toast.error(response.errorCode);
+          logger.log('ImagePicker Error: ', response.errorCode);
+        } else if (response.errorMessage) {
+          // only for ios because android handles this
+          Platform.OS === 'ios' && (await handlePermission());
+          Toast.error(response.errorMessage);
+          logger.log('ImagePicker Error Message: ', response.errorMessage);
+        } else {
+          Toast.loading('Uploading...');
+          StorageService.uploadImage(response?.assets[0]?.uri)
+            .then((url: string) => {
+              Toast.hide();
+              Toast.success('Done');
+              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+              onImageChanged && onImageChanged();
+            })
+            .catch((error: Error) => Toast.error(error));
+        }
+        setIsLoading(false);
+        closeSheet();
+      });
+    };
+
+    const onTakePhotoPress = async () => {
+      if (Platform.OS === 'android') {
+        requestAndroidCameraPermission(takePhoto);
+      } else {
+        takePhoto();
+      }
     };
 
     const changeIndex = (currrNumber: number) => {
@@ -109,6 +154,14 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
       onImageChanged && onImageChanged();
     };
 
+    const closeSheet = () => {
+      setIsBottomModalVisible(false);
+    };
+
+    const openSheet = () => {
+      setIsBottomModalVisible(true);
+    };
+
     return (
       <View
         style={{
@@ -116,6 +169,13 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
           justifyContent: 'center',
           alignItems: 'center',
         }}>
+        <ModalUploadFile
+          isVisible={isBottomModalVisible}
+          closeSheet={closeSheet}
+          pickImage={pickImage}
+          launchCamera={onTakePhotoPress}
+          isLoading={isLoading}
+        />
         <Image
           style={{
             position: 'absolute',
@@ -130,7 +190,7 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
         />
         <TouchableOpacity
           style={styles.pickImageButton}
-          onPress={() => pickImage()}>
+          onPress={openSheet}>
           <Text style={styles.pickImageText}>Select or upload cover image</Text>
           <BlurView style={styles.pickImageIcon}>
             <Icon name={'addpicture'} color="white" size={20} />

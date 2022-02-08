@@ -34,6 +34,7 @@ const ContributionStep = ({
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
+  const minFeeFormatted = currCommon.minFeeToJoinFormatted();
 
   const onCustomClose = (e) => {
     setIsActionBtnHidden(true);
@@ -76,29 +77,24 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-      {
+    const createRequestToJoinResponse =
+      await ProposalService.createRequestToJoin({
         ...data,
-      },
-    );
+      });
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;
 
       navigation.pop();
-      const navigate = CommonActions.navigate({
+
+      navigation.navigate({
         name: 'CommonProfile',
         params: {
+          currCommon: currCommon,
           showRequestSentModal: true,
           createdProposalId: proposalId,
         },
       });
-
-      if (typeof refreshFeed === 'function') {
-        refreshFeed();
-      }
-
-      navigation.dispatch(navigate);
     } else {
       navigation.pop();
       showErrorPopUp(uiStore.bottomSheetStore, createRequestToJoinResponse);
@@ -107,29 +103,28 @@ const ContributionStep = ({
 
   const navigateToRequestStep4 = async () => {
     let cardId = null;
-    let skipPaymentStep = false;
+    let link = null;
     Toast.loading('One moment please');
     const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
     if (card) {
       cardId = card.id;
-      skipPaymentStep = true;
     } else {
       cardId = v4();
+      const {data} = await PaymentService.createBuyerTokenPage(cardId);
+      link = data.link;
     }
 
-    const {data} = await PaymentService.createBuyerTokenPage(cardId);
     navigation.dispatch(
       CommonActions.navigate({
         name: 'PaymentDetailsStep',
         params: {
           formStores,
-          currDaoId: currDaoId,
+          commonId: currDaoId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
-          iFrameLink: data.link,
+          iFrameLink: link,
           cardId,
-          skipPaymentStep,
         },
       }),
     );
@@ -169,10 +164,10 @@ const ContributionStep = ({
 
   const contributeMessage = 'Select the amount you would like to contribute';
   const minContributionMessage = isMonthly
-    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted}/mo min.)`
+    ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${minFeeFormatted}/mo min.)`
     : `${contributeMessage} ${
-        currCommon.minFeeToJoinFormatted !== 0
-          ? `(${CurrencySymbols.SHEKEL}${currCommon.minFeeToJoinFormatted} min.)`
+        minFeeFormatted !== 0
+          ? `(${CurrencySymbols.SHEKEL}${minFeeFormatted} min.)`
           : ''
       }`;
 
@@ -224,7 +219,7 @@ const ContributionStep = ({
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={currCommon.minFeeToJoinFormatted}
+          minFeeToJoin={currCommon.minFeeToJoinFormatted(true)}
           zeroContribution={zeroContribution}
         />
 

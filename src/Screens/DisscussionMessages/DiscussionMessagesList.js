@@ -1,54 +1,47 @@
-import React, {useRef, useEffect, useCallback, useState} from 'react';
-import {
-  Text,
-  StyleSheet,
-  SectionList,
-  View,
-  Image,
-  Dimensions,
-} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
-import {text, colors, font} from '~/Theme';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import moment from 'moment';
-import logger from '../../Services/Logger';
-import PropTypes, {string, bool, func} from 'prop-types';
+import PropTypes, {bool, func, string} from 'prop-types';
+import React, {useRef} from 'react';
+import {
+  Image,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import logger from '../../Services/Logger';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
+import {useStore} from '~/Util/hooks/useStore';
 
 const DiscussionMessagesList = ({
   discussionId,
-  rootStore,
+  scrollViewRef,
   hasPermission,
   commonId,
   openMessageOptions,
   isMember,
   inputHeight,
-  isSending,
 }) => {
-  const scrollRef = useRef(null);
+  const chatRef = useRef(null);
+  const rootStore = useStore('rootStore');
   const discussionMessageStore = rootStore.discussionMessageStore;
-  const [lastMessagePoint, setLastMessagePoint] = useState(0);
-  const [msgGroups, setMsgGroups] = useState([]);
 
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
     auth()?.currentUser?.uid,
   );
 
-  useEffect(() => {
-    getLastPosition();
-    const messageGroups = discussionMessageStore
+  const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
       date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
       data: msg,
     }))
-    .reverse()
     .reduce((acc, curr) => {
-      var key = curr.date;
+      const key = curr.date;
       let el = acc.find((x) => x && x.date === key);
       if (el) {
         el.data.push(curr.data);
@@ -60,91 +53,59 @@ const DiscussionMessagesList = ({
       }
       return acc;
     }, []);
-    setMsgGroups(messageGroups);
-  }, [isSending]);
-
-  const getLastPosition = async () => {
-    try {
-      const lastMessageNum = await AsyncStorage.getItem(discussionId);
-      setLastMessagePoint(lastMessageNum);
-    } catch {
-      setLastMessagePoint(0);
-    }
-  };
-
-  const setPosition = async (event) => {
-    getLastPosition();
-    event.persist();
-    if (lastMessagePoint < event.nativeEvent.contentOffset.y) {
-      try {
-        await AsyncStorage.setItem(discussionId, event.nativeEvent.contentOffset.y.toString());
-      } catch (e) {
-        logger.log('error', e);
-      }
-    }
-  };
-
-  const onSizeChange = useCallback(() => {
-    if (scrollRef) {
-      scrollRef?.current?.getScrollResponder()?.scrollTo({x: 0, y: Number(lastMessagePoint), animated: true});
-    }
-  }, [scrollRef, msgGroups, lastMessagePoint]);
 
   return (
-      <View style={[styles.viewContainer, {marginBottom: inputHeight}]}>
-        {msgGroups.length > 0 ? (
-          <SectionList
-            scrollEventThrottle={100}
-            onScrollEndDrag={setPosition}
-            onMomentumScrollEnd={setPosition}
-            ref={scrollRef}
-            sections={msgGroups}
-            keyExtractor={(x) => x.id}
-            stickySectionHeadersEnabled={true}
-            contentContainerStyle={{
-              width: Dimensions.get('screen').width * 0.9,
-            }}
-            renderItem={(x) => (
-              <DiscussionMessage
-                data={x.item}
-                showCurrentUserAvatar
-                hasPermission={hasPermission}
-                viewerPermission={viewerPermission}
-                commonId={commonId}
-                openMessageOptions={() => openMessageOptions(x.item)}
-                isMember={isMember}
-              />
-            )}
-            onScrollToIndexFailed={(info) => {
-              logger.error('Something bad happened: ', info);
-            }}
-            renderSectionHeader={({section: {date}}) => (
-              <View style={styles.timeHeaderContainer}>
-                <Text style={styles.timeHeader}>
-                  {moment().isSame(date, 'day') ? 'Today' : date}
-                </Text>
-              </View>
-            )}
-            onContentSizeChange={onSizeChange}
-          />
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Image
-              source={require('~/Assets/empty-discussion.png')}
-              style={{
-                width: 240,
-                height: 240,
-              }}
+    <View style={[styles.viewContainer]}>
+      {msgGroups.length > 0 ? (
+        <SectionList
+          inverted
+          ref={chatRef}
+          sections={msgGroups}
+          keyExtractor={(x) => x.id}
+          stickySectionHeadersEnabled={true}
+          contentContainerStyle={{
+            paddingTop: 16,
+          }}
+          renderItem={(x) => (
+            <DiscussionMessage
+              data={x.item}
+              showCurrentUserAvatar
+              hasPermission={hasPermission}
+              viewerPermission={viewerPermission}
+              commonId={commonId}
+              openMessageOptions={() => openMessageOptions(x.item)}
+              isMember={isMember}
             />
+          )}
+          onScrollToIndexFailed={(info) => {
+            logger.error('Something bad happened: ', info);
+          }}
+          renderSectionFooter={({section: {date}}) => (
+            <View style={styles.timeHeaderContainer}>
+              <Text style={styles.timeHeader}>
+                {moment().isSame(date, 'day') ? 'Today' : date}
+              </Text>
+            </View>
+          )}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Image
+            source={require('~/Assets/empty-discussion.png')}
+            style={{
+              width: 240,
+              height: 240,
+            }}
+          />
 
-            <Text style={styles.emptyTitle}>No comments yet</Text>
-            <Text style={styles.emptyBody}>
-              Have any thoughts? Share them with other members by adding the first
-              comment.
-            </Text>
-          </View>
-        )}
-      </View>
+          <Text style={styles.emptyTitle}>No comments yet</Text>
+          <Text style={styles.emptyBody}>
+            Have any thoughts? Share them with other members by adding the first
+            comment.
+          </Text>
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -152,14 +113,12 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
-  rootStore: rootStorePropTypes.isRequired,
   hasPermission: string,
   commonId: string,
   action: func,
   openMessageOptions: func,
   isMember: bool,
   inputHeight: string,
-  isSending: bool,
 };
 
 const styles = StyleSheet.create({
@@ -171,6 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     paddingHorizontal: 20,
+    marginTop: 16,
   },
   timeHeader: {
     textAlign: 'center',
@@ -197,8 +157,9 @@ const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
     backgroundColor: colors.paleLilacTwo,
-    paddingHorizontal: 20,
+    paddingHorizontal: 6,
+    zIndex: -1,
   },
 });
 
-export default inject('rootStore')(observer(DiscussionMessagesList));
+export default observer(DiscussionMessagesList);

@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
@@ -10,7 +11,6 @@ import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {calcShouldSkipRules} from '~/Util/rules';
 
 const IntroductionStep = ({
@@ -66,8 +66,6 @@ const IntroductionStep = ({
           subtitle="Let the Common members learn more about you and how you relate to the cause."
         />
 
-        <PurpleBoxMessage message="Please note: currently, credit cards issued by Mastercard are not supported." />
-
         <View
           style={{
             backgroundColor: colors.grey4,
@@ -122,4 +120,4 @@ IntroductionStep.propTypes = {
   }),
 };
 
-export default IntroductionStep;
+export default observer(IntroductionStep);

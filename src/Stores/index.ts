@@ -1,4 +1,9 @@
 import RootStore from './RootStore';
+import {configure} from 'mobx';
+
+configure({
+  enforceActions: 'never',
+});
 
 const rootStore = new RootStore();
 
@@ -11,5 +16,6 @@ export default {
   discussionStore: rootStore.discussionStore,
   discussionMessageStore: rootStore.discussionMessageStore,
   notificationStore: rootStore.notificationStore,
+  bankAccountStore: rootStore.bankAccountStore,
   uiStore: rootStore.uiStore,
 };

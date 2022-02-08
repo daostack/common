@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-community/async-storage';
 import {
@@ -49,6 +49,7 @@ import {
   MonthlyContribution,
   EditCommon,
   ReceiveFunds,
+  AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -74,6 +75,13 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
+import {getUrlPathWithEntityId} from '~/Util/stringUtil';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINKS_SCREENS,
+  DYNAMIC_LINKS_SCREEN_PARAMS,
+  DYNAMIC_LINK_URI_WITH_SLASH,
+} from '~/Util/constants/dynamicLinks';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -96,6 +104,7 @@ const App = ({rootStore, navigation}) => {
   const notificationStore = rootStore.notificationStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
+  const bankAccountStore = rootStore.bankAccountStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -134,7 +143,8 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -157,16 +167,19 @@ const App = ({rootStore, navigation}) => {
     }
   }, [authStore.userInfo?.uid]);
 
+  // Fetch Bank Account Details
+  useEffect(() => {
+    if (authStore.userInfo?.uid) {
+      bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
+    }
+  }, [authStore.userInfo?.uid]);
+
   const notificationNavigation = async (remoteMessage) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -255,7 +268,21 @@ const App = ({rootStore, navigation}) => {
 
   // Deep & Dynamic Link
   const handleOpenURL = ({url}) => {
-    if (url) {
+    const [screenName, entityId] = getUrlPathWithEntityId({
+      str: url.replace(DYNAMIC_LINK_URI_WITH_SLASH, ''),
+      separator: '/',
+    });
+
+    if (screenName === DYNAMIC_LINKS_TYPES.USER) {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
+        {userId: entityId},
+      );
+    } else if (screenName && entityId) {
+      routing(DYNAMIC_LINKS_SCREENS[screenName], {
+        [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
+      });
+    } else if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
@@ -277,31 +304,6 @@ const App = ({rootStore, navigation}) => {
   };
 
   useEffect(() => {
-    DeepLinking.addScheme('common://');
-    DeepLinking.addScheme('com.daostack.common://');
-    DeepLinking.addScheme('https://app.common.io');
-
-    Linking.addEventListener('url', handleOpenURL);
-
-    DeepLinking.addRoute('/common/:id', (response) => {
-      routing('CommonProfile', {commonId: response.id});
-    });
-
-    DeepLinking.addRoute('/proposal/:id', (response) => {
-      routing('ProposalScreen', {proposalId: response.id});
-    });
-
-    DeepLinking.addRoute('/user/:id', (response) => {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: response.id},
-      );
-    });
-
-    DeepLinking.addRoute('/discussion/:id', (response) => {
-      routing('Discussions', {discussionId: response.id});
-    });
-
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks()
       .getInitialLink()
@@ -317,6 +319,7 @@ const App = ({rootStore, navigation}) => {
         }
       });
 
+    Linking.addEventListener('url', handleOpenURL);
     return () => {
       Linking.removeEventListener('url', handleOpenURL);
       foregroundLink();
@@ -418,11 +421,7 @@ const App = ({rootStore, navigation}) => {
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
               headerLeft: () => (
-                <HeaderBackButton
-                  backImage={() => (
-                    <Icon name="left-arrow" color={colors.black} size={32} />
-                  )}
-                  label=" "
+                <TouchableOpacity
                   onPress={() =>
                     route?.params.fromNotificationItem
                       ? route?.params.commonId
@@ -432,7 +431,9 @@ const App = ({rootStore, navigation}) => {
                         : rest?.navigation.pop()
                       : navigationRef.current.goBack()
                   }
-                />
+                >
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                </TouchableOpacity>
               ),
               headerTitle: () => (
                 <View style={{alignItems: 'center'}}>
@@ -452,6 +453,13 @@ const App = ({rootStore, navigation}) => {
                   )}
                 </View>
               ),
+            })}
+          />
+          <Stack.Screen
+            name="AddInvoicesScreen"
+            component={AddInvoicesScreen}
+            options={({nav, route}) => ({
+              headerShown: false,
             })}
           />
           <Stack.Screen
@@ -538,9 +546,9 @@ const App = ({rootStore, navigation}) => {
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
-              headerRightContainerStyle: {marginRight: 20},
               headerRight: () => (
                 <TouchableOpacity
+                  style={styles.buttonRight}
                   onPress={() => navigationRef.current.goBack()}>
                   <Icon name="close" color={colors.black} size={20} />
                 </TouchableOpacity>
@@ -669,6 +677,9 @@ const styles = StyleSheet.create({
     shadowOffset: {
       height: 0,
     },
+  },
+  buttonRight: {
+    marginRight: 20,
   },
 });
 

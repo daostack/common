@@ -28,6 +28,7 @@ import {getErrorObject} from '~/Util';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import Toast from '~/Util/Toast';
 import {proposalsUrl, PROPOSAL_TYPE} from '~/Config';
+import logger from '~/Services/Logger';
 
 export type proposalListLoadCallbackFn = (
   updatedProposalList: Array<IProposalEntity>,
@@ -265,7 +266,7 @@ class ProposalService {
               x.data().state !== PROPOSAL_STAGE.passed),
         );
 
-        console.log(pendingProposals);
+        logger.log(pendingProposals);
 
         callback({
           pendingProposalCount: pendingProposals.length,
@@ -301,7 +302,7 @@ class ProposalService {
         },
       );
     } catch (err) {
-      console.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
+      logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
       throw err;
     }
   };
@@ -316,7 +317,7 @@ class ProposalService {
         },
       });
     } catch (err) {
-      console.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
+      logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
       throw err;
     }
   };
@@ -329,7 +330,7 @@ class ProposalService {
         },
       });
     } catch (err) {
-      console.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   };

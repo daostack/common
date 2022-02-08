@@ -35,9 +35,7 @@ class SubscriptionService {
     await this.axiosClient.post(
       this.endpoints.cancelSubscription,
       {
-        params: {
-          subscriptionId,
-        },
+        subscriptionId,
       },
       {
         headers: {

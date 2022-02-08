@@ -18,7 +18,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
-import NavigationBar from 'react-native-navbar';
 import auth from '@react-native-firebase/auth';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import ImageView from 'react-native-image-viewing';
@@ -36,6 +35,8 @@ import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
+import {Header} from '~/Screens/Header';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Discussions = ({
   navigation,
@@ -44,6 +45,8 @@ const Discussions = ({
   },
   rootStore,
 }) => {
+  const insets = useSafeAreaInsets();
+  const scrollRef = useRef(null);
   const redirectBack = !commonId && fromNotificationItem;
   const commonStore = rootStore.commonStore;
   const discussionStore = rootStore.discussionStore;
@@ -64,21 +67,25 @@ const Discussions = ({
   const user = dataState?.ownerId
     ? userStore.getUserById(dataState?.ownerId)
     : null;
+
   const currCommon = commonId ? commonStore.getCommonById(commonId) : null;
-  const hasPermission = authStore.getPermission(
-    commonId,
-    authStore?.userInfo?.uid,
-  );
+
+  const hasPermission = commonId
+    ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
+    : null;
+
+
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
+  const [inputHeight, setInputHeight] = useState(50);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
+  // const actualInputHeight = Math.max(100, inputHeight + 50);
+  const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   const isMember =
     authStore.userInfo &&
@@ -89,9 +96,10 @@ const Discussions = ({
   useEffect(() => {
     let unsubscribeFromDiscussionMessages = null;
     if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-        discussionId,
-      );
+      unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
+          discussionId,
+        );
     }
 
     return () => {
@@ -209,40 +217,10 @@ const Discussions = ({
       : navigation.pop();
 
   const header = () => (
-    // <SafeAreaView flex={1}>
     <>
-      <NavigationBar
-        statusBar={{hidden: true}}
-        style={{
-          height: 60,
-        }}
-        title={{
-          title: dataState.title,
-          style: {
-            ...text.h2Black,
-            maxWidth: '70%',
-            whiteSpace: 'wrap',
-          },
-          ellipsizeMode: 'tail',
-        }}
-        leftButton={
-          <TouchableOpacity
-            style={{justifyContent: 'center'}}
-            onPress={() => navigateBack()}>
-            <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
-          </TouchableOpacity>
-        }
-        // rightButton={
-        //   <TouchableOpacity
-        //     style={{justifyContent: 'center'}}
-        //     onPress={openOptionsMenu}>
-        //     <Icon
-        //       name="menu-horizontal"
-        //       size={32}
-        //       style={{marginRight: 10}}
-        //     />
-        //   </TouchableOpacity>
-        // }
+      <Header
+        title={dataState.title}
+        onPress={() => navigateBack()}
       />
       <View
         style={{
@@ -317,18 +295,8 @@ const Discussions = ({
               </TouchableOpacity>
             </>
           )}
-          {/* <View
-            style={{
-              height: 4,
-              marginTop: 10,
-              // paddingHorizontal: -20,
-              marginHorizontal: -20,
-              backgroundColor: colors.grey4,
-            }}
-          /> */}
         </View>
       </View>
-      {/* </SafeAreaView> */}
     </>
   );
 
@@ -417,15 +385,18 @@ const Discussions = ({
         }
         action={action}
       />
-      <DiscussionMessagesList
-        discussionId={discussionId}
-        hasPermission={hasPermission}
-        commonId={commonId}
-        openMessageOptions={(message) => openMessageOptions(message)}
-        isMember={isMember}
-        inputHeight={inputHeight + 50}
-        isSending={isSending}
-      />
+      <ScrollView style={[styles.scrollView, {marginBottom: inputHeight + 50}]} ref={scrollRef}>
+        <DiscussionMessagesList
+          discussionId={discussionId}
+          hasPermission={hasPermission}
+          scrollViewRef={scrollRef}
+          commonId={commonId}
+          openMessageOptions={(message) => openMessageOptions(message)}
+          isMember={isMember}
+          inputHeight={actualInputHeight}
+          isSending={isSending}
+        />
+      </ScrollView>
 
       {isMember ? (
         <KeyboardAvoidingView
@@ -439,16 +410,9 @@ const Discussions = ({
           <View
             style={{
               ...styles.inputContainer,
-              height: Math.max(100, inputHeight + 50),
+              height: actualInputHeight,
+
             }}>
-            {/* should be added in better discussion batch 3
-            <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                justifyContent: 'center',
-              }}>
-              <Icon name="add-24" size={30} color={colors.mainBlue} />
-            </TouchableOpacity>*/}
             <TextInput
               ref={inputRef}
               editable={true}
@@ -458,7 +422,7 @@ const Discussions = ({
               placeholderTextColor={colors.grey3}
               onChangeText={(currText) => setInputText(currText)}
               onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height);
+                setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
               }}
               style={styles.input}
             />
@@ -540,7 +504,6 @@ const styles = StyleSheet.create({
   imageGallery: {
     ...layout.flexRow,
     ...layout.flexStart,
-
     width: '100%',
   },
   avatar: {
@@ -618,6 +581,10 @@ const styles = StyleSheet.create({
   hyperLinkStyle: {
     textDecorationLine: 'underline',
     color: colors.mainBlue,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: colors.paleLilacTwo,
   },
 });
 

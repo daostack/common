@@ -17,6 +17,7 @@ export const notificationDataPropTypes = shape({
   header: string,
   headerBold: string,
   tabIndex: number,
+  hideCommonName: bool,
 });
 
 export const notificationItemPropTypes = shape({

@@ -1,4 +1,4 @@
-import {makeAutoObservable} from 'mobx';
+import {makeAutoObservable, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
   CommonRegister,
@@ -17,6 +17,7 @@ export class Common implements ICommonEntity {
   name: string;
   image: string;
   balance: number;
+  reservedBalance: number;
   raised: number;
   fundingGoalDeadline: number;
   members: ICommonMember[];
@@ -30,6 +31,7 @@ export class Common implements ICommonEntity {
     this.name = newCommonInfo.name;
     this.image = newCommonInfo.image;
     this.balance = newCommonInfo.balance;
+    this.reservedBalance = newCommonInfo.reservedBalance || 0;
     this.raised = newCommonInfo.raised;
     this.fundingGoalDeadline = newCommonInfo.fundingGoalDeadline;
     this.members = newCommonInfo.members;
@@ -48,10 +50,13 @@ export class Common implements ICommonEntity {
     return formatNumber(this.balance / 100).toString();
   }
 
-  get minFeeToJoinFormatted(): string {
+  @computed
+  minFeeToJoinFormatted(numberValue = false): string {
     const minValue = this.metadata.zeroContribution
-    ? 0
-    : +this.metadata.minFeeToJoin;
-    return formatNumber(minValue / 100).toString();
+      ? 0
+      : +this.metadata.minFeeToJoin;
+    return !numberValue
+      ? formatNumber(minValue / 100).toString()
+      : (minValue / 100).toString();
   }
 }

@@ -1,18 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {View, Dimensions} from 'react-native';
-import {inject} from 'mobx-react';
 import {CommonActions} from '@react-navigation/native';
-import RequestStepActionButton from '../../RequestStepActionButton';
-import {string, func, bool, object, shape} from 'prop-types';
-import MembershipRequest from '../MembershipRequest';
+import {inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
+import {bool, func, object, shape, string} from 'prop-types';
+import React, {useEffect} from 'react';
+import {Dimensions, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {WebView} from 'react-native-webview';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {WebView} from 'react-native-webview';
 import ProposalService from '~/Services/ProposalService';
-import {escapeUrl} from '~/Util';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl, showErrorPopUp} from '~/Util';
+import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import Toast from '~/Util/Toast';
-import {showErrorPopUp} from '~/Util';
+import MembershipRequest from '../MembershipRequest';
+
 const {height} = Dimensions.get('window');
 
 const PaymentDetailsStep = ({
@@ -22,19 +24,20 @@ const PaymentDetailsStep = ({
       formStores,
       skipFirstStep,
       currCommon,
-      currDaoId,
+      commonId,
       refreshFeed,
       iFrameLink,
       cardId,
-      skipPaymentStep,
     },
   },
   rootStore,
 }) => {
   const userInfo = rootStore.authStore.userInfo;
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const [respLink, setRespLink] = useState('');
   const cardStore = rootStore.cardStore;
+  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+
+  const insets = useSafeAreaInsets();
+
   let currCard = cardStore.getCardById(cardId);
 
   useEffect(() => {
@@ -42,7 +45,13 @@ const PaymentDetailsStep = ({
     return () => {
       unsubscribeFromCard && unsubscribeFromCard();
     };
-  }, [userInfo, respLink]);
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (currCard?.token) {
+      push();
+    }
+  }, [currCard?.token]);
 
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
   const personalContributionFormStore =
@@ -58,7 +67,7 @@ const PaymentDetailsStep = ({
       const data = {
         description: formData.intro,
         funding: formData.amount * 100,
-        commonId: currDaoId,
+        commonId,
       };
 
       if (formData.links) {
@@ -66,6 +75,9 @@ const PaymentDetailsStep = ({
       }
 
       currCard = cardStore.getCardById(cardId);
+
+      Toast.done();
+      Toast.hide();
 
       if (currCard.token) {
         navigation.navigate({
@@ -75,12 +87,11 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-          {
+        const createRequestToJoinResponse =
+          await ProposalService.createRequestToJoin({
             ...data,
             cardId: cardId,
-          },
-        );
+          });
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
 
@@ -89,6 +100,7 @@ const PaymentDetailsStep = ({
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
+              commonId,
             },
           });
 
@@ -98,29 +110,17 @@ const PaymentDetailsStep = ({
 
           navigation.dispatch(navigate);
         } else {
+          Toast.hide();
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
         }
       }
     } catch (e) {
+      Toast.hide();
       navigation.pop();
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
         subTitle: "We couldn't create your proposal",
         error: e,
       });
-    }
-  };
-
-  const redirectUser = (event) => {
-    console.log('event', event, 'respLink', respLink);
-    if (!respLink) {
-      if (event === 'skipped') {
-        setRespLink(true);
-        push();
-      } else {
-        if (event?.url?.includes('loader')) {
-          setRespLink(true);
-        }
-      }
     }
   };
 
@@ -132,32 +132,20 @@ const PaymentDetailsStep = ({
       currentIndex={5}
       skipFirstStep={skipFirstStep}
       isRequestToJoin={true}
-      layoutTitle={<MembershipRequest />}
-      requestStepActionButton={
-        <RequestStepActionButton
-          title="Continue"
-          disabled={!respLink}
-          onPress={push}
+      layoutTitle={<MembershipRequest />}>
+      <View
+        style={{
+          height:
+            height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
+          width: '100%',
+        }}>
+        <WebView
+          scalesPageToFit={false}
+          source={{uri: iFrameLink}}
+          onLoadEnd={(syntheticEvent) => {
+            Toast.done('All done!');
+          }}
         />
-      }>
-      <View style={{height: height / 2, width: '90%'}}>
-        {
-          <WebView
-            scalesPageToFit={false}
-            source={{uri: iFrameLink}}
-            onMessage={(m) => {}}
-            onNavigationStateChange={(event) => {
-              if (skipPaymentStep) {
-                redirectUser('skipped');
-              } else {
-                redirectUser(event);
-              }
-            }}
-            onLoadEnd={(syntheticEvent) => {
-              Toast.done('All done!');
-            }}
-          />
-        }
       </View>
     </StepDotLayout>
   );
@@ -187,4 +175,4 @@ PaymentDetailsStep.propTypes = {
   rootStore: rootStorePropTypes,
 };
 
-export default inject('rootStore')(PaymentDetailsStep);
+export default inject('rootStore')(observer(PaymentDetailsStep));

@@ -45,10 +45,30 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>dynmaic-link</string>
+			<string>dynamic-link</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.daostack.common</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>web</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https://app.common.io</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>web-2</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https://common.io</string>
 			</array>
 		</dict>
 	</array>
@@ -59,7 +79,6 @@
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
 		<string>https://app.common.io</string>
-		<string>https://app.common.io/common</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<string>NO</string>
