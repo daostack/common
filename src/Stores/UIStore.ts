@@ -3,6 +3,7 @@ import BottomSheetStore from './BottomSheetStore';
 import AppLoaderStore from './AppLoaderStore';
 import RootStore from './RootStore';
 import {getCurrentConversionRate} from '~/Util/locale';
+import logger from '~/Services/Logger';
 
 export default class UIStore {
   rootStore: RootStore;
@@ -23,7 +24,7 @@ export default class UIStore {
         });
       })
       .catch((error) => {
-        console.log('ILS Conversion Error', error);
+        logger.log('ILS Conversion Error', error);
       });
     makeObservable(this);
   }

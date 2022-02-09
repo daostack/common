@@ -156,6 +156,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         />
       );
 
+    const keyExtractor = useCallback((data) => data.id, []);
+
     return isSwiper ? (
       list ? (
         list.length > 0 ? (
@@ -203,6 +205,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         {list && list.length > 0 ? (
           <FlatList
             data={list.slice()}
+            keyExtractor={keyExtractor}
+            initialNumToRender={1}
+            maxToRenderPerBatch={5}
             renderItem={({item, index}) => renderProposalCard(item, index)}
           />
         ) : (
