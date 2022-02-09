@@ -133,7 +133,7 @@ workflows:
             - new_version_name: $APP_VERSION
       - android-build@0:
           inputs:
-            - variant: bundleProductionRelease
+            - variant: productionRelease
             - build_type: aab
             - project_location: $PROJECT_LOCATION
       - sign-apk@1:
@@ -181,7 +181,7 @@ workflows:
       - android-build@0:
           inputs:
             - build_type: aab
-            - variant: bundleProductionRelease
+            - variant: productionRelease
             - arguments: ''
             - project_location: $BITRISE_SOURCE_DIR/android
       - deploy-to-bitrise-io@1: {}
