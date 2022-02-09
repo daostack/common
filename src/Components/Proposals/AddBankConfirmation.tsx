@@ -12,7 +12,6 @@ import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 type LegalDocsProps = {
   name?: string;
   legalType: PAYME_TYPE_CODES;
-  amount: number;
   mimeType?: string;
   uri?: string;
   downloadURL?: string;
@@ -54,7 +53,6 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
       onSelect({
         name: res.name,
         legalType: PAYME_TYPE_CODES['Bank Account Ownership'],
-        amount: 0,
         mimeType: res.type,
         downloadURL: downloadUrl,
       });

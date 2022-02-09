@@ -28,7 +28,6 @@ const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 type LegalDocsProps = {
   name?: string;
   legalType: PAYME_TYPE_CODES;
-  amount: number;
   mimeType?: string;
   uri?: string;
   downloadURL?: string;
@@ -80,7 +79,6 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
         setLocalImage({
           legalType: PAYME_TYPE_CODES['Social Id'],
           uri: image?.uri,
-          amount: 0,
           mimeType: image?.type,
         });
         setModalVisible(true);
@@ -100,7 +98,6 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
         setImageUrl(url);
         onSelect({
           mimeType: localImage?.mimeType,
-          amount: 0,
           legalType: localImage!.legalType,
           downloadURL: url,
           name: imageName,
