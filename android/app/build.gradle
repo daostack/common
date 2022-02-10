@@ -134,7 +134,7 @@ def enableHermes = project.ext.react.get("enableHermes", true);
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    ndkVersion "21.4.7075529"
+    ndkVersion "23.1.7779620"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -195,7 +195,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             if (System.getenv()["CI"]) { // CI is true when running build on CI service, such as Bitrise
-                signingConfig null
+                signingConfig signingConfigs.debug
             } else {
                 signingConfig signingConfigs.release
             }

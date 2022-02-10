@@ -169,9 +169,13 @@ const App = ({rootStore, navigation}) => {
 
   // Fetch Bank Account Details
   useEffect(() => {
+    let unsubscribeToBankAccount = null;
     if (authStore.userInfo?.uid) {
       bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
     }
+    return () => {
+      unsubscribeToBankAccount && unsubscribeToBankAccount();
+    };
   }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
