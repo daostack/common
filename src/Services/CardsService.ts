@@ -9,12 +9,24 @@ export type cardLoadCallbackFunc = (
 class CardsService {
   fetchCardByOwnerId = async (ownerId: string) => {
     try {
-      const card = await CardsCollection.where('ownerId', '==', ownerId).get();
+      const card = await CardsCollection
+        .where('ownerId', '==', ownerId)
+        .where('provider', '==', 'PAYME')
+        .get();
       return card?.docs[0]?.data();
     } catch (e) {
       return null;
     }
   };
+
+  fetchCardById = async (cardId: string) => {
+    try {
+      const card = (await CardsCollection.doc(cardId).get()).data();
+      return card;
+    } catch (e) {
+      throw e;
+    }
+  }
 
   subscribeToCard = (cardId: string, callback: cardLoadCallbackFunc) => {
     const cards = CardsCollection.doc(cardId).onSnapshot((snapshot: any) => {
