@@ -2,27 +2,42 @@ import React, {useCallback, useState} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {AddBankAccountForm} from '~/Components/Forms/AddBankAccountForm';
-import {ModalAddBankAccount} from '~/Screens/ReceiveFunds/components/ModalAddBankAccount';
+import BankAccountService from '~/Services/BankAccountService';
 import {colors, font, layout, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Toast from '~/Util/Toast';
+import {observer} from 'mobx-react-lite';
 
-export const ReceiveFunds = () => {
+const ReceiveFunds = () => {
+  const insets = useSafeAreaInsets();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const bankAccountStore = useStore('bankAccountStore');
   const haveBankAccount = bankAccountStore?.data?.size !== 0;
+  const bankAccountData = haveBankAccount ? bankAccountStore?.data?.entries()?.next()?.value[1] : undefined;
+  const socialId = bankAccountData?.socialId;
+  const bankName = bankAccountData?.bankName;
+  const branchNumber = bankAccountData?.branchNumber;
+  const accountNumber = bankAccountData?.accountNumber;
 
   const addBankAccount = useCallback(() => {
     setIsModalVisible(true);
   }, []);
+
   const closeModal = () => {
     setIsModalVisible(false);
   };
-  const removeAccount = () => {
-    console.log('remove');
+
+  const removeAccount = async () => {
+    try {
+      await BankAccountService.deleteBankAccountDetails();
+      Toast.success('Done');
+    } catch (err) {
+      Toast.error('Something went wrong');
+    }
   };
 
   const handleSubmit = async (): Promise<void> => {
-    // onSubmit();
     setIsModalVisible(false);
   };
 
@@ -59,16 +74,24 @@ export const ReceiveFunds = () => {
               <Text style={styles.accountDataLable}>Account</Text>
             </View>
             <View>
-              <Text style={styles.accountDataText}>849384729</Text>
-              <Text style={styles.accountDataText}>Raif Bank</Text>
-              <Text style={styles.accountDataText}>875</Text>
-              <Text style={styles.accountDataText}>18724394</Text>
+              <Text style={styles.accountDataText}>{socialId}</Text>
+              <Text style={styles.accountDataText}>{bankName}</Text>
+              <Text style={styles.accountDataText}>{branchNumber}</Text>
+              <Text style={styles.accountDataText}>{accountNumber}</Text>
             </View>
           </View>
           <Text style={styles.subTitle}>
             These details are needed in order to transfer funds to your account and vissible to you only.
           </Text>
+
         </View>
+      )}
+      { haveBankAccount && (
+        <TouchableOpacity
+          style={[styles.removeButton, {marginBottom: insets.bottom + 24}]}
+          onPress={removeAccount}>
+          <Text style={styles.removeButtonText}>Remove Account</Text>
+        </TouchableOpacity>
       )}
 
       <BottomSheetModal
@@ -76,15 +99,16 @@ export const ReceiveFunds = () => {
         isVisible={isModalVisible}
         onClose={closeModal}>
           <AddBankAccountForm
-            onCancel={closeModal}
             onDelete={removeAccount}
             onSubmit={handleSubmit}
-            isAddingNew={true}
+            isAddingNew={!haveBankAccount}
           />
       </BottomSheetModal>
     </View>
   );
 };
+
+export default observer(ReceiveFunds);
 
 const styles = StyleSheet.create({
   container: {
@@ -115,6 +139,24 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     ...text.centered,
     marginVertical: 16,
+  },
+  removeButton: {
+    position: 'absolute',
+    bottom: 0,
+    height: 48,
+    justifyContent: 'center',
+    borderRadius: 32,
+    borderColor: colors.grey4,
+    borderWidth: 1,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  removeButtonText: {
+    textAlign: 'center',
+    ...font.primary.regular,
+    fontSize: 16,
+    lineHeight: 20,
+    color: colors.mainBlue,
   },
   btn: {
     backgroundColor: colors.mainBlue,
