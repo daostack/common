@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 import DropDownPicker, {ValueType} from 'react-native-dropdown-picker';
 import {colors, font, layout} from '~/Theme';
 import ValidationMessage from './ValidationMessage';
@@ -19,6 +19,7 @@ type Props = {
   onChange: (value: string) => void;
   label: string;
   errorMessage?: string | boolean;
+  viewStyle: ViewStyle;
 };
 
 function ErrorMessage({
