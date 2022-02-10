@@ -18,7 +18,7 @@ export const CommonNumberBox = observer(
       {Number(inProcessFunds) > 0 && (
         <Text style={styles.inProcessFundsText}>
           In process: {CurrencySymbols.SHEKEL}
-          {inProcessFunds}
+          {Number(inProcessFunds) / 100}
         </Text>
       )}
     </View>
