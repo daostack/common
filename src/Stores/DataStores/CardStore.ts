@@ -16,8 +16,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     try {
       return this.getDataById(id);
     } catch (e) {
-      Logger.log('error', e);
-      CardsService.fetchCardById(id);
+      Logger.log('------ cardstore error', e);
     }
   };
 

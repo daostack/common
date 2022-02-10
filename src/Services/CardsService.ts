@@ -1,6 +1,7 @@
 import {IFirebaseSnapshot} from '~/Firebase/types';
 import {ICardEntity} from '~/Firebase/Databasee/EntityTypes/ICardEntity';
 import {CardsCollection} from '~/Firebase/Databasee/Collections/CardsCollection';
+import Logger from '~/Services/Logger';
 
 export type cardLoadCallbackFunc = (
   updatedCard: IFirebaseSnapshot<ICardEntity>,
@@ -24,7 +25,8 @@ class CardsService {
       const card = (await CardsCollection.doc(cardId).get()).data();
       return card;
     } catch (e) {
-      throw e;
+      Logger.log('error', e);
+      return null;
     }
   }
 
