@@ -11,7 +11,7 @@ import {
 import {colors, font, sizeXXL, sizeLineHeight, layout} from '~/Theme';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import logger from '../Services/Logger';
 import {object} from 'prop-types';
