@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
+import com.android.build.OutputFile
+
 project.ext.envConfigFiles = [
         stagingdebug: "./env/env.stg",
         stagingrelease: "./env/env.stg",
