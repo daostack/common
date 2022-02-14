@@ -48,6 +48,7 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
   EditCommon,
+  ReceiveFunds,
   AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -632,6 +633,15 @@ const App = ({rootStore, navigation}) => {
             }}
             name="MonthlyContribution"
             component={MonthlyContribution}
+          />
+          <Stack.Screen
+            options={{
+              title: 'Receive funds',
+              headerBackTitleVisible: false,
+              headerRight: () => <IntercomShowButton />,
+            }}
+            name="ReceiveFunds"
+            component={ReceiveFunds}
           />
         </Stack.Navigator>
         {notificationRouting && (
