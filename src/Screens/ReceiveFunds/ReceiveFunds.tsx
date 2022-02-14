@@ -13,8 +13,7 @@ const ReceiveFunds = () => {
   const insets = useSafeAreaInsets();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const bankAccountStore = useStore('bankAccountStore');
-  const haveBankAccount = bankAccountStore?.data?.size !== 0;
-  const bankAccountData = haveBankAccount ? bankAccountStore?.data?.entries()?.next()?.value[1] : undefined;
+  const bankAccountData = bankAccountStore.bankAccountData;
   const socialId = bankAccountData?.socialId;
   const bankName = bankAccountData?.bankName;
   const branchNumber = bankAccountData?.branchNumber;
@@ -30,7 +29,9 @@ const ReceiveFunds = () => {
 
   const removeAccount = async () => {
     try {
+      Toast.loading('Uploading...');
       await BankAccountService.deleteBankAccountDetails();
+      Toast.hide();
       Toast.success('Done');
     } catch (err) {
       Toast.error('Something went wrong');
