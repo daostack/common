@@ -47,7 +47,7 @@ export function AddBankAccountField({
         </Text>
       </Pressable>
       <BottomSheetModal
-        style={{borderRadius: 30}}
+        style={styles.bottomSheetContainer}
         isVisible={modalVisible}
         onClose={() => {
           setModalVisible(false);

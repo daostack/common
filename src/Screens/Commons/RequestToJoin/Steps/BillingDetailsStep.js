@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, Dimensions, Platform} from 'react-native';
+import {observer} from 'mobx-react-lite';
 import {bool, func, object, shape, string} from 'prop-types';
 
 import {CommonActions} from '@react-navigation/native';
@@ -68,13 +69,8 @@ const FORM_RULES = {
 };
 
 const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
-  const {
-    skipFirstStep,
-    currCommon,
-    currDaoId,
-    refreshFeed,
-    formStores,
-  } = route.params;
+  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
+    route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -380,4 +376,4 @@ BillingDetailsStep.propTypes = {
   }),
 };
 
-export default inject('authStore', 'rootStore')(BillingDetailsStep);
+export default inject('authStore', 'rootStore')(observer(BillingDetailsStep));

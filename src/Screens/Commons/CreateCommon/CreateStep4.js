@@ -156,7 +156,7 @@ const CreateStep4 = ({
       return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
       //navigation.pop();
-      console.log('error -> ', e);
+      logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
       navigation.pop();

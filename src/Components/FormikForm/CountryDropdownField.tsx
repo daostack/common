@@ -18,8 +18,8 @@ const countries = countryList.filter((country) => country.payout) as Country[];
 type Props = {
   onChange: (value: string) => void;
   label: string;
-  viewStyle?: ViewStyle | ViewStyle[];
   errorMessage?: string | boolean;
+  viewStyle: ViewStyle;
 };
 
 function ErrorMessage({
@@ -30,8 +30,8 @@ function ErrorMessage({
 
 export const CountryDropdownField = ({
   onChange,
-  viewStyle,
   label,
+  viewStyle,
   errorMessage,
 }: Props): ReactElement => {
   const [open, setOpen] = useState(false);
@@ -45,7 +45,7 @@ export const CountryDropdownField = ({
   }, [value]);
 
   return (
-    <View style={[styles.container, viewStyle]}>
+    <>
       {label && <Text style={styles.label}>{label}</Text>}
 
       <DropDownPicker
@@ -58,6 +58,7 @@ export const CountryDropdownField = ({
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        listMode="SCROLLVIEW"
         searchTextInputStyle={{
           borderWidth: 0,
           ...font.primary.regular,
@@ -66,25 +67,22 @@ export const CountryDropdownField = ({
         searchPlaceholder="Country"
         arrowIconStyle={styles.arrowIconStyle}
         style={[
+          viewStyle,
           styles.dropdownInput,
           errorMessage ? {borderColor: colors.error} : {},
         ]}
         dropDownContainerStyle={styles.dropdownContainer}
       />
       {errorMessage && (
-        <View style={layout.marginTopXXS}>
+        <View style={[layout.marginTopXXS, styles.errorMessage]}>
           <ErrorMessage errorMessage={errorMessage} />
         </View>
       )}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    zIndex: 1000000,
-  },
   label: {
     ...font.primary.regular,
     ...font.fontSize(2),
@@ -104,5 +102,8 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     borderColor: '#eee',
+  },
+  errorMessage: {
+    alignSelf: 'flex-start',
   },
 });

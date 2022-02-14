@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -34,25 +34,21 @@ const MyCommons = ({navigation, commonStore}) => {
     navigation.dispatch(navigate);
   };
 
-  const renderCommonCard = (dao, i) => (
-    <CommonBox
-      image={dao.image}
-      common={dao}
-      key={i}
-      width="100%"
-      navigation={navigation}
-      onPress={() => navigateToCommon(dao)}
-    />
+  const renderCommonCard = useCallback(
+    (dao, i) => (
+      <CommonBox
+        image={dao.image}
+        common={dao}
+        key={i}
+        width="100%"
+        navigation={navigation}
+        onPress={() => navigateToCommon(dao)}
+      />
+    ),
+    [navigation],
   );
 
-  const MyCommonsList = () => (
-    <View style={{flex: 1, padding: 20}}>
-      <FlatList
-        data={commonStore.myCommons}
-        renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
-      />
-    </View>
-  );
+  const keyExtractor = useCallback((data) => data.id, []);
 
   return (
     <>
@@ -71,7 +67,13 @@ const MyCommons = ({navigation, commonStore}) => {
             <Text style={styles.title}>My Commons</Text>
           </View>
           <View style={styles.sectionTabView}>
-            <MyCommonsList />
+            <FlatList
+              data={commonStore.myCommons}
+              keyExtractor={keyExtractor}
+              initialNumToRender={3}
+              maxToRenderPerBatch={5}
+              renderItem={({item, i}) => renderCommonCard(item, i, navigation)}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -93,7 +95,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  sectionTabView: {},
+  sectionTabView: {
+    flex: 1,
+    padding: 20,
+  },
   sectionContainer: {
     ...layout.content,
     marginVertical: sizeS,

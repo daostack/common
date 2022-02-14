@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
-
+import com.android.build.OutputFile
 
 project.ext.envConfigFiles = [
         stagingdebug: "./env/env.stg",
@@ -10,8 +10,6 @@ project.ext.envConfigFiles = [
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-
-import com.android.build.OutputFile
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -195,7 +193,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             if (System.getenv()["CI"]) { // CI is true when running build on CI service, such as Bitrise
-                signingConfig null
+                signingConfig signingConfigs.debug
             } else {
                 signingConfig signingConfigs.release
             }
@@ -209,7 +207,7 @@ android {
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
             def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode

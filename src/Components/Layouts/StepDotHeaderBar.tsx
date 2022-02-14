@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {colors, text} from '~/Theme';
+import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 
 interface StepDotHeaderBarProps {
   closeDialog: () => void;
@@ -15,15 +16,12 @@ export const StepDotHeaderBar = (props: StepDotHeaderBarProps) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.leftButton}
-        onPress={onLeftPress}>
+      <TouchableOpacity style={styles.leftButton} onPress={onLeftPress}>
         <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
       </TouchableOpacity>
       <View style={styles.rightContainer}>
         <IntercomShowButton />
-        <TouchableOpacity
-          onPress={closeDialog}>
+        <TouchableOpacity onPress={closeDialog}>
           <Icon
             name="close"
             size={18}
@@ -33,13 +31,13 @@ export const StepDotHeaderBar = (props: StepDotHeaderBarProps) => {
         </TouchableOpacity>
       </View>
       <Text style={styles.title}>{title}</Text>
-  </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 56,
+    height: STEP_HEADER_BAR_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',

@@ -1,7 +1,7 @@
 import React from 'react';
 import {colors} from '~/Theme';
 import {CommonsList, UserProfile} from '~/Screens';
-import {Image, StyleSheet, View, Platform} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -15,7 +15,6 @@ import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 const CommonHome = ({rootStore}) => (
   <Tab.Navigator
     initialRouteName="Explore"
-    lazy={false}
     screenOptions={({route}) => ({
       headerShown: false,
       tabBarActiveTintColor: colors.mainBlue,
@@ -27,6 +26,7 @@ const CommonHome = ({rootStore}) => (
         shadowOpacity: 0.75,
         shadowRadius: 5,
         height: TAB_BAR_HEIGHT,
+        lazy: false,
       },
       tabBarIcon: ({focused}) => {
         switch (route.name) {

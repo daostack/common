@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
@@ -119,4 +120,4 @@ IntroductionStep.propTypes = {
   }),
 };
 
-export default IntroductionStep;
+export default observer(IntroductionStep);

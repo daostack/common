@@ -16,7 +16,6 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
-import {layout} from '~/Theme';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
 import {validationSchema} from './validationSchema';
@@ -97,6 +96,8 @@ export const AddBankAccountForm = ({
         errors,
         touched,
         setFieldValue,
+        setFieldTouched,
+        setFieldError,
         handleSubmit,
       }): ReactElement => (
         <>
@@ -105,6 +106,7 @@ export const AddBankAccountForm = ({
             scrollEnabled={true}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
             style={[styles.body, {marginBottom: insets.bottom}]}
             contentContainerStyle={{alignItems: 'center'}}>
             <Text style={styles.title}>Add Bank Account</Text>
@@ -268,27 +270,45 @@ export const AddBankAccountForm = ({
             </View>
             <CountryDropdownField
               errorMessage={errors && touched.country && errors.country}
-              viewStyle={{...styles.textfieldView, ...layout.marginBottomS}}
               label="Country/Region"
               onChange={(countryValue) => {
                 setFieldValue('country', countryValue);
               }}
             />
             {isAddingNew && (
-              <>
+              <View style={styles.fileSelectorBlock}>
                 <AddPhotoID
-                  error={touched.photoID && !!errors.photoID}
+                  error={errors && touched.photoID && !!errors.photoID}
                   onSelect={(photoID) => {
-                    setFieldValue('photoID', photoID);
+                    if (photoID) {
+                      setFieldValue('photoID', photoID);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('photoID', null);
+                      setFieldError('photoID', 'Please select a Photo ID');
+                    }
                   }}
                 />
                 <AddBankConfirmation
-                  error={touched.bankConfirmation && !!errors.bankConfirmation}
+                  error={
+                    errors &&
+                    touched.bankConfirmation &&
+                    !!errors.bankConfirmation
+                  }
                   onSelect={(bankConfirmation) => {
-                    setFieldValue('bankConfirmation', bankConfirmation);
+                    if (bankConfirmation) {
+                      setFieldValue('bankConfirmation', bankConfirmation);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('bankConfirmation', null);
+                      setFieldError(
+                        'photoID',
+                        'Please select a Bank Confirmation',
+                      );
+                    }
                   }}
                 />
-              </>
+              </View>
             )}
             <>
               <TouchableOpacity
