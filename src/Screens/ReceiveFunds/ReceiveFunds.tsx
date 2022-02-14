@@ -13,6 +13,7 @@ const ReceiveFunds = () => {
   const insets = useSafeAreaInsets();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const bankAccountStore = useStore('bankAccountStore');
+  const haveBankAccount = bankAccountStore?.data?.size !== 0;
   const bankAccountData = bankAccountStore.bankAccountData;
   const socialId = bankAccountData?.socialId;
   const bankName = bankAccountData?.bankName;
