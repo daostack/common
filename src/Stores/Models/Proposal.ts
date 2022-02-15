@@ -1,26 +1,18 @@
 import {makeAutoObservable} from 'mobx';
+import {FLAGS} from '~/Components/Moderation/constants';
 import {PROPOSAL_TYPE} from '~/Config';
-import {PROPOSAL_STAGE} from '~/Services/ProposalService';
+import {firebase} from '~/Firebase';
+import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {
-  IFundingRequestProposal,
-  IJoinRequestProposal,
+  IFundingRequestDescription, IFundingRequestProposal, IJoinReqDescription, IJoinRequestProposal,
   IProposalEntity,
   IProposalFundingRequest,
   IProposalJoin,
   IProposalVote,
-  ProposalType,
-  IProposalImage,
-  IUIProposalImage,
-  IJoinReqDescription,
-  IFundingRequestDescription,
+  ProposalType
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {BaseModel} from './BaseModel';
-import ImageSize from 'react-native-image-size';
-import Logger from '~/Services/Logger';
-import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
-import {FLAGS} from '~/Components/Moderation/constants';
-import {fromPromise} from 'mobx-utils';
-import {firebase} from '~/Firebase';
 
 export class Proposal implements BaseModel<IProposalEntity> {
   id: string;
@@ -40,46 +32,6 @@ export class Proposal implements BaseModel<IProposalEntity> {
   join: IProposalJoin | undefined | null = null;
   description: IFundingRequestDescription | IJoinReqDescription;
   moderation?: IModerationEntity | null = null;
-
-  imagesPromised = fromPromise(
-    (async (): Promise<IUIProposalImage[]> => {
-      const tempImages: IUIProposalImage[] = [];
-      if (this.description?.images.length) {
-        await Promise.all(
-          this.description.images.map(async (currImage: IProposalImage) => {
-            if (currImage.value) {
-              let currImageEntity: IUIProposalImage | null = null;
-              try {
-                const {width, height} = await ImageSize.getSize(
-                  currImage.value,
-                );
-
-                currImageEntity = {
-                  title: currImage.title,
-                  widthRatio: (width / height) * 220,
-                  uri: currImage.value,
-                } as IUIProposalImage;
-              } catch (err) {
-                Logger.warn(
-                  `An error occured while processing proposal image with url: ${currImage.value} , skippiing the image!`,
-                  err,
-                );
-              }
-
-              if (currImageEntity) {
-                tempImages.push(currImageEntity);
-              }
-            }
-          }),
-        );
-      }
-      return tempImages;
-    })(),
-  );
-
-  get images() {
-    return this.imagesPromised.value;
-  }
 
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
