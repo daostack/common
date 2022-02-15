@@ -85,7 +85,6 @@ const Discussion = ({
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
     useState(false);
   const [action, setAction] = useState(ACTIONS.report);
-  // const actualInputHeight = Math.max(100, inputHeight + 50);
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   const isMember =
@@ -103,19 +102,6 @@ const Discussion = ({
         unsubscribeFromDiscussionMessages();
     };
   }, [discussionId]);
-  /*useEffect(() => {
-    let unsubscribeFromDiscussionMessages = null;
-    if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
-    }
-
-    return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
-    };
-  }, [discussionId]);*/
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
