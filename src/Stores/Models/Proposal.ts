@@ -9,7 +9,7 @@ import {
   IProposalFundingRequest,
   IProposalJoin,
   IProposalVote,
-  ProposalType
+  ProposalType,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PROPOSAL_STAGE} from '~/Services/ProposalService';
 import {BaseModel} from './BaseModel';
