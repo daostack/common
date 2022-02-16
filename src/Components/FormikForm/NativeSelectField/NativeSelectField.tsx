@@ -16,7 +16,7 @@ import {styles} from './styles';
 
 type PickerItem = {
   label: string;
-  value: string;
+  value: string | number;
 };
 
 type Props = {

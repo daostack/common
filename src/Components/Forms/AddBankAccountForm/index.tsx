@@ -11,7 +11,6 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
-import {SelectField} from '~/Components/FormikForm/SelectField';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
@@ -149,10 +148,12 @@ export const AddBankAccountForm = ({
                 onChangeText={handleChange('birthdate')}
                 onBlur={handleBlur('birthdate')}
               />
-              <GenderSelectField
+              <NativeSelectField
                 errorMessage={errors && touched.gender && errors.gender}
                 viewStyle={styles.rowRightView}
                 label="Gender"
+                placeholder=""
+                options={GENDER_OPTIONS}
                 onChange={(genderValue) => {
                   setFieldValue('gender', genderValue);
                 }}
