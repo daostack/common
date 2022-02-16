@@ -11,11 +11,13 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
-import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
+import {SelectField} from '~/Components/FormikForm/SelectField';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
+import {BANK_NAMES_OPTIONS, GENDER_OPTIONS} from '~/Util/constants/dropdown';
+import {NativeSelectField} from '~/Components/FormikForm/NativeSelectField';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
 import {validationSchema} from './validationSchema';
@@ -193,16 +195,14 @@ export const AddBankAccountForm = ({
               onChangeText={handleChange('accountNumber')}
               onBlur={handleBlur('accountNumber')}
             />
-            <TextInputField
-              errorMessage={errors && touched.bankName && errors.bankName}
-              viewStyle={styles.textfieldView}
-              placeholderText="Bank Jeumi"
-              autoCapitalize="none"
+            <NativeSelectField
               label="Bank Name"
-              autoCorrect={false}
-              value={values.bankName}
-              onChangeText={handleChange('bankName')}
-              onBlur={handleBlur('bankName')}
+              placeholder="Bank Leumi"
+              options={BANK_NAMES_OPTIONS}
+              errorMessage={errors && touched.bankName && errors.bankName}
+              onChange={(bankValue) => {
+                setFieldValue('bankName', bankValue);
+              }}
             />
             <View style={styles.rowFieldsView}>
               <TextInputField
