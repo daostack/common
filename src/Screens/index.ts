@@ -26,7 +26,7 @@ export {default as MyProposals} from './UserProfile/MyProposals';
 export {default as MyCommons} from './UserProfile/MyCommons';
 
 // Proposals
-export {default as Discussions} from './Discussions/Discussions';
+export {default as Discussions} from './Discussions/Discussion';
 export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';

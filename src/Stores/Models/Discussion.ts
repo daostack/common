@@ -19,6 +19,7 @@ export class Discussion implements IDiscussionEntity {
   followers: string[];
   moderation?: IModerationEntity | null = null;
   isExpanded: boolean;
+  messageCount: number;
 
   constructor(newDiscussionInfo: IDiscussionEntity, isExpanded: boolean) {
     this.id = newDiscussionInfo.id;
@@ -34,6 +35,7 @@ export class Discussion implements IDiscussionEntity {
     this.images = newDiscussionInfo.images;
     this.followers = newDiscussionInfo.followers;
     this.moderation = newDiscussionInfo.moderation;
+    this.messageCount = newDiscussionInfo.messageCount;
     this.isExpanded = isExpanded;
     makeAutoObservable(this);
   }

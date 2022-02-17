@@ -37,9 +37,9 @@ const DiscussionMessagesList = ({
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-      data: msg,
-    }))
+        date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+        data: msg,
+      }))
     .reduce((acc, curr) => {
       const key = curr.date;
       let el = acc.find((x) => x && x.date === key);

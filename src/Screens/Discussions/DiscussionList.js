@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback} from 'react';
 import {inject, observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -22,19 +22,6 @@ const DiscussionList = ({
     auth()?.currentUser?.uid,
   );
   const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
-
-  useEffect(() => {
-    const unsubscribeFromDiscussionMessages =
-      rootStore.discussionMessageStore.subscribeToDiscussionsMessages(
-        list.map((discussion) => discussion.id),
-      );
-    return () => {
-      unsubscribeFromDiscussionMessages &&
-        unsubscribeFromDiscussionMessages.map((unsubscribeFromChunk) =>
-          unsubscribeFromChunk(),
-        );
-    };
-  }, [list]);
 
   const keyExtractor = useCallback((data) => data.id, []);
 
