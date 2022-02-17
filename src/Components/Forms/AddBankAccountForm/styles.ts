@@ -64,7 +64,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     marginTop: 0,
-    ...(Platform.OS === 'android' && {zIndex: 10000}),
   },
   textfieldView: {
     alignSelf: 'stretch',

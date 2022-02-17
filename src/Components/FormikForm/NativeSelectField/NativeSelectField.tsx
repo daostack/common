@@ -20,7 +20,7 @@ type PickerItem = {
 };
 
 type Props = {
-  onChange: (value: PickerItem) => void;
+  onChange: (value: string | number) => void;
   label: string;
   initialValue?: string;
   viewStyle?: ViewStyle | ViewStyle[];
@@ -120,11 +120,11 @@ export const NativeSelectField = ({
         onPress={() => {
           setOpenPicker(false);
           if (Number.isInteger(selectedIndex)) {
-            onChange(options[selectedIndex]);
+            onChange(options[selectedIndex].value);
             setSelectedItem(options[selectedIndex]);
           } else {
             setSelectedIndex(0);
-            onChange(options[0]);
+            onChange(options[0].value);
             setSelectedItem(options[0]);
           }
         }}
@@ -139,42 +139,64 @@ export const NativeSelectField = ({
   const renderItems = useCallback(
     () =>
       options.map((item) => (
-        <Picker.Item key={item.label} label={item.label} value={item.value} />
+        <Picker.Item
+          style={{fontSize: 16}}
+          key={item.label}
+          label={item.label}
+          value={item.value}
+        />
       )),
     [options],
   );
 
-  const renderAndroid = () => (
-    <Pressable
-      style={({pressed}) => [
-        {
-          opacity: pressed ? 0.7 : 1,
-          width: '100%',
-        },
-        viewStyle,
-      ]}>
-      <View pointerEvents="box-only" style={styles.pickerValueContainer}>
-        <Text
+  const renderAndroid = useCallback(
+    () => (
+      <Pressable
+        style={({pressed}) => [
+          {
+            opacity: pressed ? 0.7 : 1,
+            width: '100%',
+          },
+        ]}>
+        <View
+          pointerEvents="box-only"
           style={[
-            styles.pickerValue,
-            {
-              opacity: selectedItem?.label ? 1 : 0.4,
-            },
+            styles.pickerValueContainer,
+            errorMessage ? {borderColor: colors.error} : {},
           ]}>
-          {selectedItem?.label ?? placeholder}
-        </Text>
-        <Icon name="down-arrow" color={colors.black} size={16} />
-      </View>
-      <Picker
-        style={[{backgroundColor: 'transparent'}, styles.headlessAndroidPicker]}
-        onValueChange={(itemValue, itemIndex) => {
-          setSelectedIndex(itemIndex);
-          onChange(options[itemIndex]);
-        }}
-        selectedValue={selectedItem?.value}>
-        {renderItems()}
-      </Picker>
-    </Pressable>
+          <Text
+            style={[
+              styles.pickerValue,
+              {
+                opacity: selectedItem?.label ? 1 : 0.4,
+              },
+            ]}>
+            {selectedItem?.label ?? placeholder}
+          </Text>
+          <Icon name="down-arrow" color={colors.black} size={16} />
+        </View>
+        <Picker
+          style={styles.headlessAndroidPicker}
+          onValueChange={(itemValue, itemIndex) => {
+            if (itemIndex > 0) {
+              setSelectedItem(options[itemIndex - 1]);
+              onChange(options[itemIndex - 1].value);
+            }
+          }}
+          selectedValue={selectedItem?.value}>
+          {/* We need this item because android by default set first element as selected even if selectedValue=null and onValueChange will not trigger if we select first item  */}
+          <Picker.Item
+            style={{
+              fontSize: 18,
+            }}
+            label={`Select ${label}`}
+            value={''}
+          />
+          {renderItems()}
+        </Picker>
+      </Pressable>
+    ),
+    [options, selectedItem, errorMessage],
   );
 
   const renderIOS = () => (
@@ -188,6 +210,7 @@ export const NativeSelectField = ({
             opacity: pressed ? 0.4 : 1,
           },
           styles.pickerValueContainer,
+          errorMessage ? {borderColor: colors.error} : {},
         ]}>
         <Text
           style={[

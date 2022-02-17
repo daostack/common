@@ -200,6 +200,7 @@ export const AddBankAccountForm = ({
               label="Bank Name"
               placeholder="Bank Leumi"
               options={BANK_NAMES_OPTIONS}
+              viewStyle={styles.textfieldView}
               errorMessage={errors && touched.bankName && errors.bankName}
               onChange={(bankValue) => {
                 setFieldValue('bankName', bankValue);
