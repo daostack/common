@@ -32,11 +32,7 @@ const DiscussionCard = ({
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
-  const discussionId = data.id;
   const user = userStore.getUserById(data.ownerId);
-  const msgCount =
-    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
-      ?.length || 0;
   const hasPermission = authStore.getPermission(
     commonId,
     authStore?.userInfo?.uid,
@@ -131,7 +127,7 @@ const DiscussionCard = ({
                 }}
               />
 
-              {msgCount === 0 ? (
+              {data.messageCount === 0 ? (
                 <View style={{}}>
                   <TouchableOpacity
                     style={{justifyContent: 'center', alignSelf: 'center'}}
@@ -145,7 +141,7 @@ const DiscussionCard = ({
                 <View style={styles.messageCountContainer}>
                   <View style={styles.messageCountContainer}>
                     <Icon name="discussion" size={20} />
-                    <Text style={styles.msgCount}>{msgCount}</Text>
+                    <Text style={styles.msgCount}>{data.messageCount}</Text>
                   </View>
                   {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
                   <TouchableOpacity

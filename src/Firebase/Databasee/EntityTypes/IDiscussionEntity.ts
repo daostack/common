@@ -49,6 +49,11 @@ export interface IDiscussionEntity extends IBaseEntity {
   followers: string[];
 
   /**
+   * Number of messages in discussion
+   */
+  messageCount: number;
+
+  /**
    * The moderation object that handles hiding/showing proposals
    */
   moderation?: IModerationEntity | null;

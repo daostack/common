@@ -36,9 +36,10 @@ import {TITLES, ACTIONS} from '~/Components/Moderation/constants';
 import Loader from '~/Components/Loader';
 const {width} = Dimensions.get('window');
 import {Header} from '~/Screens/Header';
+import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const Discussions = ({
+const Discussion = ({
   navigation,
   route: {
     params: {commonId, discussionId, fromNotificationItem},
@@ -84,7 +85,6 @@ const Discussions = ({
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
     useState(false);
   const [action, setAction] = useState(ACTIONS.report);
-  // const actualInputHeight = Math.max(100, inputHeight + 50);
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   const isMember =
@@ -93,17 +93,13 @@ const Discussions = ({
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
-  useEffect(() => {
-    let unsubscribeFromDiscussionMessages = null;
-    if (fromNotificationItem) {
-      unsubscribeFromDiscussionMessages =
-        rootStore.discussionMessageStore.subscribeToProposalDiscussionMessages(
-          discussionId,
-        );
-    }
-
+  useFocusEffect(() => {
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+      discussionId
+    );
     return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+      unsubscribeFromDiscussionMessages &&
+        unsubscribeFromDiscussionMessages();
     };
   }, [discussionId]);
 
@@ -458,7 +454,7 @@ const Discussions = ({
   );
 };
 
-Discussions.propTypes = {
+Discussion.propTypes = {
   rootStore: rootStorePropTypes.isRequired,
   navigation: object,
   route: shape({
@@ -585,4 +581,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(Discussions));
+export default inject('rootStore')(observer(Discussion));
