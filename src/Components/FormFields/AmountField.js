@@ -7,6 +7,7 @@ import RequestToJoinForm from '../Forms/RequestToJoinForm';
 import {string, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/Stores/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
+import {formatContributionAmount} from '~/Util/FormatUtil';
 
 const AmountField = ({
   formStore,
@@ -17,8 +18,9 @@ const AmountField = ({
   isMonthly,
   zeroContribution,
 }) => {
-  const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
-    ?.value;
+  const currFieldValue = formStore.getFormField(
+    RequestToJoinForm.FIELD_AMOUNT,
+  )?.value;
   const [isCustomSelected, setIsCustomSelected] = useState(0);
   const [selectedAmountId, setSelectedAmountId] = useState(
     currFieldValue ? currFieldValue.index : -1,
@@ -36,7 +38,12 @@ const AmountField = ({
   // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
     minFeeToJoin > 0
-      ? [...multiplications.map((m) => m * minFeeToJoin), 1 * minFeeToJoin]
+      ? [
+          ...multiplications.map((m) =>
+            formatContributionAmount(Math.floor(m * minFeeToJoin)),
+          ),
+          Math.floor(1 * minFeeToJoin),
+        ]
       : [0, 10, 15, 10];
 
   const onAmountPress = (isCustom, amount, id) => {
