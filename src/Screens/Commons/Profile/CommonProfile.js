@@ -395,7 +395,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             </View>
             <View style={{...layout.flexRow, ...layout.marginLeftS}}>
               <Text style={text.h4BlackRegular}>
-                {`${pendingProposalsData?.pendingProposalCount ?? 0}  Pending`}
+                {`${pendingProposalsData.pendingProposalCount}  Pending`}
               </Text>
               <Icon name="right-arrow" />
             </View>
