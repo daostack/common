@@ -11,12 +11,12 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField';
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
-import {GenderSelectField} from '~/Components/FormikForm/GenderSelectField';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
-import {layout} from '~/Theme';
+import {BANK_NAMES_OPTIONS, GENDER_OPTIONS} from '~/Util/constants/dropdown';
+import {NativeSelectField} from '~/Components/FormikForm/NativeSelectField';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
 import {validationSchema} from './validationSchema';
@@ -97,6 +97,8 @@ export const AddBankAccountForm = ({
         errors,
         touched,
         setFieldValue,
+        setFieldTouched,
+        setFieldError,
         handleSubmit,
       }): ReactElement => (
         <>
@@ -105,6 +107,7 @@ export const AddBankAccountForm = ({
             scrollEnabled={true}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
             style={[styles.body, {marginBottom: insets.bottom}]}
             contentContainerStyle={{alignItems: 'center'}}>
             <Text style={styles.title}>Add Bank Account</Text>
@@ -145,10 +148,12 @@ export const AddBankAccountForm = ({
                 onChangeText={handleChange('birthdate')}
                 onBlur={handleBlur('birthdate')}
               />
-              <GenderSelectField
+              <NativeSelectField
                 errorMessage={errors && touched.gender && errors.gender}
                 viewStyle={styles.rowRightView}
                 label="Gender"
+                placeholder=""
+                options={GENDER_OPTIONS}
                 onChange={(genderValue) => {
                   setFieldValue('gender', genderValue);
                 }}
@@ -191,16 +196,15 @@ export const AddBankAccountForm = ({
               onChangeText={handleChange('accountNumber')}
               onBlur={handleBlur('accountNumber')}
             />
-            <TextInputField
-              errorMessage={errors && touched.bankName && errors.bankName}
-              viewStyle={styles.textfieldView}
-              placeholderText="Bank Jeumi"
-              autoCapitalize="none"
+            <NativeSelectField
               label="Bank Name"
-              autoCorrect={false}
-              value={values.bankName}
-              onChangeText={handleChange('bankName')}
-              onBlur={handleBlur('bankName')}
+              placeholder="Bank Leumi"
+              options={BANK_NAMES_OPTIONS}
+              viewStyle={styles.textfieldView}
+              errorMessage={errors && touched.bankName && errors.bankName}
+              onChange={(bankValue) => {
+                setFieldValue('bankName', bankValue);
+              }}
             />
             <View style={styles.rowFieldsView}>
               <TextInputField
@@ -268,27 +272,45 @@ export const AddBankAccountForm = ({
             </View>
             <CountryDropdownField
               errorMessage={errors && touched.country && errors.country}
-              viewStyle={{...styles.textfieldView, ...layout.marginBottomS}}
               label="Country/Region"
               onChange={(countryValue) => {
                 setFieldValue('country', countryValue);
               }}
             />
             {isAddingNew && (
-              <>
+              <View style={styles.fileSelectorBlock}>
                 <AddPhotoID
-                  error={touched.photoID && !!errors.photoID}
+                  error={errors && touched.photoID && !!errors.photoID}
                   onSelect={(photoID) => {
-                    setFieldValue('photoID', photoID);
+                    if (photoID) {
+                      setFieldValue('photoID', photoID);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('photoID', null);
+                      setFieldError('photoID', 'Please select a Photo ID');
+                    }
                   }}
                 />
                 <AddBankConfirmation
-                  error={touched.bankConfirmation && !!errors.bankConfirmation}
+                  error={
+                    errors &&
+                    touched.bankConfirmation &&
+                    !!errors.bankConfirmation
+                  }
                   onSelect={(bankConfirmation) => {
-                    setFieldValue('bankConfirmation', bankConfirmation);
+                    if (bankConfirmation) {
+                      setFieldValue('bankConfirmation', bankConfirmation);
+                    } else {
+                      setFieldTouched('photoID', true, true);
+                      setFieldValue('bankConfirmation', null);
+                      setFieldError(
+                        'photoID',
+                        'Please select a Bank Confirmation',
+                      );
+                    }
                   }}
                 />
-              </>
+              </View>
             )}
             <>
               <TouchableOpacity

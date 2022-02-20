@@ -55,17 +55,13 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPro
         : props.onLayout(layout, (containerHeight - layout.height) * -1);
     }
 
-
     setContainerHeight(layout.height);
   };
-
 
   React.useEffect(() => {
     if (props.error) {
       if ((props.error as any).isAxiosError) {
         const errorData = (props.error as AxiosError).response?.data;
-
-        console.log(errorData);
 
         setFormattedError({
           errorId: errorData?.errorId,

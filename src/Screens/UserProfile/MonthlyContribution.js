@@ -137,7 +137,7 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
           <Text>
             {(subscription?.status === CANCELED_BY_USER && isExpired) ||
             subscription?.status === CANCELED_BY_PAYMENT
-              ? formatDate(subscription.lastChargedAt.toDate())
+              ? formatDate(subscription.dueDate.toDate())
               : isExpired
               ? 'In the following days'
               : formatDate(subscription?.dueDate.toDate())}

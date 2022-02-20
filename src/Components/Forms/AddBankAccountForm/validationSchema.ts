@@ -54,13 +54,16 @@ export const validationSchema = object({
     .typeError('Bank Account Number must contain only numbers')
     .label('Bank Account Number')
     .required(),
-  bankCode: number().label('Bank Code').required(),
+  bankCode: number()
+    .typeError('Bank Code must contain only numbers')
+    .label('Bank Code')
+    .required(),
   country: string().label('Country').required(),
   city: string().label('City').required(),
   streetAddress: string().label('Street Address').required(),
   streetNumber: number()
-    .typeError('House Number must contain only numbers')
-    .label('House Number')
+    .typeError('Street Number must contain only numbers')
+    .label('Street Number')
     .required(),
   photoID: object()
     .shape({

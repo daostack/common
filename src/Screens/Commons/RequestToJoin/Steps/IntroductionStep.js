@@ -1,5 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import {observer} from 'mobx-react-lite';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
@@ -64,7 +65,6 @@ const IntroductionStep = ({
           title="Introduce Yourself"
           subtitle="Let the Common members learn more about you and how you relate to the cause."
         />
-
         <View
           style={{
             backgroundColor: colors.grey4,
@@ -119,4 +119,4 @@ IntroductionStep.propTypes = {
   }),
 };
 
-export default IntroductionStep;
+export default observer(IntroductionStep);

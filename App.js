@@ -15,7 +15,7 @@ import NetInfo from '@react-native-community/netinfo';
 import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   CommonProfile,
   Onboarding,
@@ -48,6 +48,7 @@ import {
   MonthlyContributionsList,
   MonthlyContribution,
   EditCommon,
+  ReceiveFunds,
   AddInvoicesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
@@ -168,9 +169,13 @@ const App = ({rootStore, navigation}) => {
 
   // Fetch Bank Account Details
   useEffect(() => {
+    let unsubscribeToBankAccount = null;
     if (authStore.userInfo?.uid) {
       bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
     }
+    return () => {
+      unsubscribeToBankAccount && unsubscribeToBankAccount();
+    };
   }, [authStore.userInfo?.uid]);
 
   const notificationNavigation = async (remoteMessage) => {
@@ -628,6 +633,15 @@ const App = ({rootStore, navigation}) => {
             }}
             name="MonthlyContribution"
             component={MonthlyContribution}
+          />
+          <Stack.Screen
+            options={{
+              title: 'Receive funds',
+              headerBackTitleVisible: false,
+              headerRight: () => <IntercomShowButton />,
+            }}
+            name="ReceiveFunds"
+            component={ReceiveFunds}
           />
         </Stack.Navigator>
         {notificationRouting && (

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 
 import {
   SafeAreaView,
@@ -110,6 +110,8 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     return unsubscribe;
   }, [navigation]);
 
+  const keyExtractor = useCallback((data) => data.id, []);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -121,9 +123,11 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
 
         {notificationList ? (
           <FlatList
+            keyExtractor={keyExtractor}
             data={notificationList.slice()}
             renderItem={renderNotificationItem}
             initialNumToRender={8}
+            maxToRenderPerBatch={8}
           />
         ) : (
           <Loader isBigger />

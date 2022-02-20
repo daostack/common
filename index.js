@@ -2,6 +2,7 @@
  * @format
  */
 
+import '~/Stores/reactotronConfig';
 import 'react-native-reanimated';
 import React from 'react';
 import {AppRegistry, LogBox} from 'react-native';

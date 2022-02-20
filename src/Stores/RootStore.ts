@@ -3,7 +3,7 @@ import UserStore from './DataStores/UserStore';
 import CommonStore from './DataStores/CommonStore';
 import AuthStore from './AuthStore';
 import ProposalStore from './DataStores/ProposalStore';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DiscussionStore from './DataStores/DiscussionStore';
 import NotificationStore from './DataStores/NotificationStore';
 import DiscussionMessageStore from './DataStores/DiscussionMessageStore';

@@ -1,7 +1,7 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {CommonActions} from '@react-navigation/native';
-import CommonCover from './Commons/CommonCover';
+import CommonCardImage from './Commons/CommonImage/CommonCardImage';
 import CommonStageSummary from './Commons/CommonStageSummary';
 import {string, object, number, func, shape, array} from 'prop-types';
 
@@ -29,30 +29,26 @@ const CommonBox = ({
         headerHeightLayouted(event.nativeEvent.layout.height);
       }
     }}>
-    <CommonCover
-      isMember={false}
-      commonInfo={{
-        cover: common.image,
-        name: common.name,
-        description: common.metadata?.byline,
-      }}
-      common={common}
+    <CommonCardImage
+      cover={common.image}
+      name={common.name}
+      description={common.metadata?.byline}
     />
 
     <CommonStageSummary
       isCommonCard={true}
-      commonProgressInfo={{
-        time: common.fundingGoalDeadline,
-        activeProposals:
-          common.numberOfBoostedProposals +
-          common.numberOfPreBoostedProposals +
-          common.numberOfQueuedProposals,
-        goal: common.fundingGoal,
-        members: common?.members?.length,
-        // TODO: get this value. Is it even tracked in the contract? need to check.
-        raised: common.raised,
-        currentBudget: common.balance,
-      }}
+      time={common.fundingGoalDeadline}
+      activeProposals={
+        common.numberOfBoostedProposals +
+        common.numberOfPreBoostedProposals +
+        common.numberOfQueuedProposals
+      }
+      goal={common.fundingGoal}
+      members={common?.members?.length}
+      // TODO: get this value. Is it even tracked in the contract? need to check.
+      raised={common.raised}
+      currentBudget={common.balance}
+      reservedBalance={common.reservedBalance}
     />
   </TouchableOpacity>
 );
