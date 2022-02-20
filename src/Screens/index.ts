@@ -26,7 +26,7 @@ export {default as MyProposals} from './UserProfile/MyProposals';
 export {default as MyCommons} from './UserProfile/MyCommons';
 
 // Proposals
-export {default as Discussions} from './Discussions/Discussions';
+export {default as Discussions} from './Discussions/Discussion';
 export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
@@ -40,3 +40,4 @@ export {default as Browser} from './Viewers/Browser';
 export {default as Onboarding} from './Onboarding';
 export {default as HUDTest} from './HUDTest';
 export {default as FullScreenCreationLoader} from './FullScreenCreationLoader';
+export {default as ReceiveFunds} from './ReceiveFunds/ReceiveFunds';

@@ -4,6 +4,7 @@ import {IBankAccountEntity} from '~/Firebase/Databasee/EntityTypes/IBankAccountE
 import {BankAccount} from '../Models/BankAccount';
 import Logger from '~/Services/Logger';
 import BankAccountService from '~/Services/BankAccountService';
+import {computed} from 'mobx';
 
 export default class BankAccountStore extends BaseStore<
   BankAccount,
@@ -12,6 +13,13 @@ export default class BankAccountStore extends BaseStore<
   constructor(rootStore: RootStore) {
     super(rootStore);
     this.reset();
+  }
+
+  @computed
+  get bankAccountData() {
+    const haveBankAccount = this?.data?.size !== 0;
+    const bankAccountData = haveBankAccount ? this?.data?.entries()?.next()?.value[1] : undefined;
+    return bankAccountData;
   }
 
   getBankAccountById = (id: string): BankAccount | undefined => {

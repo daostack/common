@@ -75,6 +75,14 @@ export default class DiscussionMessageStore extends BaseStore<
       this.updateStoreData,
     );
 
+  subscribeToDiscussionMessages = (
+    discussionId: string,
+  ): FirestoreUnsubscribeFn =>
+    DiscussionMessageService.subscribeToDiscussionMessages(
+      discussionId,
+      this.updateStoreData,
+    );
+
   subscribeToProposalDiscussionMessages = (
     proposalId: string,
   ): FirestoreUnsubscribeFn =>

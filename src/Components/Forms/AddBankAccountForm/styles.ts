@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 import {STATUS_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 
@@ -64,7 +64,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     marginTop: 0,
-    ...(Platform.OS === 'android' && {zIndex: 10000}),
   },
   textfieldView: {
     alignSelf: 'stretch',

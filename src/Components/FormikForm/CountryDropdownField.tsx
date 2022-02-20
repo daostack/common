@@ -19,7 +19,7 @@ type Props = {
   onChange: (value: string) => void;
   label: string;
   errorMessage?: string | boolean;
-  viewStyle: ViewStyle;
+  viewStyle?: ViewStyle;
 };
 
 function ErrorMessage({

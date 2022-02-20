@@ -17,6 +17,7 @@ class BankAccountService {
   private endpoints: {
     addBankAccount: string;
     getBankAccount: string;
+    deleteBankAccount: string;
   };
 
   constructor() {
@@ -28,7 +29,20 @@ class BankAccountService {
     this.endpoints = {
       addBankAccount: '/bank-account-details/add',
       getBankAccount: 'bank-account-details/get',
+      deleteBankAccount: '/bank-account-details/delete',
     };
+  }
+
+  async deleteBankAccountDetails(): Promise<void> {
+    try {
+      await this.axiosClient.delete(this.endpoints.deleteBankAccount, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async addBankAccountDetails(body: BankAccountDetails): Promise<void> {
