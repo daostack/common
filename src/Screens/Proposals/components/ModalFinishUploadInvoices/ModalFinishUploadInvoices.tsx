@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import {StyleSheet} from 'react-native';
+import {layout} from '~/Theme';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {UploadInvoicesInfo} from './UploadInvoicesInfo';
 import {UploadInvoicesLoader} from './UploadInvoicesLoader';
@@ -60,7 +60,7 @@ export const ModalFinishUploadInvoices = ({
   <BottomSheetModal
     isVisible={isVisible}
     onClose={onPressClose}
-    style={styles.modalContainer}>
+    style={layout.bottomSheetRadius}>
     <UploadInvoicesSwitcher
       onPressClose={onPressClose}
       proposalAmount={proposalAmount}
@@ -74,9 +74,3 @@ export const ModalFinishUploadInvoices = ({
     />
   </BottomSheetModal>
 );
-
-export const styles = StyleSheet.create({
-  modalContainer: {
-    borderRadius: 25,
-  },
-});

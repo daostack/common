@@ -82,9 +82,6 @@ export const UploadInvoicesInfo = ({
 );
 
 export const styles = StyleSheet.create({
-  modalContainer: {
-    borderRadius: 25,
-  },
   title: {
     ...text.h1BlackTitle,
     marginBottom: 20,
