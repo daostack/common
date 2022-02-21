@@ -8,6 +8,7 @@ import {string, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/Stores/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
 import {formatContributionAmount} from '~/Util/FormatUtil';
+import {MAX_CONTRIBUTION} from '~/Util/constants/paymentConstants';
 
 const AmountField = ({
   formStore,
@@ -32,8 +33,10 @@ const AmountField = ({
     minFeeToJoin > 0
       ? `The amount must be at least ${
           CurrencySymbols.SHEKEL
-        }${minFeeToJoin.toString()} and at most ${CurrencySymbols.SHEKEL}2500.`
-      : `The amount must be 0, or at least ${CurrencySymbols.SHEKEL}10 and at most ${CurrencySymbols.SHEKEL}2500.`;
+        }${minFeeToJoin.toString()} and at most ${
+          CurrencySymbols.SHEKEL
+        }${MAX_CONTRIBUTION}.`
+      : `The amount must be 0, or at least ${CurrencySymbols.SHEKEL}10 and at most ${CurrencySymbols.SHEKEL}${MAX_CONTRIBUTION}.`;
 
   // from now on, there will be no option to create a common with 0 minFreeToJoin
   let contributionValues =
@@ -109,7 +112,7 @@ const AmountField = ({
             'required',
             'numeric',
             `${customAmountRules.AMOUNT_RULES.MIN_FEE_TO_JOIN_RULE}:${minFeeToJoin}`,
-            'max:2500',
+            'max:5000',
           ],
           customErrorMessage: errorMessage,
         }}
