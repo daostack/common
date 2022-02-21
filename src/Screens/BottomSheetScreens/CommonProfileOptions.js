@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {text, layout, colors} from '~/Theme';
+import {text, layout, colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
 import {object, func, string} from 'prop-types';
@@ -21,6 +21,8 @@ const CommonProfileOptions = ({
   );
   const [iconName, setIconName] = useState('hidden');
   const {item} = moderatorOptions;
+  const isOptions = item ? false : true;
+
   useEffect(() => {
     if (item) {
       if (item?.moderation) {
@@ -32,6 +34,86 @@ const CommonProfileOptions = ({
     }
   }, []);
 
+  const renderEditActions = () => (
+    <>
+      {<Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>}
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('info')}>
+        <Icon
+          name="dao-general-info-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit info and cover photo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('rules')}>
+        <Icon
+          name="agenda-24"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={text.buttonblack}>Edit rules</Text>
+      </TouchableOpacity>
+    </>
+  );
+
+  const renderCommonShare = () => (
+    <>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('Share')}>
+        <Icon
+          name="share-32"
+          style={layout.marginRightS}
+          color={colors.black}
+        />
+        <Text style={{...text.buttonblack, lineHeight: 20}}>Share</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.optionBtn}
+        onPress={() => onAction('Copy link')}>
+        <Icon name="link" style={layout.marginRightS} color={colors.black} />
+        <Text style={{...text.buttonblack, lineHeight: 20}}>Copy Link</Text>
+      </TouchableOpacity>
+      <View style={styles.lineHorizontal} />
+    </>
+  );
+
+  const renderModeratorTools = () => (
+    <>
+      {hasPermission && (
+        <>
+          <Text style={styles.text}>Moderator tools</Text>
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onAction(actions[0])}>
+            <Icon
+              name={iconName}
+              style={layout.marginRightS}
+              color={colors.error}
+            />
+            <Text style={text.buttonred}>{actions[0]}</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      {actions[1] && (
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onAction(actions[1])}>
+          <Icon
+            name="report-16"
+            style={layout.marginRightS}
+            color={colors.error}
+          />
+          <Text style={text.buttonred}>{actions[1]}</Text>
+        </TouchableOpacity>
+      )}
+    </>
+  );
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -40,58 +122,11 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        <Text style={styles.text}>Options</Text>
-        {!item && (
-          <>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction('info')}>
-              <Icon
-                name="dao-general-info-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit info and cover photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionBtn}
-              onPress={() => onAction('rules')}>
-              <Icon
-                name="agenda-24"
-                style={layout.marginRightS}
-                color={colors.black}
-              />
-              <Text style={text.buttonblack}>Edit rules</Text>
-            </TouchableOpacity>
-          </>
-        )}
+        {isOptions && renderEditActions()}
         {item && (
           <>
-            {hasPermission && <Text style={styles.text}>Moderator tools</Text>}
-            {hasPermission && (
-              <TouchableOpacity
-                style={styles.optionBtn}
-                onPress={() => onAction(actions[0])}>
-                <Icon
-                  name={iconName}
-                  style={layout.marginRightS}
-                  color={colors.error}
-                />
-                <Text style={text.buttonred}>{actions[0]}</Text>
-              </TouchableOpacity>
-            )}
-            {actions[1] && (
-              <TouchableOpacity
-                style={styles.optionBtn}
-                onPress={() => onAction(actions[1])}>
-                <Icon
-                  name="report-16"
-                  style={layout.marginRightS}
-                  color={colors.error}
-                />
-                <Text style={text.buttonred}>{actions[1]}</Text>
-              </TouchableOpacity>
-            )}
+            {isOptions && renderCommonShare()}
+            {renderModeratorTools()}
           </>
         )}
       </View>
@@ -107,6 +142,11 @@ CommonProfileOptions.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  lineHorizontal: {
+    width: '90%',
+    borderWidth: 1,
+    borderColor: colors.blueGray1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -118,7 +158,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    paddingVertical: 20,
   },
 
   safeArea: {
@@ -132,14 +171,12 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
-    borderBottomWidth: 1,
-    borderColor: colors.grey4,
     width: 350,
   },
   text: {
     ...text.h2Black,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginVertical: 30,
   },
 });
 

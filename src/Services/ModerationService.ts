@@ -1,3 +1,5 @@
+import Clipboard from '@react-native-clipboard/clipboard';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 import axios, {AxiosInstance} from 'axios';
 import {ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 import {moderationUrl} from '~/Config';
@@ -5,6 +7,8 @@ import {auth} from '~/Firebase';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
 import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import logger from '~/Services/Logger';
+import {DYNAMIC_LINK_URI_PREFIX} from '~/Util/constants/dynamicLinks';
 import Toast from '~/Util/Toast.js';
 
 class ModerationService {
@@ -50,14 +54,12 @@ class ModerationService {
 
   async report(
     type: keyof typeof ENTITY_TYPES,
-    commonId: string,
     moderationData: Record<string, string>,
   ): Promise<void> {
     await this.axiosClient.post(
       this.endpoints.report,
       {
         moderationData,
-        commonId,
         type,
       },
       {
@@ -87,6 +89,21 @@ class ModerationService {
       },
     );
 
+  copyLink = async (
+    itemId: string,
+    type: keyof typeof ENTITY_TYPES,
+  ): Promise<void> => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${type}/${itemId}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+      });
+      Clipboard.setString(url);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
+  };
+
   onModerate = async (
     actionType: keyof typeof ACTIONS,
     itemId: string,
@@ -107,6 +124,10 @@ class ModerationService {
           Toast.hide();
           Toast.success('Done');
           return true;
+        case ACTIONS.copyLink:
+          this.copyLink(itemId, itemType);
+          Toast.success('Link copied to clipboard');
+          return false;
         default:
           // reporting
           return ACTIONS.report;

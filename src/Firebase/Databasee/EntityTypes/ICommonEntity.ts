@@ -21,6 +21,12 @@ export interface ICommonEntity extends IBaseEntity {
   balance: number;
 
   /**
+   * Funds already in processing
+   * the common in shekels
+   */
+  reservedBalance: number;
+
+  /**
    * The total amount of funds that the
    * common has raised to date in cents
    */
@@ -104,6 +110,8 @@ export interface ICommonMetadata {
    * or only when they join
    */
   contributionType: ContributionType;
+
+  zeroContribution: boolean;
 }
 
 export type ContributionType = 'one-time' | 'monthly';

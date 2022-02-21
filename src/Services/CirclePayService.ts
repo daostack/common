@@ -1,3 +1,4 @@
+/* Unused service
 import axios, {AxiosInstance} from 'axios';
 import {auth} from '~/Firebase';
 import OpenPGP from 'react-native-fast-openpgp';
@@ -113,3 +114,4 @@ class CirclePayService {
 }
 
 export default new CirclePayService();
+*/

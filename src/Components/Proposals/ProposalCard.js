@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react-lite';
 import {
   Text,
   StyleSheet,
@@ -26,7 +26,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {useStore} from '~/Util/hooks/useStore';
 
 const {width} = Dimensions.get('window');
 
@@ -38,15 +38,10 @@ const ProposalCard = ({
   commonInfo,
   openCommonOptions,
   hiddenProposalNote,
-  rootStore,
-  isMember,
   viewerPermission,
+  type,
 }) => {
-  // Stores
-  const userStore = rootStore.userStore;
-  const proposalStore = rootStore.proposalStore;
-  const commonStore = rootStore.commonStore;
-  const authStore = rootStore.authStore;
+  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -134,7 +129,9 @@ const ProposalCard = ({
               proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
           }
           isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
-          moderation={proposalInfo.moderation}
+          moderation={
+            proposalInfo.moderation && {...proposalInfo.moderation, type}
+          }
           reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
@@ -148,7 +145,6 @@ const ProposalCard = ({
                   (proposalInfo?.description?.title || 'Unknown title')}
               </Text>
               {(!proposalInfo.isModerationHidden || hasPermission) &&
-                isMember &&
                 !isSwiper &&
                 !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
             </View>
@@ -231,9 +227,8 @@ ProposalCard.propTypes = {
   hasPermission: bool,
   openCommonOptions: func,
   hiddenProposalNote: func,
-  rootStore: rootStorePropTypes,
-  isMember: bool,
   viewerPermission: string,
+  type: string,
 };
 
 const styles = StyleSheet.create({
@@ -294,4 +289,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(ProposalCard));
+export default observer(ProposalCard);

@@ -1,32 +1,32 @@
+import auth from '@react-native-firebase/auth';
+import {observer} from 'mobx-react-lite';
+import moment from 'moment';
+import PropTypes, {bool, func, string} from 'prop-types';
 import React, {useRef} from 'react';
 import {
-  Text,
-  StyleSheet,
-  SectionList,
-  View,
   Image,
-  Dimensions,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import {layout, text, colors, font} from '~/Theme';
-import DiscussionMessage from '../Discussions/DiscussionMessage';
-import {observer, inject} from 'mobx-react';
-import moment from 'moment';
-import logger from '../../Services/Logger';
-import PropTypes, {string, bool, func} from 'prop-types';
+import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import logger from '../../Services/Logger';
+import DiscussionMessage from '../Discussions/DiscussionMessage';
+import {useStore} from '~/Util/hooks/useStore';
 
 const DiscussionMessagesList = ({
   discussionId,
   scrollViewRef,
-  rootStore,
   hasPermission,
   commonId,
   openMessageOptions,
   isMember,
+  inputHeight,
 }) => {
   const chatRef = useRef(null);
+  const rootStore = useStore('rootStore');
   const discussionMessageStore = rootStore.discussionMessageStore;
 
   const viewerPermission = rootStore.authStore.getPermission(
@@ -37,11 +37,11 @@ const DiscussionMessagesList = ({
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
-      date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
-      data: msg,
-    }))
+        date: moment(msg.createTime.toDate()).format('YYYY-MM-DD'),
+        data: msg,
+      }))
     .reduce((acc, curr) => {
-      var key = curr.date;
+      const key = curr.date;
       let el = acc.find((x) => x && x.date === key);
       if (el) {
         el.data.push(curr.data);
@@ -54,17 +54,8 @@ const DiscussionMessagesList = ({
       return acc;
     }, []);
 
-  setTimeout(() => {
-    // Sometimes that code is executed after we leave the actual screen, so we need that check.
-    if (scrollViewRef?.current) {
-      scrollViewRef.current?.scrollToEnd({
-        animated: true,
-      });
-    }
-  }, 150);
-
   return (
-    <View style={styles.viewContainer}>
+    <View style={[styles.viewContainer]}>
       {msgGroups.length > 0 ? (
         <SectionList
           inverted
@@ -73,8 +64,7 @@ const DiscussionMessagesList = ({
           keyExtractor={(x) => x.id}
           stickySectionHeadersEnabled={true}
           contentContainerStyle={{
-            paddingTop: 100,
-            width: Dimensions.get('screen').width * 0.9,
+            paddingTop: 16,
           }}
           renderItem={(x) => (
             <DiscussionMessage
@@ -123,12 +113,12 @@ DiscussionMessagesList.propTypes = {
   discussionId: string,
   scrollViewRef: PropTypes.any,
   discussionMessageStore: discussionStorePropTypes,
-  rootStore: rootStorePropTypes.isRequired,
   hasPermission: string,
   commonId: string,
   action: func,
   openMessageOptions: func,
   isMember: bool,
+  inputHeight: string,
 };
 
 const styles = StyleSheet.create({
@@ -140,6 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     paddingHorizontal: 20,
+    marginTop: 16,
   },
   timeHeader: {
     textAlign: 'center',
@@ -166,8 +157,9 @@ const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
     backgroundColor: colors.paleLilacTwo,
-    ...layout.content,
+    paddingHorizontal: 6,
+    zIndex: -1,
   },
 });
 
-export default inject('rootStore')(observer(DiscussionMessagesList));
+export default observer(DiscussionMessagesList);

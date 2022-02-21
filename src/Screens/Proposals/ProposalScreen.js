@@ -15,7 +15,9 @@ import {
   Modal,
   Pressable,
   Image,
+  Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
@@ -35,7 +37,7 @@ import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, func} from 'prop-types';
 import logger from '~/Services/Logger';
 import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -54,12 +56,19 @@ import ModalDebtProposalInsufficient from './components/ModalDebtProposalInsuffi
 import ModalConversion from '~/Components/Commons/ModalConversion';
 import {isIsraelLocale} from '~/Util/locale';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import ModerationFormStore from '~/FormStores/ModerationFormStore';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import ModerationService from '~/Services/ModerationService';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {TITLES} from '~/Components/Moderation/constants';
+import {copilot, walkthroughable, CopilotStep} from 'react-native-copilot';
+import {TooltipComponent} from './components/ModalTooltip';
+import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
+import {CurrencySymbols} from '~/Util/locale';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
+const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -75,7 +84,9 @@ const ProposalScreen = ({
     },
   },
   rootStore,
+  start, // copilot modal tooltip start
 }) => {
+  const insets = useSafeAreaInsets();
   const userStore = rootStore.userStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
   const commonStore = rootStore.commonStore;
@@ -92,24 +103,22 @@ const ProposalScreen = ({
   });
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [inputHeight, setInputHeight] = useState(false);
+  const [inputHeight, setInputHeight] = useState(48);
   const [
     showBottomVotingButtonsContainer,
     setShowBottomVotingButtonsContainer,
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
+  const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   // Sticky Tab Bar
   const [showStickyTabBar, setShowStickyTabBar] = useState(false);
@@ -129,15 +138,13 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
+    const unsubscribeFromProposalDiscussionMessages =
+      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
     let unsubscribeFromProposalById = null;
     if (fromNotificationItem) {
-      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-        proposalId,
-      );
+      unsubscribeFromProposalById =
+        proposalStore.subscribeToProposalById(proposalId);
     }
 
     return () => {
@@ -150,6 +157,37 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
+  let currentUserVote = {};
+  const filteredVotes = proposalInfo.votes.filter(
+    (item) => item.voterId === userInfo.uid,
+  );
+  if (filteredVotes.length !== 0) {
+    currentUserVote = filteredVotes[0];
+  }
+  const userVoted = Object.values(currentUserVote).length !== 0;
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      const asyncData = async () => {
+        try {
+          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
+          if (value === null && !userVoted) {
+            await AsyncStorage.setItem(
+              TOOLTIP_PROPOSAL,
+              TOOLTIP_PROPOSAL_SEEN.true,
+            );
+            start();
+          }
+        } catch (error) {
+          logger.log(error);
+        }
+      };
+      asyncData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   let viewerPermission = '';
   if (proposalInfo) {
     viewerPermission = rootStore.authStore.getPermission(
@@ -158,7 +196,7 @@ const ProposalScreen = ({
     );
   }
 
-  const proposalCommon = proposalInfo
+  const proposalCommon = proposalInfo?.commonId
     ? commonStore.getCommonById(proposalInfo.commonId)
     : null;
   const proposedUser = proposalInfo
@@ -197,10 +235,8 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
+  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
+    useState(false);
 
   const [isVoteByYou, setIsVoteByYou] = useState(false);
   const [voteType, setVoteType] = useState(false);
@@ -290,48 +326,37 @@ const ProposalScreen = ({
           flex: 1,
           color: '#fbfdff',
         }}>
-        <View style={viewStyle}>
-          <View style={styles.inputBorder}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              onChangeText={(currText) => setInputText(currText)}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height);
-              }}
-              style={{
-                flex: 1,
-                padding: 0,
-                marginHorizontal: 10,
-                maxHeight: 110,
-                height: Math.max(35, inputHeight + 10),
-              }}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                paddingRight: 15,
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={20}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
         <View
           style={{
-            height: 30,
-            backgroundColor: colors.white,
-          }}
-        />
+            ...styles.inputContainer,
+            height: actualInputHeight,
+          }}>
+          <TextInput
+            ref={inputRef}
+            editable={true}
+            fontSize={15}
+            multiline
+            placeholder="What do you think?"
+            placeholderTextColor={colors.grey3}
+            onChangeText={(currText) => setInputText(currText)}
+            onContentSizeChange={(event) => {
+              setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+            }}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            onPress={sendMessageToDiscussion}
+            style={{
+              justifyContent: 'center',
+            }}
+            disabled={isEmptyMessage()}>
+            <Icon
+              name="send-message"
+              size={25}
+              color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+            />
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     ) : (
       <View style={viewStyle}>
@@ -602,7 +627,7 @@ const ProposalScreen = ({
       );
     }
     bottomSheetStore.showBottomSheet(
-      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS,
+      BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(),
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
@@ -618,8 +643,7 @@ const ProposalScreen = ({
     Toast.loading('Loading...');
     bottomSheetStore.hideBottomSheet();
     await ModerationService.report(
-      'discussionMessage',
-      proposalInfo.commonId,
+      TITLES.discussionMessage,
       moderationFormStore.getFormFieldsJson(),
     );
     Toast.hide();
@@ -716,7 +740,7 @@ const ProposalScreen = ({
         )}
 
         <ScrollView
-          style={{}}
+          style={{marginBottom: index === 0 ? 0 : inputHeight + 50}}
           ref={scrollViewRef}
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
@@ -876,7 +900,9 @@ const ProposalScreen = ({
                         : 'Contribution:'}
                     </Text>
                     <Text style={text.h2Black}>
-                      {amount > 0 ? `$${amount}` : '$0'}
+                      {amount > 0
+                        ? `${CurrencySymbols.SHEKEL}${amount}`
+                        : `${CurrencySymbols.SHEKEL}0`}
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
@@ -905,91 +931,99 @@ const ProposalScreen = ({
                     )}
 
                   {showDebtInfo && (
-                    <Text
-                      style={
-                        text.smallBlackText
-                      }>{`Available funds: $${getAvailableFundsText()}`}</Text>
+                    <Text style={text.smallBlackText}>{`Available funds: ${
+                      CurrencySymbols.SHEKEL
+                    }${getAvailableFundsText()}`}</Text>
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
 
-                <View
-                  style={{
-                    ...layout.content,
-                    width: '100%',
-                    paddingHorizontal: 0,
-                  }}>
-                  <View style={styles.proposalProgressInfo}>
+                <CopilotStep
+                  text="This is a hello world example!"
+                  order={1}
+                  name="hello">
+                  <CopilotView style={{width: '100%'}}>
                     <View
                       style={{
                         ...layout.content,
-                        ...layout.flexRow,
-                        padding: 0,
+                        width: '100%',
+                        paddingHorizontal: 0,
                       }}>
-                      <Icon
-                        name="user-approved"
-                        color={colors.lightishGreen}
-                        size={25}
-                        style={layout.marginRightXS}
-                      />
-                      <Text style={text.lightishGreenText}>
-                        {proposalInfo.votesFor}
-                      </Text>
-                    </View>
+                      <View style={styles.proposalProgressInfo}>
+                        <View
+                          style={{
+                            ...layout.content,
+                            ...layout.flexRow,
+                            padding: 0,
+                          }}>
+                          <Icon
+                            name="user-approved"
+                            color={colors.lightishGreen}
+                            size={25}
+                            style={layout.marginRightXS}
+                          />
+                          <Text style={text.lightishGreenText}>
+                            {proposalInfo.votesFor}
+                          </Text>
+                        </View>
 
-                    <Text style={text.smallBlackText}>
-                      {!proposalInfo.votesCount
-                        ? 'No votes yet'
-                        : `${proposalInfo.votesCount} ${
-                            proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                          }`}
-                    </Text>
+                        <Text style={text.smallBlackText}>
+                          {!proposalInfo.votesCount
+                            ? 'No votes yet'
+                            : `${proposalInfo.votesCount} ${
+                                proposalInfo.votesCount > 1 ? 'votes' : 'vote'
+                              }`}
+                        </Text>
+
+                        <View
+                          style={{
+                            ...layout.content,
+                            ...layout.flexRow,
+                            padding: 0,
+                          }}>
+                          <Text style={text.againstText}>
+                            {proposalInfo.votesAgainst}
+                          </Text>
+                          <Icon
+                            name="user-rejected"
+                            color={colors.against}
+                            size={25}
+                            style={layout.marginLeftXS}
+                          />
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          ...styles.proposalProgressBar,
+                          ...{
+                            backgroundColor: isNaN(
+                              proposalInfo?.progressBarWidthPercent,
+                            )
+                              ? colors.grey4
+                              : colors.against,
+                          },
+                        }}>
+                        <View
+                          style={{
+                            ...styles.proposalInnerProgressBar,
+                            width: `${
+                              proposalInfo?.progressBarWidthPercent || 0
+                            }%`,
+                          }}
+                        />
+                      </View>
+                    </View>
 
                     <View
                       style={{
-                        ...layout.content,
                         ...layout.flexRow,
-                        padding: 0,
+                        justifyContent: 'space-between',
+                        width: '100%',
                       }}>
-                      <Text style={text.againstText}>
-                        {proposalInfo.votesAgainst}
-                      </Text>
-                      <Icon
-                        name="user-rejected"
-                        color={colors.against}
-                        size={25}
-                        style={layout.marginLeftXS}
-                      />
+                      {renderVoting && renderVotingButtons(topVotingButtonsRef)}
                     </View>
-                  </View>
-                  <View
-                    style={{
-                      ...styles.proposalProgressBar,
-                      ...{
-                        backgroundColor: isNaN(
-                          proposalInfo?.progressBarWidthPercent,
-                        )
-                          ? colors.grey4
-                          : colors.against,
-                      },
-                    }}>
-                    <View
-                      style={{
-                        ...styles.proposalInnerProgressBar,
-                        width: `${proposalInfo?.progressBarWidthPercent || 0}%`,
-                      }}
-                    />
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    ...layout.flexRow,
-                    justifyContent: 'space-between',
-                    width: '100%',
-                  }}>
-                  {renderVoting && renderVotingButtons(topVotingButtonsRef)}
-                </View>
+                  </CopilotView>
+                </CopilotStep>
               </View>
             </View>
           )}
@@ -1021,12 +1055,13 @@ const ProposalScreen = ({
                 <DiscussionMessagesList
                   discussionId={proposalId || proposalInfo.id}
                   proposal={proposalInfo}
-                  inputRef={inputRef}
                   scrollViewRef={scrollViewRef}
                   hasPermission={hasPermission}
                   commonId={proposalInfo.commonId}
                   openMessageOptions={(message) => openMessageOptions(message)}
                   isMember={isMember}
+                  inputHeight={-35}
+                  inputRef={inputRef}
                 />
               )}
             </View>
@@ -1067,9 +1102,40 @@ ProposalScreen.propTypes = {
     }),
   }),
   rootStore: rootStorePropTypes,
+  start: func,
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    width: screenWidth,
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: colors.white,
+    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowOffset: {
+      width: 0,
+      height: -1,
+    },
+    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+  },
+  input: {
+    backgroundColor: colors.paleLilacTwo,
+    borderTopColor: colors.grey4,
+    borderTopWidth: 1,
+    width: '75%',
+    flexDirection: 'row',
+    borderRadius: 40,
+    textAlignVertical: 'center',
+    paddingTop: Platform.OS === 'ios' ? 15 : 10,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 10,
+    paddingHorizontal: 15,
+  },
   // New styles
   contributionCard: {
     ...layout.content,
@@ -1159,27 +1225,6 @@ const styles = StyleSheet.create({
     ...text.buttonblue,
     ...text.bold,
   },
-  input: {
-    backgroundColor: colors.white,
-    borderColor: colors.grey4,
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    width: screenWidth,
-    flexDirection: 'row',
-    shadowColor: 'rgba(0, 0, 0, 0.2)',
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowRadius: 4,
-    shadowOpacity: 0.5,
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-
-    borderTopWidth: 1,
-    borderTopColor: colors.grey2,
-  },
   inputBorder: {
     flex: 1,
     flexDirection: 'row',
@@ -1198,4 +1243,31 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(ProposalScreen));
+const circleSvgPath = ({position, canvasSize, size}) =>
+  `M0,0H${canvasSize.x}V${canvasSize.y}H0V0ZM${position.x._value},${
+    position.y._value
+  }H${position.x._value + size.x._value - 10}a 20 20 0 0 1 20 20 V${
+    position.y._value + size.y._value - 20
+  }a 20 20 0 0 1 -20 20H${position.x._value + 10}a 20 20 0 0 1 -20 -20V${
+    position.y._value + 20
+  }a 20 20 0 0 1 20 -20Z`;
+
+export default inject('rootStore')(
+  observer(
+    copilot({
+      stepNumberComponent: () => <View />,
+      overlay: 'svg',
+      tooltipComponent: TooltipComponent,
+      tooltipStyle: {
+        backgroundColor: colors.mainBlue,
+        borderRadius: 17,
+        width: screenWidth * 0.75,
+        alignItems: 'center',
+        height: 190,
+      },
+      arrowColor: colors.mainBlue,
+      backdropColor: 'rgba(0, 0, 0, 0.2)',
+      svgMaskPath: circleSvgPath,
+    })(ProposalScreen),
+  ),
+);

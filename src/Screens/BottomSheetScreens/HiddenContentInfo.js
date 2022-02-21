@@ -36,10 +36,8 @@ const HiddenContentInfo = ({
       <View style={{...styles.body, height: moderatorNote ? '90%' : '60%'}}>
         <Text style={styles.title}>Hidden {type}</Text>
         <Text style={styles.text}>
-          This {type} was hidden
-          {isModerator ? ' by ' : ''}
-          <Bold boldText={isModerator ? userName : ''} /> at{'\n'}{' '}
-          <Bold boldText={date} /> {getReasons(reasons)}
+          This {type.toLowerCase()} was hidden by <Bold boldText={userName} />{' '}
+          on{'\n'} <Bold boldText={date} /> {getReasons(reasons)}
         </Text>
         {!!moderatorNote && (
           <View style={styles.moderatorNoteContainer}>

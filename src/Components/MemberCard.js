@@ -10,6 +10,7 @@ import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
 import {string, array, number, shape, object, oneOfType} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {CurrencySymbols} from '~/Util/locale';
 
 const MemberCard = ({
   userInfo,
@@ -20,7 +21,7 @@ const MemberCard = ({
 }) => {
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
-    userInfo.id,
+    userInfo.uid,
   );
 
   const isModerator = useMemo(
@@ -38,7 +39,7 @@ const MemberCard = ({
           <View style={{alignItems: 'flex-end'}}>
             {proposalInfo.funding > 0 && (
               <Text style={text.h2Black}>
-                {`$${proposalInfo.funding / 100}`}
+                {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
                 {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
               </Text>
             )}

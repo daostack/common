@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
@@ -17,7 +17,7 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission} from '~Util/Permissions';
+import {handlePermission} from '~/Util/Permissions';
 import {observer} from 'mobx-react';
 
 class ImageField extends React.Component {
@@ -80,29 +80,27 @@ class ImageField extends React.Component {
       quality: quality || 0.7,
       allowsEditing: allowsEditing || false,
     };
-    ImagePicker.showImagePicker(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.error) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.error);
-        logger.log('ImagePicker Error: ', response.error);
-      } else {
-        // const source = { uri: response.uri };
-        Toast.loading('Uploading...');
-        StorageService.getInstance()
-          .uploadImage(response.uri)
-          .then((url) => {
-            Toast.hide();
-            Toast.success('Done');
-            this.onChangeValue(url);
-          })
-          .catch((error) => {
-            Toast.error(error.toString());
-          });
-      }
-    });
+    launchImageLibrary(options, async (response) => {
+        if (response.didCancel) {
+          logger.log('User cancelled image picker');
+        } else if (response.errorMessage) {
+          // only for ios because android handles this
+          Platform.OS === 'ios' && (await handlePermission());
+          Toast.error(response.errorMessage);
+          logger.log('ImagePicker Error: ', response.errorMessage);
+        } else {
+          Toast.loading('Uploading...');
+          StorageService.uploadImage(response?.assets[0]?.uri)
+            .then((url) => {
+              Toast.hide();
+              Toast.success('Done');
+              this.onChangeValue(url);
+            })
+            .catch((error) => {
+              Toast.error(error.toString());
+            });
+        }
+      });
   };
 
   renderImage = (isAvatar, validation, value) => {

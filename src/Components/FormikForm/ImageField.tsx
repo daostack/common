@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useState} from 'react';
 import {
   Image,
   View,
@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import ImagePicker from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
@@ -17,8 +17,9 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission} from '../../Util/Permissions';
+import {handlePermission, requestAndroidCameraPermission} from '../../Util/Permissions';
 import {observer} from 'mobx-react';
+import {ModalUploadFile} from '~/Screens/Proposals/components/ModalUploadFile';
 
 type Props = {
   errorMessage?: string | boolean;
@@ -46,6 +47,9 @@ function ImageField({
   value,
   ...props
 }: Props): ReactElement {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBottomModalVisible, setIsBottomModalVisible] = useState(false);
+
   function onChangeValue(url: string): void {
     props.onChangeImage && props.onChangeImage(url);
   }
@@ -57,23 +61,57 @@ function ImageField({
   }
 
   function pickImage(): void {
+      const options = {
+        title: title,
+        quality: quality || 0.7,
+        allowsEditing: allowsEditing || false,
+      };
+      launchImageLibrary(options, async (response) => {
+        if (response.didCancel) {
+          logger.log('User cancelled image picker');
+        } else if (response.errorMessage) {
+          // only for ios because android handles this
+          Platform.OS === 'ios' && (await handlePermission());
+          Toast.error(response.errorMessage);
+          logger.log('ImagePicker Error: ', response.errorMessage);
+        } else {
+          // const source = { uri: response.uri };
+          Toast.loading('Uploading...');
+          StorageService.uploadImage(response?.assets[0]?.uri)
+            .then((url: string): void => {
+              Toast.hide();
+              Toast.success('Done');
+              onChangeValue(url);
+            })
+            .catch((error: any) => {
+              Toast.error(error.toString());
+            });
+        }
+        closeSheet();
+      });
+  }
+
+  const takePhoto = () => {
+    setIsLoading(true);
     const options = {
-      title: title,
-      quality: quality || 0.7,
-      allowsEditing: allowsEditing || false,
+      cameraType: 'front',
+      mediaType: 'photo',
     };
-    ImagePicker.showImagePicker(options, async (response) => {
+    launchCamera(options, async (response) => {
       if (response.didCancel) {
         logger.log('User cancelled image picker');
-      } else if (response.error) {
+      } else if (response.errorCode) {
+        Toast.error(response.errorCode);
+        logger.log('ImagePicker Error: ', response.errorCode);
+      } else if (response.errorMessage) {
         // only for ios because android handles this
         Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.error);
-        logger.log('ImagePicker Error: ', response.error);
+        Toast.error(response.errorMessage);
+        logger.log('ImagePicker Error Message: ', response.errorMessage);
       } else {
         // const source = { uri: response.uri };
         Toast.loading('Uploading...');
-        StorageService.uploadImage(response.uri)
+        StorageService.uploadImage(response?.assets[0]?.uri)
           .then((url: string): void => {
             Toast.hide();
             Toast.success('Done');
@@ -83,8 +121,26 @@ function ImageField({
             Toast.error(error.toString());
           });
       }
+      setIsLoading(false);
+      closeSheet();
     });
-  }
+  };
+
+  const onTakePhotoPress = async () => {
+    if (Platform.OS === 'android') {
+      requestAndroidCameraPermission(takePhoto);
+    } else {
+      takePhoto();
+    }
+  };
+
+  const closeSheet = () => {
+    setIsBottomModalVisible(false);
+  };
+
+  const openSheet = () => {
+    setIsBottomModalVisible(true);
+  };
 
   function renderImage(): ReactElement {
     const imageStyle = isAvatar
@@ -148,6 +204,13 @@ function ImageField({
 
   return (
     <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <ModalUploadFile
+        isVisible={isBottomModalVisible}
+        closeSheet={closeSheet}
+        pickImage={pickImage}
+        launchCamera={onTakePhotoPress}
+        isLoading={isLoading}
+      />
       <View
         style={
           isAvatar
@@ -164,7 +227,7 @@ function ImageField({
                   : styles.formImageFieldAddIcon
               }
               onPress={() => {
-                isAvatar ? pickImage() : onFieldDeleted();
+                isAvatar ? openSheet() : onFieldDeleted();
               }}>
               <Icon
                 name={isAvatar ? 'addpicture' : 'delete'}

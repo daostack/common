@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {string, shape, object, func, bool} from 'prop-types';
+import {string, shape, object, func} from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {observer, inject} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
@@ -14,7 +14,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
 import {CommonActions} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
@@ -28,30 +27,23 @@ const DiscussionCard = ({
   openCommonOptions,
   hiddenDiscussionNote,
   rootStore,
-  isMember,
   viewerPermission,
 }) => {
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
-  const discussionId = data.id;
   const user = userStore.getUserById(data.ownerId);
-  const msgCount =
-    discussionMessageStore.getDiscussionMessagesByDiscussionId(discussionId)
-      ?.length || 0;
   const hasPermission = authStore.getPermission(
     commonId,
     authStore?.userInfo?.uid,
   );
   const showHeader =
     data.moderation?.flag === FLAGS.hidden ||
-    (data.moderation?.flag === FLAGS.reported &&
-      viewerPermission === PERMISSIONS.MODERATOR);
+    data.moderation?.flag === FLAGS.reported;
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
   const showCard = isVisible || (!isVisible && hasPermission);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
-
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {
       hiddenDiscussionNote();
@@ -72,12 +64,6 @@ const DiscussionCard = ({
     data.moderation?.reporter &&
     userStore.getUserById(data.moderation?.reporter);
 
-  /*const follow = () => {
-    logger.log('Follow user id', data.ownerId);
-    NotificationService.follow(data.ownerId);
-    bottomSheetStore.hideBottomSheet();
-  };*/
-
   return (
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
@@ -97,9 +83,7 @@ const DiscussionCard = ({
                 <Text style={styles.title} numberOfLines={2}>
                   {data.title}
                 </Text>
-                {(!discussionMessageStore.isModerationHidden ||
-                  hasPermission) &&
-                  isMember &&
+                {(!discussionMessageStore.isModerationHidden) &&
                   !isOwner && (
                     <ModerationMenu showOptions={openCommonOptions} />
                   )}
@@ -143,7 +127,7 @@ const DiscussionCard = ({
                 }}
               />
 
-              {msgCount === 0 ? (
+              {data.messageCount === 0 ? (
                 <View style={{}}>
                   <TouchableOpacity
                     style={{justifyContent: 'center', alignSelf: 'center'}}
@@ -157,7 +141,7 @@ const DiscussionCard = ({
                 <View style={styles.messageCountContainer}>
                   <View style={styles.messageCountContainer}>
                     <Icon name="discussion" size={20} />
-                    <Text style={styles.msgCount}>{msgCount}</Text>
+                    <Text style={styles.msgCount}>{data.messageCount}</Text>
                   </View>
                   {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
                   <TouchableOpacity
@@ -196,7 +180,6 @@ DiscussionCard.propTypes = {
   openCommonOptions: func,
   hiddenDiscussionNote: func,
   rootStore: rootStorePropTypes,
-  isMember: bool,
   viewerPermission: string,
 };
 
@@ -293,6 +276,7 @@ const styles = StyleSheet.create({
     ...font.fontSize(3),
     marginBottom: 20,
     color: colors.black,
+    maxWidth: width * 0.67,
   },
   titleContainer: {
     flexDirection: 'row',

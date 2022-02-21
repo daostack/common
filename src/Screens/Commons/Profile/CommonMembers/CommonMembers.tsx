@@ -30,13 +30,8 @@ const CommonMembers = ({rootStore}: CommonMembersProps) => {
   const commonStore = rootStore.commonStore;
   const router = useRoute<CommonMembersRouteProps>();
 
-  const {
-    commonId,
-    hasPermission,
-    openCommonOptions,
-    showHiddenNote,
-    isMember,
-  } = router.params;
+  const {commonId, hasPermission, openCommonOptions, showHiddenNote, isMember} =
+    router.params;
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,

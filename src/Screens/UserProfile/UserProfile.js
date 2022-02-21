@@ -32,7 +32,6 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 
-
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -129,6 +128,10 @@ const UserProfile = ({authStore}) => {
                 <AccordionBtn
                   onPress={() => navigation.navigate('Onboarding')}
                   title="About Common"
+                />
+                <AccordionBtn
+                  onPress={() => navigation.navigate('ReceiveFunds')}
+                  title="Receive funds"
                 />
                 <AccordionBtn
                   onPress={() => Linking.openURL('mailto:hi@common.io')}

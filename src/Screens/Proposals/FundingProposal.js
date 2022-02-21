@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -16,7 +16,7 @@ import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import {string, object, shape} from 'prop-types';
-import FundingRequestFormStore from '~/FormStores/FundingRequestFormStore';
+import FundingRequestFormStore from '~/Stores/FormStores/FundingRequestFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
@@ -24,7 +24,6 @@ import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
-import {uiStorePropTypes} from '~/Types/propTypes';
 import {escapeUrl} from '~/Util';
 
 const FundingProposal = ({
@@ -32,11 +31,24 @@ const FundingProposal = ({
   route: {
     params: {commonId, common},
   },
-  uiStore,
+  rootStore,
 }) => {
+  const uiStore = rootStore.uiStore;
+  const bankAccountStore = rootStore.bankAccountStore;
+
   const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
+  const [bankAccountState, setBankAccountState] = useState({
+    isAdded: !!bankAccountStore?.data?.size,
+    hasError: false,
+  });
+
+  useEffect(() => {
+    if (bankAccountStore?.data?.size) {
+      setBankAccountState({isAdded: true, hasError: false});
+    }
+  }, [bankAccountStore?.data]);
 
   const createProposal = async () => {
     navigation.setOptions({headerShown: true});
@@ -77,6 +89,7 @@ const FundingProposal = ({
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
+              commonId,
             },
           });
           navigation.dispatch(navigate);
@@ -103,7 +116,17 @@ const FundingProposal = ({
   };
 
   const onCreateProposalButtonPressed = async () => {
-    if (fundingRequestFormStore.isFormValid()) {
+    if (!bankAccountState.isAdded) {
+      setBankAccountState({
+        isAdded: false,
+        hasError: true,
+      });
+    }
+    if (
+      fundingRequestFormStore.isFormValid() &&
+      bankAccountState.isAdded &&
+      !bankAccountState.hasError
+    ) {
       Keyboard.dismiss();
 
       navigation.setOptions({
@@ -123,6 +146,13 @@ const FundingProposal = ({
   const hideModal = () => {
     navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
+  };
+
+  const handleAddBankAccount = () => {
+    setBankAccountState({
+      isAdded: true,
+      hasError: false,
+    });
   };
 
   return (
@@ -161,6 +191,8 @@ const FundingProposal = ({
             common={common}
             fundingRequestFormStore={fundingRequestFormStore}
             navigation={navigation}
+            hasBankAccountError={bankAccountState.hasError}
+            handleAddBankAccount={handleAddBankAccount}
           />
           <DebtWarningNote onPress={() => openDebtModal()} />
         </ScrollView>
@@ -191,7 +223,7 @@ FundingProposal.propTypes = {
       common: object,
     }),
   }),
-  uiStore: uiStorePropTypes,
+  rootStore: object,
 };
 
 const styles = StyleSheet.create({
@@ -218,4 +250,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('uiStore')(FundingProposal);
+export default inject('rootStore')(FundingProposal);
