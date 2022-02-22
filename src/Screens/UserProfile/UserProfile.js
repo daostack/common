@@ -125,6 +125,18 @@ const UserProfile = ({authStore}) => {
             <>
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
+
+                {authStore.userInfo && (
+                  <React.Fragment>
+                    <AccordionBtn
+                      title="Billing"
+                      onPress={() => {
+                        navigation.navigate('MonthlyContributionsList');
+                      }}
+                    />
+                  </React.Fragment>
+                )}
+
                 <AccordionBtn
                   onPress={() => navigation.navigate('Onboarding')}
                   title="About Common"
@@ -149,21 +161,13 @@ const UserProfile = ({authStore}) => {
                   onPress={() => Linking.openURL('https://common.io/tos')}
                   title="Terms of use"
                 />
-                {authStore.userInfo && (
-                  <React.Fragment>
-                    <AccordionBtn
-                      title="Monthly Contributions"
-                      onPress={() => {
-                        navigation.navigate('MonthlyContributionsList');
-                      }}
-                    />
 
-                    <AccordionBtn
-                      lightStyle={true}
-                      title="Log out"
-                      onPress={_logout}
-                    />
-                  </React.Fragment>
+                {authStore.userInfo && (
+                  <AccordionBtn
+                    lightStyle={true}
+                    title="Log out"
+                    onPress={_logout}
+                  />
                 )}
               </View>
               {Config.ENV !== 'production' && (
