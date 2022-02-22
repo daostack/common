@@ -243,6 +243,11 @@ export default StyleSheet.create({
     paddingTop: 40,
   },
 
+  bottomSheetRadius: {
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+
   // Buttons
   btnPrimary: {
     ...btn,

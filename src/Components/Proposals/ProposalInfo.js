@@ -16,8 +16,8 @@ const ProposalInfo = ({proposalInfo}) => (
         (proposalInfo?.moderation?.updatedAt.seconds ||
           proposalInfo?.createdAt.seconds) + proposalInfo?.countdownPeriod
       }
-      isReported={proposalInfo.moderation?.flag !== FLAGS.visible}
-      moderation={proposalInfo.moderation && {...proposalInfo.moderation}}
+      isReported={proposalInfo?.moderation?.flag !== FLAGS.visible}
+      moderation={proposalInfo?.moderation && {...proposalInfo.moderation}}
     />
 
     <View style={styles.containerView}>
