@@ -18,7 +18,7 @@ export const ModalDeleteConfirmation = ({onCancel, onDelete}: Props): ReactEleme
         style={styles.image}
       />
       <Text style={styles.title}>Are you sure?</Text>
-      <Text style={styles.text}>If you delete this Common the data will be erased. You can not restore your Common once you delete it.</Text>
+      <Text style={styles.text}>If you delete this Common the data will be erased. You <Text style={styles.bold}>can not</Text> restore your Common once you delete it.</Text>
         <>
           <TouchableOpacity
             style={[styles.btn, styles.deleteBtn]}
@@ -95,6 +95,9 @@ export const ModalDeleteConfirmation = ({onCancel, onDelete}: Props): ReactEleme
       fontSize: 16,
       lineHeight: 20,
       color: colors.pinkishOrange,
+    },
+    bold: {
+      ...font.primary.bold,
     },
   });
 

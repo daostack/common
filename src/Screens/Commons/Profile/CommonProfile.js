@@ -735,7 +735,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <CommonHeaderBar
       onLeftPress={() => navigation.pop()}
       shareCommon={shareCommon}
-      openCommonOptions={openCommonOptions}
+      openCommonOptions={openCommonOptionsModal}
       dark={dark}
       hasPermission={hasPermission}
     />
@@ -751,9 +751,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const onDelete = async () => {
     try {
-      commonStore.deleteCommon(commonId);
+      await commonStore.deleteCommon(commonId);
+      closeCommonOptionsModal();
+      navigation.navigate(NAVIGATION_SCREENS.EXPLORE);
       Toast.done('Your Common is deleted');
     } catch (err) {
+      closeCommonOptionsModal();
       Toast.error('Could not delete your Common');
     }
   };
@@ -763,6 +766,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const closeCommonOptionsModal = () => {
+    setDeleteScreenOn(false);
     setOptionsModalVisible(false);
   };
 
@@ -1071,7 +1075,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             isVisible={optionsModalVisible}
             onClose={closeCommonOptionsModal}>
             { !deleteScreenOn ?
-              <ModalCommonOptions onAction={onModalOptionsAction} />
+              <ModalCommonOptions commonMembersNum={currCommon?.members?.length} isFounderOrModarator={hasPermission} onAction={onModalOptionsAction} />
               :
               <ModalDeleteConfirmation onDelete={onDelete} onCancel={onDeleteCancel} />
             }

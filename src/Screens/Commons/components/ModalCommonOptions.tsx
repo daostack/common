@@ -8,9 +8,11 @@ interface Props {
   moderatorOptions: null;
   onAction: (action: string) => void;
   hasPermission: boolean;
+  commonMembersNum: number;
+  isFounderOrModarator: boolean;
 }
 
-export const ModalCommonOptions = ({onAction}: Props) => {
+export const ModalCommonOptions = ({onAction, commonMembersNum, isFounderOrModarator}: Props) => {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.body, {marginBottom: insets.bottom + 16}]}>
@@ -36,16 +38,18 @@ export const ModalCommonOptions = ({onAction}: Props) => {
             />
             <Text style={styles.btnText}>Edit rules</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.optionBtn}
-            onPress={() => onAction('delete')}>
-            <Icon
-              name="delete"
-              style={layout.marginRightS}
-              color={colors.pinkishOrange}
-            />
-            <Text style={styles.btnOptionText}>Delete common</Text>
-          </TouchableOpacity>
+          { isFounderOrModarator && commonMembersNum <= 1 && (
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction('delete')}>
+              <Icon
+                name="delete"
+                style={layout.marginRightS}
+                color={colors.pinkishOrange}
+              />
+              <Text style={styles.btnOptionText}>Delete common</Text>
+            </TouchableOpacity>
+          )}
         </>
     </View>
   );

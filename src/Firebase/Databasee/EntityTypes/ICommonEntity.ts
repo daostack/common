@@ -57,6 +57,11 @@ export interface ICommonEntity extends IBaseEntity {
    * The whitelisting status of the common
    */
   register: CommonRegister;
+
+  /**
+   * Is common active
+   */
+  active: boolean;
 }
 
 export interface ICommonRule {

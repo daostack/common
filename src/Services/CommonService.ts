@@ -28,7 +28,7 @@ class CommonService {
     this.endpoints = {
       create: '/create',
       update: '/update',
-      delete: '/delete',
+      delete: '/deactivate',
     };
   }
 
@@ -74,9 +74,7 @@ class CommonService {
       return await this.axiosClient.post(
         this.endpoints.delete,
         {
-          params: {
-            commonId,
-          },
+          commonId,
         },
         {
           headers: {
