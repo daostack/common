@@ -3,13 +3,7 @@ import {observer} from 'mobx-react-lite';
 import moment from 'moment';
 import PropTypes, {bool, func, string} from 'prop-types';
 import React, {useRef} from 'react';
-import {
-  Image,
-  SectionList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Image, SectionList, StyleSheet, Text, View} from 'react-native';
 import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
 import logger from '../../Services/Logger';

@@ -65,7 +65,6 @@ const IntroductionStep = ({
           title="Introduce Yourself"
           subtitle="Let the Common members learn more about you and how you relate to the cause."
         />
-
         <View
           style={{
             backgroundColor: colors.grey4,
