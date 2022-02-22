@@ -10,6 +10,7 @@ export type BottomSheetStore = {
   template: ReactElement;
   increaseTopSnap: () => void;
   decreaseTopSnap: () => void;
+  isVisible: boolean;
 };
 
 export type AppLoaderStore = {

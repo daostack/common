@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   GestureResponderEvent,
 } from 'react-native';
-import {colors, font} from '~/Theme';
+import {colors, font, layout} from '~/Theme';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';
@@ -33,7 +33,7 @@ export const ModalUploadFile = ({
   <BottomSheetModal
     isVisible={isVisible}
     onClose={closeSheet}
-    style={styles.modalContainer}>
+    style={layout.bottomSheetRadius}>
     {isLoading ? (
       <View style={styles.loaderContainer}>
         <Loader color={colors.mainBlue} />
@@ -67,9 +67,6 @@ export const ModalUploadFile = ({
 );
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    borderRadius: 25,
-  },
   loaderContainer: {
     alignItems: 'center',
     width: '100%',
