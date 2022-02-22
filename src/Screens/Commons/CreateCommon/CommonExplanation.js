@@ -59,6 +59,7 @@ const CommonExplanation = ({navigation}) => {
             ref={ref}
             loadMinimal={true}
             style={styles.wrapper}
+            loop={false}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
             onIndexChanged={(slideIndex) => setIndex(slideIndex)}

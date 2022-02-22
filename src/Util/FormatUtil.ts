@@ -1,3 +1,5 @@
+import {MAX_CONTRIBUTION} from '~/Util/constants/paymentConstants';
+
 export const unFormatNumber = (number: string): string => {
   const lastCommaIndex = number.split('').lastIndexOf(',');
   if (
@@ -43,3 +45,13 @@ const isLessThanThousand = (num: number) =>
   Number.isInteger(Math.sign(num) * Math.abs(num))
     ? Math.sign(num) * Math.abs(num)
     : (Math.sign(num) * Math.abs(num)).toFixed(2);
+
+export const formatContributionAmount = (amount: number): number => {
+  if (amount >= MAX_CONTRIBUTION) {
+    return MAX_CONTRIBUTION;
+  }
+  if (amount > 1000) {
+    return Math.floor(amount / 100) * 100;
+  }
+  return amount;
+};
