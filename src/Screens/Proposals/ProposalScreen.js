@@ -167,22 +167,26 @@ const ProposalScreen = ({
   const userVoted = Object.values(currentUserVote).length !== 0;
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
-      const asyncData = async () => {
-        try {
-          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
-          if (value === null && !userVoted) {
-            await AsyncStorage.setItem(
-              TOOLTIP_PROPOSAL,
-              TOOLTIP_PROPOSAL_SEEN.true,
-            );
-            start();
-          }
-        } catch (error) {
-          logger.log(error);
+    const asyncData = async () => {
+      try {
+        const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
+        if (value === null && !userVoted) {
+          await AsyncStorage.setItem(
+            TOOLTIP_PROPOSAL,
+            TOOLTIP_PROPOSAL_SEEN.true,
+          );
+          start();
         }
-      };
-      asyncData();
+        start();
+      } catch (error) {
+        logger.log(error);
+      }
+    };
+
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      if (proposalInfo.state === PROPOSAL_STAGE.countdown) {
+        asyncData();
+      }
     });
 
     return unsubscribe;
@@ -938,80 +942,75 @@ const ProposalScreen = ({
                 </View>
                 {renderDebWarningIfNeeded()}
 
-                <CopilotStep
-                  text="This is a hello world example!"
-                  order={1}
-                  name="hello">
-                  <CopilotView style={{width: '100%'}}>
-                    <View
-                      style={{
-                        ...layout.content,
-                        width: '100%',
-                        paddingHorizontal: 0,
-                      }}>
-                      <View style={styles.proposalProgressInfo}>
-                        <View
-                          style={{
-                            ...layout.content,
-                            ...layout.flexRow,
-                            padding: 0,
-                          }}>
-                          <Icon
-                            name="user-approved"
-                            color={colors.lightishGreen}
-                            size={25}
-                            style={layout.marginRightXS}
-                          />
-                          <Text style={text.lightishGreenText}>
-                            {proposalInfo.votesFor}
-                          </Text>
-                        </View>
-
-                        <Text style={text.smallBlackText}>
-                          {!proposalInfo.votesCount
-                            ? 'No votes yet'
-                            : `${proposalInfo.votesCount} ${
-                                proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                              }`}
-                        </Text>
-
-                        <View
-                          style={{
-                            ...layout.content,
-                            ...layout.flexRow,
-                            padding: 0,
-                          }}>
-                          <Text style={text.againstText}>
-                            {proposalInfo.votesAgainst}
-                          </Text>
-                          <Icon
-                            name="user-rejected"
-                            color={colors.against}
-                            size={25}
-                            style={layout.marginLeftXS}
-                          />
-                        </View>
-                      </View>
+                <CopilotStep order={1} name="info">
+                  <CopilotView
+                    style={{
+                      ...layout.content,
+                      width: '100%',
+                      paddingHorizontal: 0,
+                    }}>
+                    <View style={styles.proposalProgressInfo}>
                       <View
                         style={{
-                          ...styles.proposalProgressBar,
-                          ...{
-                            backgroundColor: isNaN(
-                              proposalInfo?.progressBarWidthPercent,
-                            )
-                              ? colors.grey4
-                              : colors.against,
-                          },
+                          ...layout.content,
+                          ...layout.flexRow,
+                          padding: 0,
                         }}>
-                        <View
-                          style={{
-                            ...styles.proposalInnerProgressBar,
-                            width: `${
-                              proposalInfo?.progressBarWidthPercent || 0
-                            }%`,
-                          }}
+                        <Icon
+                          name="user-approved"
+                          color={colors.lightishGreen}
+                          size={25}
+                          style={layout.marginRightXS}
+                        />
+                        <Text style={text.lightishGreenText}>
+                          {proposalInfo.votesFor}
+                        </Text>
+                      </View>
+
+                      <Text style={text.smallBlackText}>
+                        {!proposalInfo.votesCount
+                          ? 'No votes yet'
+                          : `${proposalInfo.votesCount} ${
+                              proposalInfo.votesCount > 1 ? 'votes' : 'vote'
+                            }`}
+                      </Text>
+
+                      <View
+                        style={{
+                          ...layout.content,
+                          ...layout.flexRow,
+                          padding: 0,
+                        }}>
+                        <Text style={text.againstText}>
+                          {proposalInfo.votesAgainst}
+                        </Text>
+                        <Icon
+                          name="user-rejected"
+                          color={colors.against}
+                          size={25}
+                          style={layout.marginLeftXS}
                         />
                       </View>
+                    </View>
+                    <View
+                      style={{
+                        ...styles.proposalProgressBar,
+                        ...{
+                          backgroundColor: isNaN(
+                            proposalInfo?.progressBarWidthPercent,
+                          )
+                            ? colors.grey4
+                            : colors.against,
+                        },
+                      }}>
+                      <View
+                        style={{
+                          ...styles.proposalInnerProgressBar,
+                          width: `${
+                            proposalInfo?.progressBarWidthPercent || 0
+                          }%`,
+                        }}
+                      />
                     </View>
 
                     <View
@@ -1268,6 +1267,7 @@ export default inject('rootStore')(
       arrowColor: colors.mainBlue,
       backdropColor: 'rgba(0, 0, 0, 0.2)',
       svgMaskPath: circleSvgPath,
+      ...(Platform.OS === 'android' && {verticalOffset: 25}),
     })(ProposalScreen),
   ),
 );
