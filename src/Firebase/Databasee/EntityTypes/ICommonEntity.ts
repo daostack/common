@@ -57,6 +57,19 @@ export interface ICommonEntity extends IBaseEntity {
    * The whitelisting status of the common
    */
   register: CommonRegister;
+<<<<<<< Updated upstream
+=======
+
+  /**
+   * Is common active
+   */
+  active: boolean;
+
+  /**
+   * Updated at
+   */
+  updatedAt: firebase.firestore.Timestamp;
+>>>>>>> Stashed changes
 }
 
 export interface ICommonRule {
