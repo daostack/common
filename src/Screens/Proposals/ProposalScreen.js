@@ -177,7 +177,6 @@ const ProposalScreen = ({
           );
           start();
         }
-        start();
       } catch (error) {
         logger.log(error);
       }
