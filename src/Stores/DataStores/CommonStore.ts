@@ -20,14 +20,10 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   get myCommons() {
     try {
       return this.getDataArray.filter((common: Common) =>
-<<<<<<< Updated upstream
-        this.rootStore.authStore.isDaoMember(common?.members),
-=======
         this.rootStore.authStore.isDaoMember(common?.members) && common?.active,
       ).sort(
         (common, prevCommon) =>
           prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
->>>>>>> Stashed changes
       );
     } catch (error) {
       return [];
@@ -39,15 +35,11 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.rootStore.proposalStore.myActiveMembershipRequests.map(
         (proposal: Proposal) => this.getCommonById(proposal.commonId),
-<<<<<<< Updated upstream
-      );
-=======
       ).filter((common: Common) => common?.active).sort(
         (common, prevCommon) =>
           prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
       );
       return pendingCommonsIds;
->>>>>>> Stashed changes
     } catch (error) {
       return [];
     }
@@ -60,15 +52,11 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         (common: Common) =>
           !this.myCommons.includes(common) &&
           !this.pendingCommons.includes(common) &&
-<<<<<<< Updated upstream
-          common.register === DAO_REGISTERED,
-=======
           common.register === DAO_REGISTERED &&
           common?.active,
       ).sort(
         (common, prevCommon) =>
           prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
->>>>>>> Stashed changes
       );
     } catch (error) {
       return [];
