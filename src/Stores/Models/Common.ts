@@ -39,6 +39,8 @@ export class Common implements ICommonEntity {
     this.links = newCommonInfo.links;
     this.metadata = newCommonInfo.metadata;
     this.register = newCommonInfo.register;
+    this.active = newCommonInfo.active;
+    this.updatedAt = newCommonInfo.updatedAt;
     makeAutoObservable(this);
   }
 
