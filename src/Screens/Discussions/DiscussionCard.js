@@ -67,7 +67,18 @@ const DiscussionCard = ({
   return (
     <>
       <TouchableOpacity onPress={() => navigateToDiscussion()}>
-        <View style={styles.containerView}>
+        <View
+          style={[
+            styles.containerView,
+            showCard
+              ? {}
+              : {
+                  borderBottomLeftRadius: 5,
+                  borderBottomRightRadius: 5,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                },
+          ]}>
           {showHeader && (
             <DiscussionCardHeader
               isReported={data.moderation?.flag !== FLAGS.visible}
@@ -75,6 +86,7 @@ const DiscussionCard = ({
               reporter={getReporter()}
               hasPermission={hasPermission}
               viewerPermission={viewerPermission}
+              showCard={showCard}
             />
           )}
           {showCard && (
@@ -83,10 +95,9 @@ const DiscussionCard = ({
                 <Text style={styles.title} numberOfLines={2}>
                   {data.title}
                 </Text>
-                {(!discussionMessageStore.isModerationHidden) &&
-                  !isOwner && (
-                    <ModerationMenu showOptions={openCommonOptions} />
-                  )}
+                {!discussionMessageStore.isModerationHidden && !isOwner && (
+                  <ModerationMenu showOptions={openCommonOptions} />
+                )}
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 {user.photoURL ? (

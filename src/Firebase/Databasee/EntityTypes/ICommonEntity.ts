@@ -62,6 +62,11 @@ export interface ICommonEntity extends IBaseEntity {
    * Is common active
    */
   active: boolean;
+
+  /**
+   * Updated at
+   */
+  updatedAt: firebase.firestore.Timestamp;
 }
 
 export interface ICommonRule {

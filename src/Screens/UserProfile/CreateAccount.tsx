@@ -18,9 +18,9 @@ import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 
 interface CreateAccountProps {
-  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void,
-  hidePlaceholder: boolean,
-  goToNextScreen: () => void,
+  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
+  hidePlaceholder: boolean;
+  goToNextScreen: () => void;
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
