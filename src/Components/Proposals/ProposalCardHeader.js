@@ -85,6 +85,7 @@ const ProposalCardHeader = ({
   hasPermission,
   rootStore,
   viewerPermission,
+  showCard,
 }) => {
   const authStore = rootStore.authStore;
   const headerStatus = calcStatus(state, isScreenHeader, paymentStatus);
@@ -137,8 +138,7 @@ const ProposalCardHeader = ({
           : {
               ...styles.hiddenCardHeader,
               justifyContent: !showCountdown ? 'space-between' : 'center',
-              borderTopLeftRadius: hasPermission ? 20 : 5,
-              borderTopRightRadius: hasPermission ? 20 : 5,
+              borderRadius: hasPermission ? 20 : 5,
             }
       }>
       {showCountdown && (
@@ -164,6 +164,7 @@ const ProposalCardHeader = ({
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
           viewerPermission={viewerPermission}
+          showCard={showCard}
         />
       )}
       {!showCountdown && (
@@ -190,6 +191,7 @@ ProposalCardHeader.propTypes = {
   hasPermission: string,
   rootStore: rootStorePropTypes.isRequired,
   viewerPermission: string,
+  showCard: bool,
 };
 
 const styles = StyleSheet.create({

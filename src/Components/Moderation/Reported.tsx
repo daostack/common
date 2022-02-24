@@ -1,16 +1,34 @@
-import React from 'react';
-import {Text} from 'react-native';
-import {string, object, InferProps, shape} from 'prop-types';
+import React, {ReactElement} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {firebase} from '~/Firebase';
 import {colors, text} from '~/Theme';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
-import {reporterName, getType} from './helper';
+import {getType, reporterName} from './helper';
 
-export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
+interface Props {
+  moderation?: {
+    updatedAt: firebase.firestore.Timestamp;
+    flag: string;
+    reporter: string;
+    type: string;
+  };
+  currentUID: string;
+  reporter?: {
+    firstName: string;
+    lastName: string;
+    uid: string;
+  };
+  viewerPermission: string;
+  showCard: boolean;
+}
+
+export const Reported = ({
   moderation,
   reporter,
   currentUID,
   viewerPermission,
-}) => {
+  showCard,
+}: Props): ReactElement => {
   const reporterUserName =
     viewerPermission === PERMISSIONS.MODERATOR ||
     (!viewerPermission && reporter)
@@ -18,29 +36,30 @@ export const Reported: React.FC<InferProps<typeof reportedProps>> = ({
       : ' by a moderator';
 
   return (
-    <Text
-      style={{fontSize: 15, color: colors.grey3, ...text.smallBoldGreyText}}>
-      {`The ${getType(moderation.type).toLowerCase()} was ${
-        moderation?.flag
-      }${reporterUserName}`}
-    </Text>
+    <View
+      style={[styles.reportContainer, showCard ? {paddingVertical: 4} : {}]}>
+      <Text style={[styles.reportText, showCard ? {textAlign: 'center'} : {}]}>
+        {`The ${getType(moderation?.type).toLowerCase()} was ${
+          moderation?.flag
+        }${reporterUserName}`}
+      </Text>
+    </View>
   );
 };
 
-const reportedProps = {
-  moderation: shape({
-    updatedAt: object,
-    flag: string,
-    reporter: string,
-    type: string.isRequired,
-  }),
-  currentUID: string,
-  reporter: shape({
-    firstName: string,
-    lastName: string,
-    uid: string,
-  }),
-  viewerPermission: string,
-};
-
-Reported.propTypes = reportedProps;
+const styles = StyleSheet.create({
+  reportContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingVertical: 8,
+  },
+  reportText: {
+    width: '100%',
+    fontSize: 15,
+    color: colors.grey3,
+    ...text.smallBoldGreyText,
+    flexWrap: 'wrap',
+    textAlign: 'left',
+  },
+});
