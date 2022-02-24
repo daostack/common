@@ -17,7 +17,7 @@ export type commonLoadCallbackFn = (
 
 class CommonService {
   private axiosClient: AxiosInstance;
-  private endpoints: {create: string; update: string, delete: string};
+  private endpoints: {create: string; update: string; delete: string};
 
   constructor() {
     this.axiosClient = axios.create({
@@ -67,24 +67,18 @@ class CommonService {
       },
     );
 
-  deleteCommon = async (
-    commonId: string,
-  ): Promise<ICommonEntity> => {
-    try {
-      return await this.axiosClient.post(
-        this.endpoints.delete,
-        {
-          commonId,
+  deleteCommon = async (commonId: string): Promise<void> => {
+    await this.axiosClient.post(
+      this.endpoints.delete,
+      {
+        commonId,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
         },
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        }
-      );
-    } catch (err) {
-      throw err;
-    }
+      },
+    );
   };
 
   fetchCommonById = async (
