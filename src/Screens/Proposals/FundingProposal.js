@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -43,6 +43,8 @@ const FundingProposal = ({
     isAdded: !!bankAccountStore?.data?.size,
     hasError: false,
   });
+
+  const scrollRef = useRef();
 
   useEffect(() => {
     if (bankAccountStore?.data?.size) {
@@ -129,6 +131,10 @@ const FundingProposal = ({
         hasError: true,
       });
       bankError = true;
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
     } else {
       bankError = false;
     }
@@ -186,6 +192,7 @@ const FundingProposal = ({
             flex: 1,
             backgroundColor: colors.white,
           }}
+          ref={scrollRef}
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>
