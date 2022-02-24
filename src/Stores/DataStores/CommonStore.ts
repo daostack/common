@@ -39,7 +39,6 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         (common, prevCommon) =>
           prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
       );
-      return pendingCommonsIds;
     } catch (error) {
       return [];
     }
