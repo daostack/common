@@ -6,42 +6,43 @@ import {font, layout, text} from '~/Theme/index';
 import {AppRootStore} from '~/Types/store';
 import {WithNavigationRef} from '~/Types/navigation';
 
-type Props = AppRootStore & WithNavigationRef & {
+type Props = AppRootStore &
+  WithNavigationRef & {
     errorMessage: string;
-}
+  };
 
-function LoadingExpired({errorMessage, rootStore, navigation}: Props): ReactElement {
+function LoadingExpired({
+  errorMessage,
+  rootStore,
+  navigation,
+}: Props): ReactElement {
+  function onReloadApp(): void {
+    navigation.current.dispatch(StackActions.popToTop());
+    rootStore.uiStore.appLoaderStore.showLoader();
+    rootStore.uiStore.bottomSheetStore.hideBottomSheet();
+  }
 
-    function onReloadApp(): void {
-        navigation.current.dispatch(StackActions.popToTop());
-        rootStore.uiStore.appLoaderStore.showLoader();
-        rootStore.uiStore.bottomSheetStore.hideBottomSheet();
-    }
+  return (
+    <View style={styles.scrollView}>
+      <View style={styles.body}>
+        <View style={styles.spacer} />
 
-    return (
-        <View style={styles.scrollView}>
-        <View style={styles.body}>
+        <Image source={require('~/Assets/alert.png')} style={styles.imgAlert} />
 
-            <View style={styles.spacer} />
+        <Text style={styles.title}>Something went wrong</Text>
 
-            <Image source={require('~/Assets/alert.png')} style={styles.imgAlert} />
-
-            <Text style={styles.title}>Something went wrong</Text>
-
-                <View style={styles.textWithIconContainer}>
-                <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
-                </View>
-
-            <View style={styles.spacer} />
-
-            <TouchableOpacity
-            style={styles.dismissButton}
-            onPress={onReloadApp}>
-            <Text style={text.buttonblue}>Reload</Text>
-            </TouchableOpacity>
+        <View style={styles.textWithIconContainer}>
+          <Text style={styles.blackTextWithImage}>{errorMessage}</Text>
         </View>
-        </View>
-    );
+
+        <View style={styles.spacer} />
+
+        <TouchableOpacity style={styles.dismissButton} onPress={onReloadApp}>
+          <Text style={text.buttonblue}>Reload</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +92,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-
 });
 
 export default inject('rootStore')(observer(LoadingExpired));

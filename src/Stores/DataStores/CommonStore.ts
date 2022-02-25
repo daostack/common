@@ -19,12 +19,16 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get myCommons() {
     try {
-      return this.getDataArray.filter((common: Common) =>
-        this.rootStore.authStore.isDaoMember(common?.members) && common?.active,
-      ).sort(
-        (common, prevCommon) =>
-          prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
-      );
+      return this.getDataArray
+        .filter(
+          (common: Common) =>
+            this.rootStore.authStore.isDaoMember(common?.members) &&
+            common?.active,
+        )
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }
@@ -33,12 +37,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get pendingCommons() {
     try {
-      return this.rootStore.proposalStore.myActiveMembershipRequests.map(
-        (proposal: Proposal) => this.getCommonById(proposal.commonId),
-      ).filter((common: Common) => common?.active).sort(
-        (common, prevCommon) =>
-          prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
-      );
+      return this.rootStore.proposalStore.myActiveMembershipRequests
+        .map((proposal: Proposal) => this.getCommonById(proposal.commonId))
+        .filter((common: Common) => common?.active)
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }
@@ -47,16 +52,18 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get featuredCommons() {
     try {
-      return this.getDataArray.filter(
-        (common: Common) =>
-          !this.myCommons.includes(common) &&
-          !this.pendingCommons.includes(common) &&
-          common.register === DAO_REGISTERED &&
-          common?.active,
-      ).sort(
-        (common, prevCommon) =>
-          prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
-      );
+      return this.getDataArray
+        .filter(
+          (common: Common) =>
+            !this.myCommons.includes(common) &&
+            !this.pendingCommons.includes(common) &&
+            common.register === DAO_REGISTERED &&
+            common?.active,
+        )
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }

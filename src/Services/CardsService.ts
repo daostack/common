@@ -10,8 +10,7 @@ export type cardLoadCallbackFunc = (
 class CardsService {
   fetchCardByOwnerId = async (ownerId: string) => {
     try {
-      const card = await CardsCollection
-        .where('ownerId', '==', ownerId)
+      const card = await CardsCollection.where('ownerId', '==', ownerId)
         .where('provider', '==', 'PAYME')
         .get();
       return card?.docs[0]?.data();
@@ -28,7 +27,7 @@ class CardsService {
       Logger.log('error', e);
       return null;
     }
-  }
+  };
 
   subscribeToCard = (cardId: string, callback: cardLoadCallbackFunc) => {
     const cards = CardsCollection.doc(cardId).onSnapshot((snapshot: any) => {

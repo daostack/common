@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 Title.propTypes = {
   title: string.isRequired,
   onPress: func,
-  canEdit: oneOfType([string, bool]) ,
+  canEdit: oneOfType([string, bool]),
 };
 
 export default Title;

@@ -1,4 +1,4 @@
-import React,{useState, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   Image,
   Text,
@@ -23,30 +23,30 @@ import {NAVIGATION_SCREENS} from '../../../Util/constants/routes.enum';
 const COMMON_EXPLANATION_SLIDERS_AMOUNT = 3;
 
 const CommonExplanation = ({navigation}) => {
-    const ref = useRef(null);
-    const [index, setIndex] = useState(0);
+  const ref = useRef(null);
+  const [index, setIndex] = useState(0);
 
-    const goToCreateScreen = async () => {
-      navigation.navigate(NAVIGATION_SCREENS.CREATE_STEP_1, {
-        formStores: {
-          generalInfoFormStore: new GeneralInfoFormStore(),
-          fundingFormStore: new FundingFormStore(),
-          agendaFormStore: new AgendaFormStore(),
-          reviewFormStore: new ReviewFormStore(),
-        },
-      });
-    };
+  const goToCreateScreen = async () => {
+    navigation.navigate(NAVIGATION_SCREENS.CREATE_STEP_1, {
+      formStores: {
+        generalInfoFormStore: new GeneralInfoFormStore(),
+        fundingFormStore: new FundingFormStore(),
+        agendaFormStore: new AgendaFormStore(),
+        reviewFormStore: new ReviewFormStore(),
+      },
+    });
+  };
 
-    const onPress = () => {
-      if (index === COMMON_EXPLANATION_SLIDERS_AMOUNT) {
-        goToCreateScreen();
-      } else {
-        ref.current.scrollBy(1);
-        setIndex(index + 1);
-      }
-    };
+  const onPress = () => {
+    if (index === COMMON_EXPLANATION_SLIDERS_AMOUNT) {
+      goToCreateScreen();
+    } else {
+      ref.current.scrollBy(1);
+      setIndex(index + 1);
+    }
+  };
 
-    return (
+  return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.safeArea}>
@@ -104,24 +104,26 @@ const CommonExplanation = ({navigation}) => {
               />
               <Text style={styles.text}>Harness the power of communities</Text>
               <Text style={styles.subtitle}>
-                There's no limit to what we can achieve when working together. By
-                getting everyone involved, more people will actively promote the
-                cause.
+                There's no limit to what we can achieve when working together.
+                By getting everyone involved, more people will actively promote
+                the cause.
               </Text>
             </View>
           </Swiper>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onPress}>
-              <Text style={styles.buttonText}>{index === COMMON_EXPLANATION_SLIDERS_AMOUNT ? 'Get started' : 'Continue'}</Text>
+            <TouchableOpacity style={styles.button} onPress={onPress}>
+              <Text style={styles.buttonText}>
+                {index === COMMON_EXPLANATION_SLIDERS_AMOUNT
+                  ? 'Get started'
+                  : 'Continue'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
     </>
-    );
+  );
 };
 
 CommonExplanation.propTypes = {

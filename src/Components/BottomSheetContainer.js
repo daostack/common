@@ -4,7 +4,10 @@ import React, {useRef, useEffect} from 'react';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {colors, text, layout} from '~/Theme';
-import Animated, {Easing as OldEasing, EasingNode} from 'react-native-reanimated';
+import Animated, {
+  Easing as OldEasing,
+  EasingNode,
+} from 'react-native-reanimated';
 import {bool, object} from 'prop-types';
 import {uiStorePropTypes} from '~/Types/propTypes';
 

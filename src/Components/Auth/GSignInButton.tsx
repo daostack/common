@@ -12,9 +12,7 @@ import {useStore} from '~/Util/hooks/useStore';
 const props = {
   onSignIn: func,
 };
-const GSignInButton: React.FC<InferProps<typeof props>> = ({
-  onSignIn,
-}) => {
+const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
   const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
