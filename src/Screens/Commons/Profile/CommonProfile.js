@@ -57,6 +57,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
 import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
+import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 
 import {
   IntroduceYourselfFormStore,
@@ -745,9 +746,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   );
 
   const onModalOptionsAction = (type) => {
-    if (type === 'info' || type === 'rules') {
+    if (type === COMMON_OPTION_TYPES.info || type === COMMON_OPTION_TYPES.rules) {
       onEdit(type);
-    } else if (type === 'delete') {
+    } else if (type === COMMON_OPTION_TYPES.delete) {
       setDeleteScreenOn(true);
     }
   };

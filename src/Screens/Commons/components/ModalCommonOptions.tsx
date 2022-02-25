@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from '~/Assets/iconfont/Icon';
+import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 import {colors, font, layout, text} from '~/Theme';
 
 interface Props {
@@ -25,7 +26,7 @@ export const ModalCommonOptions = ({
       <>
         <TouchableOpacity
           style={styles.optionBtn}
-          onPress={() => onAction('info')}>
+          onPress={() => onAction(COMMON_OPTION_TYPES.info)}>
           <Icon
             name="dao-general-info-24"
             style={layout.marginRightS}
@@ -35,7 +36,7 @@ export const ModalCommonOptions = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.optionBtn}
-          onPress={() => onAction('rules')}>
+          onPress={() => onAction(COMMON_OPTION_TYPES.rules)}>
           <Icon
             name="agenda-24"
             style={layout.marginRightS}
@@ -46,7 +47,7 @@ export const ModalCommonOptions = ({
         {isFounderOrModerator && commonMembersCount <= 1 && (
           <TouchableOpacity
             style={styles.optionBtn}
-            onPress={() => onAction('delete')}>
+            onPress={() => onAction(COMMON_OPTION_TYPES.delete)}>
             <Icon
               name="delete"
               style={layout.marginRightS}
