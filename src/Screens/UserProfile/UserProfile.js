@@ -31,6 +31,7 @@ import {
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
+import {LINKS} from '~/Util/constants/links';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -146,19 +147,19 @@ const UserProfile = ({authStore}) => {
                   title="Receive funds"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('mailto:hi@common.io')}
+                  onPress={() => Linking.openURL(LINKS.CONTACT_US)}
                   title="Contact us"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/help')}
+                  onPress={() => Linking.openURL(LINKS.HELP)}
                   title="Help and support"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/privacy')}
+                  onPress={() => Linking.openURL(LINKS.PRIVACY)}
                   title="Privacy Policy"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/tos')}
+                  onPress={() => Linking.openURL(LINKS.TERMS)}
                   title="Terms of use"
                 />
 
