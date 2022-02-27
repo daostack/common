@@ -41,8 +41,9 @@ const ProposalCard = ({
   viewerPermission,
   type,
 }) => {
-  const {userStore, proposalStore, commonStore, authStore} =
-    useStore('rootStore');
+  const {userStore, proposalStore, commonStore, authStore} = useStore(
+    'rootStore',
+  );
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -61,13 +62,12 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());

@@ -15,7 +15,10 @@ import {colors, font} from '~/Theme';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
-import {handlePermission, requestAndroidCameraPermission} from '~/Util/Permissions';
+import {
+  handlePermission,
+  requestAndroidCameraPermission,
+} from '~/Util/Permissions';
 import logger from '~/Services/Logger';
 import {number, string, shape, func, InferProps} from 'prop-types';
 import {ModalUploadFile} from '~/Screens/Proposals/components/ModalUploadFile';
@@ -188,9 +191,7 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
           }}
           resizeMode="cover"
         />
-        <TouchableOpacity
-          style={styles.pickImageButton}
-          onPress={openSheet}>
+        <TouchableOpacity style={styles.pickImageButton} onPress={openSheet}>
           <Text style={styles.pickImageText}>Select or upload cover image</Text>
           <BlurView style={styles.pickImageIcon}>
             <Icon name={'addpicture'} color="white" size={20} />

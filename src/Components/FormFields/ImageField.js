@@ -81,26 +81,26 @@ class ImageField extends React.Component {
       allowsEditing: allowsEditing || false,
     };
     launchImageLibrary(options, async (response) => {
-        if (response.didCancel) {
-          logger.log('User cancelled image picker');
-        } else if (response.errorMessage) {
-          // only for ios because android handles this
-          Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.errorMessage);
-          logger.log('ImagePicker Error: ', response.errorMessage);
-        } else {
-          Toast.loading('Uploading...');
-          StorageService.uploadImage(response?.assets[0]?.uri)
-            .then((url) => {
-              Toast.hide();
-              Toast.success('Done');
-              this.onChangeValue(url);
-            })
-            .catch((error) => {
-              Toast.error(error.toString());
-            });
-        }
-      });
+      if (response.didCancel) {
+        logger.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        // only for ios because android handles this
+        Platform.OS === 'ios' && (await handlePermission());
+        Toast.error(response.errorMessage);
+        logger.log('ImagePicker Error: ', response.errorMessage);
+      } else {
+        Toast.loading('Uploading...');
+        StorageService.uploadImage(response?.assets[0]?.uri)
+          .then((url) => {
+            Toast.hide();
+            Toast.success('Done');
+            this.onChangeValue(url);
+          })
+          .catch((error) => {
+            Toast.error(error.toString());
+          });
+      }
+    });
   };
 
   renderImage = (isAvatar, validation, value) => {

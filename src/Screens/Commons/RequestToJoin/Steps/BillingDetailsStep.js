@@ -69,8 +69,13 @@ const FORM_RULES = {
 };
 
 const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
-  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
-    route.params;
+  const {
+    skipFirstStep,
+    currCommon,
+    currDaoId,
+    refreshFeed,
+    formStores,
+  } = route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
