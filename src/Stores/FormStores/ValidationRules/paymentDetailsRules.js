@@ -11,9 +11,7 @@ export const VALIDATION_RULES = {
 export const validateCCProvider = {
   ruleName: VALIDATION_RULES.CREDIT_CARD_PROVIDER,
   validateFunc: (value, requirement, attribute) =>
-    new RegExp(
-      /^4[0-9]{12}(?:[0-9]{3})?$/,
-    ).test(value),
+    new RegExp(/^4[0-9]{12}(?:[0-9]{3})?$/).test(value),
   errorMessage: 'We only accept Visa at the moment.',
 };
 

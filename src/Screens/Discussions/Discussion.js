@@ -75,15 +75,15 @@ const Discussion = ({
     ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
     : null;
 
-
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(50);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [action, setAction] = useState(ACTIONS.report);
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
@@ -95,11 +95,10 @@ const Discussion = ({
 
   useFocusEffect(() => {
     const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
-      discussionId
+      discussionId,
     );
     return () => {
-      unsubscribeFromDiscussionMessages &&
-        unsubscribeFromDiscussionMessages();
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
     };
   }, [discussionId]);
 
@@ -214,10 +213,7 @@ const Discussion = ({
 
   const header = () => (
     <>
-      <Header
-        title={dataState.title}
-        onPress={() => navigateBack()}
-      />
+      <Header title={dataState.title} onPress={() => navigateBack()} />
       <View
         style={{
           overflow: 'hidden',
@@ -381,7 +377,9 @@ const Discussion = ({
         }
         action={action}
       />
-      <ScrollView style={[styles.scrollView, {marginBottom: inputHeight + 50}]} ref={scrollRef}>
+      <ScrollView
+        style={[styles.scrollView, {marginBottom: inputHeight + 50}]}
+        ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}
           hasPermission={hasPermission}
@@ -407,7 +405,6 @@ const Discussion = ({
             style={{
               ...styles.inputContainer,
               height: actualInputHeight,
-
             }}>
             <TextInput
               ref={inputRef}

@@ -143,8 +143,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -182,8 +181,12 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] =
-        remoteMessage.data.path?.split('/');
+      const [
+        screenName,
+        commonId,
+        objectId,
+        tabIndex = 0,
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -434,8 +437,7 @@ const App = ({rootStore, navigation}) => {
                           })
                         : rest?.navigation.pop()
                       : navigationRef.current.goBack()
-                  }
-                >
+                  }>
                   <Icon name="left-arrow" color={colors.black} size={32} />
                 </TouchableOpacity>
               ),

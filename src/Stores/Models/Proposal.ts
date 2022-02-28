@@ -4,7 +4,10 @@ import {PROPOSAL_TYPE} from '~/Config';
 import {firebase} from '~/Firebase';
 import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEntity';
 import {
-  IFundingRequestDescription, IFundingRequestProposal, IJoinReqDescription, IJoinRequestProposal,
+  IFundingRequestDescription,
+  IFundingRequestProposal,
+  IJoinReqDescription,
+  IJoinRequestProposal,
   IProposalEntity,
   IProposalFundingRequest,
   IProposalJoin,
@@ -93,16 +96,12 @@ export class Proposal implements BaseModel<IProposalEntity> {
     this.description = newProposalInfo.description;
     this.moderation = newProposalInfo.moderation;
     if (this.type === PROPOSAL_TYPE.Join) {
-      this.paymentState = (
-        newProposalInfo as IJoinRequestProposal
-      ).paymentState;
+      this.paymentState = (newProposalInfo as IJoinRequestProposal).paymentState;
       this.join = (newProposalInfo as IJoinRequestProposal).join;
       // TODO: ... more props
     }
     //if (this.type === PROPOSAL_TYPE.FundingRequest) {
-    this.fundingRequest = (
-      newProposalInfo as IFundingRequestProposal
-    ).fundingRequest;
+    this.fundingRequest = (newProposalInfo as IFundingRequestProposal).fundingRequest;
     // TODO: ... more props
     //}
     makeAutoObservable(this);

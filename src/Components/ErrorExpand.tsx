@@ -12,7 +12,6 @@ import {colors} from '~/Theme';
 import {AxiosError} from 'axios';
 import PropTypes from 'prop-types';
 
-
 interface IFormattedError {
   errorId: string;
   errorName: string;
@@ -27,14 +26,18 @@ const propTypes = {
 };
 
 interface IPropOverrides {
-  onLayout?: (layout: LayoutRectangle, change: number) => void
+  onLayout?: (layout: LayoutRectangle, change: number) => void;
 }
 
-export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPropOverrides> = ({bottomSheetStore, ...props}) => {
-  const [formattedError, setFormattedError] = React.useState<IFormattedError | null>(null);
+export const ErrorExpand: React.FC<
+  PropTypes.InferProps<typeof propTypes> & IPropOverrides
+> = ({bottomSheetStore, ...props}) => {
+  const [
+    formattedError,
+    setFormattedError,
+  ] = React.useState<IFormattedError | null>(null);
   const [containerHeight, setContainerHeight] = React.useState<number>(0);
   const [showDetails, setShowDetails] = React.useState<boolean>(false);
-
 
   const toggleShowDetails = (): void => {
     setShowDetails(!showDetails);
@@ -76,8 +79,9 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPro
   return (
     <React.Fragment>
       {formattedError && (
-        <View style={styles.errorDetailsContainer} onLayout={onErrorContainerLayout}>
-
+        <View
+          style={styles.errorDetailsContainer}
+          onLayout={onErrorContainerLayout}>
           <TouchableWithoutFeedback onPress={toggleShowDetails}>
             <Text style={styles.errorDetailsToggle}>
               {showDetails ? 'Close error details' : 'Show error details'}
@@ -87,19 +91,27 @@ export const ErrorExpand: React.FC<PropTypes.InferProps<typeof propTypes> & IPro
           {showDetails && (
             <View>
               {formattedError.errorId && (
-                <Text style={styles.errorInfoText}>Error ID: {formattedError.errorId}</Text>
+                <Text style={styles.errorInfoText}>
+                  Error ID: {formattedError.errorId}
+                </Text>
               )}
 
               {formattedError.errorName && (
-                <Text style={styles.errorInfoText}>Error Name: {formattedError.errorName}</Text>
+                <Text style={styles.errorInfoText}>
+                  Error Name: {formattedError.errorName}
+                </Text>
               )}
 
               {formattedError.errorCode && (
-                <Text style={styles.errorInfoText}>Error Code: {formattedError.errorCode}</Text>
+                <Text style={styles.errorInfoText}>
+                  Error Code: {formattedError.errorCode}
+                </Text>
               )}
 
               {formattedError.errorMessage && (
-                <Text style={styles.errorInfoText}>Error Message: {formattedError.errorMessage}</Text>
+                <Text style={styles.errorInfoText}>
+                  Error Message: {formattedError.errorMessage}
+                </Text>
               )}
             </View>
           )}
