@@ -144,8 +144,9 @@ const ProposalScreen = ({
       proposalId,
     );
 
-    let unsubscribeFromProposalById =
-      proposalStore.subscribeToProposalById(proposalId);
+    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+      proposalId,
+    );
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
