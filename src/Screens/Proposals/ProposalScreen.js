@@ -67,6 +67,7 @@ import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {VOTE_STATUSES} from '~/Util/constants/votes';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -133,19 +134,14 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 'approved';
-  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
     const unsubscribeFromProposalDiscussionMessages =
       discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
-    let unsubscribeFromProposalById = null;
-    if (fromNotificationItem) {
-      unsubscribeFromProposalById =
-        proposalStore.subscribeToProposalById(proposalId);
-    }
+    let unsubscribeFromProposalById =
+      proposalStore.subscribeToProposalById(proposalId);
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
@@ -241,7 +237,12 @@ const ProposalScreen = ({
   const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
     useState(false);
 
-  const [isVoteByYou, setIsVoteByYou] = useState(false);
+  const [isVoteByYou, setIsVoteByYou] = useState(
+    currentUserVote?.voteId && {
+      isApproved: currentUserVote.voteOutcome === VOTE_STATUSES.APPROVED,
+    },
+  );
+
   const [voteType, setVoteType] = useState(false);
   const [index, setIndex] = useState(tabIndex);
   const [routes] = useState([
@@ -393,7 +394,7 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        outcome: isApproved ? VOTE_STATUSES.APPROVED : VOTE_STATUSES.REJECTED,
         proposalId: proposalId || proposalInfo.id,
       };
 
@@ -1011,14 +1012,15 @@ const ProposalScreen = ({
                         }}
                       />
                     </View>
-
                     <View
                       style={{
                         ...layout.flexRow,
                         justifyContent: 'space-between',
                         width: '100%',
                       }}>
-                      {renderVoting && renderVotingButtons(topVotingButtonsRef)}
+                      {renderVoting &&
+                        !isVoteByYou &&
+                        renderVotingButtons(topVotingButtonsRef)}
                     </View>
                   </CopilotView>
                 </CopilotStep>
