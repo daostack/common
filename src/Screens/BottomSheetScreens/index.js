@@ -1,3 +1,4 @@
+import {Platform} from 'react-native';
 import {default as CommonOperationalStateNotif} from './CommonOperationalStateNotif';
 import {default as CommonProfileOptions} from './CommonProfileOptions';
 import {default as LoginSheetScreen} from './LoginSheetScreen';
@@ -30,7 +31,7 @@ export const BOTTOM_SHEET_TEMPLATES = {
     },
   }),
   LOGIN_SHEET_SCREEN: {
-    topSnap: 400,
+    topSnap: Platform.OS === 'ios' ? 400 : 300,
     content: LoginSheetScreen,
   },
   TRANSACTION_ERROR: {
