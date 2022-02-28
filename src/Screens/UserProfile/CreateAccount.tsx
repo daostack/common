@@ -10,12 +10,15 @@ import {
   Linking,
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
+import FacebookSignInButton from '~/Components/Auth/FacebookSignInButton';
+import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
 import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {useStore} from '~/Util/hooks/useStore';
 
 interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
@@ -25,6 +28,7 @@ interface CreateAccountProps {
 
 const CreateAccount = (props: CreateAccountProps) => {
   const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
+  const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
       await onSignedIn(
@@ -42,6 +46,20 @@ const CreateAccount = (props: CreateAccountProps) => {
     ? AuthService.isAppleLoginSupported()
     : false;
 
+  const renderError = () => {
+    if (authStore.signInError) {
+      const errorText = `${authStore.signInError.toString()} ${
+        authStore.signInError.code ? authStore.signInError.code : ''
+      }`;
+      return (
+        <View style={styles.messageContainer}>
+          <Text style={styles.errorMessage}>{errorText}</Text>
+          <View style={layout.messageErrorTriangle} />
+        </View>
+      );
+    }
+  };
+
   return (
     <View>
       {!hidePlaceholder && (
@@ -52,14 +70,19 @@ const CreateAccount = (props: CreateAccountProps) => {
         </View>
       )}
 
-      {isIos && isLoginWithAppleEnabled && (
-        <AppleSignInButton
-          customStyle={layout.marginBottomM}
-          onSignIn={onSignIn}
-        />
-      )}
+      <View style={styles.buttonContainer}>
+        {isIos && isLoginWithAppleEnabled && (
+          <AppleSignInButton onSignIn={onSignIn} />
+        )}
 
-      <GSignInButton onSignIn={onSignIn} />
+        <GSignInButton onSignIn={onSignIn} />
+
+        <FacebookSignInButton onSignIn={onSignIn} />
+
+        <PhoneSignInButton onSignIn={onSignIn} />
+
+        {renderError()}
+      </View>
 
       <View style={styles.termsOfUseContainer}>
         <Text style={styles.termsOfUseText}>
@@ -92,9 +115,10 @@ const styles = StyleSheet.create({
   sectionContainer: {
     ...layout.content,
   },
-  buttonsArea: {
-    alignSelf: 'stretch',
+  buttonContainer: {
+    alignSelf: 'center',
     marginTop: 60,
+    flexDirection: 'row',
   },
   button: {
     alignItems: 'center',
