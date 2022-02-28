@@ -23,7 +23,9 @@ import {
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation}) => {
-  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  const {userStore, proposalStore, commonStore, authStore} = useStore(
+    'rootStore',
+  );
   const userInfo = authStore.userInfo;
 
   const providedUserId = userId || currUserInfo.uid;

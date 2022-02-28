@@ -1,10 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-  Animated,
-} from 'react-native';
+import {ScrollView, Dimensions, SafeAreaView, Animated} from 'react-native';
 import {inject} from 'mobx-react';
 import {
   object,
@@ -166,7 +161,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {y: scrollY}}}],
             {useNativeDriver: false},
-        )}>
+          )}>
           {layoutTitle}
           <StepHeader
             skipFirstDot={Boolean(skipFirstStep)}

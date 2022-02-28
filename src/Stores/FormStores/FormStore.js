@@ -194,8 +194,10 @@ class FormStore {
         // Multiple Field
         else {
           const multiNameInfo = this.multiFieldsByValidatorKey[key];
-          this.getFormField(multiNameInfo.name, multiNameInfo.multiName).error =
-            validation.errors.first(key);
+          this.getFormField(
+            multiNameInfo.name,
+            multiNameInfo.multiName,
+          ).error = validation.errors.first(key);
         }
       }
     }
