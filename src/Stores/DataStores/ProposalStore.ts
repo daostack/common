@@ -111,7 +111,9 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataArray
         .filter((proposal: Proposal) => {
-          const isCommonActive = this.rootStore.commonStore.getCommonById(proposal.commonId)?.active;
+          const isCommonActive = this.rootStore.commonStore.getCommonById(
+            proposal.commonId,
+          )?.active;
           const isProposer = proposal?.proposerId === userId;
           if (isProposer && isCommonActive) {
             return this._applyFilter(proposal, proposalFilter);

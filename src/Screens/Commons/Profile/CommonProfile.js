@@ -746,7 +746,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   );
 
   const onModalOptionsAction = (type) => {
-    if (type === COMMON_OPTION_TYPES.info || type === COMMON_OPTION_TYPES.rules) {
+    if (
+      type === COMMON_OPTION_TYPES.info ||
+      type === COMMON_OPTION_TYPES.rules
+    ) {
       onEdit(type);
     } else if (type === COMMON_OPTION_TYPES.delete) {
       setDeleteScreenOn(true);
