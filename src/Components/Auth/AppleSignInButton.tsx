@@ -1,6 +1,5 @@
-import {useState} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, layout} from '~/Theme';
+import {TouchableOpacity} from 'react-native';
+import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer} from 'mobx-react-lite';
@@ -16,7 +15,6 @@ const props = {
 };
 
 const AppleSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
-  const [signInError, setSignInError] = useState<any>(null);
   const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
@@ -26,80 +24,44 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
       if (onSignIn) {
         onSignIn(userInfo, true);
       }
-      setSignInError(null);
+      authStore.setSignInError(null);
     } catch (error: any) {
       authStore.setIsLoading(false);
       logger.log(error);
       switch (error.code) {
         case AppleAuthError.CANCELED:
-          setSignInError('Canceled');
+          authStore.setSignInError('Canceled');
           break;
         case AppleAuthError.FAILED:
-          setSignInError('Failed');
+          authStore.setSignInError('Failed');
           break;
         case AppleAuthError.INVALID_RESPONSE:
-          setSignInError('Invalid response');
+          authStore.setSignInError('Invalid response');
           break;
         case AppleAuthError.NOT_HANDLED:
-          setSignInError('Not handled');
+          authStore.setSignInError('Not handled');
           break;
         case AppleAuthError.UNKNOWN:
-          setSignInError('Unknown error');
+          authStore.setSignInError('Unknown error');
           break;
         default:
-          setSignInError(error);
+          authStore.setSignInError(error);
       }
     }
   };
   const renderSignInButton = () => (
-    <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
+    <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon
         style={{marginRight: 5, marginBottom: 5}}
         name="apple-logo"
-        size={50}
+        size={45}
       />
     </TouchableOpacity>
   );
-  const renderError = () => {
-    if (signInError) {
-      const errorText = `${signInError.toString()} ${
-        signInError.code ? signInError.code : ''
-      }`;
-      return (
-        <View style={styles.messageContainer}>
-          <Text style={styles.errorMessage}>{errorText}</Text>
-          <View style={layout.messageErrorTriangle} />
-        </View>
-      );
-    }
-  };
-  return (
-    <>
-      {renderError()}
-      {renderSignInButton()}
-    </>
-  );
+
+  return <>{renderSignInButton()}</>;
 };
 
 AppleSignInButton.propTypes = props;
-
-const styles = StyleSheet.create({
-  messageContainer: {
-    ...layout.messageError,
-    ...layout.marginBottomM,
-  },
-  errorMessage: {
-    color: colors.error,
-  },
-  buttonOutline: {
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOpacity: 1,
-    shadowRadius: 15,
-    borderRadius: 100,
-    padding: 10,
-  },
-});
 
 export default observer(AppleSignInButton);

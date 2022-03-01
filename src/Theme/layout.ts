@@ -263,6 +263,17 @@ export default StyleSheet.create({
     position: 'absolute',
     left: 12,
   },
+  signUpButton: {
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    shadowColor: 'rgba(10, 10, 10, 0.2)',
+    shadowOffset: {width: 1, height: 13},
+    shadowOpacity: 1,
+    shadowRadius: 15,
+    borderRadius: 100,
+    padding: 10,
+    elevation: 6,
+  },
 
   // Message container
   messageError: {

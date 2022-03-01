@@ -52,10 +52,12 @@ const CreateAccount = (props: CreateAccountProps) => {
         authStore.signInError.code ? authStore.signInError.code : ''
       }`;
       return (
-        <View style={styles.messageContainer}>
-          <Text style={styles.errorMessage}>{errorText}</Text>
-          <View style={layout.messageErrorTriangle} />
-        </View>
+        <>
+          <View style={styles.errorTriangle} />
+          <View style={styles.messageContainer}>
+            <Text style={styles.errorMessage}>{errorText}</Text>
+          </View>
+        </>
       );
     }
   };
@@ -70,6 +72,8 @@ const CreateAccount = (props: CreateAccountProps) => {
         </View>
       )}
 
+      <Text style={styles.connectWithText}>Connect with</Text>
+
       <View style={styles.buttonContainer}>
         {isIos && isLoginWithAppleEnabled && (
           <AppleSignInButton onSignIn={onSignIn} />
@@ -80,9 +84,9 @@ const CreateAccount = (props: CreateAccountProps) => {
         <FacebookSignInButton onSignIn={onSignIn} />
 
         <PhoneSignInButton onSignIn={onSignIn} />
-
-        {renderError()}
       </View>
+
+      {renderError()}
 
       <View style={styles.termsOfUseContainer}>
         <Text style={styles.termsOfUseText}>
@@ -117,8 +121,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: 'center',
-    marginTop: 60,
+    marginTop: 20,
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: Platform.OS === 'ios' ? '80%' : '60%',
   },
   button: {
     alignItems: 'center',
@@ -138,6 +144,23 @@ const styles = StyleSheet.create({
   },
   termsOfUseTextBtn: {
     ...text.smallBlackText,
+  },
+  messageContainer: {
+    ...layout.messageError,
+    ...layout.marginBottomM,
+    marginTop: 5,
+    alignSelf: 'center',
+  },
+  errorMessage: {
+    color: colors.error,
+  },
+  errorTriangle: {
+    ...layout.messageErrorTriangle,
+    transform: [{rotate: '180deg'}],
+    position: 'relative',
+  },
+  connectWithText: {
+    ...text.smallGreyText,
   },
 });
 

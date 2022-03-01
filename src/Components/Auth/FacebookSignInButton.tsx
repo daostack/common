@@ -1,5 +1,5 @@
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, layout} from '~/Theme';
+import {TouchableOpacity} from 'react-native';
+import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
@@ -43,50 +43,14 @@ const FacebookSignInButton: React.FC<InferProps<typeof props>> = ({
     }
   };
   const renderSignInButton = () => (
-    <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
+    <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon name="facebook" size={50} />
     </TouchableOpacity>
   );
-  const renderError = () => {
-    if (authStore.signInError) {
-      const errorText = `${authStore.signInError.toString()} ${
-        authStore.signInError.code ? authStore.signInError.code : ''
-      }`;
-      return (
-        <View style={styles.messageContainer}>
-          <Text style={styles.errorMessage}>{errorText}</Text>
-          <View style={layout.messageErrorTriangle} />
-        </View>
-      );
-    }
-  };
-  return (
-    <>
-      {renderError()}
-      {renderSignInButton()}
-    </>
-  );
+
+  return <>{renderSignInButton()}</>;
 };
 
 FacebookSignInButton.propTypes = props;
-
-const styles = StyleSheet.create({
-  messageContainer: {
-    ...layout.messageError,
-    ...layout.marginBottomM,
-  },
-  errorMessage: {
-    color: colors.error,
-  },
-  buttonOutline: {
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOpacity: 1,
-    shadowRadius: 15,
-    borderRadius: 100,
-    padding: 10,
-  },
-});
 
 export default observer(FacebookSignInButton);
