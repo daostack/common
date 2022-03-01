@@ -15,7 +15,15 @@ import ProposalCard from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {string, bool, number, shape, func, InferProps} from 'prop-types';
+import {
+  string,
+  bool,
+  number,
+  shape,
+  func,
+  InferProps,
+  object,
+} from 'prop-types';
 import {observer} from 'mobx-react-lite';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {
@@ -48,6 +56,7 @@ const props = {
   openCommonOptions: func,
   showHiddenNote: func,
   isMember: bool,
+  flatListStyle: object,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -60,6 +69,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     openCommonOptions,
     showHiddenNote,
     isMember,
+    flatListStyle,
   }) => {
     const rootStore = useStore('rootStore');
     const [viewerPermission, setViewerPermission] = React.useState('');
@@ -204,6 +214,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       <>
         {list && list.length > 0 ? (
           <FlatList
+            style={flatListStyle}
             data={list.slice()}
             keyExtractor={keyExtractor}
             initialNumToRender={1}
