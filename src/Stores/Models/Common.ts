@@ -25,6 +25,7 @@ export class Common implements ICommonEntity {
   links: ICommonLink[];
   metadata: ICommonMetadata;
   register: CommonRegister;
+  active: boolean;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;
