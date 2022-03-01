@@ -102,8 +102,9 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   getUserCommons = (userId: string) => {
     try {
-      return this.getDataArray.filter((common: Common) =>
-        isDaoMemberByUserId(common?.members, userId),
+      return this.getDataArray.filter(
+        (common: Common) =>
+          isDaoMemberByUserId(common?.members, userId) && common?.active,
       );
     } catch (error) {
       showBackendError({
@@ -127,6 +128,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
       return await CommonService.updateCommon(updateCommonInfo);
+    } catch (err) {
+      throw err;
+    }
+  };
+  deleteCommon = async (commonId: string) => {
+    try {
+      return await CommonService.deleteCommon(commonId);
     } catch (err) {
       throw err;
     }

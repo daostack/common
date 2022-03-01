@@ -19,6 +19,7 @@ import AuthService from '~/Services/AuthService';
 import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {useStore} from '~/Util/hooks/useStore';
+import {LINKS} from '~/Util/constants/links';
 
 interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
@@ -92,8 +93,7 @@ const CreateAccount = (props: CreateAccountProps) => {
         <Text style={styles.termsOfUseText}>
           By using Common you agree to the app’s
         </Text>
-        <TouchableOpacity
-          onPress={() => Linking.openURL('https://common.io/tos')}>
+        <TouchableOpacity onPress={() => Linking.openURL(LINKS.TERMS)}>
           <Text style={styles.termsOfUseTextBtn}>terms of use</Text>
         </TouchableOpacity>
       </View>
