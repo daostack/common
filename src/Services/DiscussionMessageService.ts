@@ -21,11 +21,13 @@ class DiscussionMessageService {
     discussionId: string,
     callback: commonDiscussionMessagesListLoadCallbackFn,
   ) =>
-    DiscussionMessagesCollection.where('discussionId', '==', discussionId)
-      .orderBy('createTime', 'asc')
-      .onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
-        callback(snapshot);
-      });
+    DiscussionMessagesCollection.where(
+      'discussionId',
+      '==',
+      discussionId,
+    ).onSnapshot((snapshot: IFirebaseSnapshot<IDiscussionMessageEntity>) => {
+      callback(snapshot);
+    });
 
   subscribeToDiscussionsMessages = (
     discussionIds: Array<string>,

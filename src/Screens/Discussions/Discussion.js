@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -93,14 +93,17 @@ const Discussion = ({
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
-  useFocusEffect(() => {
-    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
-      discussionId,
-    );
-    return () => {
-      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
-    };
-  }, [discussionId]);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+        discussionId,
+      );
+      return () => {
+        unsubscribeFromDiscussionMessages &&
+          unsubscribeFromDiscussionMessages();
+      };
+    }, [discussionId]),
+  );
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
