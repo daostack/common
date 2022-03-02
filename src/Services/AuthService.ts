@@ -13,6 +13,12 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
+
+import {
+  AccessToken,
+  LoginManager,
+} from 'react-native-fbsdk-next';
+
 import {
   IUserEntity,
   UserPublicData,
@@ -56,6 +62,26 @@ class AuthService {
 
     // Sign the user in with the credential
     return auth().signInWithCredential(appleCredential);
+  };
+
+  // Facebook signIn
+  signInFacebook = async (): Promise<IUserEntity> => {
+    const result = await LoginManager.logInWithPermissions(['public_profile']);
+
+    if (result.isCancelled) {
+      return;
+    }
+
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken,
+    );
+    return auth().signInWithCredential(facebookCredential);
   };
 
   // Google Auth flow
