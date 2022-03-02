@@ -392,54 +392,54 @@ const Discussion = ({
         />
       </ScrollView>
 
-      {isMember ? (
-        <KeyboardAvoidingView
+      <KeyboardAvoidingView
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+        keyboardVerticalOffset={0}>
+        <View
           style={{
-            position: 'absolute',
-            bottom: 0,
-            flex: 1,
-            color: '#fbfdff',
-          }}
-          keyboardVerticalOffset={0}>
-          <View
-            style={{
-              ...styles.inputContainer,
-              height: actualInputHeight,
-            }}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              placeholderTextColor={colors.grey3}
-              onChangeText={(currText) => setInputText(currText)}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
-              }}
-              style={styles.input}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={25}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+            ...styles.inputContainer,
+            height: actualInputHeight,
+          }}>
+          {isMember ? (
+            <>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                multiline
+                placeholder="What do you think?"
+                placeholderTextColor={colors.grey3}
+                onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+                }}
+                style={styles.input}
               />
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      ) : (
-        <View style={{paddingTop: 10}}>
-          <Text style={{...styles.joinCommonText}}>
-            Only members can send messages
-          </Text>
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  justifyContent: 'center',
+                }}
+                disabled={isEmptyMessage()}>
+                <Icon
+                  name="send-message"
+                  size={25}
+                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+                />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{...styles.joinCommonText}}>
+              Only members can send messages
+            </Text>
+          )}
         </View>
-      )}
+      </KeyboardAvoidingView>
 
       <ImageView
         images={
@@ -550,10 +550,9 @@ const styles = StyleSheet.create({
   joinCommonText: {
     ...text.textFieldplaceholder,
     width,
+    bottom: 30,
     textAlign: 'center',
     color: colors.greySubtitle,
-    paddingTop: sizeS,
-    paddingBottom: sizeXL,
     alignSelf: 'center',
   },
   headerContainer: {
