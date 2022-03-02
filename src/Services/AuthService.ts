@@ -14,10 +14,7 @@ import appleAuth, {
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
 
-import {
-  AccessToken,
-  LoginManager,
-} from 'react-native-fbsdk-next';
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 
 import {
   IUserEntity,
@@ -65,11 +62,11 @@ class AuthService {
   };
 
   // Facebook signIn
-  signInFacebook = async (): Promise<IUserEntity> => {
+  signInFacebook = async (): Promise<IUserEntity | null> => {
     const result = await LoginManager.logInWithPermissions(['public_profile']);
 
     if (result.isCancelled) {
-      return;
+      return null;
     }
 
     const data = await AccessToken.getCurrentAccessToken();
