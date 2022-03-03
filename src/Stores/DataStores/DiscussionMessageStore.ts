@@ -56,7 +56,7 @@ export default class DiscussionMessageStore extends BaseStore<
         )
         .sort(
           (message: DiscussionMessage, prevMessage: DiscussionMessage) =>
-            prevMessage?.createdAt?.seconds - message?.createdAt?.seconds,
+            prevMessage?.createTime?.seconds - message?.createTime?.seconds,
         );
     } catch (error) {
       showBackendError({
