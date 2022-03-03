@@ -66,7 +66,7 @@ const FundingRequest: React.FC<InferProps<typeof props>> = ({
     if (item.eventType === EventTypeState.fundingRequestCreated) {
       notificationData = {
         ...notificationData,
-        header: ' by',
+        header: ' by ',
         headerBold: `${user.firstName} ${user.lastName}`,
       };
     }
