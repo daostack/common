@@ -1,41 +1,36 @@
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {CommonActions, StackActions} from '@react-navigation/native';
+import {inject, observer} from 'mobx-react';
+import moment from 'moment';
+import {object, shape} from 'prop-types';
 import React, {useState} from 'react';
 import {
+  Dimensions,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  StyleSheet,
-  Dimensions,
 } from 'react-native';
-import {inject, observer} from 'mobx-react';
-import {StackActions} from '@react-navigation/native';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  DYNAMIC_LINK_URI_PREFIX,
-  DYNAMIC_LINKS_TYPES,
-} from '~/Util/constants/dynamicLinks';
-
-import moment from 'moment';
-import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '~/Util';
-
 import Modal from 'react-native-modal';
-import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import Share from 'react-native-share';
-import CreateStep4Indicators from './CreateStep4Indicators';
-import {CommonActions} from '@react-navigation/native';
-import {object, shape} from 'prop-types';
-import CommonService from '~/Services/CommonService';
-import CommonImage from '~/Components/Commons/CommonImage';
-import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {escapeUrl} from '~/Util';
-import {Bold} from '~/Components/Text/Bold';
 import Icon from '~/Assets/iconfont/Icon';
-import {CurrencySymbols} from '~/Util/locale';
-
-import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
+import CommonImage from '~/Components/Commons/CommonImage';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import {Bold} from '~/Components/Text/Bold';
 import logger from '~/Services/Logger';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {colors, font, layout, sizeL, sizeM, sizeXL, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl, formatNumber, numberFormatter, showErrorPopUp} from '~/Util';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINK_URI_PREFIX,
+} from '~/Util/constants/dynamicLinks';
+import {CurrencySymbols} from '~/Util/locale';
+import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStep4Indicators from './CreateStep4Indicators';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -132,30 +127,33 @@ const CreateStep4 = ({
         contributionAmount: data.contributionAmount,
         zeroContribution: data.zeroContribution,
       };
+      const personalContributionFormStore = new PersonalContributionFormStore();
 
       navigation.navigate({
-        name: 'FullScreenCreationLoader',
+        name: 'PersonalContributionStep',
         params: {
-          title: 'Creating your Common',
-          message: 'This might take a couple of minutes.',
+          common: {
+            ...formattedData,
+            metadata: {
+              contributionType: data.contributionType,
+              zeroContribution: data.zeroContribution,
+              minFeeToJoin: contributionAmount,
+            },
+            minFeeToJoinFormatted(numberValue = false) {
+              const minValue = this.metadata.zeroContribution
+                ? 0
+                : +this.metadata.minFeeToJoin;
+              return !numberValue
+                ? formatNumber(minValue / 100).toString()
+                : (minValue / 100).toString();
+            },
+          },
+          formStores: {
+            personalContributionFormStore,
+          },
         },
       });
-
-      const createCommonResponse = await CommonService.createCommon(
-        formattedData,
-      );
-
-      if (createCommonResponse.status === 200) {
-        setNewCommonAddress(createCommonResponse.data.id);
-        navigation.pop();
-      } else {
-        navigation.pop();
-        showErrorPopUp(bottomSheetStore, createCommonResponse);
-      }
-
-      return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
-      //navigation.pop();
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
@@ -202,7 +200,7 @@ const CreateStep4 = ({
       }
       requestStepActionButton={
         <RequestStepActionButton
-          title="Publish Common"
+          title="Personal Contribution"
           formStore={agendaFormStore}
           onPress={() => forgeCommon()}
           isSticky={false}

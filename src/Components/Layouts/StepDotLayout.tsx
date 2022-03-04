@@ -10,6 +10,7 @@ import {
   shape,
   InferProps,
   oneOfType,
+  arrayOf,
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
@@ -43,6 +44,11 @@ const props = {
   uiStore: uiStorePropTypes.isRequired,
   onContentSizeChange: func,
   isRequestButtonSticky: bool,
+  headerDotsInfo: arrayOf(
+    shape({
+      dotIconName: string,
+    }),
+  ),
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -91,6 +97,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   uiStore,
   onContentSizeChange,
   isRequestButtonSticky = true,
+  headerDotsInfo,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -143,7 +150,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           navigation={navigation}
           headerHeight={headerHeight}
           isFirstStepSkipped={skipFirstStep}
-          totalDots={currDotInfo.length}
+          totalDots={(headerDotsInfo || currDotInfo).length}
           onClose={closeDialog}
         />
         <ScrollView
@@ -166,7 +173,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           <StepHeader
             skipFirstDot={Boolean(skipFirstStep)}
             currentIndex={Number(currentIndex) - 1}
-            dotInfo={currDotInfo}
+            dotInfo={headerDotsInfo || currDotInfo}
           />
           {children}
           {!isRequestButtonSticky && requestStepActionButton}

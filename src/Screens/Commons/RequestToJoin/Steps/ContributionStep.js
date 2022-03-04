@@ -77,11 +77,10 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-      {
+    const createRequestToJoinResponse =
+      await ProposalService.createRequestToJoin({
         ...data,
-      },
-    );
+      });
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;
@@ -192,7 +191,6 @@ const ContributionStep = ({
       <View
         style={{
           flex: 1,
-          // padding: 24,
           backgroundColor: 'white',
         }}>
         {isMonthly ? (

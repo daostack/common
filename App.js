@@ -50,6 +50,8 @@ import {
   EditCommon,
   ReceiveFunds,
   AddInvoicesScreen,
+  PersonalContributionStep,
+  PersonalPaymentDetailsStep,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -478,6 +480,20 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="IntroductionStep"
             component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalContributionStep"
+            component={PersonalContributionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalPaymentDetailsStep"
+            component={PersonalPaymentDetailsStep}
             options={() => ({
               headerShown: false,
             })}
