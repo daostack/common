@@ -1,33 +1,18 @@
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {CommonActions, StackActions} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
 import moment from 'moment';
 import {object, shape} from 'prop-types';
-import React, {useState} from 'react';
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Modal from 'react-native-modal';
-import Share from 'react-native-share';
+import React from 'react';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import CommonImage from '~/Components/Commons/CommonImage';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import {Bold} from '~/Components/Text/Bold';
 import logger from '~/Services/Logger';
 import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 import {colors, font, layout, sizeL, sizeM, sizeXL, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {escapeUrl, formatNumber, numberFormatter, showErrorPopUp} from '~/Util';
-import {
-  DYNAMIC_LINKS_TYPES,
-  DYNAMIC_LINK_URI_PREFIX,
-} from '~/Util/constants/dynamicLinks';
 import {CurrencySymbols} from '~/Util/locale';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStep4Indicators from './CreateStep4Indicators';
@@ -48,7 +33,6 @@ const CreateStep4 = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
 
-  const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -64,41 +48,6 @@ const CreateStep4 = ({
   const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
     ? '0'
     : form[CreateCommonForm.MINIMUM];
-
-  const goToCommon = () => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        commonId: newCommonAddress.toLowerCase(),
-      },
-    });
-    navigation.popToTop();
-    navigation.dispatch(navigate);
-  };
-
-  const shareCommon = async () => {
-    try {
-      const {name, description, image} = form;
-      const currCommonId = newCommonAddress.toLowerCase();
-      const url = await dynamicLinks().buildShortLink({
-        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommonId}`,
-        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
-        social: {
-          title: name,
-          descriptionText: description,
-          imageUrl: image,
-        },
-      });
-      const options = {
-        url,
-        title: "Let's make it happen",
-        message: `${name} common`,
-      };
-      Share.open(options);
-    } catch (err) {
-      logger.log('Deep Linking works only in production');
-    }
-  };
 
   const forgeCommon = async () => {
     try {
@@ -171,33 +120,6 @@ const CreateStep4 = ({
       navTitle="Final touches and review"
       currentIndex={4}
       isRequestButtonSticky={false}
-      prependedArea={
-        <Modal
-          isVisible={Boolean(newCommonAddress)}
-          avoidKeyboard={true}
-          backdropColor={colors.white}
-          backdropOpacity={1}
-          style={{padding: 0}}>
-          <SentTemplate
-            isCommonCreation={true}
-            title="Your journey starts now"
-            description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
-            onClose={() => navigation.dispatch(StackActions.popToTop())}>
-            <View style={styles.shareContainer}>
-              <TouchableOpacity
-                style={styles.modalRequestSentBtnPrimary}
-                onPress={shareCommon}>
-                <Text style={text.buttoncenterwhite}>Share now</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalRequestSentBtnOutline}
-                onPress={goToCommon}>
-                <Text style={text.buttonblue}>Go to Common</Text>
-              </TouchableOpacity>
-            </View>
-          </SentTemplate>
-        </Modal>
-      }
       requestStepActionButton={
         <RequestStepActionButton
           title="Personal Contribution"
