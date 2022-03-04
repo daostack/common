@@ -106,7 +106,7 @@ const PersonalPaymentDetailsStep = ({
       }
     } catch (e) {
       Toast.hide();
-      navigation.pop();
+      navigation.pop(3);
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
         subTitle: "We couldn't create your common",
         error: e,
