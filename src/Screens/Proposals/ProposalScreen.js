@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
+import {text, layout, colors, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
@@ -321,11 +321,6 @@ const ProposalScreen = ({
         setIsSending(false);
       }
     };
-
-    let viewStyle = styles.input;
-    if (isMember) {
-      viewStyle = {...viewStyle, borderBottomWidth: 0};
-    }
 
     const isEmptyMessage = () => !(inputText && inputText.trim().length);
 

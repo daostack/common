@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
+import {colors, layout, font, text, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
 import auth from '@react-native-firebase/auth';
