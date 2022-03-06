@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
+import {text, layout, colors, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
@@ -67,6 +67,7 @@ import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {VOTE_STATUSES} from '~/Util/constants/votes';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -110,14 +111,17 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
-    useState(false);
+  const [
+    debtInsufficientModalVisible,
+    setDebtInsufficientModalVisible,
+  ] = useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   // Sticky Tab Bar
@@ -133,19 +137,16 @@ const ProposalScreen = ({
   const scrollViewRef = useRef(null);
 
   // Values for vote param required from the blockchain
-  const VOTE_APPROVE = 'approved';
-  const VOTE_REJECT = 'rejected';
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages =
-      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
+      proposalId,
+    );
 
-    let unsubscribeFromProposalById = null;
-    if (fromNotificationItem) {
-      unsubscribeFromProposalById =
-        proposalStore.subscribeToProposalById(proposalId);
-    }
+    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
+      proposalId,
+    );
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
@@ -167,22 +168,25 @@ const ProposalScreen = ({
   const userVoted = Object.values(currentUserVote).length !== 0;
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
-      const asyncData = async () => {
-        try {
-          const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
-          if (value === null && !userVoted) {
-            await AsyncStorage.setItem(
-              TOOLTIP_PROPOSAL,
-              TOOLTIP_PROPOSAL_SEEN.true,
-            );
-            start();
-          }
-        } catch (error) {
-          logger.log(error);
+    const asyncData = async () => {
+      try {
+        const value = await AsyncStorage.getItem(TOOLTIP_PROPOSAL);
+        if (value === null && !userVoted) {
+          await AsyncStorage.setItem(
+            TOOLTIP_PROPOSAL,
+            TOOLTIP_PROPOSAL_SEEN.true,
+          );
+          start();
         }
-      };
-      asyncData();
+      } catch (error) {
+        logger.log(error);
+      }
+    };
+
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      if (proposalInfo.state === PROPOSAL_STAGE.countdown) {
+        asyncData();
+      }
     });
 
     return unsubscribe;
@@ -235,10 +239,17 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [isApprovalBottomModalVisible, setIsApprovalBottomModalVisible] =
-    useState(false);
+  const [
+    isApprovalBottomModalVisible,
+    setIsApprovalBottomModalVisible,
+  ] = useState(false);
 
-  const [isVoteByYou, setIsVoteByYou] = useState(false);
+  const [isVoteByYou, setIsVoteByYou] = useState(
+    currentUserVote?.voteId && {
+      isApproved: currentUserVote.voteOutcome === VOTE_STATUSES.APPROVED,
+    },
+  );
+
   const [voteType, setVoteType] = useState(false);
   const [index, setIndex] = useState(tabIndex);
   const [routes] = useState([
@@ -311,14 +322,9 @@ const ProposalScreen = ({
       }
     };
 
-    let viewStyle = styles.input;
-    if (isMember) {
-      viewStyle = {...viewStyle, borderBottomWidth: 0};
-    }
-
     const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
-    return isMember || isProposer ? (
+    return (
       <KeyboardAvoidingView
         style={{
           position: 'absolute',
@@ -331,39 +337,41 @@ const ProposalScreen = ({
             ...styles.inputContainer,
             height: actualInputHeight,
           }}>
-          <TextInput
-            ref={inputRef}
-            editable={true}
-            fontSize={15}
-            multiline
-            placeholder="What do you think?"
-            placeholderTextColor={colors.grey3}
-            onChangeText={(currText) => setInputText(currText)}
-            onContentSizeChange={(event) => {
-              setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
-            }}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            onPress={sendMessageToDiscussion}
-            style={{
-              justifyContent: 'center',
-            }}
-            disabled={isEmptyMessage()}>
-            <Icon
-              name="send-message"
-              size={25}
-              color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-            />
-          </TouchableOpacity>
+          {isMember || isProposer ? (
+            <>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                multiline
+                placeholder="What do you think?"
+                placeholderTextColor={colors.grey3}
+                onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+                }}
+                style={styles.input}
+              />
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  justifyContent: 'center',
+                }}
+                disabled={isEmptyMessage()}>
+                <Icon
+                  name="send-message"
+                  size={25}
+                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+                />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{...styles.joinCommonText}}>
+              Only members or proposal creators can send messages
+            </Text>
+          )}
         </View>
       </KeyboardAvoidingView>
-    ) : (
-      <View style={viewStyle}>
-        <Text style={{...styles.joinCommonText}}>
-          Only members or proposal creators can send messages
-        </Text>
-      </View>
     );
   };
 
@@ -390,7 +398,7 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VOTE_APPROVE : VOTE_REJECT,
+        outcome: isApproved ? VOTE_STATUSES.APPROVED : VOTE_STATUSES.REJECTED,
         proposalId: proposalId || proposalInfo.id,
       };
 
@@ -938,89 +946,85 @@ const ProposalScreen = ({
                 </View>
                 {renderDebWarningIfNeeded()}
 
-                <CopilotStep
-                  text="This is a hello world example!"
-                  order={1}
-                  name="hello">
-                  <CopilotView style={{width: '100%'}}>
-                    <View
-                      style={{
-                        ...layout.content,
-                        width: '100%',
-                        paddingHorizontal: 0,
-                      }}>
-                      <View style={styles.proposalProgressInfo}>
-                        <View
-                          style={{
-                            ...layout.content,
-                            ...layout.flexRow,
-                            padding: 0,
-                          }}>
-                          <Icon
-                            name="user-approved"
-                            color={colors.lightishGreen}
-                            size={25}
-                            style={layout.marginRightXS}
-                          />
-                          <Text style={text.lightishGreenText}>
-                            {proposalInfo.votesFor}
-                          </Text>
-                        </View>
-
-                        <Text style={text.smallBlackText}>
-                          {!proposalInfo.votesCount
-                            ? 'No votes yet'
-                            : `${proposalInfo.votesCount} ${
-                                proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                              }`}
-                        </Text>
-
-                        <View
-                          style={{
-                            ...layout.content,
-                            ...layout.flexRow,
-                            padding: 0,
-                          }}>
-                          <Text style={text.againstText}>
-                            {proposalInfo.votesAgainst}
-                          </Text>
-                          <Icon
-                            name="user-rejected"
-                            color={colors.against}
-                            size={25}
-                            style={layout.marginLeftXS}
-                          />
-                        </View>
-                      </View>
+                <CopilotStep order={1} name="info">
+                  <CopilotView
+                    style={{
+                      ...layout.content,
+                      width: '100%',
+                      paddingHorizontal: 0,
+                    }}>
+                    <View style={styles.proposalProgressInfo}>
                       <View
                         style={{
-                          ...styles.proposalProgressBar,
-                          ...{
-                            backgroundColor: isNaN(
-                              proposalInfo?.progressBarWidthPercent,
-                            )
-                              ? colors.grey4
-                              : colors.against,
-                          },
+                          ...layout.content,
+                          ...layout.flexRow,
+                          padding: 0,
                         }}>
-                        <View
-                          style={{
-                            ...styles.proposalInnerProgressBar,
-                            width: `${
-                              proposalInfo?.progressBarWidthPercent || 0
-                            }%`,
-                          }}
+                        <Icon
+                          name="user-approved"
+                          color={colors.lightishGreen}
+                          size={25}
+                          style={layout.marginRightXS}
+                        />
+                        <Text style={text.lightishGreenText}>
+                          {proposalInfo.votesFor}
+                        </Text>
+                      </View>
+
+                      <Text style={text.smallBlackText}>
+                        {!proposalInfo.votesCount
+                          ? 'No votes yet'
+                          : `${proposalInfo.votesCount} ${
+                              proposalInfo.votesCount > 1 ? 'votes' : 'vote'
+                            }`}
+                      </Text>
+
+                      <View
+                        style={{
+                          ...layout.content,
+                          ...layout.flexRow,
+                          padding: 0,
+                        }}>
+                        <Text style={text.againstText}>
+                          {proposalInfo.votesAgainst}
+                        </Text>
+                        <Icon
+                          name="user-rejected"
+                          color={colors.against}
+                          size={25}
+                          style={layout.marginLeftXS}
                         />
                       </View>
                     </View>
-
+                    <View
+                      style={{
+                        ...styles.proposalProgressBar,
+                        ...{
+                          backgroundColor: isNaN(
+                            proposalInfo?.progressBarWidthPercent,
+                          )
+                            ? colors.grey4
+                            : colors.against,
+                        },
+                      }}>
+                      <View
+                        style={{
+                          ...styles.proposalInnerProgressBar,
+                          width: `${
+                            proposalInfo?.progressBarWidthPercent || 0
+                          }%`,
+                        }}
+                      />
+                    </View>
                     <View
                       style={{
                         ...layout.flexRow,
                         justifyContent: 'space-between',
                         width: '100%',
                       }}>
-                      {renderVoting && renderVotingButtons(topVotingButtonsRef)}
+                      {renderVoting &&
+                        !isVoteByYou &&
+                        renderVotingButtons(topVotingButtonsRef)}
                     </View>
                   </CopilotView>
                 </CopilotStep>
@@ -1236,10 +1240,11 @@ const styles = StyleSheet.create({
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
+    alignSelf: 'flex-start',
+    textAlign: 'center',
+    width: '70%',
+    marginTop: 20,
     color: colors.greySubtitle,
-    marginTop: sizeS,
-    marginBottom: sizeM,
-    alignSelf: 'center',
   },
 });
 
@@ -1268,6 +1273,7 @@ export default inject('rootStore')(
       arrowColor: colors.mainBlue,
       backdropColor: 'rgba(0, 0, 0, 0.2)',
       svgMaskPath: circleSvgPath,
+      ...(Platform.OS === 'android' && {verticalOffset: 25}),
     })(ProposalScreen),
   ),
 );

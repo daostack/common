@@ -31,10 +31,14 @@ export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
   typeFilter === PROPOSAL_TYPE.FundingRequest;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
-  stageFilter === PROPOSAL_STAGE.Active;
+  Array.isArray(stageFilter)
+    ? stageFilter.includes(PROPOSAL_STAGE.Active)
+    : stageFilter === PROPOSAL_STAGE.Active;
 
 export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
-  stageFilter === PROPOSAL_STAGE.History;
+  Array.isArray(stageFilter)
+    ? stageFilter.includes(PROPOSAL_STAGE.History)
+    : stageFilter === PROPOSAL_STAGE.History;
 
 export const isProposalActive = (proposal: Proposal) =>
   PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||
@@ -111,8 +115,11 @@ export default class ProposalStore extends BaseStore<
     try {
       return this.getDataArray
         .filter((proposal: Proposal) => {
+          const isCommonActive = this.rootStore.commonStore.getCommonById(
+            proposal.commonId,
+          )?.active;
           const isProposer = proposal?.proposerId === userId;
-          if (isProposer) {
+          if (isProposer && isCommonActive) {
             return this._applyFilter(proposal, proposalFilter);
           }
           return false;

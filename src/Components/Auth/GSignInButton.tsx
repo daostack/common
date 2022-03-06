@@ -1,5 +1,5 @@
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import {colors, text, layout} from '~/Theme';
+import {TouchableOpacity} from 'react-native';
+import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
 import {statusCodes} from '@react-native-community/google-signin';
@@ -12,9 +12,7 @@ import {useStore} from '~/Util/hooks/useStore';
 const props = {
   onSignIn: func,
 };
-const GSignInButton: React.FC<InferProps<typeof props>> = ({
-  onSignIn,
-}) => {
+const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
   const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
@@ -42,55 +40,14 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({
       }
     }
   };
-  const renderSignInButton = () => (
-    <TouchableOpacity style={styles.buttonOutline} onPress={_signIn}>
-      <Icon name="google" size={32} />
-      <Text style={{...text.buttonblack, fontWeight: '600', width: '100%'}}>
-        Continue with Google
-      </Text>
-    </TouchableOpacity>
-  );
-  const renderError = () => {
-    if (authStore.signInError) {
-      const errorText = `${authStore.signInError.toString()} ${
-        authStore.signInError.code ? authStore.signInError.code : ''
-      }`;
-      return (
-        <View style={styles.messageContainer}>
-          <Text style={styles.errorMessage}>{errorText}</Text>
-          <View style={layout.messageErrorTriangle} />
-        </View>
-      );
-    }
-  };
+
   return (
-    <View style={styles.container}>
-      {renderError()}
-      {renderSignInButton()}
-    </View>
+    <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
+      <Icon name="google" size={50} />
+    </TouchableOpacity>
   );
 };
 
 GSignInButton.propTypes = props;
-
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'stretch',
-    paddingHorizontal: 24,
-  },
-  messageContainer: {
-    ...layout.messageError,
-    ...layout.marginBottomM,
-  },
-  errorMessage: {
-    color: colors.error,
-  },
-  buttonOutline: {
-    ...layout.btnOutline,
-    borderWidth: 1.5,
-    borderColor: colors.iconBlack,
-    justifyContent: 'flex-end',
-  },
-});
 
 export default observer(GSignInButton);

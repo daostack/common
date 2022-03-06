@@ -5,7 +5,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ScrollView,
   View,
   Dimensions,
 } from 'react-native';
@@ -31,101 +30,96 @@ const MyProposals = ({
   const proposalStore = rootStore.proposalStore;
 
   const [index, setIndex] = React.useState(0);
-  const onScreenScroll = (event) => {
-    navigation.setOptions({
-      title:
-        event.nativeEvent.contentOffset.y > 75
-          ? isTypeFilterJoin(proposalTypeFilter)
-            ? 'My membership requests'
-            : 'My Proposals'
-          : 'My Profile',
-    });
-  };
+
+  const activeProposalsCount = proposalStore.getUserProposals(
+    authStore.userInfo.uid,
+    {
+      stage: PROPOSAL_STAGE.Active,
+      type: proposalTypeFilter,
+    },
+  ).length;
+
+  const historyProposalsCount = proposalStore.getUserProposals(
+    authStore.userInfo.uid,
+    {
+      stage: PROPOSAL_STAGE.History,
+      type: proposalTypeFilter,
+    },
+  ).length;
 
   const routes = [
     {
+      key: 'all',
+      title: `All (${activeProposalsCount + historyProposalsCount})`,
+    },
+    {
       key: 'active',
-      title: `Active (${
-        proposalStore.getUserProposals(authStore.userInfo.uid, {
-          stage: PROPOSAL_STAGE.Active,
-          type: proposalTypeFilter,
-        }).length
-      })`,
+      title: `Active (${activeProposalsCount})`,
     },
     {
       key: 'history',
-      title: `History (${
-        proposalStore.getUserProposals(authStore.userInfo.uid, {
-          stage: PROPOSAL_STAGE.History,
-          type: proposalTypeFilter,
-        }).length
-      })`,
+      title: `History (${historyProposalsCount})`,
     },
   ];
 
-  const ActiveProposals = () => SceneRenderer(1);
-
-  const HistoryProposals = () => SceneRenderer(2);
-
   const SceneRenderer = (sceneIndex) => (
-    <View style={{flex: 1, marginTop: 40, paddingHorizontal: 20}}>
-      <ProposalsList
-        navigation={navigation}
-        userInfo={{
-          id: authStore.userInfo.uid,
-        }}
-        proposalFilter={{
-          stage:
-            sceneIndex === 2 ? PROPOSAL_STAGE.History : PROPOSAL_STAGE.Active,
-          type: proposalTypeFilter,
-        }}
-        isMember
-      />
-    </View>
+    <ProposalsList
+      flatListStyle={styles.proposalsList}
+      navigation={navigation}
+      userInfo={{
+        id: authStore.userInfo.uid,
+      }}
+      proposalFilter={
+        sceneIndex === 0
+          ? {
+              stage: [PROPOSAL_STAGE.History, PROPOSAL_STAGE.Active],
+              type: proposalTypeFilter,
+            }
+          : {
+              stage:
+                sceneIndex === 2
+                  ? PROPOSAL_STAGE.History
+                  : PROPOSAL_STAGE.Active,
+              type: proposalTypeFilter,
+            }
+      }
+      isMember
+    />
   );
 
   const initialLayout = {width: Dimensions.get('window').width};
 
-  const renderScene = ({route}) => {
+  const renderScene = React.useCallback(({route}) => {
     switch (route.key) {
+      case 'all':
+        return SceneRenderer(0);
       case 'active':
-        return ActiveProposals();
+        return SceneRenderer(1);
       case 'history':
-        return HistoryProposals();
+        return SceneRenderer(2);
     }
-  };
+  }, []);
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
 
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          vertical={true}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}
-          onScroll={onScreenScroll}
-          scrollEventThrottle={16}>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.title}>
-              My{' '}
-              {isTypeFilterJoin(proposalTypeFilter)
-                ? 'membership requests'
-                : 'proposals'}
-            </Text>
-          </View>
-          <View style={styles.sectionTabView}>
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-              renderTabBar={CommonTabBar}
-            />
-          </View>
-        </ScrollView>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.title}>
+            My{' '}
+            {isTypeFilterJoin(proposalTypeFilter)
+              ? 'membership requests'
+              : 'proposals'}
+          </Text>
+        </View>
+        <TabView
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+          renderTabBar={CommonTabBar}
+        />
       </SafeAreaView>
     </>
   );
@@ -150,6 +144,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.white,
+  },
+  proposalsList: {
+    flex: 1,
+    marginTop: 20,
+    paddingHorizontal: 20,
   },
   title: {
     ...font.heading.bold,

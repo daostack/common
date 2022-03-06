@@ -13,6 +13,9 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
+
+import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
+
 import {
   IUserEntity,
   UserPublicData,
@@ -56,6 +59,26 @@ class AuthService {
 
     // Sign the user in with the credential
     return auth().signInWithCredential(appleCredential);
+  };
+
+  // Facebook signIn
+  signInFacebook = async (): Promise<IUserEntity | null> => {
+    const result = await LoginManager.logInWithPermissions(['public_profile']);
+
+    if (result.isCancelled) {
+      return null;
+    }
+
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken,
+    );
+    return auth().signInWithCredential(facebookCredential);
   };
 
   // Google Auth flow
@@ -126,6 +149,7 @@ class AuthService {
     return await UserService.updateUser(currentUser.uid, {
       ...publicData,
       ...userData,
+      email: currentUser.email,
     });
   }
 
@@ -148,7 +172,6 @@ class AuthService {
           user.displayName ? user.displayName : user.email
         }&rounded=true`;
     const userPublicData: UserPublicData = {
-      createdAt: new Date(user.metadata.creationTime),
       firstName:
         user.firstName || splittedDisplayName?.length >= 1
           ? splittedDisplayName[0]
@@ -157,12 +180,9 @@ class AuthService {
         user.lastName || splittedDisplayName?.length >= 2
           ? splittedDisplayName[1]
           : '',
-      email: user.email,
       photoURL: userPhotoUrl,
-      uid: user.uid,
     };
-
-    await UserService.addUser(user.uid, userPublicData);
+    await UserService.addUser(user.uid, userPublicData, user.email);
     return userPublicData;
   };
 

@@ -57,6 +57,7 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import Toast from '~/Util/Toast';
 import {TITLES, ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
+import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 
 import {
   IntroduceYourselfFormStore,
@@ -69,6 +70,9 @@ import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import BottomSheetModal from '~/Components/BottomSheetModal';
+import {ModalCommonOptions} from '../components/ModalCommonOptions';
+import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonHeaderBar} from './CommonHeaderBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -104,6 +108,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
+  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const [deleteScreenOn, setDeleteScreenOn] = useState(false);
 
   const {refreshFeed} = params;
 
@@ -399,7 +405,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             </View>
             <View style={{...layout.flexRow, ...layout.marginLeftS}}>
               <Text style={text.h4BlackRegular}>
-                {`${pendingProposalsData.pendingProposalCount}  Pending`}
+                {`${pendingProposalsData?.pendingProposalCount ?? 0}  Pending`}
               </Text>
               <Icon name="right-arrow" />
             </View>
@@ -467,7 +473,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const onEdit = (type) => {
-    bottomSheetStore.hideBottomSheet();
+    // bottomSheetStore.hideBottomSheet();
+    setOptionsModalVisible(false);
     navigateTo(type);
   };
 
@@ -732,11 +739,48 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     <CommonHeaderBar
       onLeftPress={() => navigation.pop()}
       shareCommon={shareCommon}
-      openCommonOptions={openCommonOptions}
+      openCommonOptions={openCommonOptionsModal}
       dark={dark}
       hasPermission={hasPermission}
     />
   );
+
+  const onModalOptionsAction = (type) => {
+    if (
+      type === COMMON_OPTION_TYPES.info ||
+      type === COMMON_OPTION_TYPES.rules
+    ) {
+      onEdit(type);
+    } else if (type === COMMON_OPTION_TYPES.delete) {
+      setDeleteScreenOn(true);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      closeCommonOptionsModal();
+      Toast.loading('Deleting');
+      await commonStore.deleteCommon(commonId);
+      navigation.navigate(NAVIGATION_SCREENS.EXPLORE);
+      Toast.done('Your Common is deleted');
+    } catch (err) {
+      closeCommonOptionsModal();
+      Toast.error('Could not delete your Common');
+    }
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteScreenOn(false);
+  };
+
+  const closeCommonOptionsModal = () => {
+    setDeleteScreenOn(false);
+    setOptionsModalVisible(false);
+  };
+
+  const openCommonOptionsModal = () => {
+    setOptionsModalVisible(true);
+  };
 
   const renderRequestToJoinBtn = () => (
     <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
@@ -1034,6 +1078,23 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               </React.Fragment>
             )}
           </SafeAreaView>
+          <BottomSheetModal
+            style={styles.optionsModal}
+            isVisible={optionsModalVisible}
+            onClose={closeCommonOptionsModal}>
+            {!deleteScreenOn ? (
+              <ModalCommonOptions
+                commonMembersCount={currCommon?.members?.length}
+                isFounderOrModerator={hasPermission}
+                onAction={onModalOptionsAction}
+              />
+            ) : (
+              <ModalDeleteConfirmation
+                onDelete={onDelete}
+                onCancel={onDeleteCancel}
+              />
+            )}
+          </BottomSheetModal>
         </View>
       ) : (
         loadingPlaceholder()
@@ -1218,6 +1279,10 @@ const styles = StyleSheet.create({
   fixedSectionText: {
     color: '#999',
     fontSize: 20,
+  },
+  optionsModal: {
+    borderRadius: 27,
+    padding: 16,
   },
 });
 

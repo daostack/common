@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {observer, inject} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
-import {colors, layout, font, text, sizeM, sizeS, sizeXL} from '~/Theme';
+import {colors, layout, font, text, sizeM} from '~/Theme';
 import Toast from '~/Util/Toast.js';
 import moment from 'moment';
 import auth from '@react-native-firebase/auth';
@@ -75,15 +75,15 @@ const Discussion = ({
     ? authStore.getPermission(commonId, authStore?.userInfo?.uid)
     : null;
 
-
   const [inputText, setInputText] = useState(null);
   const [imageGalleryIndex, setImageGalleryIndex] = useState(-1);
   const [isSending, setIsSending] = useState(false);
   const [inputHeight, setInputHeight] = useState(50);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [action, setAction] = useState(ACTIONS.report);
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
@@ -93,15 +93,17 @@ const Discussion = ({
 
   useEffect(() => {}, [commonId, discussionId, currentUser]);
 
-  useFocusEffect(() => {
-    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
-      discussionId
-    );
-    return () => {
-      unsubscribeFromDiscussionMessages &&
-        unsubscribeFromDiscussionMessages();
-    };
-  }, [discussionId]);
+  useFocusEffect(
+    useCallback(() => {
+      const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+        discussionId,
+      );
+      return () => {
+        unsubscribeFromDiscussionMessages &&
+          unsubscribeFromDiscussionMessages();
+      };
+    }, [discussionId]),
+  );
 
   const showLoginScreen = () => {
     bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN);
@@ -378,7 +380,9 @@ const Discussion = ({
         }
         action={action}
       />
-      <ScrollView style={[styles.scrollView, {marginBottom: inputHeight + 50}]} ref={scrollRef}>
+      <ScrollView
+        style={[styles.scrollView, {marginBottom: inputHeight + 50}]}
+        ref={scrollRef}>
         <DiscussionMessagesList
           discussionId={discussionId}
           hasPermission={hasPermission}
@@ -391,55 +395,54 @@ const Discussion = ({
         />
       </ScrollView>
 
-      {isMember ? (
-        <KeyboardAvoidingView
+      <KeyboardAvoidingView
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flex: 1,
+          color: '#fbfdff',
+        }}
+        keyboardVerticalOffset={0}>
+        <View
           style={{
-            position: 'absolute',
-            bottom: 0,
-            flex: 1,
-            color: '#fbfdff',
-          }}
-          keyboardVerticalOffset={0}>
-          <View
-            style={{
-              ...styles.inputContainer,
-              height: actualInputHeight,
-
-            }}>
-            <TextInput
-              ref={inputRef}
-              editable={true}
-              fontSize={15}
-              multiline
-              placeholder="What do you think?"
-              placeholderTextColor={colors.grey3}
-              onChangeText={(currText) => setInputText(currText)}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
-              }}
-              style={styles.input}
-            />
-            <TouchableOpacity
-              onPress={sendMessageToDiscussion}
-              style={{
-                justifyContent: 'center',
-              }}
-              disabled={isEmptyMessage()}>
-              <Icon
-                name="send-message"
-                size={25}
-                color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+            ...styles.inputContainer,
+            height: actualInputHeight,
+          }}>
+          {isMember ? (
+            <>
+              <TextInput
+                ref={inputRef}
+                editable={true}
+                fontSize={15}
+                multiline
+                placeholder="What do you think?"
+                placeholderTextColor={colors.grey3}
+                onChangeText={(currText) => setInputText(currText)}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+                }}
+                style={styles.input}
               />
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      ) : (
-        <View style={{paddingTop: 10}}>
-          <Text style={{...styles.joinCommonText}}>
-            Only members can send messages
-          </Text>
+              <TouchableOpacity
+                onPress={sendMessageToDiscussion}
+                style={{
+                  justifyContent: 'center',
+                }}
+                disabled={isEmptyMessage()}>
+                <Icon
+                  name="send-message"
+                  size={25}
+                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+                />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <Text style={{...styles.joinCommonText}}>
+              Only members can send messages
+            </Text>
+          )}
         </View>
-      )}
+      </KeyboardAvoidingView>
 
       <ImageView
         images={
@@ -550,10 +553,9 @@ const styles = StyleSheet.create({
   joinCommonText: {
     ...text.textFieldplaceholder,
     width,
+    bottom: 30,
     textAlign: 'center',
     color: colors.greySubtitle,
-    paddingTop: sizeS,
-    paddingBottom: sizeXL,
     alignSelf: 'center',
   },
   headerContainer: {

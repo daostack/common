@@ -17,7 +17,7 @@ const ModalDeleteInvoice = ({
   <BottomSheetModal
     isVisible={isVisible}
     onClose={onPressClose}
-    style={styles.modalContainer}>
+    style={layout.bottomSheetRadius}>
     <View style={styles.container}>
       <Text style={styles.title}>Are you sure want to delete this invoice</Text>
 
@@ -41,9 +41,6 @@ const ModalDeleteInvoice = ({
 );
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    borderRadius: 25,
-  },
   container: {
     alignItems: 'center',
     width: '100%',

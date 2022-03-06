@@ -15,46 +15,38 @@ interface HeaderProps {
 }
 
 export const CommonHeaderBar = (props: HeaderProps) => {
-  const {onLeftPress, dark, shareCommon, hasPermission, openCommonOptions} = props;
+  const {
+    onLeftPress,
+    dark,
+    shareCommon,
+    hasPermission,
+    openCommonOptions,
+  } = props;
   const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.container, {top: insets.top}]}>
-      <Pressable
-        style={styles.leftButton}
-        onPress={onLeftPress}>
+      <Pressable style={styles.leftButton} onPress={onLeftPress}>
         <BlurView style={styles.blur} isBlurring={dark}>
-          <Icon
-            name="left-arrow"
-            size={32}
-            color={dark ? 'black' : 'white'}
-          />
+          <Icon name="left-arrow" size={32} color={dark ? 'black' : 'white'} />
         </BlurView>
       </Pressable>
       <View style={styles.rightContainer}>
+        <Pressable style={styles.rightButton} onPress={shareCommon}>
+          <BlurView style={styles.blur} isBlurring={dark}>
+            <Icon name="share-32" size={32} color={dark ? 'black' : 'white'} />
+          </BlurView>
+        </Pressable>
+        {hasPermission && (
           <Pressable
             style={styles.rightButton}
-            onPress={shareCommon}>
-            <BlurView style={styles.blur} isBlurring={dark}>
-              <Icon
-                name="share-32"
-                size={32}
-                color={dark ? 'black' : 'white'}
-              />
+            onPress={() => openCommonOptions()}>
+            <BlurView style={styles.optionsBlur} isBlurring={dark}>
+              <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
             </BlurView>
           </Pressable>
-          {hasPermission && (
-            <Pressable
-              style={styles.rightButton}
-              onPress={() => openCommonOptions()}>
-              <BlurView
-                style={styles.optionsBlur}
-                isBlurring={dark}>
-                <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
-              </BlurView>
-            </Pressable>
-          )}
-        </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -100,4 +92,3 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-

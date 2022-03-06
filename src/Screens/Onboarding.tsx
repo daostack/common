@@ -1,4 +1,4 @@
-import React,{useState, useRef, ReactElement} from 'react';
+import React, {useState, useRef, ReactElement} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -67,6 +67,7 @@ const Onboarding = (): ReactElement => {
             ref={ref}
             loadMinimal={true}
             style={styles.wrapper}
+            loop={false}
             showsButtons={false}
             activeDotColor={colors.mainBlue}
             onIndexChanged={(slideIndex) => setIndex(slideIndex)}
@@ -121,10 +122,12 @@ const Onboarding = (): ReactElement => {
           </Swiper>
 
           <View style={styles.buttonConatiner}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onPress}>
-              <Text style={styles.buttonText}>{index === ONBOARDING_SLIDERS_AMOUNT ? 'Get started' : 'Continue' }</Text>
+            <TouchableOpacity style={styles.button} onPress={onPress}>
+              <Text style={styles.buttonText}>
+                {index === ONBOARDING_SLIDERS_AMOUNT
+                  ? 'Get started'
+                  : 'Continue'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -33,7 +33,6 @@ export const firstLastNameValidate = {
 
 export const latinOnly = {
   ruleName: VALIDATION_RULES.LATIN_ONLY,
-  validateFunc: (value) =>  new RegExp(/^[a-zA-Z'’. ]*$/).test(value),
+  validateFunc: (value) => new RegExp(/^[a-zA-Z'’. ]*$/).test(value),
   errorMessage: 'The :attribute should use latin characters only',
 };
-

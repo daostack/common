@@ -39,6 +39,9 @@ class FundingRequestForm extends React.Component {
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
+    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
+      FundingRequestForm.FIELD_AMOUNT_REQUESTED
+    ];
 
     return (
       <View
@@ -87,13 +90,14 @@ class FundingRequestForm extends React.Component {
               'The amount requested cannot be greater than the Common balance.',
           }}
         />
-        {this.props.rootStore.bankAccountStore?.data?.size === 0 && (
-          <AddBankAccountField
-            isAddingNew
-            hasError={this.props.hasBankAccountError}
-            onSubmit={handleAddBankAccount}
-          />
-        )}
+        {this.props.rootStore.bankAccountStore?.data?.size === 0 &&
+          (amountRequested === undefined || amountRequested > 0) && (
+            <AddBankAccountField
+              isAddingNew
+              hasError={this.props.hasBankAccountError}
+              onSubmit={handleAddBankAccount}
+            />
+          )}
 
         <TextInputField
           infoLabel="Required"

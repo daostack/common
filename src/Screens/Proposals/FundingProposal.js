@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Text,
   ScrollView,
@@ -44,6 +44,8 @@ const FundingProposal = ({
     hasError: false,
   });
 
+  const scrollRef = useRef();
+
   useEffect(() => {
     if (bankAccountStore?.data?.size) {
       setBankAccountState({isAdded: true, hasError: false});
@@ -74,8 +76,9 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse =
-          await ProposalService.createFundingProposal(data);
+        const createFundingProposalResponse = await ProposalService.createFundingProposal(
+          data,
+        );
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
@@ -116,17 +119,27 @@ const FundingProposal = ({
   };
 
   const onCreateProposalButtonPressed = async () => {
-    if (!bankAccountState.isAdded) {
+    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
+      FundingRequestForm.FIELD_AMOUNT_REQUESTED
+    ];
+
+    let bankError = bankAccountState.hasError; //This is needed because the state wasn't update before the next if was chekcing his new value, and this was causing issues
+
+    if (!bankAccountState.isAdded && amountRequested > 0) {
       setBankAccountState({
         isAdded: false,
         hasError: true,
       });
+      bankError = true;
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+    } else {
+      bankError = false;
     }
-    if (
-      fundingRequestFormStore.isFormValid() &&
-      bankAccountState.isAdded &&
-      !bankAccountState.hasError
-    ) {
+
+    if (fundingRequestFormStore.isFormValid() && !bankError) {
       Keyboard.dismiss();
 
       navigation.setOptions({
@@ -179,6 +192,7 @@ const FundingProposal = ({
             flex: 1,
             backgroundColor: colors.white,
           }}
+          ref={scrollRef}
           contentContainerStyle={layout.content}>
           <Text style={styles.title}>New proposal</Text>
           <Text style={styles.subtitle}>

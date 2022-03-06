@@ -31,7 +31,7 @@ export const requestAndroidCameraPermission = async (takePhoto) => {
         buttonNeutral: 'Ask Me Later',
         buttonNegative: 'Cancel',
         buttonPositive: 'OK',
-      }
+      },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       takePhoto();
