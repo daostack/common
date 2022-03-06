@@ -587,24 +587,35 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
 
-    const navigate = CommonActions.navigate({
-      name: 'IntroductionStep', // #498 we always go to Introduction first
-      params: {
-        formStores: {
-          paymentFormStore,
-          introduceYourselfFormStore,
-          personalContributionFormStore,
-          billingDetailsFormStore,
-        },
-        currCommon: currCommon,
-        currDaoId: currCommon.id,
-        skipFirstStep: false,
-        refreshFeed,
-      },
-    });
-
     if (authStore.userInfo) {
-      navigation.dispatch(navigate);
+      if (commonStore.myCommons.length > 0) {
+        const navigateIntroductionStep = CommonActions.navigate({
+          name: 'IntroductionStep', // we always go to Introduction first
+          params: {
+            formStores: {
+              paymentFormStore,
+              introduceYourselfFormStore,
+              personalContributionFormStore,
+              billingDetailsFormStore,
+            },
+            currCommon: currCommon,
+            currDaoId: currCommon.id,
+            skipFirstStep: false,
+            refreshFeed,
+          },
+        });
+        navigation.dispatch(navigateIntroductionStep);
+      } else {
+        const navigateFirstCommon = CommonActions.navigate({
+          name: 'FirstJoinCommon',
+          params: {
+            currCommon: currCommon,
+            currDaoId: currCommon.id,
+            refreshFeed,
+          },
+        });
+        navigation.dispatch(navigateFirstCommon);
+      }
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
@@ -783,7 +794,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const renderRequestToJoinBtn = () => (
-    <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={() => {
+        //open
+        requestToJoin();
+      }}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
