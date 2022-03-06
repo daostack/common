@@ -25,10 +25,11 @@ interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
+  navigation: {navigate: () => void};
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
-  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
+  const {onSignedIn, hidePlaceholder, goToNextScreen, navigation} = props;
   const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
@@ -84,7 +85,7 @@ const CreateAccount = (props: CreateAccountProps) => {
 
         <FacebookSignInButton onSignIn={onSignIn} />
 
-        <PhoneSignInButton onSignIn={onSignIn} />
+        {/*<PhoneSignInButton onSignIn={onSignIn} navigation={navigation} />*/}
       </View>
 
       {renderError()}
