@@ -10,21 +10,27 @@ import {
   Linking,
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
+import FacebookSignInButton from '~/Components/Auth/FacebookSignInButton';
+import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
 import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
 import AuthService from '~/Services/AuthService';
 import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {useStore} from '~/Util/hooks/useStore';
+import {LINKS} from '~/Util/constants/links';
 
 interface CreateAccountProps {
-  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void,
-  hidePlaceholder: boolean,
-  goToNextScreen: () => void,
+  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
+  hidePlaceholder: boolean;
+  goToNextScreen: () => void;
+  navigation: {navigate: () => void};
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
-  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
+  const {onSignedIn, hidePlaceholder, goToNextScreen, navigation} = props;
+  const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
       await onSignedIn(
@@ -42,6 +48,22 @@ const CreateAccount = (props: CreateAccountProps) => {
     ? AuthService.isAppleLoginSupported()
     : false;
 
+  const renderError = () => {
+    if (authStore.signInError) {
+      const errorText = `${authStore.signInError.toString()} ${
+        authStore.signInError.code ? authStore.signInError.code : ''
+      }`;
+      return (
+        <>
+          <View style={styles.errorTriangle} />
+          <View style={styles.messageContainer}>
+            <Text style={styles.errorMessage}>{errorText}</Text>
+          </View>
+        </>
+      );
+    }
+  };
+
   return (
     <View>
       {!hidePlaceholder && (
@@ -52,21 +74,27 @@ const CreateAccount = (props: CreateAccountProps) => {
         </View>
       )}
 
-      {isIos && isLoginWithAppleEnabled && (
-        <AppleSignInButton
-          customStyle={layout.marginBottomM}
-          onSignIn={onSignIn}
-        />
-      )}
+      <Text style={styles.connectWithText}>Connect with</Text>
 
-      <GSignInButton onSignIn={onSignIn} />
+      <View style={styles.buttonContainer}>
+        {isIos && isLoginWithAppleEnabled && (
+          <AppleSignInButton onSignIn={onSignIn} />
+        )}
+
+        <GSignInButton onSignIn={onSignIn} />
+
+        <FacebookSignInButton onSignIn={onSignIn} />
+
+        {/*<PhoneSignInButton onSignIn={onSignIn} navigation={navigation} />*/}
+      </View>
+
+      {renderError()}
 
       <View style={styles.termsOfUseContainer}>
         <Text style={styles.termsOfUseText}>
           By using Common you agree to the app’s
         </Text>
-        <TouchableOpacity
-          onPress={() => Linking.openURL('https://common.io/tos')}>
+        <TouchableOpacity onPress={() => Linking.openURL(LINKS.TERMS)}>
           <Text style={styles.termsOfUseTextBtn}>terms of use</Text>
         </TouchableOpacity>
       </View>
@@ -92,9 +120,12 @@ const styles = StyleSheet.create({
   sectionContainer: {
     ...layout.content,
   },
-  buttonsArea: {
-    alignSelf: 'stretch',
-    marginTop: 60,
+  buttonContainer: {
+    alignSelf: 'center',
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: Platform.OS === 'ios' ? '80%' : '60%',
   },
   button: {
     alignItems: 'center',
@@ -114,6 +145,23 @@ const styles = StyleSheet.create({
   },
   termsOfUseTextBtn: {
     ...text.smallBlackText,
+  },
+  messageContainer: {
+    ...layout.messageError,
+    ...layout.marginBottomM,
+    marginTop: 5,
+    alignSelf: 'center',
+  },
+  errorMessage: {
+    color: colors.error,
+  },
+  errorTriangle: {
+    ...layout.messageErrorTriangle,
+    transform: [{rotate: '180deg'}],
+    position: 'relative',
+  },
+  connectWithText: {
+    ...text.smallGreyText,
   },
 });
 

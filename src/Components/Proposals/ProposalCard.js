@@ -41,7 +41,9 @@ const ProposalCard = ({
   viewerPermission,
   type,
 }) => {
-  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  const {userStore, proposalStore, commonStore, authStore} = useStore(
+    'rootStore',
+  );
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
@@ -60,13 +62,12 @@ const ProposalCard = ({
 
     const getProposalInfo = async (currProposalId) => {
       try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
+        unsubscribeProposalDiscussionsCount = await ProposalService.subscribeToProposalDiscussionsCount(
+          currProposalId,
+          (discussionsCount) => {
+            setProposalDiscussionCount(discussionsCount);
+          },
+        );
       } catch (error) {
         logger.log('error: ', error);
         Toast.error(error?.toString());
@@ -118,7 +119,11 @@ const ProposalCard = ({
       style={[
         styles.proposalCard,
         containerStyle,
-        {width: cardWidth(), borderRadius: showCard ? 20 : 5},
+        {
+          width: cardWidth(),
+          borderRadius: showCard ? 20 : 5,
+          borderWidth: showCard ? 1 : 0,
+        },
       ]}>
       <TouchableOpacity onPress={() => onReviewProposal()}>
         <ProposalCardHeader
@@ -135,6 +140,7 @@ const ProposalCard = ({
           reporter={getReporter()}
           hasPermission={hasPermission}
           viewerPermission={viewerPermission}
+          showCard={showCard}
         />
 
         {showCard && (
@@ -260,10 +266,8 @@ const styles = StyleSheet.create({
     ...layout.marginBottomL,
     backgroundColor: colors.white,
     //borderRadius: 20,
-    //alignSelf: 'stretch',
 
     borderStyle: 'solid',
-    borderWidth: 1,
     borderColor: colors.grey4,
 
     shadowColor: 'rgba(0, 0, 0, 0.22)',
@@ -271,7 +275,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowRadius: 4,
+    shadowRadius: 5,
     shadowOpacity: 0.5,
     elevation: 4,
   },

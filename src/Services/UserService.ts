@@ -8,12 +8,31 @@ import {
   IFirebaseDoc,
   IFirebaseSnapshot,
 } from '~/Firebase/types';
+import axios, {AxiosInstance} from 'axios';
+import {usersUrl} from '~/Config';
+import {auth} from '~/Firebase';
+
 export type userListLoadCallbackFn = (
   updatedUserList: IFirebaseSnapshot<IUserEntity>,
 ) => void;
 export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
 class UserService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {create: string; update: string};
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: usersUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      create: '/create',
+      update: '/update',
+    };
+  }
+
   subscribeToAllUsers(
     callback: userListLoadCallbackFn,
   ): FirestoreUnsubscribeFn {
@@ -44,22 +63,27 @@ class UserService {
     return await UsersCollection.doc(userId).get();
   }
 
-  // TODO: Move addUser and updateUser function in the clould functions project.
-  async addUser(userId: string, newUser: UserPublicData): Promise<void> {
+  async addUser(
+    userId: string,
+    newUser: UserPublicData,
+    email: string,
+  ): Promise<void> {
     if (!userId) {
       throw new Error(
         'User Id (userId) is required parameter, but was not provided.',
       );
     }
 
-    const userSnapshot = await UsersCollection.doc(userId).get();
-    if (userSnapshot.exists) {
-      throw new Error(
-        `User with id ${userId} already exists in users collection.`,
-      );
+    try {
+      return await this.axiosClient.post(this.endpoints.create, newUser, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+          email,
+        },
+      });
+    } catch (error) {
+      throw error;
     }
-
-    return await UsersCollection.doc(userId).set(newUser);
   }
 
   async updateUser(userId: string, user: IUserEntity): Promise<void> {
@@ -69,7 +93,22 @@ class UserService {
       );
     }
 
-    return await UsersCollection.doc(userId).update(user);
+    try {
+      return await this.axiosClient.put(
+        this.endpoints.update,
+        {
+          userId,
+          changes: user,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

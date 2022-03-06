@@ -18,7 +18,9 @@ export default class BankAccountStore extends BaseStore<
   @computed
   get bankAccountData() {
     const haveBankAccount = this?.data?.size !== 0;
-    const bankAccountData = haveBankAccount ? this?.data?.entries()?.next()?.value[1] : undefined;
+    const bankAccountData = haveBankAccount
+      ? this?.data?.entries()?.next()?.value[1]
+      : undefined;
     return bankAccountData;
   }
 

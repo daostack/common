@@ -12,9 +12,7 @@ export const Header = (props: HeaderProps) => {
   const {title, onPress} = props;
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.leftButton}
-        onPress={onPress}>
+      <TouchableOpacity style={styles.leftButton} onPress={onPress}>
         <Icon name="left-arrow" size={32} style={{marginLeft: 10}} />
       </TouchableOpacity>
       <Text style={styles.text}>{title}</Text>

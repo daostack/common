@@ -5,7 +5,9 @@ interface TooltipComponentProps {
   handleStop: () => void;
 }
 
-export const TooltipComponent = ({handleStop}: TooltipComponentProps): ReactElement => (
+export const TooltipComponent = ({
+  handleStop,
+}: TooltipComponentProps): ReactElement => (
   <View style={styles.container}>
     <Text style={styles.text}>Do you support this proposal?</Text>
     <Text style={styles.smallText}>Every vote makes an impact</Text>

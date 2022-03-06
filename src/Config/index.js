@@ -78,6 +78,7 @@ export const discussionsUrl = () => functionEndpoint('discussions');
 export const permissionsUrl = () => functionEndpoint('permissions');
 export const moderationUrl = () => functionEndpoint('moderation');
 export const payMeUrl = () => functionEndpoint('payments');
+export const usersUrl = () => functionEndpoint('users');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;

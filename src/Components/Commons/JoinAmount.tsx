@@ -31,7 +31,9 @@ const JoinAmount: React.FC<InferProps<typeof props>> = ({
       style={isSelected ? styles.containerSelected : styles.container}
       onPress={onAmountPress}>
       <Text style={isSelected ? styles.amountSelected : styles.amount}>{`${
-        isCustom ? 'Other' : `${CurrencySymbols.SHEKEL}${amount}${isMonthly ? '/mo' : ''}`
+        isCustom
+          ? 'Other'
+          : `${CurrencySymbols.SHEKEL}${amount}${isMonthly ? '/mo' : ''}`
       }`}</Text>
     </TouchableOpacity>
   );

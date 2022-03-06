@@ -16,7 +16,6 @@ module.exports = {
     'no-shadow': 0,
     '@typescript-eslint/no-shadow': 'error',
     'react-hooks/exhaustive-deps': 0,
-    'prettier/prettier': 0,
     'no-trailing-spaces': 1,
     'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx', '.tsx']}],
     'object-curly-spacing': 1,

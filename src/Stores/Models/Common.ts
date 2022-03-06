@@ -25,6 +25,7 @@ export class Common implements ICommonEntity {
   links: ICommonLink[];
   metadata: ICommonMetadata;
   register: CommonRegister;
+  active: boolean;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;
@@ -39,6 +40,8 @@ export class Common implements ICommonEntity {
     this.links = newCommonInfo.links;
     this.metadata = newCommonInfo.metadata;
     this.register = newCommonInfo.register;
+    this.active = newCommonInfo.active;
+    this.updatedAt = newCommonInfo.updatedAt;
     makeAutoObservable(this);
   }
 

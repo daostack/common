@@ -76,7 +76,7 @@ const PaymentDetailsStep = ({
 
       currCard = cardStore.getCardById(cardId);
 
-      Toast.done();
+      Toast.done('Success');
       Toast.hide();
 
       if (currCard.token) {
@@ -87,11 +87,12 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createRequestToJoinResponse =
-          await ProposalService.createRequestToJoin({
+        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
+          {
             ...data,
             cardId: cardId,
-          });
+          },
+        );
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
 
