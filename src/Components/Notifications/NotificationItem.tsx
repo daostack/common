@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     flexDirection: 'row',
+    marginLeft: 10,
   },
   prefixStyle: {
     ...font.primary.regular,
