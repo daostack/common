@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import {observer} from 'mobx-react-lite';
 import moment from 'moment';
 import PropTypes, {bool, func, string} from 'prop-types';
-import React, {useRef} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {Image, SectionList, StyleSheet, Text, View} from 'react-native';
 import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
@@ -28,6 +28,15 @@ const DiscussionMessagesList = ({
     auth()?.currentUser?.uid,
   );
 
+  useEffect(() => {
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+      discussionId,
+    );
+    return () => {
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+    };
+  }, [discussionId]);
+
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
     .map((msg) => ({
@@ -47,6 +56,15 @@ const DiscussionMessagesList = ({
       }
       return acc;
     }, []);
+
+  setTimeout(() => {
+    // Sometimes that code is executed after we leave the actual screen, so we need that check.
+    if (scrollViewRef?.current) {
+      scrollViewRef.current?.scrollToEnd({
+        animated: true,
+      });
+    }
+  }, 150);
 
   return (
     <View style={[styles.viewContainer]}>

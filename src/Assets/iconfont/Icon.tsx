@@ -104,6 +104,8 @@ import IconrightArrow from './IconrightArrow';
 import IcondownArrow from './IcondownArrow';
 import IconupArrow from './IconupArrow';
 import Icongoogle from './Icongoogle';
+import Iconfacebook from './Iconfacebook';
+import Iconphone from './Iconphone';
 import IconAddAvatar from './IconAddAvatar';
 import IconAddAvatarApproved from './IconAddAvatarApproved';
 import IconAddDocument from './IconAddDocument';
@@ -221,7 +223,9 @@ export type IconNames =
   | 'add-avatar-approved'
   | 'add-document'
   | 'add-document-approved'
-  | 'calendar';
+  | 'calendar'
+  | 'facebook'
+  | 'phone';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -431,6 +435,10 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconupArrow {...rest} />;
     case 'google':
       return <Icongoogle {...rest} />;
+    case 'facebook':
+      return <Iconfacebook {...rest} />
+    case 'phone':
+      return <Iconphone {...rest} />
     case 'shekel':
       return <IconShekel {...rest} />;
     case 'camera':

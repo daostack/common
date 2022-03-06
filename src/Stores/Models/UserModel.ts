@@ -18,7 +18,7 @@ export const userInfoFields = [
 export class UserModel implements BaseModel<IUserEntity> {
   id: string;
   createdAt: firebase.firestore.Timestamp | null = null;
-  updatedAt: firebase.firestore.Timestamp;
+  updatedAt: firebase.firestore.Timestamp | null = null;
   uid: string = '';
   email: string = '';
   photoURL: string = '';
