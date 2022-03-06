@@ -6,13 +6,11 @@ import {IModerationEntity} from '~/Firebase/Databasee/EntityTypes/IModerationEnt
 
 export class DiscussionMessage implements IDiscussionMessageEntity {
   id: string;
-  createdAt: firebase.firestore.Timestamp;
-  updatedAt: firebase.firestore.Timestamp;
   discussionId: string;
   ownerId: string;
   ownerName: string;
   text: string;
-  createTime: Date;
+  createTime: firebase.firestore.Timestamp;
   ownerAvatar: string;
   moderation?: IModerationEntity | null = null;
 
