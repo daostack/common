@@ -45,13 +45,12 @@ const FacebookSignInButton: React.FC<InferProps<typeof props>> = ({
       }
     }
   };
-  const renderSignInButton = () => (
+
+  return (
     <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon name="facebook" size={50} />
     </TouchableOpacity>
   );
-
-  return <>{renderSignInButton()}</>;
 };
 
 FacebookSignInButton.propTypes = props;

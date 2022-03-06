@@ -49,7 +49,8 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
       }
     }
   };
-  const renderSignInButton = () => (
+
+  return (
     <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon
         style={{marginRight: 5, marginBottom: 5}}
@@ -58,8 +59,6 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
       />
     </TouchableOpacity>
   );
-
-  return <>{renderSignInButton()}</>;
 };
 
 AppleSignInButton.propTypes = props;

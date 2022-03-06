@@ -40,13 +40,12 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
       }
     }
   };
-  const renderSignInButton = () => (
+
+  return (
     <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon name="google" size={50} />
     </TouchableOpacity>
   );
-
-  return <>{renderSignInButton()}</>;
 };
 
 GSignInButton.propTypes = props;
