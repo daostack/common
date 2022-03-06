@@ -794,12 +794,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   };
 
   const renderRequestToJoinBtn = () => (
-    <TouchableOpacity
-      style={styles.headerButton}
-      onPress={() => {
-        //open
-        requestToJoin();
-      }}>
+    <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
       <Text style={styles.requestToJoin}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
