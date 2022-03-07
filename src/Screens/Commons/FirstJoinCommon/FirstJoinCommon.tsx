@@ -69,7 +69,7 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
         source={require('~/Assets/headerBg.png')}
         style={styles.backgroundImage}
       />
-      <Text style={styles.title}>{`How to \njoin a \ncommon`}</Text>
+      <Text style={styles.title}>{'How to \njoin a \ncommon'}</Text>
 
       <View style={styles.card}>
         <Text style={styles.cardText}>
@@ -106,6 +106,8 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
 };
 
 export default observer(FirstJoinCommon);
+
+FirstJoinCommon.propTypes = props;
 
 const styles = StyleSheet.create({
   title: {
