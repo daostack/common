@@ -587,35 +587,37 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
 
+    let navigate;
+    if (commonStore.myCommons.length > 0) {
+      navigate = CommonActions.navigate({
+        name: 'IntroductionStep', // we always go to Introduction first
+        params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
+          currCommon: currCommon,
+          currDaoId: currCommon.id,
+          skipFirstStep: false,
+          refreshFeed,
+        },
+      });
+      navigation.dispatch(navigate);
+    } else {
+      navigate = CommonActions.navigate({
+        name: 'FirstJoinCommon',
+        params: {
+          currCommon: currCommon,
+          currDaoId: currCommon.id,
+          refreshFeed,
+        },
+      });
+    }
+
     if (authStore.userInfo) {
-      if (commonStore.myCommons.length > 0) {
-        const navigateIntroductionStep = CommonActions.navigate({
-          name: 'IntroductionStep', // we always go to Introduction first
-          params: {
-            formStores: {
-              paymentFormStore,
-              introduceYourselfFormStore,
-              personalContributionFormStore,
-              billingDetailsFormStore,
-            },
-            currCommon: currCommon,
-            currDaoId: currCommon.id,
-            skipFirstStep: false,
-            refreshFeed,
-          },
-        });
-        navigation.dispatch(navigateIntroductionStep);
-      } else {
-        const navigateFirstCommon = CommonActions.navigate({
-          name: 'FirstJoinCommon',
-          params: {
-            currCommon: currCommon,
-            currDaoId: currCommon.id,
-            refreshFeed,
-          },
-        });
-        navigation.dispatch(navigateFirstCommon);
-      }
+      navigation.dispatch(navigate);
     } else {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
