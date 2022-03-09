@@ -14,6 +14,7 @@ import FirebaseCore
 import GoogleSignIn
 import CodePush
 import Intercom
+import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
@@ -33,6 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey : Any] = [:]
     ) -> Bool {
+        ApplicationDelegate.shared.application(
+            application,
+            open: url,
+            sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+            annotation: options[UIApplication.OpenURLOptionsKey.annotation]
+        )
         return RCTLinkingManager.application(application, open: url, options: options);
     }
     
@@ -64,6 +71,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         
         Intercom.setApiKey("ios_sdk-1ed48ae97775f533e547ef3f0f0d124f5576f94d", forAppId:"o71kz0sy")
         
+        // Initialize Facebook SDK
+        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         return true
     }
 }

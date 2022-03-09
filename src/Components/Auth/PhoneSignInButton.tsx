@@ -12,7 +12,7 @@ import {useStore} from '~/Util/hooks/useStore';
 const props = {
   onSignIn: func,
 };
-const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
+const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
   const authStore = useStore('authStore');
   const _signIn = async () => {
     try {
@@ -40,14 +40,15 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
       }
     }
   };
-
-  return (
+  const renderSignInButton = () => (
     <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
-      <Icon name="google" size={50} />
+      <Icon name="phone" size={50} />
     </TouchableOpacity>
   );
+
+  return <>{renderSignInButton()}</>;
 };
 
-GSignInButton.propTypes = props;
+PhoneSignInButton.propTypes = props;
 
-export default observer(GSignInButton);
+export default observer(PhoneSignInButton);
