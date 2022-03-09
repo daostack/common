@@ -1,5 +1,4 @@
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {omit} from 'lodash';
 import {observer} from 'mobx-react-lite';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';

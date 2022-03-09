@@ -34,3 +34,21 @@ export interface PersonalContributionsRouteProps {
   key: string;
   name: string;
 }
+
+export interface PersonalPaymentDetailsRouteProps {
+  params: {
+    formStores: {
+      personalContributionFormStore: PersonalContributionFormStore;
+    };
+    common: CommonCreatedBody;
+    contributionData: {
+      contributionType: string;
+      zeroContribution: boolean;
+      minFeeToJoin: number;
+    };
+    iFrameLink: string;
+    cardId: string;
+  };
+  key: string;
+  name: string;
+}

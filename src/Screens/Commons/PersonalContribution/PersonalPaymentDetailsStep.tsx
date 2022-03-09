@@ -1,6 +1,5 @@
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
-import {omit} from 'lodash';
 import {bool, func, object, shape, string} from 'prop-types';
 import React, {useEffect} from 'react';
 import {Dimensions, View} from 'react-native';
@@ -17,20 +16,21 @@ import Toast from '~/Util/Toast';
 import MembershipRequest from '~/Screens/Commons/RequestToJoin/MembershipRequest';
 import CommonService from '~/Services/CommonService';
 import {useStore} from '~/Util/hooks/useStore';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
 
 const {height} = Dimensions.get('window');
 
-const PersonalPaymentDetailsStep = ({
-  route: {
-    params: {formStores, common, iFrameLink, cardId},
-  },
-}) => {
+const PersonalPaymentDetailsStep = () => {
   const {
     authStore: {userInfo},
     uiStore: {bottomSheetStore},
     cardStore,
   } = useStore('rootStore');
   const navigation = useNavigation();
+  const router = useRoute<PersonalPaymentDetailsRouteProps>();
+
+  const {formStores, common, iFrameLink, cardId} = router.params;
 
   const insets = useSafeAreaInsets();
 
@@ -63,20 +63,20 @@ const PersonalPaymentDetailsStep = ({
       Toast.done('Success');
       Toast.hide();
 
-      if (currCard.token) {
-        navigation.navigate({
-          name: 'FullScreenCreationLoader',
-          params: {
-            title: 'Creating your membership request',
-          },
-        });
-
-        const createCommonResponse = await CommonService.createCommon(
-          omit(common, ['metadata', 'minFeeToJoinFormatted']),
+      if (currCard?.token) {
+        navigation.dispatch(
+          CommonActions.navigate({
+            name: NAVIGATION_SCREENS.FULL_SCREEN_CREATION_LOADER,
+            params: {
+              title: 'Creating your membership request',
+            },
+          }),
         );
 
+        const createCommonResponse = await CommonService.createCommon(common);
+
         const data = {
-          funding: formData.amount * 100,
+          funding: formData?.amount * 100,
           commonId: createCommonResponse.data.id,
         };
         const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
@@ -131,7 +131,7 @@ const PersonalPaymentDetailsStep = ({
         <WebView
           scalesPageToFit={false}
           source={{uri: iFrameLink}}
-          onLoadEnd={(syntheticEvent) => {
+          onLoadEnd={() => {
             Toast.done('All done!');
           }}
         />
