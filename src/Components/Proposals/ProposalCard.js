@@ -114,6 +114,11 @@ const ProposalCard = ({
     proposalInfo.moderation?.reporter &&
     userStore.getUserById(proposalInfo.moderation?.reporter);
 
+  const showModerationMenu =
+    (!proposalInfo.isModerationHidden || hasPermission) &&
+    !isSwiper &&
+    !isOwner;
+
   return proposalInfo ? (
     <Animated.View
       style={[
@@ -145,16 +150,16 @@ const ProposalCard = ({
 
         {showCard && (
           <View style={styles.containerView}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>
-                {isFundingRequest &&
-                  (proposalInfo?.description?.title || 'Unknown title')}
-              </Text>
-              {(!proposalInfo.isModerationHidden || hasPermission) &&
-                !isSwiper &&
-                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
-            </View>
+            {isFundingRequest && (
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>
+                  {proposalInfo?.description?.title || 'Unknown title'}
+                </Text>
+              </View>
+            )}
             <MemberCard
+              openCommonOptions={openCommonOptions}
+              showModerationMenu={showModerationMenu}
               showDate={proposalInfo.isJoinRequest}
               userInfo={userStore.getUserById(proposalInfo.proposerId)}
               proposalInfo={proposalInfo}
