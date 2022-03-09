@@ -21,28 +21,38 @@ import {CurrencySymbols} from '~/Util/locale';
 import Toast from '~/Util/Toast';
 import {CommonCreatedModal} from './CommonCreatedModal';
 import logger from '~/Services/Logger';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {PersonalContributionsRouteProps} from '../Profile/CommonMembers/types';
+import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 
 const PersonalContributionStep = () => {
   const navigation = useNavigation();
-  const router = useRoute();
-  const {authStore, bottomSheetStore} = useStore('rootStore');
+  const router = useRoute<PersonalContributionsRouteProps>();
+  const {
+    authStore,
+    uiStore: {bottomSheetStore},
+  } = useStore('rootStore');
 
-  const {common, formStores} = router.params;
+  const {common, formStores, contributionData} = router.params;
 
-  const [isActionBtnHidden, setIsActionBtnHidden] = useState(true);
-  const [newCommonId, setNewCommonId] = useState();
-  const metadata = common.metadata;
-  const isMonthly = metadata.contributionType === 'monthly';
-  const zeroContribution = isMonthly ? false : metadata.zeroContribution;
+  const [isActionBtnHidden, setIsActionBtnHidden] = useState<boolean>(true);
+  const [newCommonId, setNewCommonId] = useState<string>();
+  const isMonthly = contributionData.contributionType === 'monthly';
+  const zeroContribution = isMonthly
+    ? false
+    : contributionData.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
-  const minFeeFormatted = common.minFeeToJoinFormatted();
+  const minFeeFormatted = formatMinFeeToJoin({
+    zeroContribution: contributionData.zeroContribution,
+    minFeeToJoin: contributionData.minFeeToJoin,
+  });
 
-  const onCustomClose = (e) => {
+  const onCustomClose = () => {
     setIsActionBtnHidden(true);
   };
 
-  const onCustomSelect = (xe) => {
+  const onCustomSelect = () => {
     setIsActionBtnHidden(false);
   };
 
@@ -50,7 +60,7 @@ const PersonalContributionStep = () => {
   const minContributionMessage = isMonthly
     ? `${contributeMessage} each month (${CurrencySymbols.SHEKEL}${minFeeFormatted}/mo min.)`
     : `${contributeMessage} ${
-        minFeeFormatted !== 0
+        Number(minFeeFormatted) !== 0
           ? `(${CurrencySymbols.SHEKEL}${minFeeFormatted} min.)`
           : ''
       }`;
@@ -59,7 +69,9 @@ const PersonalContributionStep = () => {
     let cardId = null;
     let link = null;
     Toast.loading('One moment please');
-    const card = await CardsService.fetchCardByOwnerId(authStore.userInfo.uid);
+    const card = await CardsService.fetchCardByOwnerId(
+      authStore.userInfo?.uid as string,
+    );
     if (card) {
       cardId = card.id;
     } else {
@@ -82,27 +94,30 @@ const PersonalContributionStep = () => {
   };
 
   const createCommonWithoutContribution = async () => {
-    navigation.navigate({
-      name: 'FullScreenCreationLoader',
-      params: {
-        title: 'Creating your Common',
-        message: 'This might take a couple of minutes.',
-      },
-    });
-
-    const createCommonResponse = await CommonService.createCommon(
-      omit(common, ['metadata', 'minFeeToJoinFormatted']),
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: NAVIGATION_SCREENS.FULL_SCREEN_CREATION_LOADER,
+        params: {
+          title: 'Creating your Common',
+          message: 'This might take a couple of minutes.',
+        },
+      }),
     );
+
+    const createCommonResponse = await CommonService.createCommon(common);
     if (createCommonResponse.status === 200) {
       setNewCommonId(createCommonResponse.data.id);
-      navigation.pop();
+      navigation.goBack();
     } else {
-      navigation.pop();
+      navigation.goBack();
       showErrorPopUp(bottomSheetStore, createCommonResponse);
     }
   };
 
-  const onAmountSelected = async (amount, index) => {
+  const onAmountSelected = async (
+    amount: number,
+    index: number,
+  ): Promise<void> => {
     try {
       personalContributionFormStore.fieldChanged(
         RequestToJoinForm.FIELD_AMOUNT,
@@ -121,7 +136,7 @@ const PersonalContributionStep = () => {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
-      navigation.pop();
+      navigation.goBack();
     }
   };
 
@@ -132,7 +147,7 @@ const PersonalContributionStep = () => {
           ...personalContributionFormStore.getFormFieldsJson(),
         };
 
-        if (formData.amount > 0) {
+        if (formData?.amount > 0) {
           navigateToRequestStep4();
         } else {
           createCommonWithoutContribution();
@@ -142,7 +157,7 @@ const PersonalContributionStep = () => {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
-      navigation.pop();
+      navigation.goBack();
     }
   };
 
@@ -157,7 +172,7 @@ const PersonalContributionStep = () => {
       prependedArea={
         <CommonCreatedModal
           isVisible={Boolean(newCommonId)}
-          commonId={newCommonId}
+          commonId={newCommonId as string}
           commonInfo={{
             name: common.name,
             description: common.description,
@@ -203,7 +218,11 @@ const PersonalContributionStep = () => {
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
           onAmountSelected={onAmountSelected}
-          minFeeToJoin={common.minFeeToJoinFormatted(true)}
+          minFeeToJoin={formatMinFeeToJoin({
+            numberValue: true,
+            minFeeToJoin: contributionData.minFeeToJoin,
+            zeroContribution: contributionData.zeroContribution,
+          })}
           zeroContribution={zeroContribution}
         />
 

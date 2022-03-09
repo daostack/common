@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
@@ -39,7 +39,7 @@ class CommonService {
 
   createCommon = async (
     formData: CommonCreatedBody,
-  ): Promise<ICommonEntity> => {
+  ): Promise<AxiosResponse<ICommonEntity>> => {
     try {
       return await this.axiosClient.post(this.endpoints.create, formData, {
         headers: {

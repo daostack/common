@@ -1,3 +1,6 @@
+import {CommonCreatedBody} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {Common} from '~/Stores/Models/Common';
 import {RootStore} from '~/Types/store';
 
 export type CommonMembersRouteProps = {
@@ -14,4 +17,20 @@ export type CommonMembersRouteProps = {
 
 export interface CommonMembersProps {
   rootStore: RootStore;
+}
+
+export interface PersonalContributionsRouteProps {
+  params: {
+    formStores: {
+      personalContributionFormStore: PersonalContributionFormStore;
+    };
+    common: CommonCreatedBody;
+    contributionData: {
+      contributionType: string;
+      zeroContribution: boolean;
+      minFeeToJoin: number;
+    };
+  };
+  key: string;
+  name: string;
 }

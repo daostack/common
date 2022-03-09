@@ -83,19 +83,11 @@ const CreateStep4 = ({
         params: {
           common: {
             ...formattedData,
-            metadata: {
-              contributionType: data.contributionType,
-              zeroContribution: data.zeroContribution,
-              minFeeToJoin: contributionAmount,
-            },
-            minFeeToJoinFormatted(numberValue = false) {
-              const minValue = this.metadata.zeroContribution
-                ? 0
-                : +this.metadata.minFeeToJoin;
-              return !numberValue
-                ? formatNumber(minValue / 100).toString()
-                : (minValue / 100).toString();
-            },
+          },
+          contributionData: {
+            contributionType: data.contributionType,
+            zeroContribution: data.zeroContribution,
+            minFeeToJoin: contributionAmount,
           },
           formStores: {
             personalContributionFormStore,
