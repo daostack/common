@@ -722,8 +722,8 @@ const ProposalScreen = ({
             setModalConversionVisible(!modalConversionVisible)
           }
           showAmount={true}
-          amount={+(amount * conversionRate).toFixed(2)}
-          funds={+(getAvailableFunds() * conversionRate).toFixed(2)}
+          amount={+amount.toFixed(2)}
+          funds={+getAvailableFunds().toFixed(2)}
         />
       </Modal>
       <SafeAreaView
