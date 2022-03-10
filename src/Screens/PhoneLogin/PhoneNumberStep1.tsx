@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {shape, InferProps, func} from 'prop-types';
 import {font, colors} from '~/Theme';
 import PhoneInput from 'react-native-phone-number-input';
@@ -26,16 +26,13 @@ const props = {
   }).isRequired,
 };
 
-const PhoneNumberStep1: React.FC<InferProps<typeof props>> = ({
-  route: {
-    params: {onSignIn},
-  },
-}) => {
+const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const phoneInput = useRef(null);
   const [showLoader, setShowLoader] = useState(false);
   const authStore = useStore('authStore');
   const navigation = useNavigation();
+  const route = useRoute();
 
   const _signIn = async () => {
     Keyboard.dismiss();
@@ -50,7 +47,7 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = ({
         navigation.navigate('VerifyPhone', {
           phoneNumber,
           confirm,
-          onSignIn,
+          onSignIn: route.params?.onSignIn,
         });
       } catch (error) {
         authStore.setSignInError(error.toString());
@@ -158,4 +155,4 @@ const styles = StyleSheet.create({
 
 PhoneNumberStep1.propTypes = props;
 
-export default inject('rootStore')(observer(PhoneNumberStep1));
+export default observer(PhoneNumberStep1);
