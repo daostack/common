@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef, useEffect} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
