@@ -144,9 +144,9 @@ const PersonalContributionStep = () => {
       if (personalContributionFormStore.isFormValid()) {
         const formData = {
           ...personalContributionFormStore.getFormFieldsJson(),
-        };
+        } as {amount: number};
 
-        if (formData?.amount > 0) {
+        if (formData.amount > 0) {
           navigateToRequestStep4();
         } else {
           createCommonWithoutContribution();

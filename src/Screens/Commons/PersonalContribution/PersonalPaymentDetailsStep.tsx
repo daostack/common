@@ -56,7 +56,7 @@ const PersonalPaymentDetailsStep = () => {
     try {
       const formData = {
         ...personalContributionFormStore.getFormFieldsJson(),
-      };
+      } as {amount: number};
 
       currCard = cardStore.getCardById(cardId);
 
@@ -76,37 +76,37 @@ const PersonalPaymentDetailsStep = () => {
         const createCommonResponse = await CommonService.createCommon(common);
 
         const data = {
-          funding: formData?.amount * 100,
+          funding: formData.amount * 100,
           commonId: createCommonResponse.data.id,
         };
-        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-          {
-            ...data,
-            description: 'test',
-            cardId: cardId,
-          },
-        );
-        if (createRequestToJoinResponse.status === 200) {
-          const proposalId = createRequestToJoinResponse.data.id;
+        // const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
+        //   {
+        //     ...data,
+        //     description: 'test',
+        //     cardId: cardId,
+        //   },
+        // );
+        // if (createRequestToJoinResponse.status === 200) {
+        //   const proposalId = createRequestToJoinResponse.data.id;
 
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
-            params: {
-              showRequestSentModal: true,
-              createdProposalId: proposalId,
-              commonId: data.commonId,
-            },
-          });
+        //   const navigate = CommonActions.navigate({
+        //     name: 'CommonProfile',
+        //     params: {
+        //       showRequestSentModal: true,
+        //       createdProposalId: proposalId,
+        //       commonId: data.commonId,
+        //     },
+        //   });
 
-          navigation.dispatch(navigate);
-        } else {
-          Toast.hide();
-          showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
-        }
+        //   navigation.dispatch(navigate);
+        // } else {
+        //   Toast.hide();
+        //   showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);
+        // }
       }
     } catch (e) {
       Toast.hide();
-      navigation.pop(3);
+      navigation?.pop(3);
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.BACKEND_ERROR, {
         subTitle: "We couldn't create your common",
         error: e,
