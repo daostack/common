@@ -31,10 +31,14 @@ export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
   typeFilter === PROPOSAL_TYPE.FundingRequest;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
-  stageFilter === PROPOSAL_STAGE.Active;
+  Array.isArray(stageFilter)
+    ? stageFilter.includes(PROPOSAL_STAGE.Active)
+    : stageFilter === PROPOSAL_STAGE.Active;
 
 export const isStageFilterHistory = (stageFilter: IProposalStageFilter) =>
-  stageFilter === PROPOSAL_STAGE.History;
+  Array.isArray(stageFilter)
+    ? stageFilter.includes(PROPOSAL_STAGE.History)
+    : stageFilter === PROPOSAL_STAGE.History;
 
 export const isProposalActive = (proposal: Proposal) =>
   PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposal.state) ||

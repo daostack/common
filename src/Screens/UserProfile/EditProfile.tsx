@@ -123,20 +123,6 @@ const EditProfile = ({route}: Props): ReactElement => {
 
   const onFormClose = () => {
     const values = (formikRef?.current ?? {values: {}})?.values;
-    const {isCompleteAccount, isSignedWithApple} = route.params;
-
-    try {
-      validationSchema.validateSync(values);
-      if (
-        isSignedWithApple &&
-        isCompleteAccount &&
-        (!authStore.userInfo?.firstName || !authStore.userInfo?.lastName)
-      ) {
-        return;
-      }
-    } catch (err) {
-      return;
-    }
 
     if (
       isEqual(values, {

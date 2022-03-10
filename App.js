@@ -446,6 +446,7 @@ const App = ({rootStore, navigation}) => {
             component={ProposalScreen}
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
               headerLeft: () => (
                 <TouchableOpacity
                   onPress={() =>
