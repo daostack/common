@@ -1,5 +1,5 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {inject, observer} from 'mobx-react';
+import React, {useState, useEffect} from 'react';
+import {observer} from 'mobx-react';
 import {shape, InferProps, string, func} from 'prop-types';
 import {
   View,
@@ -18,7 +18,6 @@ import {
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import CountDown from 'react-native-countdown-component';
-import {useStore} from '~/Util/hooks/useStore';
 import AuthService from '~/Services/AuthService';
 import Loader from '~/Components/Loader';
 import Toast from '~/Util/Toast';
@@ -290,7 +289,6 @@ const styles = StyleSheet.create({
     fontSize: 60,
     textAlign: 'center',
     fontWeight: '300',
-    //paddingTop: '5%',
   },
   focusCell: {
     borderColor: '#000',
@@ -311,4 +309,4 @@ const styles = StyleSheet.create({
 
 VerificationStep2.propTypes = props;
 
-export default inject('rootStore')(observer(VerificationStep2));
+export default observer(VerificationStep2);
