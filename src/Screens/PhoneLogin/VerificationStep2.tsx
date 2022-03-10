@@ -21,6 +21,7 @@ import CountDown from 'react-native-countdown-component';
 import AuthService from '~/Services/AuthService';
 import Loader from '~/Components/Loader';
 import Toast from '~/Util/Toast';
+import {CELL_COUNT} from './constants';
 
 const props = {
   navigation: shape({
@@ -43,7 +44,6 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   },
 }) => {
   const [userInfo, setUserInfo] = useState(null);
-  const CELL_COUNT = 6;
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [codeProps, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -56,7 +56,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
-    if (value.length === 6) {
+    if (value.length === CELL_COUNT) {
       setButtonText('Submit');
     }
   }, [value]);
@@ -90,7 +90,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   }, [buttonText]);
 
   const finishCountdown = () => {
-    if (value.length !== 6) {
+    if (value.length !== CELL_COUNT) {
       setButtonText('Resend Code');
     } else {
       setButtonText('Submit');
@@ -205,10 +205,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     flex: 1,
   },
-  wrapper: {
-    //flex: 0.5,
-    //justifyContent: 'space-around',
-  },
   titleStyle: {
     alignSelf: 'center',
     ...font.fontSize(4),
@@ -257,7 +253,6 @@ const styles = StyleSheet.create({
   continueButtonText: {
     ...font.primary.regular,
     ...font.fontSize(3),
-    //color: 'white',
     textAlign: 'center',
   },
   editText: {

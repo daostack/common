@@ -64,8 +64,6 @@ const EditProfile = ({route}: Props): ReactElement => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
 
-  //useEffect(() => {}, [authStore]);
-
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
       headerLeft: false,
