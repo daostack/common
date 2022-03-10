@@ -463,8 +463,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       });
       const options = {
         url,
-        title: "Let's make it happen",
-        message: `${currCommon.name} common`,
+        title: currCommon.name,
+        message: `${currCommon.byline}. Download the Common app to join now.`,
       };
       Share.open(options);
     } catch (err) {
