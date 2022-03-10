@@ -25,11 +25,10 @@ interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
-  navigation: {navigate: () => void};
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
-  const {onSignedIn, hidePlaceholder, goToNextScreen, navigation} = props;
+  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
   const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {

@@ -93,7 +93,7 @@ const UserProfile = ({authStore}) => {
   };
 
   const renderUnsignedUserData = () => (
-    <CreateAccount onSignedIn={onUserSignedIn} navigation={navigation} />
+    <CreateAccount onSignedIn={onUserSignedIn} />
   );
 
   const renderUserProfileData = (currUserId, userInfo) => (

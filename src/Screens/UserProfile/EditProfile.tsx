@@ -255,7 +255,7 @@ const EditProfile = ({route}: Props): ReactElement => {
                           viewStyle={{alignSelf: 'stretch'}}
                           label="Email"
                           infoLabel="Required"
-                          placeholderText={''}
+                          placeholderText={authStore.userInfo?.email}
                           onBlur={handleBlur('email')}
                           autoCapitalize="none"
                           autoCorrect={false}
