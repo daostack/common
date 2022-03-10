@@ -2,24 +2,15 @@ import {TouchableOpacity} from 'react-native';
 import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
+import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import AuthService from '~/Services/AuthService';
-import logger from '~/Services/Logger';
-import {func, InferProps, shape} from 'prop-types';
-import {useStore} from '~/Util/hooks/useStore';
-import {WithNavigationRef} from '~/Types/navigation';
+import {func, InferProps} from 'prop-types';
 
 const props = {
   onSignIn: func,
-  navigation: shape({
-    navigate: func.isRequired,
-  }).isRequired,
 };
-const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({
-  onSignIn,
-  navigation,
-}) => {
-  //const authStore = useStore('authStore');
+const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
+  const navigation = useNavigation();
   const _signIn = async () => {
     navigation.navigate('PhoneNumber', {onSignIn});
   };

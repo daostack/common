@@ -133,7 +133,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
             height: 'auto',
             width: 'auto',
           }}
-          until={500}
+          until={120}
           onFinish={() => finishCountdown()}
         />
       );

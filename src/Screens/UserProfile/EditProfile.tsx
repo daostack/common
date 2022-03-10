@@ -241,7 +241,7 @@ const EditProfile = ({route}: Props): ReactElement => {
                         viewStyle={{alignSelf: 'stretch'}}
                         label="First name"
                         infoLabel="Required"
-                        placeholderText={values.firstName}
+                        placeholderText={authStore.userInfo?.firstName}
                         onBlur={handleBlur('firstName')}
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -255,20 +255,21 @@ const EditProfile = ({route}: Props): ReactElement => {
                         viewStyle={{alignSelf: 'stretch'}}
                         label="Last name"
                         infoLabel="Required"
-                        placeholderText={values.lastName}
+                        placeholderText={authStore.userInfo?.lastName}
                         autoCapitalize="none"
                         autoCorrect={false}
                         onBlur={handleBlur('lastName')}
                         onChangeText={handleChange('lastName')}
                       />
 
-                      {authStore.userInfo?.provider === 'phone' ? (
+                      {authStore.userInfo?.provider === 'phone' ||
+                      !authStore.userInfo?.email ? (
                         <TextInputField
                           errorMessage={errors && touched.email && errors.email}
                           viewStyle={{alignSelf: 'stretch'}}
                           label="Email"
                           infoLabel="Required"
-                          placeholderText={values.email}
+                          placeholderText={''}
                           onBlur={handleBlur('email')}
                           autoCapitalize="none"
                           autoCorrect={false}

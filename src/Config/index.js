@@ -2,6 +2,7 @@ import Config from 'react-native-config';
 import axios from 'axios';
 import logger from '../Services/Logger';
 import {Platform} from 'react-native';
+import {Settings} from 'react-native-fbsdk-next';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
@@ -108,6 +109,10 @@ export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
+
+// for making facebook login on staging
+export const facebookAppId = '2309513929190090';
+Settings.setAppID(facebookAppId);
 
 // JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
 export const testCard = __DEV__ && false; //Config.testCard === 'true';

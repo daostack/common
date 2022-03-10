@@ -9,20 +9,16 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {shape, InferProps, func} from 'prop-types';
 import {font, colors} from '~/Theme';
 import PhoneInput from 'react-native-phone-number-input';
-//import {useStore} from '~/Util/hooks/useStore';
+import {useStore} from '~/Util/hooks/useStore';
 import AuthService from '~/Services/AuthService';
 import Loader from '~/Components/Loader';
 import Toast from '~/Util/Toast';
 
 const props = {
-  navigation: shape({
-    goBack: func,
-    navigate: func,
-    setOptions: func,
-  }),
   route: shape({
     params: shape({
       onSignIn: func,
@@ -31,7 +27,6 @@ const props = {
 };
 
 const PhoneNumberStep1: React.FC<InferProps<typeof props>> = ({
-  navigation,
   route: {
     params: {onSignIn},
   },
@@ -39,6 +34,8 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const phoneInput = useRef(null);
   const [showLoader, setShowLoader] = useState(false);
+  const authStore = useStore('authStore');
+  const navigation = useNavigation();
 
   const _signIn = async () => {
     Keyboard.dismiss();
@@ -46,15 +43,19 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = ({
     if (!isValid) {
       Toast.error('Invalid number');
     } else {
-      setShowLoader(true);
-      //authStore.setIsLoading(false);
-      const confirm = await AuthService.signInPhone(phoneNumber);
-      setShowLoader(false);
-      navigation.navigate('VerifyPhone', {
-        phoneNumber,
-        confirm,
-        onSignIn,
-      });
+      try {
+        setShowLoader(true);
+        const confirm = await AuthService.signInPhone(phoneNumber);
+        setShowLoader(false);
+        navigation.navigate('VerifyPhone', {
+          phoneNumber,
+          confirm,
+          onSignIn,
+        });
+      } catch (error) {
+        authStore.setSignInError(error.toString());
+        navigation.goBack();
+      }
     }
   };
 

@@ -114,9 +114,14 @@ class AuthService {
     await GoogleSignin.signOut();
   };
 
+  facebookSignOut = async (): Promise<void> => {
+    LoginManager.logOut();
+  };
+
   signOut = async (): Promise<void | unknown> => {
     try {
       await this.googleSignOut();
+      await this.facebookSignOut();
       await auth().signOut();
     } catch (error) {
       const {accessToken} = await GoogleSignin.getTokens();
