@@ -41,3 +41,6 @@ export {default as Onboarding} from './Onboarding';
 export {default as HUDTest} from './HUDTest';
 export {default as FullScreenCreationLoader} from './FullScreenCreationLoader';
 export {default as ReceiveFunds} from './ReceiveFunds/ReceiveFunds';
+
+export {default as PhoneNumberStep1} from './PhoneLogin/PhoneNumberStep1';
+export {default as VerificationStep2} from './PhoneLogin/VerificationStep2';

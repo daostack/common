@@ -2,51 +2,33 @@ import {TouchableOpacity} from 'react-native';
 import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
-import {statusCodes} from '@react-native-community/google-signin';
 import {observer} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';
-import {func, InferProps} from 'prop-types';
+import {func, InferProps, shape} from 'prop-types';
 import {useStore} from '~/Util/hooks/useStore';
+import {WithNavigationRef} from '~/Types/navigation';
 
 const props = {
   onSignIn: func,
+  navigation: shape({
+    navigate: func.isRequired,
+  }).isRequired,
 };
-const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
-  const authStore = useStore('authStore');
+const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({
+  onSignIn,
+  navigation,
+}) => {
+  //const authStore = useStore('authStore');
   const _signIn = async () => {
-    try {
-      // That loading status will be changed to false in the onAuthStateChanged method in App.js
-      authStore.setIsLoading(true);
-      const userInfo = await AuthService.signIn();
-      if (onSignIn) {
-        onSignIn(userInfo);
-      }
-      authStore.setSignInError(null);
-    } catch (error: any) {
-      authStore.setIsLoading(false);
-      switch (error.code) {
-        case statusCodes.SIGN_IN_CANCELLED:
-          authStore.setSignInError('Canceled');
-          break;
-        case statusCodes.IN_PROGRESS:
-          logger.log('SignIn in progress');
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          authStore.setSignInError('play services not available or outdated');
-          break;
-        default:
-          authStore.setSignInError(error);
-      }
-    }
+    navigation.navigate('PhoneNumber', {onSignIn});
   };
-  const renderSignInButton = () => (
+
+  return (
     <TouchableOpacity style={layout.signUpButton} onPress={_signIn}>
       <Icon name="phone" size={50} />
     </TouchableOpacity>
   );
-
-  return <>{renderSignInButton()}</>;
 };
 
 PhoneSignInButton.propTypes = props;
