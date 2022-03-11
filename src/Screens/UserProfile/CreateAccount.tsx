@@ -25,10 +25,11 @@ interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
+  width: string | '';
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
-  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
+  const {onSignedIn, hidePlaceholder, goToNextScreen, width} = props;
   const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
@@ -75,7 +76,7 @@ const CreateAccount = (props: CreateAccountProps) => {
 
       <Text style={styles.connectWithText}>Connect with</Text>
 
-      <View style={styles.buttonContainer}>
+      <View style={{...styles.buttonContainer, width}}>
         {isIos && isLoginWithAppleEnabled && (
           <AppleSignInButton onSignIn={onSignIn} />
         )}
@@ -124,7 +125,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: Platform.OS === 'ios' ? '80%' : '60%',
   },
   button: {
     alignItems: 'center',
