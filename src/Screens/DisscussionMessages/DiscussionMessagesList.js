@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import {observer} from 'mobx-react-lite';
 import moment from 'moment';
 import PropTypes, {bool, func, string} from 'prop-types';
-import React, {useRef} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {Image, SectionList, StyleSheet, Text, View} from 'react-native';
 import {colors, font, text} from '~/Theme';
 import {discussionStorePropTypes} from '~/Types/propTypes';
@@ -27,6 +27,15 @@ const DiscussionMessagesList = ({
     commonId,
     auth()?.currentUser?.uid,
   );
+
+  useEffect(() => {
+    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+      discussionId,
+    );
+    return () => {
+      unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
+    };
+  }, [discussionId]);
 
   const msgGroups = discussionMessageStore
     .getDiscussionMessagesByDiscussionId(discussionId)
