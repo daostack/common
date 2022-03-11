@@ -9,12 +9,10 @@ export const styles = StyleSheet.create({
     minHeight: height,
     alignItems: 'center',
   },
-
   logo: {
     marginVertical: 30,
     resizeMode: 'contain',
   },
-
   image: {
     top: 0,
     height: '40%',
@@ -22,20 +20,17 @@ export const styles = StyleSheet.create({
     aspectRatio: 1,
     marginBottom: 'auto',
   },
-
   header: {
     ...font.fontSize(6),
     ...font.heading.bold,
     marginBottom: 20,
   },
-
   description: {
     ...font.fontSize(2),
     ...font.primary.semiBold,
     width: width * 0.8,
     textAlign: 'center',
   },
-
   button: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -45,7 +40,6 @@ export const styles = StyleSheet.create({
     marginTop: 'auto',
     marginBottom: 20,
   },
-
   buttonText: {
     color: colors.white,
     ...font.fontSize(4),
