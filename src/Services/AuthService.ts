@@ -64,9 +64,8 @@ class AuthService {
   // Facebook signIn
   signInFacebook = async (): Promise<IUserEntity | null> => {
     const result = await LoginManager.logInWithPermissions(['public_profile']);
-
     if (result.isCancelled) {
-      return null;
+      throw result;
     }
 
     const data = await AccessToken.getCurrentAccessToken();
@@ -80,6 +79,10 @@ class AuthService {
     );
     return auth().signInWithCredential(facebookCredential);
   };
+
+  // phone number signIn
+  signInPhone = async (phoneNumber: string): Promise<any> =>
+    await auth().signInWithPhoneNumber(phoneNumber);
 
   // Google Auth flow
   signIn = async (): Promise<IUserEntity> => {
@@ -111,9 +114,14 @@ class AuthService {
     await GoogleSignin.signOut();
   };
 
+  facebookSignOut = async (): Promise<void> => {
+    LoginManager.logOut();
+  };
+
   signOut = async (): Promise<void | unknown> => {
     try {
       await this.googleSignOut();
+      await this.facebookSignOut();
       await auth().signOut();
     } catch (error) {
       const {accessToken} = await GoogleSignin.getTokens();
@@ -149,7 +157,7 @@ class AuthService {
     return await UserService.updateUser(currentUser.uid, {
       ...publicData,
       ...userData,
-      email: currentUser.email,
+      email: currentUser?.email || userData?.email,
     });
   }
 
@@ -161,12 +169,14 @@ class AuthService {
       metadata: {
         creationTime: firebase.firestore.timestamp;
       };
+      phoneNumber: string;
+      provider: string;
     },
   ) => {
     const splittedDisplayName = user?.displayName?.split(' ') || [
-      user?.email.split('@')[0],
+      user?.email?.split('@')[0] || user?.phoneNumber,
     ];
-    const userPhotoUrl = user.photoURL
+    const userPhotoUrl = user?.photoURL
       ? user.photoURL
       : `https://eu.ui-avatars.com/api/?background=7786ff&color=fff&name=${
           user.displayName ? user.displayName : user.email
@@ -179,10 +189,12 @@ class AuthService {
       lastName:
         user.lastName || splittedDisplayName?.length >= 2
           ? splittedDisplayName[1]
-          : '',
+          : splittedDisplayName[0],
       photoURL: userPhotoUrl,
+      phoneNumber: user?.phoneNumber || '',
+      provider: user.provider,
     };
-    await UserService.addUser(user.uid, userPublicData, user.email);
+    await UserService.addUser(user.uid, userPublicData, user?.email);
     return userPublicData;
   };
 
