@@ -39,6 +39,8 @@ class AuthStore {
 
   unsubscribeFromUser: FirestoreUnsubscribeFn | null = null;
 
+  provider: string = 'google.com';
+
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     auth().onAuthStateChanged(this.onAuthStateChanged);
@@ -145,17 +147,19 @@ class AuthStore {
       async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
         const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
+        const provider = user.providerData[0].providerId;
         if (isNewUser) {
           const providerUserInfo = await AuthService.getCurrentLoggedUser(
             user.providerData[0].providerId,
           );
           const userInfo = {
-            ...user._user,
-            ...{
-              firstName: providerUserInfo?.user.givenName,
-              lastName: providerUserInfo?.user.familyName,
-            },
+            ...user?._user,
+            firstName: providerUserInfo?.user?.givenName,
+            lastName: providerUserInfo?.user?.familyName,
+            phoneNumber: user?.phoneNumber,
+            provider,
           };
+
           AuthService.createUser(userInfo);
         } else {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
