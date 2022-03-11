@@ -2,6 +2,7 @@ import Config from 'react-native-config';
 import axios from 'axios';
 import logger from '../Services/Logger';
 import {Platform} from 'react-native';
+import {Settings} from 'react-native-fbsdk-next';
 
 // the value of ARC_VERSION should coincide with the "migration-experimental" versoin
 // TODO: we should probably read this from the package..
@@ -16,33 +17,55 @@ let commonTokenAddress;
 let androidAppId;
 let iosAppId;
 
-if (Config.ENV === 'production') {
-  localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
-  cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
-  networkId = 100;
-  web3Provider = 'https://dai.poa.network';
-  commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
-  clientId =
-    '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
+switch (Config.ENV) {
+  case 'production': {
+    localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
+    cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
+    networkId = 100;
+    web3Provider = 'https://dai.poa.network';
+    commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
+    clientId =
+      '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 
-  androidAppId = 'com.daostack.common';
-  iosAppId = 'id1512785740';
-} else if (Config.ENV === 'staging') {
-  localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
-  cloudFunctionURL =
-    'https://us-central1-common-staging-50741.cloudfunctions.net';
-  networkId = 42;
-  web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
-  commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
-  clientId =
-    '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
+    androidAppId = 'com.daostack.common';
+    iosAppId = 'id1512785740';
+    break;
+  }
+  case 'staging': {
+    localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
+    cloudFunctionURL =
+      'https://us-central1-common-staging-50741.cloudfunctions.net';
+    networkId = 42;
+    web3Provider =
+      'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+    commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+    clientId =
+      '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
 
-  androidAppId = 'com.daostack.common.staging';
-  iosAppId = '1527060751';
-} else {
-  throw Error(
-    `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`,
-  );
+    androidAppId = 'com.daostack.common.staging';
+    iosAppId = '1527060751';
+    break;
+  }
+  case 'dev': {
+    localFunctionURL = 'http://localhost:5003/common-dev-dea4e/us-central1';
+    cloudFunctionURL =
+      'https://us-central1-common-dev-dea4e.cloudfunctions.net';
+    networkId = 42;
+    web3Provider =
+      'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+    commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+    clientId =
+      '1027354410661-c5kcu3ie4gge7p6vimko5qjgie5poaai.apps.googleusercontent.com';
+
+    androidAppId = 'com.daostack.common.staging';
+    iosAppId = '1527060751';
+    break;
+  }
+  default: {
+    throw Error(
+      `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`,
+    );
+  }
 }
 
 if (Config.local === 'true' && __DEV__) {
@@ -86,6 +109,10 @@ export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
 export const isProduction = Config.ENV === 'production';
+
+// for making facebook login on staging
+export const facebookAppId = '2309513929190090';
+Settings.setAppID(facebookAppId);
 
 // JUST HARDCODING THIS TO BE TRUE FOR A QUICK FIX; SORRY
 export const testCard = __DEV__ && false; //Config.testCard === 'true';
