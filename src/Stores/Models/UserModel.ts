@@ -14,6 +14,8 @@ export const userInfoFields = [
   'createdAt',
   'intro',
   'country',
+  'phoneNumber',
+  'provider',
 ];
 export class UserModel implements BaseModel<IUserEntity> {
   id: string;
@@ -26,6 +28,8 @@ export class UserModel implements BaseModel<IUserEntity> {
   lastName: string = '';
   country: string = '';
   intro: string = '';
+  phoneNumber: string = '';
+  provider: string = '';
 
   // That field is used only in the commonMembers list
   joinedAt?: Date | null = null;

@@ -26,12 +26,15 @@ import {AppRootStore} from '~/Types/store';
 import {WithNavigation} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
 import {useNavigation} from '@react-navigation/native';
+import {getProviderIcon} from '~/Components/UserProfile/helper';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
   lastName: string().required().label('The last name'),
   photoURL: string(),
   intro: string().label('The intro'),
+  phoneNumber: string(),
+  email: string().required().label('Email address'),
 });
 
 interface Values {
@@ -41,6 +44,7 @@ interface Values {
   country: string;
   email: string;
   intro: string;
+  phoneNumber: string;
 }
 
 type Props = AppRootStore &
@@ -87,13 +91,15 @@ const EditProfile = ({route}: Props): ReactElement => {
           lastName: values.lastName,
           photoURL: values.photoURL,
           country: values.country,
+          email: values.email,
+          phoneNumber: values?.phoneNumber,
         },
         {
           intro: values.intro,
         },
       );
     } catch (err) {
-      logger.log('Error -> ', err);
+      logger.log('EditProfile Error -> ', err);
       throw err;
     }
 
@@ -106,7 +112,11 @@ const EditProfile = ({route}: Props): ReactElement => {
 
   const onFormSubmitEnd = (): void => {
     Toast.done('Your profile is updated');
-    navigation.goBack();
+    if (route.params.isCompleteAccount) {
+      navigation.pop(3);
+    } else {
+      navigation.goBack();
+    }
   };
 
   const onFormClose = () => {
@@ -114,12 +124,13 @@ const EditProfile = ({route}: Props): ReactElement => {
 
     if (
       isEqual(values, {
-        photoURL: authStore.userInfo.photoURL,
-        firstName: authStore.userInfo.firstName,
-        lastName: authStore.userInfo.lastName,
-        country: authStore.userInfo.country,
-        email: authStore.userInfo.email,
-        intro: authStore.userInfo.intro,
+        photoURL: authStore.userInfo?.photoURL,
+        firstName: authStore.userInfo?.firstName,
+        lastName: authStore.userInfo?.lastName,
+        country: authStore.userInfo?.country,
+        email: authStore.userInfo?.email,
+        intro: authStore.userInfo?.intro,
+        phoneNumber: authStore.userInfo?.phoneNumber,
       })
     ) {
       navigation.pop();
@@ -152,6 +163,7 @@ const EditProfile = ({route}: Props): ReactElement => {
           country: authStore.userInfo?.country,
           email: authStore.userInfo?.email,
           intro: authStore.userInfo?.intro,
+          phoneNumber: authStore.userInfo?.phoneNumber,
         } as Values
       }
       validationSchema={validationSchema}
@@ -163,7 +175,6 @@ const EditProfile = ({route}: Props): ReactElement => {
         errors,
         touched,
         handleSubmit,
-        isValid,
       }): ReactElement => (
         <>
           <StatusBar barStyle="dark-content" />
@@ -201,8 +212,9 @@ const EditProfile = ({route}: Props): ReactElement => {
                       />
 
                       <View style={styles.emailContainer}>
+                        {getProviderIcon(authStore.userInfo?.provider)}
                         <Text style={text.ashleyjquimbacom}>
-                          {values.email}
+                          {values.phoneNumber || values.email}
                         </Text>
                       </View>
 
@@ -210,11 +222,10 @@ const EditProfile = ({route}: Props): ReactElement => {
                         errorMessage={
                           errors && touched.firstName && errors.firstName
                         }
-                        value={values.firstName}
                         viewStyle={{alignSelf: 'stretch'}}
                         label="First name"
                         infoLabel="Required"
-                        placeholderText="First name"
+                        placeholderText={authStore.userInfo?.firstName}
                         onBlur={handleBlur('firstName')}
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -225,16 +236,32 @@ const EditProfile = ({route}: Props): ReactElement => {
                         errorMessage={
                           errors && touched.lastName && errors.lastName
                         }
-                        value={values.lastName}
                         viewStyle={{alignSelf: 'stretch'}}
                         label="Last name"
                         infoLabel="Required"
-                        placeholderText="Last name"
+                        placeholderText={authStore.userInfo?.lastName}
                         autoCapitalize="none"
                         autoCorrect={false}
                         onBlur={handleBlur('lastName')}
                         onChangeText={handleChange('lastName')}
                       />
+
+                      {authStore.userInfo?.provider === 'phone' ||
+                      !authStore.userInfo?.email ? (
+                        <TextInputField
+                          errorMessage={errors && touched.email && errors.email}
+                          viewStyle={{alignSelf: 'stretch'}}
+                          label="Email"
+                          infoLabel="Required"
+                          placeholderText={authStore.userInfo?.email}
+                          onBlur={handleBlur('email')}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          onChangeText={handleChange('email')}
+                        />
+                      ) : (
+                        <></>
+                      )}
 
                       {route.params.isCompleteAccount && (
                         <CountrySelectField
@@ -288,7 +315,6 @@ const EditProfile = ({route}: Props): ReactElement => {
                   ...layout.btnPrimary,
                   ...saveBtnStyle,
                 }}
-                disabled={!isValid}
                 onPress={handleSubmit}>
                 <Text style={text.buttoncenterwhite}>Save</Text>
               </TouchableOpacity>
@@ -337,6 +363,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     ...layout.marginBottomS,
     marginTop: 0,
+    flexDirection: 'row',
   },
   title: {
     ...font.heading.bold,
