@@ -1,5 +1,6 @@
 export default {
   mainBlue: '#7786ff',
+  linkBlue: '#8391ff',
   lighterBlue: '#f4f5ff',
   iceBlue: '#f4f6ff',
   iceBlue2: '#f1f5ff',

@@ -87,6 +87,7 @@ const PersonalContributionStep = () => {
           common,
           iFrameLink: link,
           cardId,
+          contributionData,
         },
       }),
     );

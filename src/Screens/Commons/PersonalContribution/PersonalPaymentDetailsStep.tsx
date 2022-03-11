@@ -2,7 +2,7 @@ import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
 import {bool, func, object, shape, string} from 'prop-types';
 import React, {useEffect} from 'react';
-import {Dimensions, View} from 'react-native';
+import {Dimensions, Text, View, Image, Pressable} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {WebView} from 'react-native-webview';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -18,6 +18,8 @@ import CommonService from '~/Services/CommonService';
 import {useStore} from '~/Util/hooks/useStore';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
+import {colors, font} from '~/Theme';
+import {CurrencySymbols} from '~/Util/locale';
 
 const {height} = Dimensions.get('window');
 
@@ -30,11 +32,14 @@ const PersonalPaymentDetailsStep = () => {
   const navigation = useNavigation();
   const router = useRoute<PersonalPaymentDetailsRouteProps>();
 
-  const {formStores, common, iFrameLink, cardId} = router.params;
+  const {formStores, common, iFrameLink, cardId, contributionData} =
+    router.params;
 
   const insets = useSafeAreaInsets();
 
   let currCard = cardStore.getCardById(cardId);
+
+  console.log('----currCard', currCard, contributionData);
 
   useEffect(() => {
     const unsubscribeFromCard = cardStore.subscribeToCard(cardId);
@@ -54,9 +59,9 @@ const PersonalPaymentDetailsStep = () => {
 
   const push = async () => {
     try {
-      const formData = {
-        ...personalContributionFormStore.getFormFieldsJson(),
-      } as {amount: number};
+      // const formData = {
+      //   ...personalContributionFormStore.getFormFieldsJson(),
+      // } as {amount: number};
 
       currCard = cardStore.getCardById(cardId);
 
@@ -64,21 +69,19 @@ const PersonalPaymentDetailsStep = () => {
       Toast.hide();
 
       if (currCard?.token) {
-        navigation.dispatch(
-          CommonActions.navigate({
-            name: NAVIGATION_SCREENS.FULL_SCREEN_CREATION_LOADER,
-            params: {
-              title: 'Creating your membership request',
-            },
-          }),
-        );
-
-        const createCommonResponse = await CommonService.createCommon(common);
-
-        const data = {
-          funding: formData.amount * 100,
-          commonId: createCommonResponse.data.id,
-        };
+        // navigation.dispatch(
+        //   CommonActions.navigate({
+        //     name: NAVIGATION_SCREENS.FULL_SCREEN_CREATION_LOADER,
+        //     params: {
+        //       title: 'Creating your membership request',
+        //     },
+        //   }),
+        // );
+        // const createCommonResponse = await CommonService.createCommon(common);
+        // const data = {
+        //   funding: formData.amount * 100,
+        //   commonId: createCommonResponse.data.id,
+        // };
         // const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
         //   {
         //     ...data,
@@ -88,7 +91,6 @@ const PersonalPaymentDetailsStep = () => {
         // );
         // if (createRequestToJoinResponse.status === 200) {
         //   const proposalId = createRequestToJoinResponse.data.id;
-
         //   const navigate = CommonActions.navigate({
         //     name: 'CommonProfile',
         //     params: {
@@ -97,7 +99,6 @@ const PersonalPaymentDetailsStep = () => {
         //       commonId: data.commonId,
         //     },
         //   });
-
         //   navigation.dispatch(navigate);
         // } else {
         //   Toast.hide();
@@ -128,13 +129,101 @@ const PersonalPaymentDetailsStep = () => {
             height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
           width: '100%',
         }}>
-        <WebView
+        <Text
+          style={{
+            color: colors.black,
+            fontSize: 16,
+            textAlign: 'center',
+            marginBottom: 8,
+            ...font.heading.bold,
+          }}>
+          Payment Details
+        </Text>
+        <Text style={{color: colors.black, fontSize: 16, textAlign: 'center'}}>
+          You are contributing{' '}
+          <Text style={{color: colors.mainBlue}}>
+            {CurrencySymbols.SHEKEL}
+            {contributionData.minFeeToJoin / 100} (
+            {contributionData.contributionType}){' '}
+          </Text>
+          to this {'\n'} Common.
+          <Text style={{color: colors.black, ...font.primary.bold}}>
+            {' '}
+            You will not be charged until another member joins
+          </Text>{' '}
+          the Common
+        </Text>
+        <View
+          style={{
+            width: '100%',
+            borderBottomWidth: 1,
+            borderColor: colors.grey4,
+            marginTop: 24,
+            marginBottom: 16,
+          }}
+        />
+        <Text
+          style={{
+            color: colors.black,
+            fontSize: 16,
+            marginBottom: 16,
+            ...font.heading.bold,
+          }}>
+          Payment method
+        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Image
+            style={{width: 64, height: 32, marginRight: 12}}
+            source={require('~/Assets/mastercard.png')}
+            resizeMode="cover"
+          />
+          <View style={{flexDirection: 'row', flex: 1}}>
+            <View>
+              <Text
+                style={{
+                  marginBottom: 4,
+                  fontSize: 14,
+                  color: colors.black,
+                  ...font.primary.bold,
+                }}>
+                TEst Testovich
+              </Text>
+              <Text style={{fontSize: 14, color: colors.black}}>
+                ********{currCard?.metadata?.digits}
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: colors.black,
+                }}>
+                01/2030
+              </Text>
+            </View>
+          </View>
+        </View>
+        <Pressable
+          style={({pressed}) => [
+            {
+              opacity: pressed ? 0.5 : 1.0,
+            },
+            {marginTop: 16},
+          ]}>
+          <Text style={{color: colors.linkBlue}}>Replace payment method?</Text>
+        </Pressable>
+        {/* <WebView
           scalesPageToFit={false}
           source={{uri: iFrameLink}}
           onLoadEnd={() => {
             Toast.done('All done!');
           }}
-        />
+        /> */}
       </View>
     </StepDotLayout>
   );
