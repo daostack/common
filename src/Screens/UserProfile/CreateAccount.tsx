@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
 import FacebookSignInButton from '~/Components/Auth/FacebookSignInButton';
-import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
 import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
@@ -25,11 +24,10 @@ interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
-  navigation: {navigate: () => void};
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
-  const {onSignedIn, hidePlaceholder, goToNextScreen, navigation} = props;
+  const {onSignedIn, hidePlaceholder, goToNextScreen} = props;
   const authStore = useStore('authStore');
   const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
     if (onSignedIn) {
@@ -85,7 +83,7 @@ const CreateAccount = (props: CreateAccountProps) => {
 
         <FacebookSignInButton onSignIn={onSignIn} />
 
-        {/*<PhoneSignInButton onSignIn={onSignIn} navigation={navigation} />*/}
+        <PhoneSignInButton onSignIn={onSignIn} />
       </View>
 
       {renderError()}
