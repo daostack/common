@@ -20,4 +20,6 @@ export interface UserPublicData {
   firstName: string;
   lastName: string;
   photoURL: string;
+  phoneNumber: string;
+  provider: string;
 }

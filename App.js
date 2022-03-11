@@ -50,6 +50,8 @@ import {
   EditCommon,
   ReceiveFunds,
   AddInvoicesScreen,
+  PhoneNumberStep1,
+  VerificationStep2,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -400,6 +402,23 @@ const App = ({rootStore, navigation}) => {
             component={UserProfile}
             options={({route}) => ({
               headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="PhoneNumber"
+            component={PhoneNumberStep1}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="VerifyPhone"
+            component={VerificationStep2}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerLeft: null,
             })}
           />
           <Stack.Screen

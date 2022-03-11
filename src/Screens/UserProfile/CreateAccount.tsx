@@ -24,7 +24,6 @@ interface CreateAccountProps {
   onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
-  navigation: {navigate: () => void};
 }
 
 const CreateAccount = (props: CreateAccountProps) => {
@@ -84,7 +83,7 @@ const CreateAccount = (props: CreateAccountProps) => {
 
         <FacebookSignInButton onSignIn={onSignIn} />
 
-        {/*<PhoneSignInButton onSignIn={onSignIn} navigation={navigation} />*/}
+        <PhoneSignInButton onSignIn={onSignIn} />
       </View>
 
       {renderError()}
