@@ -94,7 +94,6 @@ const ProposalScreen = ({
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
-  const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
 
   const [votingProcessState, setVotingProcessState] = useState({
