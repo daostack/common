@@ -52,6 +52,7 @@ import {
   AddInvoicesScreen,
   PhoneNumberStep1,
   VerificationStep2,
+  FirstJoinCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -499,6 +500,13 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="IntroductionStep"
             component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="FirstJoinCommon"
+            component={FirstJoinCommon}
             options={() => ({
               headerShown: false,
             })}

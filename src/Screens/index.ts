@@ -14,6 +14,7 @@ export {default as ContributionStep} from './Commons/RequestToJoin/Steps/Contrib
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
 export {default as EditCommon} from './Commons/EditCommon';
+export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
 
 //User Profile
 export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
