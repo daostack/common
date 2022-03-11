@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
 import FacebookSignInButton from '~/Components/Auth/FacebookSignInButton';
+import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
 import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
