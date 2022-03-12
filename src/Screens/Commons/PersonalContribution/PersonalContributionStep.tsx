@@ -65,32 +65,40 @@ const PersonalContributionStep = () => {
       }`;
 
   const navigateToRequestStep4 = async () => {
-    let cardId = null;
-    let link = null;
-    Toast.loading('One moment please');
-    const card = await CardsService.fetchCardByOwnerId(
-      authStore.userInfo?.uid as string,
-    );
-    if (card) {
-      cardId = card.id;
-    } else {
-      cardId = v4();
-      const {data} = await PaymentService.createBuyerTokenPage(cardId);
-      link = data.link;
-    }
+    try {
+      let cardId = null;
+      let link = null;
+      Toast.loading('One moment please');
+      const card = await CardsService.fetchCardByOwnerId(
+        authStore.userInfo?.uid as string,
+      );
 
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'PersonalPaymentDetailsStep',
-        params: {
-          formStores,
-          common,
-          iFrameLink: link,
-          cardId,
-          contributionData,
-        },
-      }),
-    );
+      console.log('----card', card);
+      if (card) {
+        cardId = card.id;
+      } else {
+        cardId = v4();
+        const {data} = await PaymentService.createBuyerTokenPage(cardId);
+        link = data.link;
+      }
+
+      Toast.done('Success');
+      Toast.hide();
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'PersonalPaymentDetailsStep',
+          params: {
+            formStores,
+            common,
+            iFrameLink: link,
+            cardId,
+            contributionData,
+          },
+        }),
+      );
+    } catch (err) {
+      console.log('---err', err);
+    }
   };
 
   const createCommonWithoutContribution = async () => {

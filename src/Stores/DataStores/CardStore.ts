@@ -20,6 +20,14 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     }
   };
 
+  getCards = (ownerId?: string): Array<Card> | undefined => {
+    try {
+      return this.getDataArray.filter((card) => card.ownerId === ownerId);
+    } catch (e) {
+      Logger.log('------ cardstore error', e);
+    }
+  };
+
   getEntityModel(entity: ICardEntity): Card {
     return new Card(entity);
   }
@@ -28,6 +36,6 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     this.data.clear();
   }
 
-  subscribeToCard = (cardId: string): FirestoreUnsubscribeFn =>
-    CardsService.subscribeToCard(cardId, this.updateStoreData);
+  subscribeToUserCards = (ownerId: string): FirestoreUnsubscribeFn =>
+    CardsService.subscribeToUserCards(ownerId, this.updateStoreData);
 }

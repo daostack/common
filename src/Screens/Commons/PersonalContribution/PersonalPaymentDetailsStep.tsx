@@ -1,8 +1,8 @@
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
 import {bool, func, object, shape, string} from 'prop-types';
-import React, {useEffect} from 'react';
-import {Dimensions, Text, View, Image, Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Text, View, StyleSheet, Pressable} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {WebView} from 'react-native-webview';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -20,6 +20,11 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
 import {colors, font} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
+import {CardList} from '~/Components/Payment/CardList';
+import {PaymentDetailsHeader} from '~/Components/Payment/PaymentDetailsHeader';
+import {Divider} from '~/Components/Divider';
+import {baseMargin} from '~/Theme/layout';
+import {Card} from '~/Stores/Models/Card';
 
 const {height} = Dimensions.get('window');
 
@@ -39,20 +44,14 @@ const PersonalPaymentDetailsStep = () => {
 
   let currCard = cardStore.getCardById(cardId);
 
-  console.log('----currCard', currCard, contributionData);
+  const cards = cardStore.getCards(userInfo?.uid);
 
   useEffect(() => {
-    const unsubscribeFromCard = cardStore.subscribeToCard(cardId);
+    const unsubscribeFromCard = cardStore.subscribeToUserCards(userInfo?.uid);
     return () => {
       unsubscribeFromCard && unsubscribeFromCard();
     };
   }, [userInfo]);
-
-  useEffect(() => {
-    if (currCard?.token) {
-      push();
-    }
-  }, [currCard?.token]);
 
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -115,6 +114,14 @@ const PersonalPaymentDetailsStep = () => {
     }
   };
 
+  const [selectedCard, setSelectedCard] = useState<Card>();
+
+  function handleSelectCard(card: Card): void {
+    setSelectedCard(card);
+  }
+
+  console.log('--selectedCard', selectedCard);
+
   return (
     <StepDotLayout
       navigation={navigation}
@@ -123,134 +130,55 @@ const PersonalPaymentDetailsStep = () => {
       currentIndex={2}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
       layoutTitle={<MembershipRequest />}>
-      <View
-        style={{
-          height:
-            height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
-          width: '100%',
-        }}>
-        <Text
-          style={{
-            color: colors.black,
-            fontSize: 16,
-            textAlign: 'center',
-            marginBottom: 8,
-            ...font.heading.bold,
-          }}>
-          Payment Details
-        </Text>
-        <Text style={{color: colors.black, fontSize: 16, textAlign: 'center'}}>
-          You are contributing{' '}
-          <Text style={{color: colors.mainBlue}}>
-            {CurrencySymbols.SHEKEL}
-            {contributionData.minFeeToJoin / 100} (
-            {contributionData.contributionType}){' '}
-          </Text>
-          to this {'\n'} Common.
-          <Text style={{color: colors.black, ...font.primary.bold}}>
-            {' '}
-            You will not be charged until another member joins
-          </Text>{' '}
-          the Common
-        </Text>
-        <View
-          style={{
-            width: '100%',
-            borderBottomWidth: 1,
-            borderColor: colors.grey4,
-            marginTop: 24,
-            marginBottom: 16,
-          }}
-        />
-        <Text
-          style={{
-            color: colors.black,
-            fontSize: 16,
-            marginBottom: 16,
-            ...font.heading.bold,
-          }}>
-          Payment method
-        </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            style={{width: 64, height: 32, marginRight: 12}}
-            source={require('~/Assets/mastercard.png')}
-            resizeMode="cover"
+      {currCard?.token ? (
+        <View style={styles.container}>
+          <PaymentDetailsHeader
+            minFeeToJoin={contributionData.minFeeToJoin}
+            contributionType={contributionData.contributionType}
           />
-          <View style={{flexDirection: 'row', flex: 1}}>
-            <View>
-              <Text
-                style={{
-                  marginBottom: 4,
-                  fontSize: 14,
-                  color: colors.black,
-                  ...font.primary.bold,
-                }}>
-                TEst Testovich
-              </Text>
-              <Text style={{fontSize: 14, color: colors.black}}>
-                ********{currCard?.metadata?.digits}
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-              }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: colors.black,
-                }}>
-                01/2030
-              </Text>
-            </View>
-          </View>
+          <Divider mt={baseMargin * 3} mb={baseMargin * 2} />
+          <CardList handleSelectCard={handleSelectCard} />
+          <Pressable
+            style={({pressed}) => [
+              {
+                opacity: pressed ? 0.5 : 1.0,
+              },
+              {marginTop: baseMargin * 2},
+            ]}>
+            <Text style={{color: colors.linkBlue}}>
+              Replace payment method?
+            </Text>
+          </Pressable>
         </View>
-        <Pressable
-          style={({pressed}) => [
+      ) : (
+        <View
+          style={[
+            styles.container,
             {
-              opacity: pressed ? 0.5 : 1.0,
+              height:
+                height / 2 +
+                insets.top +
+                insets.bottom +
+                STEP_HEADER_BAR_HEIGHT,
             },
-            {marginTop: 16},
           ]}>
-          <Text style={{color: colors.linkBlue}}>Replace payment method?</Text>
-        </Pressable>
-        {/* <WebView
-          scalesPageToFit={false}
-          source={{uri: iFrameLink}}
-          onLoadEnd={() => {
-            Toast.done('All done!');
-          }}
-        /> */}
-      </View>
+          <WebView
+            scalesPageToFit={false}
+            source={{uri: iFrameLink}}
+            onLoadEnd={() => {
+              Toast.done('All done!');
+            }}
+          />
+        </View>
+      )}
     </StepDotLayout>
   );
 };
 
-PersonalPaymentDetailsStep.propTypes = {
-  navigation: object,
-  route: shape({
-    params: shape({
-      skipFirstStep: bool,
-      currDaoId: string,
-      refreshFeed: func,
-    }),
-  }),
-  paymentFormStore: shape({
-    isFormValid: func,
-    getFormFieldsJson: func,
-    isFormActionEnabled: func,
-  }),
-  introduceYourselfFormStore: shape({
-    getFormFieldsJson: func,
-  }),
-  personalContributionFormStore: shape({
-    getFormFieldsJson: func,
-    form: object,
-  }),
-  rootStore: rootStorePropTypes,
-};
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+});
 
 export default observer(PersonalPaymentDetailsStep);

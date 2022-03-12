@@ -155,6 +155,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
           keyboardShouldPersistTaps="handled"
           width={width}
           onContentSizeChange={onContentSizeChange}
