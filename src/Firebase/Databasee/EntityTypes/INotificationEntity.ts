@@ -74,7 +74,7 @@ export const EventTitleState = {
   requestToJoinRejected: 'Membership Rejected',
   subscriptionPaymentConfirmed: 'Subscription Payment Confirmed',
   subscriptionCanceledByUser: 'Subscription Canceled By User',
-  fundingRequestAccepted: 'Proposal Accepted',
+  fundingRequestAccepted: 'Proposal Approved',
   fundingRequestCreated: 'New Proposal',
   fundingRequestExecuted: 'Proposal Executed',
   fundingRequestRejected: 'Proposal Rejected',

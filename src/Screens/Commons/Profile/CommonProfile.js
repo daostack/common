@@ -463,8 +463,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       });
       const options = {
         url,
-        title: "Let's make it happen",
-        message: `${currCommon.name} common`,
+        title: currCommon.name,
+        message: `${currCommon.byline}. Download the Common app to join now.`,
       };
       Share.open(options);
     } catch (err) {
@@ -587,21 +587,34 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
 
-    const navigate = CommonActions.navigate({
-      name: 'IntroductionStep', // #498 we always go to Introduction first
-      params: {
-        formStores: {
-          paymentFormStore,
-          introduceYourselfFormStore,
-          personalContributionFormStore,
-          billingDetailsFormStore,
+    let navigate;
+    if (commonStore.myCommons.length > 0) {
+      navigate = CommonActions.navigate({
+        name: 'IntroductionStep', // we always go to Introduction first
+        params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
+          currCommon: currCommon,
+          currDaoId: currCommon.id,
+          skipFirstStep: false,
+          refreshFeed,
         },
-        currCommon: currCommon,
-        currDaoId: currCommon.id,
-        skipFirstStep: false,
-        refreshFeed,
-      },
-    });
+      });
+      navigation.dispatch(navigate);
+    } else {
+      navigate = CommonActions.navigate({
+        name: 'FirstJoinCommon',
+        params: {
+          currCommon: currCommon,
+          currDaoId: currCommon.id,
+          refreshFeed,
+        },
+      });
+    }
 
     if (authStore.userInfo) {
       navigation.dispatch(navigate);
