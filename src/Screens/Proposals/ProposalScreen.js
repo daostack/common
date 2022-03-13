@@ -94,9 +94,7 @@ const ProposalScreen = ({
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
-  const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
-  const {conversionRate} = uiStore;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -726,8 +724,8 @@ const ProposalScreen = ({
             setModalConversionVisible(!modalConversionVisible)
           }
           showAmount={true}
-          amount={+(amount * conversionRate).toFixed(2)}
-          funds={+(getAvailableFunds() * conversionRate).toFixed(2)}
+          amount={+amount.toFixed(2)}
+          funds={+getAvailableFunds().toFixed(2)}
         />
       </Modal>
       <SafeAreaView
