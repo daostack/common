@@ -7,14 +7,26 @@ import CountDown from 'react-native-countdown-component';
 import {monthShortNames} from '~/Util/DateUtil';
 import moment from 'moment';
 import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
-import {string, array, number, shape, object, oneOfType} from 'prop-types';
+import {
+  string,
+  array,
+  number,
+  shape,
+  object,
+  oneOfType,
+  func,
+  boolean,
+} from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {CurrencySymbols} from '~/Util/locale';
+import ModerationMenu from '~/Components/Moderation/ModerationMenu';
 
 const MemberCard = ({
   userInfo,
   proposalInfo = null,
+  openCommonOptions,
+  showModerationMenu,
   moderatorId,
   commonId,
   rootStore,
@@ -38,10 +50,15 @@ const MemberCard = ({
         <View style={styles.rightContainer}>
           <View style={{alignItems: 'flex-end'}}>
             {proposalInfo.funding > 0 && (
-              <Text style={text.h2Black}>
-                {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
-                {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
-              </Text>
+              <View style={styles.priceContainer}>
+                <Text style={text.h2Black}>
+                  {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
+                  {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
+                </Text>
+                {showModerationMenu && (
+                  <ModerationMenu showOptions={openCommonOptions} />
+                )}
+              </View>
             )}
 
             {/* Hide the time if the proposal is expired or new */}
@@ -139,6 +156,8 @@ MemberCard.propTypes = {
     state: string,
   }),
   commonId: string,
+  openCommonOptions: func,
+  showModerationMenu: boolean,
 };
 
 const styles = StyleSheet.create({
@@ -164,6 +183,10 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 1.1,
     alignItems: 'flex-end',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

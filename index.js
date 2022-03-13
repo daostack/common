@@ -4,6 +4,7 @@
 
 import '~/Stores/reactotronConfig';
 import 'react-native-reanimated';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import React from 'react';
 import {AppRegistry, LogBox} from 'react-native';
 import App from './App';
@@ -17,13 +18,15 @@ import 'react-native-get-random-values';
 LogBox.ignoreAllLogs(true);
 
 const MobX = () => (
-  <Update>
-    {() => (
-      <Provider {...stores}>
-        <App />
-      </Provider>
-    )}
-  </Update>
+  <SafeAreaProvider>
+    <Update>
+      {() => (
+        <Provider {...stores}>
+          <App />
+        </Provider>
+      )}
+    </Update>
+  </SafeAreaProvider>
 );
 
 const AppBundle = CodePush({
