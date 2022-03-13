@@ -280,7 +280,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: 1,
     shadowRadius: 5,
-    elevation: 6,
     fontSize: 60,
     textAlign: 'center',
     fontWeight: '300',
