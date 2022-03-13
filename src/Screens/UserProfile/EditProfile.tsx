@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef, useEffect} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -81,40 +81,6 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
   }
 
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-        const values = (formikRef?.current ?? {values: {}})?.values;
-        const hasUnsavedChanges = !isEqual(values, {
-          photoURL: authStore.userInfo.photoURL,
-          firstName: authStore.userInfo.firstName,
-          lastName: authStore.userInfo.lastName,
-          country: authStore.userInfo.country,
-          email: authStore.userInfo.email,
-          intro: authStore.userInfo.intro,
-        });
-        if (!hasUnsavedChanges) {
-          return;
-        } else {
-          bottomSheetStore.showBottomSheet(
-            BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
-            {
-              navigation,
-              onContinueEditing: closeBottomSheet,
-              onLeaveWithoutSaving: () => {
-                bottomSheetStore.hideBottomSheet();
-                // If the user confirmed, then we dispatch the action we blocked earlier
-                navigation.dispatch(e.data.action);
-              },
-            },
-          );
-        }
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
-      }),
-    [navigation],
-  );
-
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
 
@@ -146,7 +112,11 @@ const EditProfile = ({route}: Props): ReactElement => {
 
   const onFormSubmitEnd = (): void => {
     Toast.done('Your profile is updated');
-    if (route.params.isCompleteAccount) {
+    Toast.hide();
+    if (
+      route.params.isCompleteAccount &&
+      authStore.userInfo?.provider === 'phone'
+    ) {
       navigation.pop(3);
     } else {
       navigation.goBack();
@@ -154,7 +124,28 @@ const EditProfile = ({route}: Props): ReactElement => {
   };
 
   const onFormClose = () => {
-    navigation.pop();
+    const values = (formikRef?.current ?? {values: {}})?.values;
+    const hasUnsavedChanges = !isEqual(values, {
+      photoURL: authStore.userInfo.photoURL,
+      firstName: authStore.userInfo.firstName,
+      lastName: authStore.userInfo.lastName,
+      country: authStore.userInfo.country,
+      email: authStore.userInfo.email,
+      intro: authStore.userInfo.intro,
+    });
+    if (!hasUnsavedChanges) {
+      navigation.pop();
+    } else {
+      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
+        navigation,
+        onContinueEditing: closeBottomSheet,
+        onLeaveWithoutSaving: () => {
+          bottomSheetStore.hideBottomSheet();
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          navigation.pop();
+        },
+      });
+    }
   };
 
   const closeBottomSheet = () => {

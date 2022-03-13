@@ -233,7 +233,7 @@ function ImageField({
                 isAvatar ? openSheet() : onFieldDeleted();
               }}>
               <Icon
-                name={isAvatar ? 'addpicture' : 'delete'}
+                name={isAvatar ? 'edit-16' : 'delete'}
                 size={16}
                 color={colors.white}
               />
