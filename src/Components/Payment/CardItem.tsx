@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
 import React, {useCallback} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
@@ -13,8 +12,6 @@ interface Props {
 }
 
 export const CardItem = observer(({card, handleSelectCard}: Props) => {
-  const navigation = useNavigation();
-
   const handlePress = useCallback(() => {
     handleSelectCard(card);
   }, []);

@@ -15,6 +15,7 @@ export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/Billi
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
 export {default as PersonalContributionStep} from './Commons/PersonalContribution/PersonalContributionStep';
 export {default as PersonalPaymentDetailsStep} from './Commons/PersonalContribution/PersonalPaymentDetailsStep';
+export {default as ChoosePaymentMethodStep} from './Commons/PersonalContribution/ChoosePaymentMethodStep';
 export {default as EditCommon} from './Commons/EditCommon';
 
 //User Profile

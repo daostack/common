@@ -73,7 +73,6 @@ const PersonalContributionStep = () => {
         authStore.userInfo?.uid as string,
       );
 
-      console.log('----card', card);
       if (card) {
         cardId = card.id;
       } else {
@@ -86,7 +85,7 @@ const PersonalContributionStep = () => {
       Toast.hide();
       navigation.dispatch(
         CommonActions.navigate({
-          name: 'PersonalPaymentDetailsStep',
+          name: card ? 'ChoosePaymentMethodStep' : 'PersonalPaymentDetailsStep',
           params: {
             formStores,
             common,
@@ -97,7 +96,7 @@ const PersonalContributionStep = () => {
         }),
       );
     } catch (err) {
-      console.log('---err', err);
+      showErrorPopUp(bottomSheetStore, err);
     }
   };
 

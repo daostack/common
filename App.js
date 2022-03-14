@@ -52,6 +52,7 @@ import {
   AddInvoicesScreen,
   PersonalContributionStep,
   PersonalPaymentDetailsStep,
+  ChoosePaymentMethodStep,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -494,6 +495,13 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="PersonalPaymentDetailsStep"
             component={PersonalPaymentDetailsStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="ChoosePaymentMethodStep"
+            component={ChoosePaymentMethodStep}
             options={() => ({
               headerShown: false,
             })}
