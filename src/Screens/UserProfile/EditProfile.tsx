@@ -27,7 +27,6 @@ import {WithNavigation} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
 import {useNavigation} from '@react-navigation/native';
 import {getProviderIcon} from '~/Components/UserProfile/helper';
-import {UserModel} from '~/Stores/Models/UserModel';
 import {EditProfileButtons} from './EditProfileButtons';
 
 const validationSchema = object({
@@ -172,14 +171,7 @@ const EditProfile = ({route}: Props): ReactElement => {
       }
       validationSchema={validationSchema}
       onSubmit={formSave}>
-      {({
-        handleChange,
-        handleBlur,
-        values,
-        errors,
-        touched,
-        handleSubmit,
-      }): ReactElement => (
+      {({handleChange, handleBlur, values, errors, touched}): ReactElement => (
         <>
           <StatusBar barStyle="dark-content" />
 
