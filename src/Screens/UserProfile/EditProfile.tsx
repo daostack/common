@@ -82,38 +82,38 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
   }
 
-  React.useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-        const values = (formikRef?.current ?? {values: {}})?.values;
-        const hasUnsavedChanges = !isEqual(values, {
-          photoURL: authStore.userInfo!.photoURL,
-          firstName: authStore.userInfo!.firstName,
-          lastName: authStore.userInfo!.lastName,
-          country: authStore.userInfo!.country,
-          email: authStore.userInfo!.email,
-          intro: authStore.userInfo!.intro,
-          phoneNumber: authStore.userInfo!.phoneNumber,
-        });
-        if (!hasUnsavedChanges) {
-          return;
-        } else {
-          e.preventDefault();
-          bottomSheetStore.showBottomSheet(
-            BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
-            {
-              navigation,
-              onContinueEditing: closeBottomSheet,
-              onLeaveWithoutSaving: () => {
-                bottomSheetStore.hideBottomSheet();
-                navigation.dispatch(e.data.action);
-              },
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      const values = (formikRef?.current ?? {values: {}})?.values;
+      const hasUnsavedChanges = !isEqual(values, {
+        photoURL: authStore.userInfo!.photoURL,
+        firstName: authStore.userInfo!.firstName,
+        lastName: authStore.userInfo!.lastName,
+        country: authStore.userInfo!.country,
+        email: authStore.userInfo!.email,
+        intro: authStore.userInfo!.intro,
+        phoneNumber: authStore.userInfo!.phoneNumber,
+      });
+      if (!hasUnsavedChanges) {
+        return;
+      } else {
+        e.preventDefault();
+        bottomSheetStore.showBottomSheet(
+          BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
+          {
+            navigation,
+            onContinueEditing: closeBottomSheet,
+            onLeaveWithoutSaving: () => {
+              bottomSheetStore.hideBottomSheet();
+              navigation.dispatch(e.data.action);
             },
-          );
-        }
-      }),
-    [navigation, authStore.userInfo],
-  );
+          },
+        );
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, authStore.userInfo]);
 
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
