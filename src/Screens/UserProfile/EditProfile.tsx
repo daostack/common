@@ -298,7 +298,6 @@ const EditProfile = ({route}: Props): ReactElement => {
               </View>
             </ScrollView>
             <EditProfileButtons
-              handleSubmit={handleSubmit}
               isCompleteAccount={route.params.isCompleteAccount}
               onFormClose={onFormClose}
             />

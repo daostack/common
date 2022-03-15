@@ -2,23 +2,22 @@ import {useFormikContext} from 'formik';
 import {isEqual} from 'lodash';
 import {observer} from 'mobx-react-lite';
 import React, {ReactElement, useMemo} from 'react';
-import {GestureResponderEvent, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {colors, layout, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
 interface Props {
-  handleSubmit: (e?: GestureResponderEvent) => void;
   isCompleteAccount: boolean;
   onFormClose: () => void;
 }
 
 export const EditProfileButtons = observer(
-  ({handleSubmit, isCompleteAccount, onFormClose}: Props): ReactElement => {
+  ({isCompleteAccount, onFormClose}: Props): ReactElement => {
     const {
       authStore: {userInfo},
     } = useStore('rootStore');
-    const {values} = useFormikContext();
+    const {values, handleSubmit} = useFormikContext();
 
     const saveBtnStyle = useMemo(
       () => (isCompleteAccount ? styles.bigSaveBtn : layout.marginLeftS),
