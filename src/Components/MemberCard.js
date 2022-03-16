@@ -48,16 +48,13 @@ const MemberCard = ({
 
       return (
         <View style={styles.rightContainer}>
-          <View style={{alignItems: 'flex-end'}}>
+          <View style={styles.timeContainer}>
             {proposalInfo.funding > 0 && (
               <View style={styles.priceContainer}>
                 <Text style={text.h2Black}>
                   {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
                   {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
                 </Text>
-                {showModerationMenu && (
-                  <ModerationMenu showOptions={openCommonOptions} />
-                )}
               </View>
             )}
 
@@ -85,6 +82,9 @@ const MemberCard = ({
                 />
               ))}
           </View>
+          {showModerationMenu && (
+            <ModerationMenu showOptions={openCommonOptions} />
+          )}
         </View>
       );
     } else {
@@ -181,12 +181,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   rightContainer: {
-    flex: 1.1,
+    flexDirection: 'row',
     alignItems: 'flex-end',
   },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  timeContainer: {
+    alignItems: 'flex-end',
+    flexDirection: 'column',
+    marginRight: 5,
   },
 });
 
