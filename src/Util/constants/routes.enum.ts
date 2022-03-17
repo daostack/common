@@ -20,7 +20,7 @@ export enum NAVIGATION_SCREENS {
   CREATE_STEP_4 = 'CreateStep4',
   DISCUSSIONS = 'Discussions',
   FULL_SCREEN_CREATION_LOADER = 'FullScreenCreationLoader',
-  NEW_POST = 'New Post',
+  NEW_DISCUSSION = 'New Discussion',
   EDIT_PROFILE = 'EditProfile',
   PDF_VIEWER = 'PDFViewer',
   BROWSER = 'Browser',
