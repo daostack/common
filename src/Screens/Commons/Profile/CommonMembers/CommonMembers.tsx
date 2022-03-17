@@ -90,7 +90,7 @@ const CommonMembers = ({rootStore}: CommonMembersProps) => {
     }
   };
 
-  const openCommonOptions = (item = null, itemType = '') => {
+  const openCommonOptions = (item = null) => {
     if (item) {
       moderationFormStore.clearFormStoreState();
       moderationFormStore.registerFormField(
