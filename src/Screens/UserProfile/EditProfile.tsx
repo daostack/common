@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
 } from 'react-native';
 import {Formik} from 'formik';
 import {isEqual} from 'lodash';
@@ -66,7 +67,7 @@ const EditProfile = ({route}: Props): ReactElement => {
 
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
-      headerLeft: false,
+      headerShown: false,
     });
   } else {
     navigation.setOptions({
@@ -152,6 +153,10 @@ const EditProfile = ({route}: Props): ReactElement => {
     bottomSheetStore.hideBottomSheet();
   };
 
+  const onClose = () => {
+    navigation.pop(3);
+  };
+
   const saveBtnStyle = route.params.isCompleteAccount
     ? styles.bigSaveBtn
     : layout.marginLeftS;
@@ -197,12 +202,27 @@ const EditProfile = ({route}: Props): ReactElement => {
                     marginTop: 0,
                   }}>
                   {route?.params?.isCompleteAccount && (
-                    <View style={{marginBottom: 32}}>
-                      <Text style={styles.title}>Complete your account</Text>
-                      <Text style={styles.subtitleForm}>
-                        Help the community to get to know you better
-                      </Text>
-                    </View>
+                    <>
+                      <View style={styles.topContainer}>
+                        <View style={styles.closeButton} />
+                        <Image
+                          source={require('~/Assets/newLogoMobile.png')}
+                          style={styles.logo}
+                        />
+                        <TouchableOpacity
+                          style={styles.closeButton}
+                          onPress={onClose}>
+                          <Icon name="close" size={20} color={colors.black} />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={{marginBottom: 32}}>
+                        <Text style={styles.title}>Complete your account</Text>
+                        <Text style={styles.subtitleForm}>
+                          Help the community to get to know you better
+                        </Text>
+                      </View>
+                    </>
                   )}
 
                   {authStore.userInfo ? (
@@ -359,6 +379,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   subtitle: {
     ...text.greyText,
@@ -381,6 +402,20 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     ...font.primary.regular,
     paddingVertical: 5,
+  },
+  logo: {
+    resizeMode: 'contain',
+  },
+  closeButton: {
+    width: 20,
+    height: 20,
+  },
+  topContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 30,
   },
 });
 
