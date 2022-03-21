@@ -1032,7 +1032,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 <BottomRightButton
                   iconName="add-proposal-32"
                   onPress={() =>
-                    navigation.navigate('New Post', {
+                    navigation.navigate(NAVIGATION_SCREENS.NEW_DISCUSSION, {
                       commonId: currCommon.id,
                     })
                   }
