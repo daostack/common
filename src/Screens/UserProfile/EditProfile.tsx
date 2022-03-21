@@ -97,8 +97,8 @@ const EditProfile = ({route}: Props): ReactElement => {
         phoneNumber: authStore.userInfo?.phoneNumber,
       });
       if (!hasUnsavedChanges || isUpdated) {
-        return;
-      } else {
+           return;
+      }  else {
         e.preventDefault();
         bottomSheetStore.showBottomSheet(
           BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
@@ -303,7 +303,6 @@ const EditProfile = ({route}: Props): ReactElement => {
                 </View>
               </View>
             </ScrollView>
-
             <EditProfileButtons
               isCompleteAccount={route.params.isCompleteAccount}
               onFormClose={onFormClose}
@@ -316,23 +315,6 @@ const EditProfile = ({route}: Props): ReactElement => {
 };
 
 const styles = StyleSheet.create({
-  btns: {
-    alignSelf: 'stretch',
-  },
-  bigSaveBtn: {
-    width: '100%',
-  },
-  oneBtnContainer: {
-    padding: 20,
-    backgroundColor: colors.white,
-  },
-  multiBtnContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    justifyContent: 'space-between',
-    width: '100%',
-    backgroundColor: colors.white,
-  },
   scrollView: {
     flexGrow: 1,
 

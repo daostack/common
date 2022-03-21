@@ -576,7 +576,7 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
-            name="New Post"
+            name={NAVIGATION_SCREENS.NEW_DISCUSSION}
             options={({nav, route}) => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
