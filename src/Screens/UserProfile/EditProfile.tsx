@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef} from 'react';
+import React, {ReactElement, useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -27,6 +27,7 @@ import {WithNavigation} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
 import {useNavigation} from '@react-navigation/native';
 import {getProviderIcon} from '~/Components/UserProfile/helper';
+import {EditProfileButtons} from './EditProfileButtons';
 
 const validationSchema = object({
   firstName: string().required().label('The first name'),
@@ -64,6 +65,8 @@ const EditProfile = ({route}: Props): ReactElement => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
 
+  const [isUpdated, setUpdated] = useState(false);
+
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
       headerLeft: false,
@@ -80,6 +83,39 @@ const EditProfile = ({route}: Props): ReactElement => {
       ),
     });
   }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      const values = (formikRef?.current ?? {values: {}})?.values;
+      const hasUnsavedChanges = !isEqual(values, {
+        photoURL: authStore.userInfo?.photoURL,
+        firstName: authStore.userInfo?.firstName,
+        lastName: authStore.userInfo?.lastName,
+        country: authStore.userInfo?.country,
+        email: authStore.userInfo?.email,
+        intro: authStore.userInfo?.intro,
+        phoneNumber: authStore.userInfo?.phoneNumber,
+      });
+      if (!hasUnsavedChanges || isUpdated) {
+        return;
+      } else {
+        e.preventDefault();
+        bottomSheetStore.showBottomSheet(
+          BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
+          {
+            navigation,
+            onContinueEditing: closeBottomSheet,
+            onLeaveWithoutSaving: () => {
+              bottomSheetStore.hideBottomSheet();
+              navigation.dispatch(e.data.action);
+            },
+          },
+        );
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, authStore.userInfo, isUpdated]);
 
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
@@ -98,6 +134,7 @@ const EditProfile = ({route}: Props): ReactElement => {
           intro: values.intro,
         },
       );
+      setUpdated(true);
     } catch (err) {
       logger.log('EditProfile Error -> ', err);
       throw err;
@@ -124,37 +161,12 @@ const EditProfile = ({route}: Props): ReactElement => {
   };
 
   const onFormClose = () => {
-    const values = (formikRef?.current ?? {values: {}})?.values;
-    const hasUnsavedChanges = !isEqual(values, {
-      photoURL: authStore.userInfo.photoURL,
-      firstName: authStore.userInfo.firstName,
-      lastName: authStore.userInfo.lastName,
-      country: authStore.userInfo.country,
-      email: authStore.userInfo.email,
-      intro: authStore.userInfo.intro,
-    });
-    if (!hasUnsavedChanges) {
-      navigation.pop();
-    } else {
-      bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
-        navigation,
-        onContinueEditing: closeBottomSheet,
-        onLeaveWithoutSaving: () => {
-          bottomSheetStore.hideBottomSheet();
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          navigation.pop();
-        },
-      });
-    }
+    navigation.pop();
   };
 
   const closeBottomSheet = () => {
     bottomSheetStore.hideBottomSheet();
   };
-
-  const saveBtnStyle = route.params.isCompleteAccount
-    ? styles.bigSaveBtn
-    : layout.marginLeftS;
 
   return (
     <Formik
@@ -173,14 +185,7 @@ const EditProfile = ({route}: Props): ReactElement => {
       }
       validationSchema={validationSchema}
       onSubmit={formSave}>
-      {({
-        handleChange,
-        handleBlur,
-        values,
-        errors,
-        touched,
-        handleSubmit,
-      }): ReactElement => (
+      {({handleChange, handleBlur, values, errors, touched}): ReactElement => (
         <>
           <StatusBar barStyle="dark-content" />
 
@@ -235,6 +240,7 @@ const EditProfile = ({route}: Props): ReactElement => {
                         autoCapitalize="none"
                         autoCorrect={false}
                         onChangeText={handleChange('firstName')}
+                        value={values.firstName}
                       />
 
                       <TextInputField
@@ -249,6 +255,7 @@ const EditProfile = ({route}: Props): ReactElement => {
                         autoCorrect={false}
                         onBlur={handleBlur('lastName')}
                         onChangeText={handleChange('lastName')}
+                        value={values.lastName}
                       />
 
                       {authStore.userInfo?.provider === 'phone' ||
@@ -297,33 +304,10 @@ const EditProfile = ({route}: Props): ReactElement => {
               </View>
             </ScrollView>
 
-            <View
-              style={
-                route.params.isCompleteAccount
-                  ? styles.oneBtnContainer
-                  : styles.multiBtnContainer
-              }>
-              {!route.params.isCompleteAccount && (
-                <TouchableOpacity
-                  style={{
-                    ...styles.btns,
-                    ...layout.btnOutline,
-                    ...layout.marginRightS,
-                  }}
-                  onPress={onFormClose}>
-                  <Text style={text.buttonblue}>Cancel</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity
-                style={{
-                  ...styles.btns,
-                  ...layout.btnPrimary,
-                  ...saveBtnStyle,
-                }}
-                onPress={handleSubmit}>
-                <Text style={text.buttoncenterwhite}>Save</Text>
-              </TouchableOpacity>
-            </View>
+            <EditProfileButtons
+              isCompleteAccount={route.params.isCompleteAccount}
+              onFormClose={onFormClose}
+            />
           </SafeAreaView>
         </>
       )}
