@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef} from 'react';
+import React, {ReactElement, useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -65,6 +65,8 @@ const EditProfile = ({route}: Props): ReactElement => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
 
+  const [isUpdated, setUpdated] = useState(false);
+
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
       headerLeft: false,
@@ -82,19 +84,19 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       const values = (formikRef?.current ?? {values: {}})?.values;
       const hasUnsavedChanges = !isEqual(values, {
-        photoURL: authStore.userInfo!.photoURL,
-        firstName: authStore.userInfo!.firstName,
-        lastName: authStore.userInfo!.lastName,
-        country: authStore.userInfo!.country,
-        email: authStore.userInfo!.email,
-        intro: authStore.userInfo!.intro,
-        phoneNumber: authStore.userInfo!.phoneNumber,
+        photoURL: authStore.userInfo?.photoURL,
+        firstName: authStore.userInfo?.firstName,
+        lastName: authStore.userInfo?.lastName,
+        country: authStore.userInfo?.country,
+        email: authStore.userInfo?.email,
+        intro: authStore.userInfo?.intro,
+        phoneNumber: authStore.userInfo?.phoneNumber,
       });
-      if (!hasUnsavedChanges) {
+      if (!hasUnsavedChanges || isUpdated) {
         return;
       } else {
         e.preventDefault();
@@ -113,7 +115,7 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
 
     return unsubscribe;
-  }, [navigation, authStore.userInfo]);
+  }, [navigation, authStore.userInfo, isUpdated]);
 
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
@@ -132,6 +134,7 @@ const EditProfile = ({route}: Props): ReactElement => {
           intro: values.intro,
         },
       );
+      setUpdated(true);
     } catch (err) {
       logger.log('EditProfile Error -> ', err);
       throw err;
