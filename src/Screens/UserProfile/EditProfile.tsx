@@ -97,8 +97,8 @@ const EditProfile = ({route}: Props): ReactElement => {
         phoneNumber: authStore.userInfo?.phoneNumber,
       });
       if (!hasUnsavedChanges || isUpdated) {
-           return;
-      }  else {
+        return;
+      } else {
         e.preventDefault();
         bottomSheetStore.showBottomSheet(
           BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES,
