@@ -133,7 +133,6 @@ const EditProfile = ({route}: Props): ReactElement => {
         },
       );
     } catch (err) {
-      console.log('tkt error', err);
       logger.log('EditProfile Error -> ', err);
       throw err;
     }
@@ -154,7 +153,6 @@ const EditProfile = ({route}: Props): ReactElement => {
     ) {
       navigation.pop(3);
     } else {
-      console.log('tkt nav goBack', navigation.goBack)
       navigation.goBack();
     }
   };
