@@ -27,13 +27,13 @@ export const EditProfileButtons = observer(
     const hasFormChanges = useMemo(
       () =>
         isEqual(values, {
-          photoURL: userInfo!.photoURL,
-          firstName: userInfo!.firstName,
-          lastName: userInfo!.lastName,
-          country: userInfo!.country,
-          email: userInfo!.email,
-          intro: userInfo!.intro,
-          phoneNumber: userInfo!.phoneNumber,
+          photoURL: userInfo?.photoURL,
+          firstName: userInfo?.firstName,
+          lastName: userInfo?.lastName,
+          country: userInfo?.country,
+          email: userInfo?.email,
+          intro: userInfo?.intro,
+          phoneNumber: userInfo?.phoneNumber,
         }),
       [values, userInfo],
     );
