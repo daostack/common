@@ -1,7 +1,10 @@
 import {observable, action, makeObservable} from 'mobx';
 import Validator from 'validatorjs';
 import en from 'validatorjs/src/lang/en';
-import {linkRules} from '~/Stores/FormStores/ValidationRules';
+import {
+  linkRules,
+  contributionRules,
+} from '~/Stores/FormStores/ValidationRules';
 
 class FormStore {
   form = null;
@@ -20,6 +23,7 @@ class FormStore {
     Validator.setMessages('en', en);
     this.clearFormStoreState();
     this.registerValidationRule(linkRules.validateLink);
+    this.registerValidationRule(contributionRules.validateContributionRange);
   }
 
   initFormStoreState = (fields) => {

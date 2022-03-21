@@ -5,7 +5,7 @@ class CreateCommonForm {
   static LINKS = 'links';
   static CONTRIBUTION = 'contribution';
   static FUNDING_GOAL = 'funding';
-  static MINIMUM = 'minimum';
+  static MINIMUM = 'minimum contribution';
   static ACTION = 'action';
   static RULES = 'rules';
   static IMAGE = 'image';

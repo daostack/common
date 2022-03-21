@@ -1,4 +1,4 @@
-import React, {ReactElement, useRef} from 'react';
+import React, {ReactElement, useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
 } from 'react-native';
 import {Formik} from 'formik';
 import {isEqual} from 'lodash';
@@ -65,9 +66,11 @@ const EditProfile = ({route}: Props): ReactElement => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const formikRef = useRef();
 
+  const [isUpdated, setUpdated] = useState(false);
+
   if (route.params.isCompleteAccount) {
     navigation.setOptions({
-      headerLeft: false,
+      headerShown: false,
     });
   } else {
     navigation.setOptions({
@@ -82,19 +85,19 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       const values = (formikRef?.current ?? {values: {}})?.values;
       const hasUnsavedChanges = !isEqual(values, {
-        photoURL: authStore.userInfo!.photoURL,
-        firstName: authStore.userInfo!.firstName,
-        lastName: authStore.userInfo!.lastName,
-        country: authStore.userInfo!.country,
-        email: authStore.userInfo!.email,
-        intro: authStore.userInfo!.intro,
-        phoneNumber: authStore.userInfo!.phoneNumber,
+        photoURL: authStore.userInfo?.photoURL,
+        firstName: authStore.userInfo?.firstName,
+        lastName: authStore.userInfo?.lastName,
+        country: authStore.userInfo?.country,
+        email: authStore.userInfo?.email,
+        intro: authStore.userInfo?.intro,
+        phoneNumber: authStore.userInfo?.phoneNumber,
       });
-      if (!hasUnsavedChanges) {
+      if (!hasUnsavedChanges || isUpdated) {
         return;
       } else {
         e.preventDefault();
@@ -113,7 +116,7 @@ const EditProfile = ({route}: Props): ReactElement => {
     });
 
     return unsubscribe;
-  }, [navigation, authStore.userInfo]);
+  }, [navigation, authStore.userInfo, isUpdated]);
 
   const formSave = async (values: Values): Promise<void> => {
     onFormSubmitStart();
@@ -132,6 +135,7 @@ const EditProfile = ({route}: Props): ReactElement => {
           intro: values.intro,
         },
       );
+      setUpdated(true);
     } catch (err) {
       logger.log('EditProfile Error -> ', err);
       throw err;
@@ -199,12 +203,27 @@ const EditProfile = ({route}: Props): ReactElement => {
                     marginTop: 0,
                   }}>
                   {route?.params?.isCompleteAccount && (
-                    <View style={{marginBottom: 32}}>
-                      <Text style={styles.title}>Complete your account</Text>
-                      <Text style={styles.subtitleForm}>
-                        Help the community to get to know you better
-                      </Text>
-                    </View>
+                    <>
+                      <View style={styles.topContainer}>
+                        <View style={styles.closeButton} />
+                        <Image
+                          source={require('~/Assets/newLogoMobile.png')}
+                          style={styles.logo}
+                        />
+                        <TouchableOpacity
+                          style={styles.closeButton}
+                          onPress={onClose}>
+                          <Icon name="close" size={20} color={colors.black} />
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={{marginBottom: 32}}>
+                        <Text style={styles.title}>Complete your account</Text>
+                        <Text style={styles.subtitleForm}>
+                          Help the community to get to know you better
+                        </Text>
+                      </View>
+                    </>
                   )}
 
                   {authStore.userInfo ? (
@@ -322,6 +341,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   subtitle: {
     ...text.greyText,
@@ -344,6 +364,20 @@ const styles = StyleSheet.create({
     ...font.fontSize(2),
     ...font.primary.regular,
     paddingVertical: 5,
+  },
+  logo: {
+    resizeMode: 'contain',
+  },
+  closeButton: {
+    width: 20,
+    height: 20,
+  },
+  topContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 30,
   },
 });
 
