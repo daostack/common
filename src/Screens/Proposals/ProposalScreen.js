@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
-import {text, layout, colors, sizeXS, font} from '~/Theme';
+import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
@@ -94,9 +94,7 @@ const ProposalScreen = ({
   const proposalStore = rootStore.proposalStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
-  const uiStore = rootStore.uiStore;
   const {userInfo, isDaoMember} = authStore;
-  const {conversionRate} = uiStore;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -303,6 +301,7 @@ const ProposalScreen = ({
             text: message,
             createTime: new Date(),
             ownerId: userInfo.uid,
+            commonId: proposalInfo.commonId,
             ownerName: userInfo.displayName,
             ownerAvatar: userInfo.photoURL,
             discussionId: proposalId || proposalInfo.id,
@@ -322,9 +321,14 @@ const ProposalScreen = ({
       }
     };
 
+    let viewStyle = styles.input;
+    if (isMember) {
+      viewStyle = {...viewStyle, borderBottomWidth: 0};
+    }
+
     const isEmptyMessage = () => !(inputText && inputText.trim().length);
 
-    return (
+    return isMember || isProposer ? (
       <KeyboardAvoidingView
         style={{
           position: 'absolute',
@@ -337,41 +341,39 @@ const ProposalScreen = ({
             ...styles.inputContainer,
             height: actualInputHeight,
           }}>
-          {isMember || isProposer ? (
-            <>
-              <TextInput
-                ref={inputRef}
-                editable={true}
-                fontSize={15}
-                multiline
-                placeholder="What do you think?"
-                placeholderTextColor={colors.grey3}
-                onChangeText={(currText) => setInputText(currText)}
-                onContentSizeChange={(event) => {
-                  setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
-                }}
-                style={styles.input}
-              />
-              <TouchableOpacity
-                onPress={sendMessageToDiscussion}
-                style={{
-                  justifyContent: 'center',
-                }}
-                disabled={isEmptyMessage()}>
-                <Icon
-                  name="send-message"
-                  size={25}
-                  color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
-                />
-              </TouchableOpacity>
-            </>
-          ) : (
-            <Text style={{...styles.joinCommonText}}>
-              Only members or proposal creators can send messages
-            </Text>
-          )}
+          <TextInput
+            ref={inputRef}
+            editable={true}
+            fontSize={15}
+            multiline
+            placeholder="What do you think?"
+            placeholderTextColor={colors.grey3}
+            onChangeText={(currText) => setInputText(currText)}
+            onContentSizeChange={(event) => {
+              setInputHeight(event.nativeEvent.contentSize.height + 30); // 15 * 2 - vertical padding
+            }}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            onPress={sendMessageToDiscussion}
+            style={{
+              justifyContent: 'center',
+            }}
+            disabled={isEmptyMessage()}>
+            <Icon
+              name="send-message"
+              size={25}
+              color={isEmptyMessage() ? colors.grey3 : colors.mainBlue}
+            />
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+    ) : (
+      <View style={viewStyle}>
+        <Text style={{...styles.joinCommonText}}>
+          Only members or proposal creators can send messages
+        </Text>
+      </View>
     );
   };
 
@@ -722,8 +724,8 @@ const ProposalScreen = ({
             setModalConversionVisible(!modalConversionVisible)
           }
           showAmount={true}
-          amount={+(amount * conversionRate).toFixed(2)}
-          funds={+(getAvailableFunds() * conversionRate).toFixed(2)}
+          amount={+amount.toFixed(2)}
+          funds={+getAvailableFunds().toFixed(2)}
         />
       </Modal>
       <SafeAreaView
@@ -1240,11 +1242,10 @@ const styles = StyleSheet.create({
   },
   joinCommonText: {
     ...text.textFieldplaceholder,
-    alignSelf: 'flex-start',
-    textAlign: 'center',
-    width: '70%',
-    marginTop: 20,
     color: colors.greySubtitle,
+    marginTop: sizeS,
+    marginBottom: sizeM,
+    alignSelf: 'center',
   },
 });
 

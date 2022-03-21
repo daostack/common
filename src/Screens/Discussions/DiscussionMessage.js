@@ -70,7 +70,7 @@ const DiscussionMessage = ({
   }, []);
 
   const flagView = (isHidden || isFlagged) && (
-    <View style={{flexDirection: 'row', marginLeft: isHidden ? 30 : 0}}>
+    <View style={styles.hiddenContainer}>
       {isHidden && (
         <Icon
           name={'hidden'}
@@ -223,9 +223,16 @@ const styles = StyleSheet.create({
     color: colors.grey3,
     marginLeft: 10,
   },
+  hiddenContainer: {
+    flexDirection: 'row',
+    marginLeft: 30,
+    maxWidth: width * 0.8,
+    alignItems: 'center',
+  },
   hiddenTitle: {
-    ...font.primary.bold,
-    fontSize: 13,
+    ...font.primary.regular,
+    fontSize: 11,
+    maxWidth: width * 0.34,
   },
   container: {
     borderRadius: 8,

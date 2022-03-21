@@ -7,6 +7,7 @@ import {
   View,
   Linking,
   Alert,
+  Platform,
 } from 'react-native';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
@@ -32,10 +33,6 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
-import {Settings} from 'react-native-fbsdk-next';
-
-// for making facebook login on staging
-Settings.setAppID('2309513929190090');
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -97,7 +94,10 @@ const UserProfile = ({authStore}) => {
   };
 
   const renderUnsignedUserData = () => (
-    <CreateAccount onSignedIn={onUserSignedIn} navigation={navigation} />
+    <CreateAccount
+      onSignedIn={onUserSignedIn}
+      width={Platform.OS === 'ios' ? '80%' : '60%'}
+    />
   );
 
   const renderUserProfileData = (currUserId, userInfo) => (

@@ -1,6 +1,6 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Platform} from 'react-native';
 import React from 'react';
-import {colors, text, layout} from '~/Theme';
+import {text, layout} from '~/Theme';
 import {inject, observer} from 'mobx-react';
 import CreateAccount from '../UserProfile/CreateAccount';
 import {func, string} from 'prop-types';
@@ -22,6 +22,7 @@ const LoginSheetScreen = ({uiStore, message = null, goToNextScreen}) => (
         hidePlaceholder={true}
         onSignedIn={() => uiStore.bottomSheetStore.hideBottomSheet()}
         goToNextScreen={goToNextScreen}
+        width={Platform.OS === 'ios' ? '90%' : '70%'}
       />
     </View>
   </View>
@@ -47,25 +48,6 @@ const styles = StyleSheet.create({
     ...text.h2Black,
     ...layout.marginTopM,
   },
-
-  googleSignInButton: {
-    alignSelf: 'stretch',
-    height: 56,
-    borderWidth: 1,
-    borderRadius: 28,
-    borderStyle: 'solid',
-    borderColor: '#eeeeee',
-
-    shadowOpacity: 0,
-    shadowColor: colors.white,
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowRadius: 0,
-    elevation: 3,
-  },
-
   sheetTextStyle: {
     ...text.greyText,
     ...text.centered,
