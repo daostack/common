@@ -69,7 +69,7 @@ const CreateDiscussionForm = ({
           <TextInputField
             value={''}
             viewStyle={{alignSelf: 'stretch'}}
-            label="Post title"
+            label="Discussion title"
             infoLabel="Required"
             autoCapitalize="sentences"
             autoCorrect={false}
@@ -98,7 +98,7 @@ const CreateDiscussionForm = ({
         </View>
       </ScrollView>
       <RequestStepActionButton
-        title="Publish post"
+        title="Publish Discussion"
         formStore={createDiscussionStore}
         onPress={formSave}
       />
