@@ -12,20 +12,15 @@ import {name as appName} from './app.json';
 import stores from './src/Stores';
 import {Provider} from 'mobx-react';
 import CodePush from 'react-native-code-push';
-import {Update} from '~/Components/Update/Update';
 import 'react-native-get-random-values';
 
 LogBox.ignoreAllLogs(true);
 
 const MobX = () => (
   <SafeAreaProvider>
-    <Update>
-      {() => (
-        <Provider {...stores}>
-          <App />
-        </Provider>
-      )}
-    </Update>
+    <Provider {...stores}>
+      <App />
+    </Provider>
   </SafeAreaProvider>
 );
 
