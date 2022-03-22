@@ -14,6 +14,7 @@ export {default as ContributionStep} from './Commons/RequestToJoin/Steps/Contrib
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
 export {default as EditCommon} from './Commons/EditCommon';
+export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
 
 //User Profile
 export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
@@ -41,3 +42,6 @@ export {default as Onboarding} from './Onboarding';
 export {default as HUDTest} from './HUDTest';
 export {default as FullScreenCreationLoader} from './FullScreenCreationLoader';
 export {default as ReceiveFunds} from './ReceiveFunds/ReceiveFunds';
+
+export {default as PhoneNumberStep1} from './PhoneLogin/PhoneNumberStep1';
+export {default as VerificationStep2} from './PhoneLogin/VerificationStep2';

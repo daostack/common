@@ -19,9 +19,16 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get myCommons() {
     try {
-      return this.getDataArray.filter((common: Common) =>
-        this.rootStore.authStore.isDaoMember(common?.members),
-      );
+      return this.getDataArray
+        .filter(
+          (common: Common) =>
+            this.rootStore.authStore.isDaoMember(common?.members) &&
+            common?.active,
+        )
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }
@@ -30,9 +37,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get pendingCommons() {
     try {
-      return this.rootStore.proposalStore.myActiveMembershipRequests.map(
-        (proposal: Proposal) => this.getCommonById(proposal.commonId),
-      );
+      return this.rootStore.proposalStore.myActiveMembershipRequests
+        .map((proposal: Proposal) => this.getCommonById(proposal.commonId))
+        .filter((common: Common) => common?.active)
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }
@@ -41,12 +52,18 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get featuredCommons() {
     try {
-      return this.getDataArray.filter(
-        (common: Common) =>
-          !this.myCommons.includes(common) &&
-          !this.pendingCommons.includes(common) &&
-          common.register === DAO_REGISTERED,
-      );
+      return this.getDataArray
+        .filter(
+          (common: Common) =>
+            !this.myCommons.includes(common) &&
+            !this.pendingCommons.includes(common) &&
+            common.register === DAO_REGISTERED &&
+            common?.active,
+        )
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
     } catch (error) {
       return [];
     }
@@ -85,8 +102,9 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
 
   getUserCommons = (userId: string) => {
     try {
-      return this.getDataArray.filter((common: Common) =>
-        isDaoMemberByUserId(common?.members, userId),
+      return this.getDataArray.filter(
+        (common: Common) =>
+          isDaoMemberByUserId(common?.members, userId) && common?.active,
       );
     } catch (error) {
       showBackendError({
@@ -110,6 +128,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   updateCommonInfo = async (updateCommonInfo: Partial<ICommonEntity>) => {
     try {
       return await CommonService.updateCommon(updateCommonInfo);
+    } catch (err) {
+      throw err;
+    }
+  };
+  deleteCommon = async (commonId: string) => {
+    try {
+      return await CommonService.deleteCommon(commonId);
     } catch (err) {
       throw err;
     }

@@ -50,6 +50,9 @@ import {
   EditCommon,
   ReceiveFunds,
   AddInvoicesScreen,
+  PhoneNumberStep1,
+  VerificationStep2,
+  FirstJoinCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -76,6 +79,7 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
+import {UpdateModal} from '~/Components/Update/UpdateModal';
 import {
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
@@ -143,8 +147,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -182,8 +185,12 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] =
-        remoteMessage.data.path?.split('/');
+      const [
+        screenName,
+        commonId,
+        objectId,
+        tabIndex = 0,
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -399,6 +406,23 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
+            name="PhoneNumber"
+            component={PhoneNumberStep1}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="VerifyPhone"
+            component={VerificationStep2}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerLeft: null,
+            })}
+          />
+          <Stack.Screen
             name="EditCommon"
             component={EditCommon}
             options={{
@@ -424,6 +448,7 @@ const App = ({rootStore, navigation}) => {
             component={ProposalScreen}
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
               headerLeft: () => (
                 <TouchableOpacity
                   onPress={() =>
@@ -434,8 +459,7 @@ const App = ({rootStore, navigation}) => {
                           })
                         : rest?.navigation.pop()
                       : navigationRef.current.goBack()
-                  }
-                >
+                  }>
                   <Icon name="left-arrow" color={colors.black} size={32} />
                 </TouchableOpacity>
               ),
@@ -476,6 +500,13 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="IntroductionStep"
             component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="FirstJoinCommon"
+            component={FirstJoinCommon}
             options={() => ({
               headerShown: false,
             })}
@@ -545,7 +576,7 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
-            name="New Post"
+            name={NAVIGATION_SCREENS.NEW_DISCUSSION}
             options={({nav, route}) => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
@@ -663,6 +694,7 @@ const App = ({rootStore, navigation}) => {
           style={{backgroundColor: 'transparent'}}
           positionValue={160}
         />
+        <UpdateModal />
       </NavigationContainer>
     </ErrorBoundary>
   );

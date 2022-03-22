@@ -7,6 +7,7 @@ import {
   View,
   Linking,
   Alert,
+  Platform,
 } from 'react-native';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
@@ -31,6 +32,7 @@ import {
 } from 'rn-placeholder';
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
+import {LINKS} from '~/Util/constants/links';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -92,7 +94,10 @@ const UserProfile = ({authStore}) => {
   };
 
   const renderUnsignedUserData = () => (
-    <CreateAccount onSignedIn={onUserSignedIn} />
+    <CreateAccount
+      onSignedIn={onUserSignedIn}
+      width={Platform.OS === 'ios' ? '80%' : '60%'}
+    />
   );
 
   const renderUserProfileData = (currUserId, userInfo) => (
@@ -125,6 +130,18 @@ const UserProfile = ({authStore}) => {
             <>
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
+
+                {authStore.userInfo && (
+                  <React.Fragment>
+                    <AccordionBtn
+                      title="Billing"
+                      onPress={() => {
+                        navigation.navigate('MonthlyContributionsList');
+                      }}
+                    />
+                  </React.Fragment>
+                )}
+
                 <AccordionBtn
                   onPress={() => navigation.navigate('Onboarding')}
                   title="About Common"
@@ -134,36 +151,28 @@ const UserProfile = ({authStore}) => {
                   title="Receive funds"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('mailto:hi@common.io')}
+                  onPress={() => Linking.openURL(LINKS.CONTACT_US)}
                   title="Contact us"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/help')}
+                  onPress={() => Linking.openURL(LINKS.HELP)}
                   title="Help and support"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/privacy')}
+                  onPress={() => Linking.openURL(LINKS.PRIVACY)}
                   title="Privacy Policy"
                 />
                 <AccordionBtn
-                  onPress={() => Linking.openURL('https://common.io/tos')}
+                  onPress={() => Linking.openURL(LINKS.TERMS)}
                   title="Terms of use"
                 />
-                {authStore.userInfo && (
-                  <React.Fragment>
-                    <AccordionBtn
-                      title="Monthly Contributions"
-                      onPress={() => {
-                        navigation.navigate('MonthlyContributionsList');
-                      }}
-                    />
 
-                    <AccordionBtn
-                      lightStyle={true}
-                      title="Log out"
-                      onPress={_logout}
-                    />
-                  </React.Fragment>
+                {authStore.userInfo && (
+                  <AccordionBtn
+                    lightStyle={true}
+                    title="Log out"
+                    onPress={_logout}
+                  />
                 )}
               </View>
               {Config.ENV !== 'production' && (

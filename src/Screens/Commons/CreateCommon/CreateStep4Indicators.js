@@ -3,9 +3,7 @@ import {Text, StyleSheet} from 'react-native';
 import {string, bool} from 'prop-types';
 
 import {colors, font} from '~/Theme';
-import {
-  CurrencySymbols,
-} from '~/Util/locale';
+import {CurrencySymbols} from '~/Util/locale';
 import {inject, observer} from 'mobx-react';
 import {uiStorePropTypes} from '~/Types/propTypes';
 

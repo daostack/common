@@ -9,8 +9,8 @@ import {FormikProps} from 'formik';
 
 export const validationSchema = object({
   image: yupString().required(),
-  name: yupString().required().label('The first name'),
-  tagLine: yupString().required().label('The last name'),
+  name: yupString().required().label('Name'),
+  tagLine: yupString().label('Tagline'),
   about: yupString(),
 });
 
@@ -63,7 +63,6 @@ const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
         value={values?.tagLine}
         viewStyle={{alignSelf: 'stretch'}}
         label="Tagline"
-        infoLabel="Required"
         placeholderText="Tagline"
         onBlur={handleBlur('tagLine')}
         autoCapitalize="none"
@@ -76,7 +75,6 @@ const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
         value={values?.about}
         viewStyle={{alignSelf: 'stretch'}}
         label="About"
-        infoLabel="Required"
         placeholderText="About"
         onBlur={handleBlur('about')}
         autoCapitalize="none"

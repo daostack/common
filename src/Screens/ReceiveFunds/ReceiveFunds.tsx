@@ -45,7 +45,7 @@ const ReceiveFunds = () => {
 
   return (
     <View style={styles.container}>
-      { !haveBankAccount ? (
+      {!haveBankAccount ? (
         <View style={styles.containerWithBackground}>
           <Image
             style={styles.imageWithBackground}
@@ -54,20 +54,13 @@ const ReceiveFunds = () => {
           <Text style={styles.subTitle}>
             You must provide bank account details in order to receive funds
           </Text>
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={addBankAccount}>
-            <Text style={styles.buttonText}>
-              Add Bank Account
-            </Text>
+          <TouchableOpacity style={styles.btn} onPress={addBankAccount}>
+            <Text style={styles.buttonText}>Add Bank Account</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.containerWithoutBackground}>
-          <Image
-            style={styles.image}
-            source={require('~/Assets/funds.png')}
-          />
+          <Image style={styles.image} source={require('~/Assets/funds.png')} />
           <View style={styles.bankAccountData}>
             <View>
               <Text style={styles.accountDataLable}>ID Number</Text>
@@ -83,12 +76,12 @@ const ReceiveFunds = () => {
             </View>
           </View>
           <Text style={styles.subTitle}>
-            These details are needed in order to transfer funds to your account and vissible to you only.
+            These details are needed in order to transfer funds to your account
+            and vissible to you only.
           </Text>
-
         </View>
       )}
-      { haveBankAccount && (
+      {haveBankAccount && (
         <TouchableOpacity
           style={[styles.removeButton, {marginBottom: insets.bottom + 24}]}
           onPress={removeAccount}>
@@ -100,11 +93,11 @@ const ReceiveFunds = () => {
         style={{borderRadius: 30}}
         isVisible={isModalVisible}
         onClose={closeModal}>
-          <AddBankAccountForm
-            onDelete={removeAccount}
-            onSubmit={handleSubmit}
-            isAddingNew={!haveBankAccount}
-          />
+        <AddBankAccountForm
+          onDelete={removeAccount}
+          onSubmit={handleSubmit}
+          isAddingNew={!haveBankAccount}
+        />
       </BottomSheetModal>
     </View>
   );

@@ -16,6 +16,7 @@ const props = {
   hasPermission: string,
   rootStore: rootStorePropTypes.isRequired,
   viewerPermission: string,
+  showCard: bool,
 };
 
 const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
@@ -25,6 +26,7 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
   hasPermission,
   rootStore,
   viewerPermission,
+  showCard,
 }) => {
   const authStore = rootStore.authStore;
   const showIcon =
@@ -39,7 +41,8 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
           moderation={{...moderation, type: ENTITY_TYPES.discussion}}
           reporter={reporter}
           currentUID={authStore?.userInfo?.uid}
-          viewerPermission={viewerPermission}
+          viewerPermission={viewerPermission as string}
+          showCard={!!showCard}
         />
       )}
       {showIcon && (
@@ -66,18 +69,18 @@ const styles = StyleSheet.create({
     padding: sizeXS,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    height: 30,
   },
   hiddenCardHeader: {
     ...layout.flexRow,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flex: 1,
     backgroundColor: colors.blueGray,
     //padding: sizeXS,
     paddingHorizontal: sizeM,
     borderRadius: 5,
-    height: 35,
+    minHeight: 35,
   },
 });
 

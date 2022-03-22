@@ -22,7 +22,8 @@ const MonthlyContributionStatus = ({status, dueDate}) => (
   <Text
     style={
       styles[
-        status === ACTIVE || (dueDate > new Date() && status === CANCELED_BY_USER)
+        status === ACTIVE ||
+        (dueDate > new Date() && status === CANCELED_BY_USER)
           ? 'green'
           : status === CANCELED_BY_USER
           ? 'gray'

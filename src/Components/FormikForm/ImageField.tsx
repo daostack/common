@@ -17,7 +17,10 @@ import layout from '~/Theme/layout';
 import text from '~/Theme/text';
 import {string, func, bool, shape, object, number} from 'prop-types';
 import logger from '../../Services/Logger';
-import {handlePermission, requestAndroidCameraPermission} from '../../Util/Permissions';
+import {
+  handlePermission,
+  requestAndroidCameraPermission,
+} from '../../Util/Permissions';
 import {observer} from 'mobx-react';
 import {ModalUploadFile} from '~/Screens/Proposals/components/ModalUploadFile';
 
@@ -61,34 +64,34 @@ function ImageField({
   }
 
   function pickImage(): void {
-      const options = {
-        title: title,
-        quality: quality || 0.7,
-        allowsEditing: allowsEditing || false,
-      };
-      launchImageLibrary(options, async (response) => {
-        if (response.didCancel) {
-          logger.log('User cancelled image picker');
-        } else if (response.errorMessage) {
-          // only for ios because android handles this
-          Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.errorMessage);
-          logger.log('ImagePicker Error: ', response.errorMessage);
-        } else {
-          // const source = { uri: response.uri };
-          Toast.loading('Uploading...');
-          StorageService.uploadImage(response?.assets[0]?.uri)
-            .then((url: string): void => {
-              Toast.hide();
-              Toast.success('Done');
-              onChangeValue(url);
-            })
-            .catch((error: any) => {
-              Toast.error(error.toString());
-            });
-        }
-        closeSheet();
-      });
+    const options = {
+      title: title,
+      quality: quality || 0.7,
+      allowsEditing: allowsEditing || false,
+    };
+    launchImageLibrary(options, async (response) => {
+      if (response.didCancel) {
+        logger.log('User cancelled image picker');
+      } else if (response.errorMessage) {
+        // only for ios because android handles this
+        Platform.OS === 'ios' && (await handlePermission());
+        Toast.error(response.errorMessage);
+        logger.log('ImagePicker Error: ', response.errorMessage);
+      } else {
+        // const source = { uri: response.uri };
+        Toast.loading('Uploading...');
+        StorageService.uploadImage(response?.assets[0]?.uri)
+          .then((url: string): void => {
+            Toast.hide();
+            Toast.success('Done');
+            onChangeValue(url);
+          })
+          .catch((error: any) => {
+            Toast.error(error.toString());
+          });
+      }
+      closeSheet();
+    });
   }
 
   const takePhoto = () => {
@@ -230,7 +233,7 @@ function ImageField({
                 isAvatar ? openSheet() : onFieldDeleted();
               }}>
               <Icon
-                name={isAvatar ? 'addpicture' : 'delete'}
+                name={isAvatar ? 'edit-16' : 'delete'}
                 size={16}
                 color={colors.white}
               />

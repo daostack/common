@@ -77,10 +77,11 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse =
-      await ProposalService.createRequestToJoin({
+    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
+      {
         ...data,
-      });
+      },
+    );
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;

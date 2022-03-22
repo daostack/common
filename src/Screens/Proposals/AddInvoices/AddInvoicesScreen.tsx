@@ -1,7 +1,8 @@
 import {useRoute} from '@react-navigation/native';
-import {inject, observer} from 'mobx-react';
-import React, {ReactElement, useState} from 'react';
+import {observer} from 'mobx-react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {
+  GestureResponderEvent,
   Image,
   Platform,
   Pressable,
@@ -10,31 +11,27 @@ import {
   Text,
   TouchableOpacity,
   View,
-  GestureResponderEvent,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from '~/Assets/iconfont/Icon';
 import ProposalInfo from '~/Components/Proposals/ProposalInfo';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import PaymentsService from '~/Services/PaymentsService';
 import {colors, layout, text} from '~/Theme';
 import {AddInvoicesRouteProps} from '~/Types/navigation';
-import {RootStore} from '~/Types/store';
+import {FILE_TYPES} from '~/Util/constants/firebaseStorage';
+import {useStore} from '~/Util/hooks/useStore';
 import {CurrencySymbols} from '~/Util/locale';
 import logger from '../../../Services/Logger';
 import {handlePermission} from '../../../Util/Permissions';
 import ModalAddInvoiceAmount from '../components/ModalAddInvoiceAmount';
 import ModalDeleteInvoice from '../components/ModalDeleteInvoice';
 import {ModalFinishUploadInvoices} from '../components/ModalFinishUploadInvoices/ModalFinishUploadInvoices';
-import {ModalUploadFile} from '../components/ModalUploadFile';
 import {ModalImagePreview} from '../components/ModalImagePreview';
+import {ModalUploadFile} from '../components/ModalUploadFile';
 import {styles} from './styles';
-import {FILE_TYPES} from '~/Util/constants/firebaseStorage';
-
-type Props = {
-  rootStore: RootStore;
-};
 
 const options = {
   mediaType: 'photo',
@@ -42,14 +39,18 @@ const options = {
   allowsEditing: false,
 };
 
-const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
+const AddInvoicesScreen = (): ReactElement => {
   const router = useRoute<AddInvoicesRouteProps>();
 
   const {proposalId} = router.params;
+  const {
+    proposalStore,
+    commonStore,
+    authStore,
+    uiStore: {bottomSheetStore},
+  } = useStore('rootStore');
 
-  const proposalStore = rootStore.proposalStore;
-  const commonStore = rootStore.commonStore;
-  const userInfo = rootStore.authStore.userInfo;
+  const userInfo = authStore.userInfo;
 
   const [isBottomModalVisible, setIsBottomModalVisible] = useState(false);
   const [isFinishModalVisible, setIsFinishModalVisible] = useState(false);
@@ -66,6 +67,20 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState(0);
   const [invoiceSelected, setInvoiceSelected] = useState(0);
+
+  useEffect(() => {
+    if (!userInfo && !bottomSheetStore.isVisible) {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.LOGIN_SHEET_SCREEN,
+        {
+          message: 'Connect your account to add invoices',
+        },
+      );
+    }
+    if (userInfo && bottomSheetStore.isVisible) {
+      bottomSheetStore.hideBottomSheet();
+    }
+  }, [userInfo, bottomSheetStore.isVisible]);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   let commonInfo = null;
@@ -199,7 +214,11 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         } else {
           setInvoiceImages([
             ...invoiceImages,
-            {url: response?.assets[0]?.uri as string, mimeType: response?.assets[0].type as string, amount: 0},
+            {
+              url: response?.assets[0]?.uri as string,
+              mimeType: response?.assets[0].type as string,
+              amount: 0,
+            },
           ]);
         }
       }
@@ -220,7 +239,11 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
 
         setInvoiceImages([
           ...invoiceImages,
-          {url: response?.assets[0]?.uri as string, mimeType: response?.assets[0].type as string, amount: 0},
+          {
+            url: response?.assets[0]?.uri as string,
+            mimeType: response?.assets[0].type as string,
+            amount: 0,
+          },
         ]);
       }
       setIsLoading(false);
@@ -280,10 +303,9 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
           style={styles.logo}
         />
         <Text style={styles.commonNameText}>{commonInfo?.name}</Text>
-        <Text
-          style={
-            styles.userGreetingsText
-          }>{`Hi ${userInfo?.firstName},\n Please add of your invoices related to this proposal`}</Text>
+        <Text style={styles.userGreetingsText}>{`Hi ${
+          userInfo?.firstName ?? ''
+        },\n Please add of your invoices related to this proposal`}</Text>
         <View style={layout.marginHorizontalL}>
           <ProposalInfo proposalInfo={proposalInfo} />
         </View>
@@ -407,7 +429,7 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
         />
         <ModalFinishUploadInvoices
           proposalId={proposalId}
-          commonId={commonInfo!.id}
+          commonId={commonInfo?.id as string}
           isVisible={isFinishModalVisible}
           onPressClose={closeFinish}
           proposalAmount={proposalInfo?.fundingRequest?.amount}
@@ -422,4 +444,4 @@ const AddInvoicesScreen = ({rootStore}: Props): ReactElement => {
   );
 };
 
-export default inject('rootStore')(observer(AddInvoicesScreen));
+export default observer(AddInvoicesScreen);

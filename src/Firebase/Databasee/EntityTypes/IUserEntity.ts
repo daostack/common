@@ -17,10 +17,9 @@ export interface IUserEntity extends IBaseEntity {
 }
 
 export interface UserPublicData {
-  createdAt: Date;
   firstName: string;
   lastName: string;
-  email: string;
   photoURL: string;
-  uid: string;
+  phoneNumber: string;
+  provider: string;
 }

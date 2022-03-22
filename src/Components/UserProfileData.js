@@ -13,6 +13,7 @@ import logger from '~/Services/Logger';
 import {string, object} from 'prop-types';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {useStore} from '~/Util/hooks/useStore';
+import {getProviderIcon} from './UserProfile/helper';
 
 import {
   Placeholder,
@@ -23,7 +24,9 @@ import {
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation}) => {
-  const {userStore, proposalStore, commonStore, authStore} = useStore('rootStore');
+  const {userStore, proposalStore, commonStore, authStore} = useStore(
+    'rootStore',
+  );
   const userInfo = authStore.userInfo;
 
   const providedUserId = userId || currUserInfo.uid;
@@ -64,6 +67,9 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
     });
     navigation.dispatch(navigate);
   };
+
+  const getTitle = () =>
+    user.provider === 'phone' ? user.phoneNumber : user.email;
 
   const renderUserProfilePicture = () =>
     !isOwnProfile ? (
@@ -143,7 +149,12 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
       )}
       {renderUserProfilePicture()}
       <Text style={styles.name}>{user.displayName}</Text>
-      {isOwnProfile && <Text style={text.ashleyjquimbacom2}>{user.email}</Text>}
+      {isOwnProfile && (
+        <View style={styles.titleContainer}>
+          {getProviderIcon(user.provider)}
+          <Text style={text.ashleyjquimbacom2}>{getTitle()}</Text>
+        </View>
+      )}
       <View style={styles.countBoxContainer}>
         <CountBox
           count={commonsCount}
@@ -356,6 +367,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     width: '100%',
+  },
+  titleContainer: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 10,
   },
 });
 
