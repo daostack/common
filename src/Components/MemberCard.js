@@ -20,13 +20,11 @@ import {
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {CurrencySymbols} from '~/Util/locale';
-import ModerationMenu from '~/Components/Moderation/ModerationMenu';
 
 const MemberCard = ({
   userInfo,
   proposalInfo = null,
   openCommonOptions,
-  showModerationMenu,
   moderatorId,
   commonId,
   rootStore,
@@ -55,9 +53,6 @@ const MemberCard = ({
                   {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
                   {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
                 </Text>
-                {showModerationMenu && (
-                  <ModerationMenu showOptions={openCommonOptions} />
-                )}
               </View>
             )}
 
@@ -187,6 +182,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginRight: 10,
   },
 });
 
