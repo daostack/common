@@ -12,7 +12,8 @@ import logger from '~/Services/Logger';
 import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 import {colors, font, layout, sizeL, sizeM, sizeXL, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {escapeUrl, formatNumber, numberFormatter, showErrorPopUp} from '~/Util';
+import {escapeUrl, numberFormatter, showErrorPopUp} from '~/Util';
+import CommonService from '~/Services/CommonService';
 import {CurrencySymbols} from '~/Util/locale';
 import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStep4Indicators from './CreateStep4Indicators';
@@ -76,24 +77,39 @@ const CreateStep4 = ({
         contributionAmount: data.contributionAmount,
         zeroContribution: data.zeroContribution,
       };
-      const personalContributionFormStore = new PersonalContributionFormStore();
 
       navigation.navigate({
-        name: 'PersonalContributionStep',
+        name: 'FullScreenCreationLoader',
         params: {
-          common: {
-            ...formattedData,
-          },
-          contributionData: {
-            contributionType: data.contributionType,
-            zeroContribution: data.zeroContribution,
-            minFeeToJoin: contributionAmount,
-          },
-          formStores: {
-            personalContributionFormStore,
-          },
+          title: 'Creating your Common',
+          message: 'This might take a couple of minutes.',
         },
       });
+
+      const createCommonResponse = await CommonService.createCommon(
+        formattedData,
+      );
+
+      if (createCommonResponse.status === 200) {
+        const personalContributionFormStore = new PersonalContributionFormStore();
+
+        navigation.navigate({
+          name: 'PersonalContributionStep',
+          params: {
+            common: {
+              id: createCommonResponse.data.id,
+              ...formattedData,
+              minFeeToJoin: contributionAmount,
+            },
+            formStores: {
+              personalContributionFormStore,
+            },
+          },
+        });
+      } else {
+        navigation.pop();
+        showErrorPopUp(bottomSheetStore, createCommonResponse);
+      }
     } catch (e) {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);

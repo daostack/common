@@ -2,49 +2,42 @@ import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {v4} from 'uuid';
 import AmountField from '~/Components/FormFields/AmountField';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import MembershipRequest from '~/Screens/Commons/RequestToJoin/MembershipRequest';
 import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
-import CardsService from '~/Services/CardsService';
 import CommonService from '~/Services/CommonService';
-import PaymentService from '~/Services/PaymentsService';
+import logger from '~/Services/Logger';
 import {colors, text} from '~/Theme';
 import {showErrorPopUp} from '~/Util';
 import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation';
+import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 import {useStore} from '~/Util/hooks/useStore';
 import {CurrencySymbols} from '~/Util/locale';
 import Toast from '~/Util/Toast';
-import {CommonCreatedModal} from './CommonCreatedModal';
-import logger from '~/Services/Logger';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {PersonalContributionsRouteProps} from '../Profile/CommonMembers/types';
-import {formatMinFeeToJoin} from '~/Util/FormatUtil';
+import {CommonCreatedModal} from './CommonCreatedModal';
 
 const PersonalContributionStep = () => {
   const navigation = useNavigation();
   const router = useRoute<PersonalContributionsRouteProps>();
   const {
-    authStore,
     uiStore: {bottomSheetStore},
   } = useStore('rootStore');
 
-  const {common, formStores, contributionData} = router.params;
+  const {common, formStores} = router.params;
 
   const [isActionBtnHidden, setIsActionBtnHidden] = useState<boolean>(true);
   const [newCommonId, setNewCommonId] = useState<string>();
-  const isMonthly = contributionData.contributionType === 'monthly';
-  const zeroContribution = isMonthly
-    ? false
-    : contributionData.zeroContribution;
+  const isMonthly = common.contributionType === 'monthly';
+  const zeroContribution = isMonthly ? false : common.zeroContribution;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
   const minFeeFormatted = formatMinFeeToJoin({
-    zeroContribution: contributionData.zeroContribution,
-    minFeeToJoin: contributionData.minFeeToJoin,
+    zeroContribution: common.zeroContribution,
+    minFeeToJoin: common.minFeeToJoin,
   });
 
   const onCustomClose = () => {
@@ -66,58 +59,49 @@ const PersonalContributionStep = () => {
 
   const navigateToRequestStep4 = async () => {
     try {
-      let cardId = null;
-      let link = null;
+      const form = personalContributionFormStore.getFormFieldsJson() as {
+        amount: number;
+      };
       Toast.loading('One moment please');
-      const card = await CardsService.fetchCardByOwnerId(
-        authStore.userInfo?.uid as string,
-      );
-
-      if (card) {
-        cardId = card.id;
-      } else {
-        cardId = v4();
-        const {data} = await PaymentService.createBuyerTokenPage(cardId);
-        link = data.link;
+      if (form.amount === 0) {
+        Toast.done('Success');
+        Toast.hide();
+        setNewCommonId(common.id);
+        return;
       }
+
+      const immediateContributionResponse = await CommonService.immediateContribution(
+        {
+          amount: form.amount * 100,
+          commonId: common.id,
+          contributionType: common.contributionType,
+          saveCard: true,
+        },
+      );
 
       Toast.done('Success');
       Toast.hide();
-      navigation.dispatch(
-        CommonActions.navigate({
-          name: card ? 'ChoosePaymentMethodStep' : 'PersonalPaymentDetailsStep',
-          params: {
-            formStores,
-            common,
-            iFrameLink: link,
-            cardId,
-            contributionData,
-          },
-        }),
-      );
+
+      if (immediateContributionResponse.status === 200) {
+        if (immediateContributionResponse.data?.link) {
+          navigation.dispatch(
+            CommonActions.navigate({
+              name: 'PersonalPaymentDetailsStep',
+              params: {
+                common,
+                iFrameLink: immediateContributionResponse.data.link,
+                paymentId: immediateContributionResponse.data.paymentId,
+              },
+            }),
+          );
+        } else {
+          setNewCommonId(common.id);
+        }
+      } else {
+        showErrorPopUp(bottomSheetStore, immediateContributionResponse);
+      }
     } catch (err) {
       showErrorPopUp(bottomSheetStore, err);
-    }
-  };
-
-  const createCommonWithoutContribution = async () => {
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: NAVIGATION_SCREENS.FULL_SCREEN_CREATION_LOADER,
-        params: {
-          title: 'Creating your Common',
-          message: 'This might take a couple of minutes.',
-        },
-      }),
-    );
-
-    const createCommonResponse = await CommonService.createCommon(common);
-    if (createCommonResponse.status === 200) {
-      setNewCommonId(createCommonResponse.data.id);
-      navigation.goBack();
-    } else {
-      navigation.goBack();
-      showErrorPopUp(bottomSheetStore, createCommonResponse);
     }
   };
 
@@ -134,11 +118,7 @@ const PersonalContributionStep = () => {
         },
       );
 
-      if (amount > 0) {
-        navigateToRequestStep4();
-      } else {
-        createCommonWithoutContribution();
-      }
+      navigateToRequestStep4();
     } catch (e) {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
@@ -150,15 +130,7 @@ const PersonalContributionStep = () => {
   const push = () => {
     try {
       if (personalContributionFormStore.isFormValid()) {
-        const formData = {
-          ...personalContributionFormStore.getFormFieldsJson(),
-        } as {amount: number};
-
-        if (formData.amount > 0) {
-          navigateToRequestStep4();
-        } else {
-          createCommonWithoutContribution();
-        }
+        navigateToRequestStep4();
       }
     } catch (e) {
       logger.log('error -> ', e);
@@ -227,8 +199,8 @@ const PersonalContributionStep = () => {
           onAmountSelected={onAmountSelected}
           minFeeToJoin={formatMinFeeToJoin({
             numberValue: true,
-            minFeeToJoin: contributionData.minFeeToJoin,
-            zeroContribution: contributionData.zeroContribution,
+            minFeeToJoin: common.minFeeToJoin,
+            zeroContribution: common.zeroContribution,
           })}
           zeroContribution={zeroContribution}
         />

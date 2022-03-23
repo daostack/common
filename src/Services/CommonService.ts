@@ -5,7 +5,9 @@ import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollect
 import {
   ICommonEntity,
   CommonCreatedBody,
+  CommonImmediateContributionBody,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {PaymentResponse} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonListLoadCallbackFn = (
@@ -17,7 +19,12 @@ export type commonLoadCallbackFn = (
 
 class CommonService {
   private axiosClient: AxiosInstance;
-  private endpoints: {create: string; update: string; delete: string};
+  private endpoints: {
+    create: string;
+    update: string;
+    delete: string;
+    immediateContribution: string;
+  };
 
   constructor() {
     this.axiosClient = axios.create({
@@ -29,6 +36,7 @@ class CommonService {
       create: '/create',
       update: '/update',
       delete: '/deactivate',
+      immediateContribution: '/immediate-contribution',
     };
   }
 
@@ -46,6 +54,26 @@ class CommonService {
           Authorization: await auth().currentUser.getIdToken(true),
         },
       });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  immediateContribution = async (
+    data: CommonImmediateContributionBody,
+  ): Promise<
+    AxiosResponse<PaymentResponse & {link: string; paymentId: string}>
+  > => {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.immediateContribution,
+        data,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
     } catch (err) {
       throw err;
     }
