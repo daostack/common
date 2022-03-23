@@ -161,10 +161,6 @@ const EditProfile = ({route}: Props): ReactElement => {
     }
   };
 
-  const onClose = () => {
-    navigation.pop(3);
-  };
-
   const onFormClose = () => {
     navigation.pop();
   };
