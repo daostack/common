@@ -79,7 +79,6 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
-import {UpdateModal} from '~/Components/Update/UpdateModal';
 import {
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
@@ -694,7 +693,6 @@ const App = ({rootStore, navigation}) => {
           style={{backgroundColor: 'transparent'}}
           positionValue={160}
         />
-        <UpdateModal />
       </NavigationContainer>
     </ErrorBoundary>
   );

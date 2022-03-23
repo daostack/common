@@ -16,6 +16,8 @@ interface Props {
   isFounderOrModerator: boolean;
 }
 
+// disabled till we find a better way or agree to update the oldestSupportedVersion
+
 export const UpdateModal = ({}: Props) => {
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
