@@ -7,6 +7,7 @@ import {
   View,
   Linking,
   Alert,
+  Platform,
 } from 'react-native';
 import {getVersion, getBuildNumber} from 'react-native-device-info';
 import React, {useEffect, useState} from 'react';
@@ -93,7 +94,10 @@ const UserProfile = ({authStore}) => {
   };
 
   const renderUnsignedUserData = () => (
-    <CreateAccount onSignedIn={onUserSignedIn} />
+    <CreateAccount
+      onSignedIn={onUserSignedIn}
+      width={Platform.OS === 'ios' ? '80%' : '60%'}
+    />
   );
 
   const renderUserProfileData = (currUserId, userInfo) => (

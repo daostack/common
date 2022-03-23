@@ -26,9 +26,11 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>facebook</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.854172758045-cgj72k292a2gm2iovv166j13l8el67ni</string>
+				<string>fb2309513929190090</string>
 			</array>
 		</dict>
 		<dict>
@@ -45,30 +47,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>dynamic-link</string>
+			<string>google</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.daostack.common</string>
+				<string>com.googleusercontent.apps.854172758045-cgj72k292a2gm2iovv166j13l8el67ni</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>web</string>
+			<string>phone</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>https://app.common.io</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>web-2</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>https://common.io</string>
+				<string>app-1-854172758045-ios-12e29501991280e11e96f4</string>
 			</array>
 		</dict>
 	</array>
@@ -76,6 +68,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CodePushDeploymentKey</key>
 	<string>D1ZiSH4ey7IGwXkFirx-2V5ijJw8vXIDWhH8a</string>
+	<key>FacebookAppID</key>
+	<string>2309513929190090</string>
+	<key>FacebookDisplayName</key>
+	<string>Common</string>
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
 		<string>https://app.common.io</string>
@@ -84,7 +80,10 @@
 	<string>NO</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>https</string>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

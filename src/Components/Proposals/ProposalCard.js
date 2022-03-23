@@ -18,7 +18,6 @@ import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
 import {string, bool, object, func} from 'prop-types';
-import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {
   Placeholder,
@@ -27,6 +26,7 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {useStore} from '~/Util/hooks/useStore';
+import ModerationMenu from '../Moderation/ModerationMenu';
 
 const {width} = Dimensions.get('window');
 
@@ -114,6 +114,11 @@ const ProposalCard = ({
     proposalInfo.moderation?.reporter &&
     userStore.getUserById(proposalInfo.moderation?.reporter);
 
+  const showModerationMenu =
+    (!proposalInfo.isModerationHidden || hasPermission) &&
+    !isSwiper &&
+    !isOwner;
+
   return proposalInfo ? (
     <Animated.View
       style={[
@@ -146,15 +151,22 @@ const ProposalCard = ({
         {showCard && (
           <View style={styles.containerView}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>
-                {isFundingRequest &&
-                  (proposalInfo?.description?.title || 'Unknown title')}
-              </Text>
-              {(!proposalInfo.isModerationHidden || hasPermission) &&
-                !isSwiper &&
-                !isOwner && <ModerationMenu showOptions={openCommonOptions} />}
+              {isFundingRequest ? (
+                <Text style={styles.title}>
+                  {proposalInfo?.description?.title || 'Unknown title'}
+                </Text>
+              ) : (
+                <View style={{flex: 12}} />
+              )}
+              {showModerationMenu && (
+                <View style={{flex: 1}}>
+                  <ModerationMenu showOptions={openCommonOptions} />
+                </View>
+              )}
             </View>
             <MemberCard
+              openCommonOptions={openCommonOptions}
+              showModerationMenu={showModerationMenu}
               showDate={proposalInfo.isJoinRequest}
               userInfo={userStore.getUserById(proposalInfo.proposerId)}
               proposalInfo={proposalInfo}
@@ -284,11 +296,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     flexWrap: 'wrap',
     fontSize: 16,
+    flex: 12,
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     width: '100%',
   },
 });

@@ -15,6 +15,9 @@ export const lineHeight = (lineHeightIndex: number) => ({
 });
 const font = {
   heading: {
+    newBold: {
+      fontFamily: 'NotoSerif-SemiBold',
+    } as TextStyle,
     bold: {
       fontFamily: 'NotoSerif-SemiBold',
     } as TextStyle,

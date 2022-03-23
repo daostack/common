@@ -7,8 +7,6 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import {useTimeoutFn} from '../Util/hooks/useTimeoutFn';
 import {showLoadingExpirationPopUp} from '../Util';
 
-const TIMEOUT = 10000;
-
 const Loader = ({
   color,
   isBigger,
@@ -16,9 +14,11 @@ const Loader = ({
   rootStore,
   navigation,
   isMedium,
+  phoneLogin = false,
 }) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
+  const TIMEOUT = phoneLogin ? 40000 : 10000;
   useTimeoutFn(callbackFn, TIMEOUT);
 
   let loaderStyle = isBigger
@@ -60,6 +60,7 @@ Loader.propTypes = {
   rootStore: rootStorePropTypes,
   navigation: object,
   isMedium: bool,
+  phoneLogin: bool,
 };
 
 const styles = StyleSheet.create({

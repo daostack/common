@@ -11,17 +11,10 @@ import {text, layout, colors, font} from '~/Theme';
 import logger from '~/Services/Logger';
 import {object, func} from 'prop-types';
 
-const UnsavedChanges = ({
-  navigation,
-  onContinueEditing,
-  onLeaveWithoutSaving,
-}) => {
+const UnsavedChanges = ({onContinueEditing, onLeaveWithoutSaving}) => {
   const liveWithoutSave = (e) => {
-    if (navigation?.current) {
-      navigation?.current.goBack();
-      if (onLeaveWithoutSaving) {
-        onLeaveWithoutSaving();
-      }
+    if (onLeaveWithoutSaving) {
+      onLeaveWithoutSaving();
     }
   };
 

@@ -53,6 +53,9 @@ import {
   PersonalContributionStep,
   PersonalPaymentDetailsStep,
   ChoosePaymentMethodStep,
+  PhoneNumberStep1,
+  VerificationStep2,
+  FirstJoinCommon,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -405,6 +408,23 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
+            name="PhoneNumber"
+            component={PhoneNumberStep1}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="VerifyPhone"
+            component={VerificationStep2}
+            options={() => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerLeft: null,
+            })}
+          />
+          <Stack.Screen
             name="EditCommon"
             component={EditCommon}
             options={{
@@ -430,6 +450,7 @@ const App = ({rootStore, navigation}) => {
             component={ProposalScreen}
             options={({route, ...rest}) => ({
               headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
               headerLeft: () => (
                 <TouchableOpacity
                   onPress={() =>
@@ -507,6 +528,13 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
+            name="FirstJoinCommon"
+            component={FirstJoinCommon}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
             name="ContributionStep"
             component={ContributionStep}
             options={() => ({
@@ -571,7 +599,7 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
-            name="New Post"
+            name={NAVIGATION_SCREENS.NEW_DISCUSSION}
             options={({nav, route}) => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
