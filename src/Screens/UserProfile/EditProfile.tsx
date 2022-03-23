@@ -155,7 +155,7 @@ const EditProfile = ({route}: Props): ReactElement => {
       route.params.isCompleteAccount &&
       authStore.userInfo?.provider === 'phone'
     ) {
-      onClose(3);
+      onClose();
     } else {
       navigation.goBack();
     }
