@@ -142,7 +142,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   };
 
   return showLoader ? (
-    <Loader isFullScreen />
+    <Loader isFullScreen phoneLogin />
   ) : (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
