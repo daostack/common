@@ -49,6 +49,7 @@ const props = {
       dotIconName: string,
     }),
   ),
+  goBack: func,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -98,6 +99,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   onContentSizeChange,
   isRequestButtonSticky = true,
   headerDotsInfo,
+  goBack,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -142,7 +144,13 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
         <StepDotHeaderBar
           title={navTitle || ''}
           closeDialog={closeDialog}
-          onLeftPress={() => navigation.pop()}
+          onLeftPress={() => {
+            if (goBack) {
+              goBack();
+            } else {
+              navigation.pop(2);
+            }
+          }}
         />
         <StepDotHeader
           title={stepDotHeaderTitle}

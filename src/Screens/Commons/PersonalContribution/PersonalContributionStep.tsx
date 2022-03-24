@@ -123,7 +123,7 @@ const PersonalContributionStep = () => {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
-      navigation.goBack();
+      navigation.pop(2);
     }
   };
 
@@ -136,7 +136,7 @@ const PersonalContributionStep = () => {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
-      navigation.goBack();
+      navigation.pop(2);
     }
   };
 
@@ -148,6 +148,7 @@ const PersonalContributionStep = () => {
       currentIndex={1}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
       layoutTitle={<MembershipRequest />}
+      goBack={() => navigation.pop(2)}
       prependedArea={
         <CommonCreatedModal
           isVisible={Boolean(newCommonId)}
