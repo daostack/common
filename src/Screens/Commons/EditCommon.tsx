@@ -130,11 +130,16 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
       bottomSheetStore.showBottomSheet(BOTTOM_SHEET_TEMPLATES.UNSAVED_CHANGES, {
         navigation: navigation,
         onContinueEditing: closeBottomSheet,
-        onLeaveWithoutSaving: closeBottomSheet,
+        onLeaveWithoutSaving,
       });
     } else {
       navigation.pop();
     }
+  };
+
+  const onLeaveWithoutSaving = () => {
+    bottomSheetStore.hideBottomSheet();
+    navigation.pop();
   };
 
   const closeBottomSheet = () => {
