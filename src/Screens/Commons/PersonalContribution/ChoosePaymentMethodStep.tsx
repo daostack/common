@@ -15,6 +15,7 @@ import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
 import {v4} from 'uuid';
 import PaymentService from '~/Services/PaymentsService';
 import Toast from '~/Util/Toast';
+import logger from '~/Services/Logger';
 
 const ChoosePaymentMethodStep = () => {
   const navigation = useNavigation();
@@ -26,6 +27,9 @@ const ChoosePaymentMethodStep = () => {
 
   function handleSelectCard(card: Card): void {
     setSelectedCard(card);
+
+    // TODO: Currently we don't have API for using chosen card
+    logger.log(selectedCard);
   }
 
   async function handleReplacePaymentMethod(): Promise<void> {
@@ -43,7 +47,7 @@ const ChoosePaymentMethodStep = () => {
           formStores,
           common,
           iFrameLink: link,
-          cardId: selectedCard?.id,
+          cardId,
         },
       }),
     );
