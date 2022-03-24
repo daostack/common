@@ -54,7 +54,8 @@ const CreateStep4 = ({
     try {
       const formDataInit = {...form};
 
-      const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
+      const contributionAmount =
+        parseFloat(formDataInit[CreateCommonForm.MINIMUM], 10) * 100;
 
       const data = {
         ...formDataInit,
