@@ -20,7 +20,7 @@ const ChoosePaymentMethodStep = () => {
   const navigation = useNavigation();
   const router = useRoute<PersonalPaymentDetailsRouteProps>();
 
-  const {common, contributionData, formStores} = router.params;
+  const {common, formStores} = router.params;
 
   const [selectedCard, setSelectedCard] = useState<Card>();
 
@@ -43,8 +43,7 @@ const ChoosePaymentMethodStep = () => {
           formStores,
           common,
           iFrameLink: link,
-          cardId,
-          contributionData,
+          cardId: selectedCard?.id,
         },
       }),
     );
@@ -60,8 +59,8 @@ const ChoosePaymentMethodStep = () => {
       layoutTitle={<MembershipRequest />}>
       <View style={styles.container}>
         <PaymentDetailsHeader
-          minFeeToJoin={contributionData.minFeeToJoin}
-          contributionType={contributionData.contributionType}
+          minFeeToJoin={common.minFeeToJoin}
+          contributionType={common.contributionType}
         />
         <Divider mt={baseMargin * 3} mb={baseMargin * 2} />
         <CardList handleSelectCard={handleSelectCard} />
