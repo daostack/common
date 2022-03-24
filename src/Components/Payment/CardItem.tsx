@@ -11,6 +11,8 @@ interface Props {
   card: Card;
 }
 
+// TODO: This component will be implemented in the future, as the API does not currently allow you to select a card
+
 export const CardItem = observer(({card, handleSelectCard}: Props) => {
   const handlePress = useCallback(() => {
     handleSelectCard(card);
@@ -32,12 +34,12 @@ export const CardItem = observer(({card, handleSelectCard}: Props) => {
       />
       <View style={styles.cardInfoContainer}>
         <View />
-        <Text style={[styles.text, styles.cardholderName]}>TEst Testovich</Text>
+        {/* <Text style={[styles.text, styles.cardholderName]}>{card.metadata?.owner}</Text> */}
         <Text style={styles.text}>********{card.metadata?.digits}</Text>
       </View>
-      <View style={styles.expirationDateContainer}>
-        <Text style={styles.text}>01/2030</Text>
-      </View>
+      {/* <View style={styles.expirationDateContainer}>
+        <Text style={styles.text}>{card.metadata?.expirationDate}</Text>
+      </View> */}
     </Pressable>
   );
 });
