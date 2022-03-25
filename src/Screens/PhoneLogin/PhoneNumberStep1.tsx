@@ -60,7 +60,7 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
     <View style={{backgroundColor: colors.white, flex: 1}}>
       {showLoader ? (
         <View style={{flex: 0.5, justifyContent: 'flex-end'}}>
-          <Loader />
+          <Loader phoneLogin />
         </View>
       ) : (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
