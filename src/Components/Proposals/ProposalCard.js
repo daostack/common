@@ -54,7 +54,7 @@ const ProposalCard = ({
     proposalInfo.commonId,
     authStore?.userInfo?.uid,
   );
-  const showCard = isVisible || (!isVisible && hasPermission);
+  const showCard = isVisible || (!isVisible && hasPermission === 'Moderator');
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {

@@ -31,6 +31,7 @@ const DiscussionList = ({
         <FlatList
           maxToRenderPerBatch={5}
           initialNumToRender={5}
+          listKey="DiscussionList"
           data={list}
           keyExtractor={keyExtractor}
           renderItem={({item}) => (

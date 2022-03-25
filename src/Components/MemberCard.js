@@ -15,7 +15,7 @@ import {
   object,
   oneOfType,
   func,
-  boolean,
+  bool,
 } from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
@@ -152,7 +152,7 @@ MemberCard.propTypes = {
   }),
   commonId: string,
   openCommonOptions: func,
-  showModerationMenu: boolean,
+  showModerationMenu: bool,
 };
 
 const styles = StyleSheet.create({
