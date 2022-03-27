@@ -22,7 +22,11 @@ import {useStore} from '~/Util/hooks/useStore';
 import {LINKS} from '~/Util/constants/links';
 
 interface CreateAccountProps {
-  onSignedIn: (isNewUser: boolean, isSignedWithApple: boolean) => void;
+  onSignedIn: (
+    isNewUser: boolean,
+    isSignedWithApple: boolean,
+    isPhoneLogin: boolean,
+  ) => void;
   hidePlaceholder: boolean;
   goToNextScreen: () => void;
   width: string | '';
@@ -31,11 +35,16 @@ interface CreateAccountProps {
 const CreateAccount = (props: CreateAccountProps) => {
   const {onSignedIn, hidePlaceholder, goToNextScreen, width} = props;
   const authStore = useStore('authStore');
-  const onSignIn = async (userInfo: IUserEntity, isSignedWithApple = false) => {
+  const onSignIn = async (
+    userInfo: IUserEntity,
+    isSignedWithApple = false,
+    isPhoneLogin = false,
+  ) => {
     if (onSignedIn) {
       await onSignedIn(
         userInfo.additionalUserInfo.isNewUser,
         isSignedWithApple,
+        isPhoneLogin,
       );
     }
     if (goToNextScreen) {
