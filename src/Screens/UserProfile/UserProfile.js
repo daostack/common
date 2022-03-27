@@ -76,7 +76,11 @@ const UserProfile = ({authStore}) => {
     }
   };
 
-  const onUserSignedIn = (isNewUser, isSignedWithApple = false) => {
+  const onUserSignedIn = (
+    isNewUser,
+    isSignedWithApple = false,
+    isPhoneLogin = false,
+  ) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
@@ -86,6 +90,10 @@ const UserProfile = ({authStore}) => {
         },
       });
       navigation.dispatch(navigate);
+    }
+    if (navigation && !isNewUser && isPhoneLogin) {
+      authStore.setIsLoading(false);
+      navigation.pop(2);
     }
   };
 
