@@ -15,7 +15,7 @@ import {
   object,
   oneOfType,
   func,
-  boolean,
+  bool,
 } from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
@@ -24,7 +24,6 @@ import {CurrencySymbols} from '~/Util/locale';
 const MemberCard = ({
   userInfo,
   proposalInfo = null,
-  openCommonOptions,
   moderatorId,
   commonId,
   rootStore,
@@ -152,7 +151,7 @@ MemberCard.propTypes = {
   }),
   commonId: string,
   openCommonOptions: func,
-  showModerationMenu: boolean,
+  showModerationMenu: bool,
 };
 
 const styles = StyleSheet.create({

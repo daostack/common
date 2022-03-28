@@ -11,11 +11,11 @@ import {layout, colors, text, font} from '~/Theme';
 import FastImage, {ImageStyle} from 'react-native-fast-image';
 import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
-import {object, shape, string, bool, func, InferProps} from 'prop-types';
+import {shape, string, bool, func, InferProps} from 'prop-types';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {useNavigation} from '@react-navigation/native';
 
 const props = {
-  navigation: object,
   isMember: bool,
   headerHeightLayouted: func,
   commonInfo: shape({
@@ -32,7 +32,6 @@ const props = {
 };
 
 const CommonHeader: React.FC<InferProps<typeof props>> = ({
-  navigation,
   isMember,
   commonInfo: {logo, name, description, byline},
   headerHeightLayouted,
@@ -40,6 +39,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
   canEdit,
   onEdit,
 }) => {
+  const navigation = useNavigation();
   const openAgendaScreen = () => {
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       commonId: common.id,
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   coverOverlay: {
     paddingVertical: 0,
     paddingBottom: 20,
-    // backgroundColor: 'rgba(0,0,0,0.3)',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
   },
@@ -121,6 +120,7 @@ const styles = StyleSheet.create({
     ...layout.content,
     alignSelf: 'stretch',
     flexGrow: 1,
+    height: 250,
     padding: 0,
     marginBottom: 10,
     ...layout.flexEnd,

@@ -1,53 +1,160 @@
 import React from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
-import Icon from '~/Assets/iconfont/Icon';
-import {text} from '~/Theme';
-import {BlurView} from '~/Components';
+import {View, StyleSheet, Pressable, Text} from 'react-native';
+import {font, text} from '~/Theme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINK_URI_PREFIX,
+} from '~/Util/constants/dynamicLinks';
+import Share from 'react-native-share';
+import logger from '~/Services/Logger';
+import {Common} from '~/Stores/Models/Common';
+import {colors} from '~/Theme';
+import Animated, {
+  Extrapolate,
+  interpolate,
+  interpolateColor,
+  SharedValue,
+  useAnimatedProps,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+import {Path} from 'react-native-svg';
+import Icon from '~/Assets/iconfont/Icon';
+
+export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface HeaderProps {
-  onLeftPress: () => void;
-  onRightPress: () => void;
-  dark: boolean;
-  shareCommon: () => void;
+  currCommon: Common;
   hasPermission: boolean;
   openCommonOptions: () => void;
+  yIndex: SharedValue<number>;
 }
 
+const HEADER_HEIGHT = 260;
+
 export const CommonHeaderBar = (props: HeaderProps) => {
-  const {
-    onLeftPress,
-    dark,
-    shareCommon,
-    hasPermission,
-    openCommonOptions,
-  } = props;
+  const {yIndex, currCommon, hasPermission, openCommonOptions} = props;
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+
+  const onLeftPress = () => {
+    navigation.pop();
+  };
+
+  const shareCommon = async () => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: currCommon.name,
+          descriptionText: currCommon.metadata.description,
+          imageUrl: currCommon.image,
+        },
+      });
+      const options = {
+        url,
+        title: currCommon.name,
+        message: `${currCommon.byline}. Download the Common app to join now.`,
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
+  };
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      yIndex.value,
+      [0, HEADER_HEIGHT - (insets.top + 61)],
+      ['transparent', colors.white],
+    ),
+    borderBottomColor: interpolateColor(
+      yIndex.value,
+      [0, HEADER_HEIGHT - (insets.top + 61)],
+      ['transparent', colors.grey4],
+    ),
+  }));
+
+  const animatedBlurStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      yIndex.value,
+      [HEADER_HEIGHT - (insets.top + 61), HEADER_HEIGHT - (insets.top + 60)],
+      ['rgba(0, 0, 0, 0.25)', colors.white],
+    ),
+  }));
+
+  const animatedIconStyle = useAnimatedProps(() => ({
+    fill: interpolateColor(
+      yIndex.value,
+      [HEADER_HEIGHT - (insets.top + 61), HEADER_HEIGHT - (insets.top + 60)],
+      [colors.white, colors.black],
+    ),
+  }));
+
+  const animatedTitle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateY: interpolate(
+          yIndex.value,
+          [50, HEADER_HEIGHT - (insets.top + 80)],
+          [20, -20],
+          Extrapolate.CLAMP,
+        ),
+      },
+    ],
+    opacity: interpolate(
+      yIndex.value,
+      [50, HEADER_HEIGHT - (insets.top + 110)],
+      [0, 1],
+      Extrapolate.CLAMP,
+    ),
+  }));
 
   return (
-    <View style={[styles.container, {top: insets.top}]}>
+    <Animated.View
+      style={[styles.container, animatedStyle, {paddingTop: insets.top}]}>
       <Pressable style={styles.leftButton} onPress={onLeftPress}>
-        <BlurView style={styles.blur} isBlurring={dark}>
-          <Icon name="left-arrow" size={32} color={dark ? 'black' : 'white'} />
-        </BlurView>
+        <Animated.View style={[styles.blur, animatedBlurStyle]}>
+          <Icon
+            name="left-arrow-animated"
+            size={32}
+            animatedIconStyle={animatedIconStyle}
+          />
+        </Animated.View>
       </Pressable>
-      <View style={styles.rightContainer}>
+
+      <Animated.View style={[styles.titleContainer, animatedTitle]}>
+        <Text style={[styles.title]}>{currCommon.name}</Text>
+      </Animated.View>
+
+      <View style={[styles.rightContainer, {top: insets.top + 10}]}>
         <Pressable style={styles.rightButton} onPress={shareCommon}>
-          <BlurView style={styles.blur} isBlurring={dark}>
-            <Icon name="share-32" size={32} color={dark ? 'black' : 'white'} />
-          </BlurView>
+          <Animated.View style={[styles.blur, animatedBlurStyle]}>
+            <Icon
+              name="share-animated"
+              size={32}
+              animatedIconStyle={animatedIconStyle}
+            />
+          </Animated.View>
         </Pressable>
         {hasPermission && (
           <Pressable
             style={styles.rightButton}
             onPress={() => openCommonOptions()}>
-            <BlurView style={styles.optionsBlur} isBlurring={dark}>
-              <Icon name="menu1" size={30} color={dark ? 'black' : 'white'} />
-            </BlurView>
+            <Animated.View style={[styles.blur, animatedBlurStyle]}>
+              <Icon
+                name="menu-animated"
+                size={32}
+                animatedIconStyle={animatedIconStyle}
+              />
+            </Animated.View>
           </Pressable>
         )}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -58,8 +165,11 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     top: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: colors.white,
     zIndex: 99,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    height: 105,
   },
   blur: {
     padding: 5,
@@ -82,13 +192,24 @@ const styles = StyleSheet.create({
   rightContainer: {
     position: 'absolute',
     right: 16,
-    top: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
   text: {
     ...text.h2Black,
     maxWidth: '70%',
+    alignSelf: 'center',
+  },
+  title: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...font.heading.bold,
+    fontSize: 16,
+    color: colors.black,
+    textAlign: 'center',
+  },
+  titleContainer: {
+    height: 30,
     alignSelf: 'center',
   },
 });
