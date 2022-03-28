@@ -677,7 +677,7 @@ const ProposalScreen = ({
         visible={showModerationModal}
         setShowModerationModal={() => setShowModerationModal(false)}
         moderationFormStore={moderationFormStore}
-        onReportContent={() => onReportContent()}
+        onReportContent={onReportContent}
         hasPermission={hasPermission}
       />
       <ModerationActionSuccessModal
