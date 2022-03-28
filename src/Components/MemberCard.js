@@ -24,11 +24,9 @@ import {CurrencySymbols} from '~/Util/locale';
 const MemberCard = ({
   userInfo,
   proposalInfo = null,
-  openCommonOptions,
   moderatorId,
   commonId,
   rootStore,
-  showModerationMenu,
 }) => {
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
@@ -81,9 +79,6 @@ const MemberCard = ({
                 />
               ))}
           </View>
-          {showModerationMenu && (
-            <ModerationMenu showOptions={openCommonOptions} />
-          )}
         </View>
       );
     } else {
