@@ -71,6 +71,8 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
     [currCommon.image, width, yIndex, animatedStyle],
   );
 
+  const keyExtractor = useCallback((item, index) => index.toString(), []);
+
   return (
     <>
       <CommonHeaderBar
@@ -84,7 +86,7 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
         scrollEventThrottle={10}
         scrollIndicatorInsets={{right: 1}}
         listKey="CommonList"
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={keyExtractor}
         ListHeaderComponent={
           <>
             {renderBackground()}

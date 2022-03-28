@@ -823,7 +823,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 </React.Fragment>
               )}
 
-              <View style={{paddingVertical: sizeS, backgroundColor: 'white'}}>
+              <View
+                style={{paddingVertical: sizeS, backgroundColor: colors.white}}>
                 <CommonStageSummary
                   time={currCommon.fundingGoalDeadline}
                   activeProposals={

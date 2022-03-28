@@ -21,6 +21,7 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import {Svg, Path} from 'react-native-svg';
+import Icon from '~/Assets/iconfont/Icon';
 
 export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -30,6 +31,8 @@ interface HeaderProps {
   openCommonOptions: () => void;
   yIndex: SharedValue<number>;
 }
+
+const HEADER_HEIGHT = 260;
 
 export const CommonHeaderBar = (props: HeaderProps) => {
   const {yIndex, currCommon, hasPermission, openCommonOptions} = props;
@@ -65,12 +68,12 @@ export const CommonHeaderBar = (props: HeaderProps) => {
   const animatedStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       yIndex.value,
-      [0, 260 - (insets.top + 61)],
+      [0, HEADER_HEIGHT - (insets.top + 61)],
       ['transparent', colors.white],
     ),
     borderBottomColor: interpolateColor(
       yIndex.value,
-      [0, 260 - (insets.top + 61)],
+      [0, HEADER_HEIGHT - (insets.top + 61)],
       ['transparent', colors.grey4],
     ),
   }));
@@ -78,7 +81,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
   const animatedBlurStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       yIndex.value,
-      [260 - (insets.top + 61), 260 - (insets.top + 60)],
+      [HEADER_HEIGHT - (insets.top + 61), HEADER_HEIGHT - (insets.top + 60)],
       ['rgba(0, 0, 0, 0.25)', colors.white],
     ),
   }));
@@ -86,7 +89,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
   const animatedIconStyle = useAnimatedProps(() => ({
     fill: interpolateColor(
       yIndex.value,
-      [260 - (insets.top + 61), 260 - (insets.top + 60)],
+      [HEADER_HEIGHT - (insets.top + 61), HEADER_HEIGHT - (insets.top + 60)],
       [colors.white, colors.black],
     ),
   }));
@@ -96,7 +99,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       {
         translateY: interpolate(
           yIndex.value,
-          [50, 260 - (insets.top + 80)],
+          [50, HEADER_HEIGHT - (insets.top + 80)],
           [20, -20],
           Extrapolate.CLAMP,
         ),
@@ -104,7 +107,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
     ],
     opacity: interpolate(
       yIndex.value,
-      [50, 260 - (insets.top + 110)],
+      [50, HEADER_HEIGHT - (insets.top + 110)],
       [0, 1],
       Extrapolate.CLAMP,
     ),
@@ -115,12 +118,11 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       style={[styles.container, animatedStyle, {paddingTop: insets.top}]}>
       <Pressable style={styles.leftButton} onPress={onLeftPress}>
         <Animated.View style={[styles.blur, animatedBlurStyle]}>
-          <Svg viewBox="0 0 1024 1024" width={32} height={32}>
-            <AnimatedPath
-              d="M489.824 512l165.28 160.416c22.528 21.856 22.528 57.6 0 79.456a57.664 57.664 0 0 1-80 0l-206.208-200.16a55.072 55.072 0 0 1 0-79.424l206.208-200.128a57.6 57.6 0 0 1 80 0c22.528 21.856 22.528 57.6 0 79.456L489.824 512z"
-              animatedProps={animatedIconStyle}
-            />
-          </Svg>
+          <Icon
+            name="left-arrow-animated"
+            size={32}
+            animatedIconStyle={animatedIconStyle}
+          />
         </Animated.View>
       </Pressable>
 
@@ -131,12 +133,11 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       <View style={[styles.rightContainer, {top: insets.top + 10}]}>
         <Pressable style={styles.rightButton} onPress={shareCommon}>
           <Animated.View style={[styles.blur, animatedBlurStyle]}>
-            <Svg viewBox="0 0 1024 1024" width={32} height={32}>
-              <AnimatedPath
-                d="M697.152 224A102.976 102.976 0 0 1 800 326.848a102.976 102.976 0 0 1-102.848 102.88 102.528 102.528 0 0 1-70.88-28.384l-194.08 106.944a28.832 28.832 0 0 1-4.192 1.92l-0.704 3.424a26.144 26.144 0 0 1 4.896 2.08l194.08 106.944a102.528 102.528 0 0 1 70.88-28.384A102.976 102.976 0 0 1 800 697.152 102.976 102.976 0 0 1 697.152 800a102.976 102.976 0 0 1-99.68-128.224l-194.176-107.008-2.688-1.696a102.624 102.624 0 0 1-73.76 31.2C270.144 594.272 224 548.16 224 491.424s46.144-102.848 102.848-102.848c41.856 0 77.952 25.12 93.984 61.056l176.64-97.376A102.976 102.976 0 0 1 697.152 224z"
-                animatedProps={animatedIconStyle}
-              />
-            </Svg>
+            <Icon
+              name="share-animated"
+              size={32}
+              animatedIconStyle={animatedIconStyle}
+            />
           </Animated.View>
         </Pressable>
         {hasPermission && (
@@ -144,12 +145,11 @@ export const CommonHeaderBar = (props: HeaderProps) => {
             style={styles.rightButton}
             onPress={() => openCommonOptions()}>
             <Animated.View style={[styles.blur, animatedBlurStyle]}>
-              <Svg viewBox="0 0 1024 1024" width={30} height={30}>
-                <AnimatedPath
-                  d="M512 256A128 128 0 1 1 511.936 0.064 128 128 0 0 1 512 256z m0 384a128 128 0 1 1-0.064-255.936A128 128 0 0 1 512 640z m0 384a128 128 0 1 1-0.064-255.936A128 128 0 0 1 512 1024z"
-                  animatedProps={animatedIconStyle}
-                />
-              </Svg>
+              <Icon
+                name="menu-animated"
+                size={32}
+                animatedIconStyle={animatedIconStyle}
+              />
             </Animated.View>
           </Pressable>
         )}
