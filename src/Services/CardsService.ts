@@ -29,10 +29,12 @@ class CardsService {
     }
   };
 
-  subscribeToCard = (cardId: string, callback: cardLoadCallbackFunc) => {
-    const cards = CardsCollection.doc(cardId).onSnapshot((snapshot: any) => {
-      callback(snapshot);
-    });
+  subscribeToUserCards = (ownerId: string, callback: cardLoadCallbackFunc) => {
+    const cards = CardsCollection.where('ownerId', '==', ownerId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
     return cards;
   };
 }

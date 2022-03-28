@@ -52,6 +52,8 @@ export const sizeXL = 40;
 export const sizeXXL = 55;
 export const sizeLineHeight = 26;
 
+export const baseMargin = 8;
+
 // Layout Stylesheet
 export default StyleSheet.create({
   content: {
