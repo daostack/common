@@ -9,6 +9,7 @@ import {
   ICommonRule,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {firebase} from '~/Firebase';
+import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 
 export class Common implements ICommonEntity {
   id: string;
@@ -55,11 +56,10 @@ export class Common implements ICommonEntity {
 
   @computed
   minFeeToJoinFormatted(numberValue = false): string {
-    const minValue = this.metadata.zeroContribution
-      ? 0
-      : +this.metadata.minFeeToJoin;
-    return !numberValue
-      ? formatNumber(minValue / 100).toString()
-      : (minValue / 100).toString();
+    return formatMinFeeToJoin({
+      numberValue,
+      zeroContribution: this.metadata.zeroContribution,
+      minFeeToJoin: this.metadata.minFeeToJoin,
+    });
   }
 }

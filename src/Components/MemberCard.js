@@ -46,7 +46,7 @@ const MemberCard = ({
 
       return (
         <View style={styles.rightContainer}>
-          <View style={{alignItems: 'flex-end'}}>
+          <View style={styles.timeContainer}>
             {proposalInfo.funding > 0 && (
               <View style={styles.priceContainer}>
                 <Text style={text.h2Black}>
@@ -80,6 +80,9 @@ const MemberCard = ({
                 />
               ))}
           </View>
+          {showModerationMenu && (
+            <ModerationMenu showOptions={openCommonOptions} />
+          )}
         </View>
       );
     } else {
@@ -176,13 +179,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   rightContainer: {
-    flex: 1.1,
+    flexDirection: 'row',
     alignItems: 'flex-end',
   },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 10,
+  },
+  timeContainer: {
+    alignItems: 'flex-end',
+    flexDirection: 'column',
+    marginRight: 5,
   },
 });
 
