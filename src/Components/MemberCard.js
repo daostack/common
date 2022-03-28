@@ -28,6 +28,7 @@ const MemberCard = ({
   moderatorId,
   commonId,
   rootStore,
+  showModerationMenu,
 }) => {
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,

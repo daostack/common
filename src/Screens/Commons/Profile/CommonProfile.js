@@ -72,7 +72,6 @@ const {width} = Dimensions.get('window');
 let stickyHeightAddon = 62;
 let statusBarHeight = Math.round(getStatusBarHeight(true));
 const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
-const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   /* all of  params.commonId,
@@ -136,11 +135,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
-
-  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
@@ -181,10 +175,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setShowRequestSentModal(params.showRequestSentModal);
     if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
       setMemberState(false);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
     setHasPermission(
       authStore.getPermission(commonId, authStore?.userInfo?.uid),
@@ -897,7 +889,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               )
             ) : (
               <React.Fragment>
-                {showStickyRequestToJoinBtn && showReqToJoin && (
+                {showReqToJoin && (
                   <View style={styles.actionButtonContainer}>
                     {renderRequestToJoinBtn()}
                   </View>

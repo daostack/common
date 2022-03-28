@@ -20,7 +20,7 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import {Svg, Path} from 'react-native-svg';
+import {Path} from 'react-native-svg';
 import Icon from '~/Assets/iconfont/Icon';
 
 export const AnimatedPath = Animated.createAnimatedComponent(Path);
