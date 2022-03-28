@@ -80,9 +80,6 @@ const MemberCard = ({
                 />
               ))}
           </View>
-          {showModerationMenu && (
-            <ModerationMenu showOptions={openCommonOptions} />
-          )}
         </View>
       );
     } else {
