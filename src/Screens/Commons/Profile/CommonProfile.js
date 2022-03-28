@@ -464,7 +464,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       const options = {
         url,
         title: currCommon.name,
-        message: `${currCommon.byline}. Download the Common app to join now.`,
+        message: `${currCommon.metadata?.byline}. Download the Common app to join now.`,
       };
       Share.open(options);
     } catch (err) {
