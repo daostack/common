@@ -24,7 +24,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
-import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService, {
@@ -68,6 +67,9 @@ import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {VOTE_STATUSES} from '~/Util/constants/votes';
+import {ModalChangeVoteApprove} from './components/ModalChangeVoteApprove';
+import {ModalChangeVoteReject} from './components/ModalChangeVoteReject';
+import {ModalApproval} from './components/ModalApproval';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -76,13 +78,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {
-      commonId,
-      proposalId,
-      tabIndex = 0,
-      hasPermission,
-      fromNotificationItem,
-    },
+    params: {proposalId, tabIndex = 0, hasPermission},
   },
   rootStore,
   start, // copilot modal tooltip start
@@ -95,6 +91,7 @@ const ProposalScreen = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const {userInfo, isDaoMember} = authStore;
+  const сurrentUserPhotoUrl = userInfo.photoURL;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -237,11 +234,6 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
-
   const [isVoteByYou, setIsVoteByYou] = useState(
     currentUserVote?.voteId && {
       isApproved: currentUserVote.voteOutcome === VOTE_STATUSES.APPROVED,
@@ -379,11 +371,7 @@ const ProposalScreen = ({
 
   const openApprovalSheet = (isApproval) => {
     setVoteType(isApproval);
-    setIsApprovalBottomModalVisible(true);
-  };
-
-  const closeApprovalSheet = (e) => {
-    setIsApprovalBottomModalVisible(false);
+    setVoteModalVisible(true);
   };
 
   const viewUserProfile = () => {
@@ -406,8 +394,11 @@ const ProposalScreen = ({
 
       const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
-        setVotingProcessState({inProgress: false, error: false});
-        closeApprovalSheet();
+        closeVoteModal();
+        // wait till modal hide for smooth ui
+        setTimeout(() => {
+          setVotingProcessState({inProgress: false, error: false});
+        }, 1000);
         Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
         setIsVoteByYou({isApproved: isApproved});
       } else {
@@ -562,6 +553,17 @@ const ProposalScreen = ({
           (Math.abs(availableFunds) / 1000).toFixed(1) +
           'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
+  };
+
+  const [changeVoteModalVisible, setChangeVoteModalVisible] = useState(false);
+  const [voteModalVisible, setVoteModalVisible] = useState(false);
+
+  const closeChangeVoteModal = () => {
+    setChangeVoteModalVisible(false);
+  };
+
+  const closeVoteModal = () => {
+    setVoteModalVisible(false);
   };
 
   const closeDebtModal = () => {
@@ -733,7 +735,6 @@ const ProposalScreen = ({
           backgroundColor: colors.white,
         }}
       />
-
       <SafeAreaView
         style={{
           flex: 1,
@@ -1085,16 +1086,35 @@ const ProposalScreen = ({
           <React.Fragment>{messageInput()}</React.Fragment>
         )}
       </SafeAreaView>
-
       <BottomSheetModal
-        isVisible={isApprovalBottomModalVisible}
-        onClose={closeApprovalSheet}>
-        <ApprovalSheetScreen
-          voteType={voteType}
-          onApprove={onVote}
-          onClose={closeApprovalSheet}
+        style={styles.voteModal}
+        isVisible={voteModalVisible}
+        onClose={closeVoteModal}>
+        <ModalApproval
+          onVote={onVote}
           votingProcessState={votingProcessState}
+          voteType={voteType}
+          сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+          onPressClose={closeVoteModal}
         />
+      </BottomSheetModal>
+      <BottomSheetModal
+        style={styles.voteModal}
+        isVisible={changeVoteModalVisible}
+        onClose={closeChangeVoteModal}>
+        {voteType ? (
+          <ModalChangeVoteApprove
+            onVote={onVote}
+            сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+            onPressClose={closeChangeVoteModal}
+          />
+        ) : (
+          <ModalChangeVoteReject
+            onVote={onVote}
+            сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+            onPressClose={closeChangeVoteModal}
+          />
+        )}
       </BottomSheetModal>
     </React.Fragment>
   );
@@ -1156,11 +1176,9 @@ const styles = StyleSheet.create({
     padding: 0,
     flex: 1,
   },
-  stickyVotingContainer: {
-    ...layout.flexRow,
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
+  voteModal: {
+    paddingTop: 16,
+    borderRadius: 27,
   },
   proposalProgressBar: {
     width: '100%',

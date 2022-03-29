@@ -21,7 +21,7 @@ module.exports = {
     'object-curly-spacing': 1,
     'object-curly-newline': 1,
     'arrow-parens': 1,
-    'arrow-body-style': 1,
+    'arrow-body-style': 0,
     'react/prop-types': 1,
   },
 };

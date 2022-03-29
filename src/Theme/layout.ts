@@ -3,7 +3,7 @@ import colors from './colors';
 
 // Common style for reuse in Stylesheet
 const btn = {
-  height: 56,
+  height: 48,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
@@ -260,6 +260,10 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderRadius: 28,
     borderColor: colors.grey4,
+  },
+  btnAction: {
+    ...btn,
+    borderRadius: 28,
   },
   btnLeftIcon: {
     position: 'absolute',
