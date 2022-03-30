@@ -30,6 +30,7 @@ export enum NAVIGATION_SCREENS {
   NOTIFICATIONS = 'Notifications',
   COMMON_MEMBERS = 'CommonMembers',
   FUNDING_PROPOSAL = 'FundingProposal',
-  MONTHLY_CONTRIBUTIONS_LIST = 'MonthlyContributionsList',
+  BILLING = 'Billing',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
+  CHOOSE_PAYMENT_METHOD_STEP = 'ChoosePaymentMethodStep',
 }

@@ -45,7 +45,7 @@ import {
   PDFViewer,
   Browser,
   FullScreenCreationLoader,
-  MonthlyContributionsList,
+  Billing,
   MonthlyContribution,
   EditCommon,
   ReceiveFunds,
@@ -673,12 +673,12 @@ const App = ({rootStore, navigation}) => {
 
           <Stack.Screen
             options={{
-              title: 'Monthly Contributions',
+              title: 'Billing',
               headerBackTitleVisible: false,
               headerRight: () => <IntercomShowButton />,
             }}
-            name="MonthlyContributionsList"
-            component={MonthlyContributionsList}
+            name="Billing"
+            component={Billing}
           />
 
           <Stack.Screen

@@ -17,7 +17,7 @@ export const CardList = observer(
       cardStore,
     } = useStore('rootStore');
 
-    const cards = cardStore.getCards(userInfo?.uid);
+    const currCard = cardStore.getCurrentCard(userInfo?.uid);
 
     useEffect(() => {
       let unsubscribeFromCard = null;
@@ -29,30 +29,21 @@ export const CardList = observer(
       };
     }, [userInfo]);
 
-    const keyExtractor = useCallback((data) => data.id, []);
+    //const keyExtractor = useCallback((data) => data.id, []);
 
     return (
       <View>
-        <Text style={styles.title}>Payment method</Text>
-        <FlatList
-          data={cards}
-          keyExtractor={keyExtractor}
-          initialNumToRender={3}
-          maxToRenderPerBatch={5}
-          renderItem={({item}: {item: Card}) => (
-            <CardItem handleSelectCard={handleSelectCard} card={item} />
-          )}
-        />
+        <CardItem handleSelectCard={handleSelectCard} card={currCard} />
+        {/*<FlatList
+            data={cards}
+            keyExtractor={keyExtractor}
+            initialNumToRender={3}
+            maxToRenderPerBatch={5}
+            renderItem={({item}: {item: Card}) => (
+              <CardItem handleSelectCard={handleSelectCard} card={item} />
+            )}
+          />*/}
       </View>
     );
   },
 );
-
-const styles = StyleSheet.create({
-  title: {
-    color: colors.black,
-    fontSize: 16,
-    marginBottom: 16,
-    ...font.heading.bold,
-  },
-});
