@@ -35,6 +35,7 @@ export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
 export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
+export {default as VotesScreen} from './Proposals/Votes/VotesScreen';
 
 //Viewers
 export {default as PDFViewer} from './Viewers/PDFViewer';

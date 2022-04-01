@@ -117,6 +117,7 @@ import {IconShekel} from './IconShekel';
 import IconCamera from './IconCamera';
 import IconNoImage from './IconNoImage';
 import IconCalendar from './IconCalendar';
+import IconAbstained from './IconAbstained';
 import {AnimateProps} from 'react-native-reanimated';
 
 export type IconNames =
@@ -232,7 +233,8 @@ export type IconNames =
   | 'add-document-approved'
   | 'calendar'
   | 'facebook'
-  | 'phone';
+  | 'phone'
+  | 'abstained-24';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -273,6 +275,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconreject24 {...rest} />;
     case 'approved-24':
       return <Iconapproved24 {...rest} />;
+    case 'abstained-24':
+      return <IconAbstained {...rest} />;
     case 'discussion':
       return <Icondiscussion {...rest} />;
     case 'history':
@@ -450,9 +454,9 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
     case 'google':
       return <Icongoogle {...rest} />;
     case 'facebook':
-      return <Iconfacebook {...rest} />
+      return <Iconfacebook {...rest} />;
     case 'phone':
-      return <Iconphone {...rest} />
+      return <Iconphone {...rest} />;
     case 'shekel':
       return <IconShekel {...rest} />;
     case 'camera':
