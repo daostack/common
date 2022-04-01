@@ -11,6 +11,11 @@ import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {showBackendError} from '~/Util';
 import {runInAction} from 'mobx';
+import {
+  IProposalVote,
+  VoteWithUserInfo,
+} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {VOTE_STATUSES} from '~/Util/constants/votes';
 
 export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
@@ -59,6 +64,30 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
           methodName: 'getCommonUsersByMembersArray',
+        });
+      });
+      return [];
+    }
+  };
+
+  getVotesUsers = (
+    votes: Array<IProposalVote> = [],
+    voteType: VOTE_STATUSES | 'all',
+  ): Array<VoteWithUserInfo> => {
+    try {
+      let filteredVotes = [...votes];
+      if (voteType !== 'all') {
+        filteredVotes = votes.filter((vote) => vote.voteOutcome === voteType);
+      }
+      return filteredVotes.map((vote: IProposalVote) => {
+        const user = this.getUserById(vote.voterId) as UserModel;
+        return {...vote, user};
+      });
+    } catch (error) {
+      setTimeout(() => {
+        showBackendError({
+          bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+          methodName: 'getVotesUsers',
         });
       });
       return [];
