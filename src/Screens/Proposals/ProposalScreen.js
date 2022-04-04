@@ -92,7 +92,7 @@ const ProposalScreen = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const {userInfo, isDaoMember} = authStore;
-  const сurrentUserPhotoUrl = userInfo.photoURL;
+  const currentUserPhotoUrl = userInfo.photoURL;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -1093,7 +1093,7 @@ const ProposalScreen = ({
           onVote={onVote}
           votingProcessState={votingProcessState}
           voteType={voteType}
-          сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+          currentUserPhotoUrl={currentUserPhotoUrl}
           onPressClose={closeVoteModal}
         />
       </BottomSheetModal>
@@ -1104,13 +1104,13 @@ const ProposalScreen = ({
         {voteType ? (
           <ModalChangeVoteApprove
             onVote={onVote}
-            сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+            currentUserPhotoUrl={currentUserPhotoUrl}
             onPressClose={closeChangeVoteModal}
           />
         ) : (
           <ModalChangeVoteReject
             onVote={onVote}
-            сurrentUserPhotoUrl={сurrentUserPhotoUrl}
+            currentUserPhotoUrl={currentUserPhotoUrl}
             onPressClose={closeChangeVoteModal}
           />
         )}
