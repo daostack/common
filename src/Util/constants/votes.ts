@@ -12,6 +12,12 @@ export enum VOTE_ICON_BY_STATUSES {
   abstained = 'abstained-24',
 }
 
+export enum VOTE_MESSAGES {
+  approved = 'Approved by you',
+  rejected = 'Rejected by you',
+  abstained = 'Abstained by you',
+}
+
 export const VOTE_COLORS_BY_STATUSES = {
   approved: colors.lightishGreen,
   rejected: colors.against,
@@ -24,3 +30,21 @@ export enum VOTE_TABS {
   REJECTED = 'Rejected',
   ABSTAINED = 'Abstained',
 }
+
+export const VOTE_MODAL_INFO = {
+  approved: {
+    title: 'Approve',
+    subtitle: 'Vote to approve this proposal',
+    btnMessage: 'Vote to approve',
+  },
+  rejected: {
+    title: 'Approve',
+    subtitle: 'Vote to reject this proposal',
+    btnMessage: 'Vote to reject',
+  },
+  abstained: {
+    title: 'Approve',
+    subtitle: 'Vote to abstain this proposal',
+    btnMessage: 'Vote to abstain',
+  },
+};

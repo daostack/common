@@ -10,13 +10,15 @@ import {
   VOTE_STATUSES,
   VOTE_COLORS_BY_STATUSES,
 } from '~/Util/constants/votes';
+import {GestureHandlerGestureEvent} from 'react-native-gesture-handler';
 
 interface Props {
   voteType: VOTE_STATUSES;
-  userVote: VOTE_STATUSES;
+  voteOutcome: VOTE_STATUSES;
   votesCount: number;
   votesFor: number;
   userInfo: UserModel;
+  onPress: (e: GestureHandlerGestureEvent) => void;
 }
 
 const ONE_PERCENTAGE_HEIGHT = 0.64;
@@ -24,10 +26,11 @@ const ONE_PERCENTAGE_HEIGHT = 0.64;
 export const VoteButton = observer(
   ({
     voteType,
-    userVote,
+    voteOutcome,
     votesCount,
     votesFor,
     userInfo,
+    onPress,
   }: Props): ReactElement => {
     const percentage = useMemo(() => {
       if (votesFor === 0) {
@@ -54,9 +57,17 @@ export const VoteButton = observer(
             },
           ]}
         />
-        <TouchableOpacity style={styles.voteBtn}>
-          {userVote === voteType ? (
-            <MemberImage userInfo={userInfo} />
+        <TouchableOpacity onPress={onPress} style={styles.voteBtn}>
+          {voteOutcome === voteType ? (
+            <MemberImage
+              size={31}
+              imgStyle={{
+                borderWidth: 3,
+                borderRadius: 31 / 2,
+                borderColor: VOTE_COLORS_BY_STATUSES[voteType],
+              }}
+              userInfo={userInfo}
+            />
           ) : (
             <Icon name={VOTE_ICON_BY_STATUSES[voteType]} size={24} />
           )}

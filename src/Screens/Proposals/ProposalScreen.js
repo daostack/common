@@ -17,6 +17,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
@@ -38,7 +39,7 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape, func} from 'prop-types';
 import logger from '~/Services/Logger';
-import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
@@ -66,9 +67,13 @@ import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {VOTE_STATUSES} from '~/Util/constants/votes';
-import {ModalChangeVoteApprove} from './components/ModalChangeVoteApprove';
-import {ModalChangeVoteReject} from './components/ModalChangeVoteReject';
+import {
+  VOTE_COLORS_BY_STATUSES,
+  VOTE_ICON_BY_STATUSES,
+  VOTE_MESSAGES,
+  VOTE_STATUSES,
+} from '~/Util/constants/votes';
+import {ModalChangeVote} from './components/ModalChangeVote';
 import {ModalApproval} from './components/ModalApproval';
 import {VoteButton} from './components/VoteButton';
 
@@ -235,9 +240,9 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [isVoteByYou, setIsVoteByYou] = useState(
+  const [userVote, setUserVote] = useState(
     currentUserVote?.voteId && {
-      isApproved: currentUserVote.voteOutcome === VOTE_STATUSES.APPROVED,
+      voteOutcome: currentUserVote.voteOutcome,
     },
   );
 
@@ -370,9 +375,13 @@ const ProposalScreen = ({
     );
   };
 
-  const openApprovalSheet = (isApproval) => {
-    setVoteType(isApproval);
-    setVoteModalVisible(true);
+  const openApprovalSheet = (voteOutcome) => {
+    setVoteType(voteOutcome);
+    if (currentUserVote.voteOutcome) {
+      setChangeVoteModalVisible(true);
+    } else {
+      setVoteModalVisible(true);
+    }
   };
 
   const viewUserProfile = () => {
@@ -381,7 +390,7 @@ const ProposalScreen = ({
     });
   };
 
-  const onVote = async (isApproved) => {
+  const onVote = async (voteOutcome) => {
     setVotingProcessState({
       inProgress: true,
       error: false,
@@ -389,7 +398,7 @@ const ProposalScreen = ({
 
     try {
       const voteData = {
-        outcome: isApproved ? VOTE_STATUSES.APPROVED : VOTE_STATUSES.REJECTED,
+        outcome: voteOutcome,
         proposalId: proposalId || proposalInfo.id,
       };
 
@@ -400,8 +409,8 @@ const ProposalScreen = ({
         setTimeout(() => {
           setVotingProcessState({inProgress: false, error: false});
         }, 1000);
-        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-        setIsVoteByYou({isApproved: isApproved});
+        Toast.done(VOTE_MESSAGES[voteOutcome]);
+        setUserVote({voteOutcome});
       } else {
         setVotingProcessState({inProgress: false, error: true});
         logger.log(createVoteResponse.status);
@@ -416,16 +425,10 @@ const ProposalScreen = ({
   };
 
   const renderStickyBottomContent = () => {
-    if (isVoteByYou) {
-      let message = 'Rejected by you';
-      let iconName = 'close';
-      let color = colors.error;
-
-      if (isVoteByYou.isApproved) {
-        message = 'Approved by you';
-        iconName = 'check';
-        color = colors.lightishGreen;
-      }
+    if (userVote?.voteOutcome) {
+      let message = VOTE_MESSAGES[userVote.voteOutcome];
+      let iconName = VOTE_ICON_BY_STATUSES[userVote.voteOutcome];
+      let color = VOTE_COLORS_BY_STATUSES[userVote.voteOutcome];
 
       return (
         <View style={{...layout.content, ...layout.flexRow, padding: 0}}>
@@ -456,39 +459,6 @@ const ProposalScreen = ({
         <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
       );
     }
-  };
-
-  const renderVotingButtons = (reference) => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-    return (
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalInfo?.state) && (
-        <View
-          ref={reference}
-          style={{...layout.content, padding: 0, width: '100%'}}>
-          <Text
-            style={
-              reference
-                ? styles.topSheetVotingText
-                : styles.bottomSheetVotingText
-            }>
-            What's your vote?
-          </Text>
-          <View style={layout.flexRow}>
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
-              style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
-              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
-              style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    );
   };
 
   const initialLayout = {width: screenWidth};
@@ -709,6 +679,7 @@ const ProposalScreen = ({
               flexDirection: 'row',
             }}>
             <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.APPROVED)}
               voteType={VOTE_STATUSES.APPROVED}
               votesFor={approvedCount}
               votesCount={allVoteCount}
@@ -716,6 +687,7 @@ const ProposalScreen = ({
               userInfo={userInfo}
             />
             <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
               voteType={VOTE_STATUSES.ABSTAINED}
               votesFor={abstainedCount}
               votesCount={allVoteCount}
@@ -723,6 +695,7 @@ const ProposalScreen = ({
               userInfo={userInfo}
             />
             <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
               voteType={VOTE_STATUSES.REJECTED}
               votesFor={rejectedCount}
               votesCount={allVoteCount}
@@ -731,15 +704,23 @@ const ProposalScreen = ({
             />
           </View>
 
-          <Text
-            style={{
-              fontSize: 14,
-              ...font.primary.regular,
-              lineHeight: 20,
-              letterSpacing: 0.28,
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(NAVIGATION_SCREENS.VOTES_SCREEN, {
+                proposalId: proposalId || proposalInfo.id,
+                commonName: proposalCommon.name,
+              });
             }}>
-            75/100 votes {'>'}
-          </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                ...font.primary.regular,
+                lineHeight: 20,
+                letterSpacing: 0.28,
+              }}>
+              75/100 votes {'>'}
+            </Text>
+          </TouchableOpacity>
         </CopilotView>
       </CopilotStep>
     ),
@@ -1101,19 +1082,13 @@ const ProposalScreen = ({
         style={styles.voteModal}
         isVisible={changeVoteModalVisible}
         onClose={closeChangeVoteModal}>
-        {voteType ? (
-          <ModalChangeVoteApprove
-            onVote={onVote}
-            currentUserPhotoUrl={currentUserPhotoUrl}
-            onPressClose={closeChangeVoteModal}
-          />
-        ) : (
-          <ModalChangeVoteReject
-            onVote={onVote}
-            currentUserPhotoUrl={currentUserPhotoUrl}
-            onPressClose={closeChangeVoteModal}
-          />
-        )}
+        <ModalChangeVote
+          onVote={onVote}
+          votingProcessState={votingProcessState}
+          currentUserPhotoUrl={currentUserPhotoUrl}
+          onPressClose={closeChangeVoteModal}
+          voteOutcome={currentUserVote.voteOutcome}
+        />
       </BottomSheetModal>
     </React.Fragment>
   );

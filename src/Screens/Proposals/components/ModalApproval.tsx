@@ -9,12 +9,17 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {colors, font, layout} from '~/Theme';
+import {
+  VOTE_COLORS_BY_STATUSES,
+  VOTE_MODAL_INFO,
+  VOTE_STATUSES,
+} from '~/Util/constants/votes';
 
 interface Props {
-  voteType: boolean;
-  onVote: (voteType: boolean) => void;
+  voteType: VOTE_STATUSES;
+  onVote: (voteType: VOTE_STATUSES) => void;
   onPressClose: () => void;
-  сurrentUserPhotoUrl: string;
+  currentUserPhotoUrl: string;
   votingProcessState: {
     inProgress: boolean;
     error: boolean;
@@ -25,7 +30,7 @@ export const ModalApproval = ({
   onVote,
   voteType,
   onPressClose,
-  сurrentUserPhotoUrl,
+  currentUserPhotoUrl,
   votingProcessState,
 }: Props) => {
   return (
@@ -40,63 +45,54 @@ export const ModalApproval = ({
           <Image
             style={[
               styles.image,
-              voteType ? styles.approveColor : styles.rejectColor,
+              {
+                borderColor: VOTE_COLORS_BY_STATUSES[voteType],
+              },
             ]}
-            source={{uri: сurrentUserPhotoUrl}}
+            source={{uri: currentUserPhotoUrl}}
             width={70}
             height={70}
           />
         </View>
-        {voteType ? (
+
+        <Text
+          style={[
+            styles.title,
+            {
+              color: VOTE_COLORS_BY_STATUSES[voteType],
+              borderColor: VOTE_COLORS_BY_STATUSES[voteType],
+            },
+          ]}>
+          {VOTE_MODAL_INFO[voteType].title}
+        </Text>
+        {!votingProcessState.inProgress ? (
           <>
-            <Text style={[styles.title, styles.approveColor]}>Approve</Text>
-            {!votingProcessState.inProgress ? (
-              <>
-                <Text style={styles.subTitle}>
-                  Vote to approve this proposal
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    ...styles.btnAction,
-                    ...styles.approveBackground,
-                    ...layout.btnAction,
-                    ...layout.marginRightS,
-                  }}
-                  onPress={() => onVote(voteType)}>
-                  <Text style={styles.btnActionText}>Vote to approve</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <View style={[styles.loading, styles.approveBackground]}>
-                <ActivityIndicator color={colors.white} />
-              </View>
-            )}
+            <Text style={styles.subTitle}>
+              {VOTE_MODAL_INFO[voteType].subtitle}
+            </Text>
+            <TouchableOpacity
+              style={{
+                ...styles.btnAction,
+                ...layout.btnAction,
+                ...layout.marginRightS,
+                backgroundColor: VOTE_COLORS_BY_STATUSES[voteType],
+              }}
+              onPress={() => onVote(voteType)}>
+              <Text style={styles.btnActionText}>
+                {VOTE_MODAL_INFO[voteType].btnMessage}
+              </Text>
+            </TouchableOpacity>
           </>
         ) : (
-          <>
-            <Text style={[styles.title, styles.rejectColor]}>Reject</Text>
-            {!votingProcessState.inProgress ? (
-              <>
-                <Text style={styles.subTitle}>
-                  Vote to reject this proposal
-                </Text>
-                <TouchableOpacity
-                  style={{
-                    ...styles.btnAction,
-                    ...styles.rejectBackground,
-                    ...layout.btnAction,
-                    ...layout.marginRightS,
-                  }}
-                  onPress={() => onVote(voteType)}>
-                  <Text style={styles.btnActionText}>Vote to reject</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <View style={[styles.loading, styles.rejectBackground]}>
-                <ActivityIndicator color={colors.white} />
-              </View>
-            )}
-          </>
+          <View
+            style={[
+              styles.loading,
+              {
+                borderColor: VOTE_COLORS_BY_STATUSES[voteType],
+              },
+            ]}>
+            <ActivityIndicator color={colors.white} />
+          </View>
         )}
         {!votingProcessState.inProgress && (
           <TouchableOpacity
