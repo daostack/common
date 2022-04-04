@@ -169,7 +169,12 @@ export default class ProposalStore extends BaseStore<
 
   getVotesCounts = (
     votes: IProposalVote[] = [],
-  ): {approvedCount: number; abstainedCount: number; rejectedCount: number} => {
+  ): {
+    approvedCount: number;
+    abstainedCount: number;
+    rejectedCount: number;
+    allVoteCount: number;
+  } => {
     const votesCounts = {
       approvedCount: 0,
       abstainedCount: 0,
@@ -188,7 +193,13 @@ export default class ProposalStore extends BaseStore<
           break;
       }
     });
-    return votesCounts;
+    return {
+      ...votesCounts,
+      allVoteCount:
+        votesCounts.abstainedCount +
+        votesCounts.approvedCount +
+        votesCounts.rejectedCount,
+    };
   };
 
   //Actions

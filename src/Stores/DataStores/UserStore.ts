@@ -70,7 +70,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
     }
   };
 
-  getVotesUsers = (
+  getUsersVotesByType = (
     votes: Array<IProposalVote> = [],
     voteType: VOTE_STATUSES | 'all',
   ): Array<VoteWithUserInfo> => {

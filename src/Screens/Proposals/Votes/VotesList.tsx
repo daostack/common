@@ -22,7 +22,7 @@ export const VotesList = observer(({proposalId, voteType}: Props) => {
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
   const votes = proposalInfo?.votes;
-  const votesUsers = userStore.getVotesUsers(votes, voteType);
+  const votesUsers = userStore.getUsersVotesByType(votes, voteType);
 
   const navigation = useNavigation();
 

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   LayoutAnimation,
   Dimensions,
@@ -68,6 +68,7 @@ import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {VOTE_STATUSES} from '~/Util/constants/votes';
+import {VoteButton} from './components/VoteButton';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -670,6 +671,86 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
+  const {
+    approvedCount,
+    abstainedCount,
+    rejectedCount,
+    allVoteCount,
+  } = proposalStore.getVotesCounts(proposalInfo?.votes);
+
+  const VoteContainer = useCallback(
+    () => (
+      <CopilotStep order={1} name="info">
+        <CopilotView
+          style={{
+            ...layout.content,
+            width: '100%',
+            paddingHorizontal: 0,
+          }}>
+          <Text
+            style={{
+              marginBottom: 16,
+              fontSize: 14,
+              color: colors.black,
+              ...font.primary.bold,
+            }}>
+            What's your vote?
+          </Text>
+          <View
+            style={{
+              height: 134,
+              width: '100%',
+              paddingHorizontal: 24,
+              justifyContent: 'space-between',
+              marginBottom: 16,
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+            }}>
+            <VoteButton
+              voteType={VOTE_STATUSES.APPROVED}
+              votesFor={approvedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote.voteOutcome}
+              userInfo={userInfo}
+            />
+            <VoteButton
+              voteType={VOTE_STATUSES.ABSTAINED}
+              votesFor={abstainedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote.voteOutcome}
+              userInfo={userInfo}
+            />
+            <VoteButton
+              voteType={VOTE_STATUSES.REJECTED}
+              votesFor={rejectedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote.voteOutcome}
+              userInfo={userInfo}
+            />
+          </View>
+
+          <Text
+            style={{
+              fontSize: 14,
+              ...font.primary.regular,
+              lineHeight: 20,
+              letterSpacing: 0.28,
+            }}>
+            75/100 votes {'>'}
+          </Text>
+        </CopilotView>
+      </CopilotStep>
+    ),
+    [
+      userInfo,
+      approvedCount,
+      rejectedCount,
+      abstainedCount,
+      allVoteCount,
+      currentUserVote,
+    ],
+  );
+
   return (
     <React.Fragment>
       <ModerationModal
@@ -947,89 +1028,7 @@ const ProposalScreen = ({
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
-
-                <CopilotStep order={1} name="info">
-                  <CopilotView
-                    style={{
-                      ...layout.content,
-                      width: '100%',
-                      paddingHorizontal: 0,
-                    }}>
-                    <View style={styles.proposalProgressInfo}>
-                      <View
-                        style={{
-                          ...layout.content,
-                          ...layout.flexRow,
-                          padding: 0,
-                        }}>
-                        <Icon
-                          name="user-approved"
-                          color={colors.lightishGreen}
-                          size={25}
-                          style={layout.marginRightXS}
-                        />
-                        <Text style={text.lightishGreenText}>
-                          {proposalInfo.votesFor}
-                        </Text>
-                      </View>
-
-                      <Text style={text.smallBlackText}>
-                        {!proposalInfo.votesCount
-                          ? 'No votes yet'
-                          : `${proposalInfo.votesCount} ${
-                              proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                            }`}
-                      </Text>
-
-                      <View
-                        style={{
-                          ...layout.content,
-                          ...layout.flexRow,
-                          padding: 0,
-                        }}>
-                        <Text style={text.againstText}>
-                          {proposalInfo.votesAgainst}
-                        </Text>
-                        <Icon
-                          name="user-rejected"
-                          color={colors.against}
-                          size={25}
-                          style={layout.marginLeftXS}
-                        />
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        ...styles.proposalProgressBar,
-                        ...{
-                          backgroundColor: isNaN(
-                            proposalInfo?.progressBarWidthPercent,
-                          )
-                            ? colors.grey4
-                            : colors.against,
-                        },
-                      }}>
-                      <View
-                        style={{
-                          ...styles.proposalInnerProgressBar,
-                          width: `${
-                            proposalInfo?.progressBarWidthPercent || 0
-                          }%`,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        ...layout.flexRow,
-                        justifyContent: 'space-between',
-                        width: '100%',
-                      }}>
-                      {renderVoting &&
-                        !isVoteByYou &&
-                        renderVotingButtons(topVotingButtonsRef)}
-                    </View>
-                  </CopilotView>
-                </CopilotStep>
+                <VoteContainer />
               </View>
             </View>
           )}

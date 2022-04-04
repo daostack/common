@@ -32,6 +32,7 @@ const VotesScreen = (): ReactElement => {
     approvedCount,
     abstainedCount,
     rejectedCount,
+    allVoteCount,
   } = proposalStore.getVotesCounts(proposalInfo?.votes);
 
   const routes = useMemo(
@@ -39,10 +40,7 @@ const VotesScreen = (): ReactElement => {
       {
         index: 0,
         key: 'all',
-        title: getTabName(
-          VOTE_TABS.ALL,
-          approvedCount + abstainedCount + rejectedCount,
-        ),
+        title: getTabName(VOTE_TABS.ALL, allVoteCount),
       },
       {
         index: 1,

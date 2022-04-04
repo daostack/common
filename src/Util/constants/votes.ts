@@ -1,3 +1,5 @@
+import {colors} from '~/Theme';
+
 export enum VOTE_STATUSES {
   APPROVED = 'approved',
   REJECTED = 'rejected',
@@ -9,6 +11,12 @@ export enum VOTE_ICON_BY_STATUSES {
   rejected = 'reject-24',
   abstained = 'abstained-24',
 }
+
+export const VOTE_COLORS_BY_STATUSES = {
+  approved: colors.lightishGreen,
+  rejected: colors.against,
+  abstained: colors.greySubtitle,
+};
 
 export enum VOTE_TABS {
   ALL = 'All',
