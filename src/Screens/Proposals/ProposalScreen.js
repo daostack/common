@@ -68,6 +68,9 @@ import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {VOTE_STATUSES} from '~/Util/constants/votes';
+import ModalProposalApproval from '~/Components/Modals/ModalProposalApproval';
+import ModalProposalRejected from '~/Components/Modals/ModalProposalRejected';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -82,6 +85,7 @@ const ProposalScreen = ({
       tabIndex = 0,
       hasPermission,
       fromNotificationItem,
+      eventType,
     },
   },
   rootStore,
@@ -120,6 +124,13 @@ const ProposalScreen = ({
   const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
     false,
   );
+  const [modalSuccessVisible, setModalSuccessVisible] = useState(
+    fromNotificationItem && eventType === EventTypeState.fundingRequestAccepted,
+  );
+  const [modalRejectedVisible, setModalRejectedVisible] = useState(
+    fromNotificationItem && eventType === EventTypeState.fundingRequestRejected,
+  );
+
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
   // Sticky Tab Bar
@@ -679,6 +690,16 @@ const ProposalScreen = ({
         moderationFormStore={moderationFormStore}
         onReportContent={onReportContent}
         hasPermission={hasPermission}
+      />
+      <ModalProposalApproval
+        isVisible={modalSuccessVisible}
+        onPressClose={() => setModalSuccessVisible(false)}
+        proposalInfo={proposalInfo}
+      />
+      <ModalProposalRejected
+        isVisible={modalRejectedVisible}
+        onPressClose={() => setModalRejectedVisible(false)}
+        proposalInfo={proposalInfo}
       />
       <ModerationActionSuccessModal
         type={'comment'}

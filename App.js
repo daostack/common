@@ -211,6 +211,7 @@ const App = ({rootStore, navigation}) => {
           proposalId: objectId,
           tabIndex: +tabIndex,
           fromNotificationItem: true,
+          eventType: remoteMessage.data.type,
           commonId,
         });
       }
