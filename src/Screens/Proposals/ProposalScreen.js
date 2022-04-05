@@ -415,7 +415,11 @@ const ProposalScreen = ({
         Toast.done(VOTE_MESSAGES[voteOutcome]);
         setUserVote({voteOutcome});
       } else {
-        setVotingProcessState({inProgress: false, error: true});
+        setVotingProcessState({
+          inProgress: false,
+          error: true,
+          processingVoteType: null,
+        });
         logger.log(createVoteResponse.status);
         Toast.error(`Status code ${createVoteResponse.status}`);
       }
