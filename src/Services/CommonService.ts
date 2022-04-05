@@ -1,11 +1,13 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {
   ICommonEntity,
   CommonCreatedBody,
+  CommonImmediateContributionBody,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {PaymentResponse} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
 
 export type commonListLoadCallbackFn = (
@@ -17,7 +19,12 @@ export type commonLoadCallbackFn = (
 
 class CommonService {
   private axiosClient: AxiosInstance;
-  private endpoints: {create: string; update: string; delete: string};
+  private endpoints: {
+    create: string;
+    update: string;
+    delete: string;
+    immediateContribution: string;
+  };
 
   constructor() {
     this.axiosClient = axios.create({
@@ -29,6 +36,7 @@ class CommonService {
       create: '/create',
       update: '/update',
       delete: '/deactivate',
+      immediateContribution: '/immediate-contribution',
     };
   }
 
@@ -39,13 +47,33 @@ class CommonService {
 
   createCommon = async (
     formData: CommonCreatedBody,
-  ): Promise<ICommonEntity> => {
+  ): Promise<AxiosResponse<ICommonEntity>> => {
     try {
       return await this.axiosClient.post(this.endpoints.create, formData, {
         headers: {
           Authorization: await auth().currentUser.getIdToken(true),
         },
       });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  immediateContribution = async (
+    data: CommonImmediateContributionBody,
+  ): Promise<
+    AxiosResponse<PaymentResponse & {link: string; paymentId: string}>
+  > => {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.immediateContribution,
+        data,
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
     } catch (err) {
       throw err;
     }

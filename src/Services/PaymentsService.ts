@@ -11,6 +11,7 @@ import {
   ISaleEntity,
 } from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
+import {PaymentsCollection} from '~/Firebase/Databasee/Collections/PaymentsCollection';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
@@ -52,6 +53,11 @@ class PaymentService {
 
   getPaymentById = async (paymentId: string): Promise<IPaymentEntity> =>
     (await db.collection(DB_COLLECTIONS.payments).doc(paymentId).get()).data();
+
+  subscribeToPaymentById = async (paymentId: string, callback: any) =>
+    PaymentsCollection.doc(paymentId).onSnapshot((snapshot: any) => {
+      callback(snapshot);
+    });
 
   uploadInvoices = async (
     proposalID: string,

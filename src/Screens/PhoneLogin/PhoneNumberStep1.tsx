@@ -29,7 +29,6 @@ const props = {
 const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const phoneInput = useRef(null);
-  const [showLoader, setShowLoader] = useState(false);
   const authStore = useStore('authStore');
   const navigation = useNavigation();
   const route = useRoute();
@@ -41,15 +40,16 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
       Toast.error('Invalid number');
     } else {
       try {
-        setShowLoader(true);
+        authStore.setIsLoading(true);
         const confirm = await AuthService.signInPhone(phoneNumber);
-        setShowLoader(false);
+        authStore.setIsLoading(false);
         navigation.navigate('VerifyPhone', {
           phoneNumber,
           confirm,
           onSignIn: route.params?.onSignIn,
         });
       } catch (error) {
+        authStore.setIsLoading(false);
         authStore.setSignInError(error.toString());
         navigation.goBack();
       }
@@ -58,7 +58,7 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
 
   return (
     <View style={{backgroundColor: colors.white, flex: 1}}>
-      {showLoader ? (
+      {authStore.isLoading ? (
         <View style={{flex: 0.5, justifyContent: 'flex-end'}}>
           <Loader phoneLogin />
         </View>

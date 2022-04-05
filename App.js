@@ -50,6 +50,9 @@ import {
   EditCommon,
   ReceiveFunds,
   AddInvoicesScreen,
+  PersonalContributionStep,
+  PersonalPaymentDetailsStep,
+  ChoosePaymentMethodStep,
   PhoneNumberStep1,
   VerificationStep2,
   FirstJoinCommon,
@@ -499,6 +502,27 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="IntroductionStep"
             component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalContributionStep"
+            component={PersonalContributionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalPaymentDetailsStep"
+            component={PersonalPaymentDetailsStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="ChoosePaymentMethodStep"
+            component={ChoosePaymentMethodStep}
             options={() => ({
               headerShown: false,
             })}

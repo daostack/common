@@ -13,6 +13,9 @@ export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/Introdu
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
+export {default as PersonalContributionStep} from './Commons/PersonalContribution/PersonalContributionStep';
+export {default as PersonalPaymentDetailsStep} from './Commons/PersonalContribution/PersonalPaymentDetailsStep';
+export {default as ChoosePaymentMethodStep} from './Commons/PersonalContribution/ChoosePaymentMethodStep';
 export {default as EditCommon} from './Commons/EditCommon';
 export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
 
