@@ -709,6 +709,7 @@ const ProposalScreen = ({
           </View>
 
           <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}
             onPress={() => {
               navigation.navigate(NAVIGATION_SCREENS.VOTES_SCREEN, {
                 proposalId: proposalId || proposalInfo.id,
@@ -719,11 +720,11 @@ const ProposalScreen = ({
               style={{
                 fontSize: 14,
                 ...font.primary.regular,
-                lineHeight: 20,
                 letterSpacing: 0.28,
               }}>
-              75/100 votes {'>'}
+              {allVoteCount}/{proposalCommon.members?.length || 1} votes
             </Text>
+            <Icon name="right-arrow" size={16} />
           </TouchableOpacity>
         </CopilotView>
       </CopilotStep>
