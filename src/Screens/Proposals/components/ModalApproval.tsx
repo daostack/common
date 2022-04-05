@@ -88,7 +88,7 @@ export const ModalApproval = ({
             style={[
               styles.loading,
               {
-                borderColor: VOTE_COLORS_BY_STATUSES[voteType],
+                backgroundColor: VOTE_COLORS_BY_STATUSES[voteType],
               },
             ]}>
             <ActivityIndicator color={colors.white} />

@@ -159,14 +159,16 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
-  let currentUserVote = {};
+  let currentUserVote;
   const filteredVotes = proposalInfo.votes.filter(
     (item) => item.voterId === userInfo.uid,
   );
   if (filteredVotes.length !== 0) {
     currentUserVote = filteredVotes[0];
   }
-  const userVoted = Object.values(currentUserVote).length !== 0;
+  const userVoted = currentUserVote
+    ? Object.values(currentUserVote).length !== 0
+    : 0;
 
   useEffect(() => {
     const asyncData = async () => {
@@ -377,7 +379,7 @@ const ProposalScreen = ({
 
   const openApprovalSheet = (voteOutcome) => {
     setVoteType(voteOutcome);
-    if (currentUserVote.voteOutcome) {
+    if (currentUserVote?.voteOutcome) {
       setChangeVoteModalVisible(true);
     } else {
       setVoteModalVisible(true);
@@ -394,6 +396,7 @@ const ProposalScreen = ({
     setVotingProcessState({
       inProgress: true,
       error: false,
+      processingVoteType: voteOutcome,
     });
 
     try {
@@ -420,6 +423,7 @@ const ProposalScreen = ({
       setVotingProcessState({
         inProgress: false,
         error: err,
+        processingVoteType: null,
       });
     }
   };
@@ -683,7 +687,7 @@ const ProposalScreen = ({
               voteType={VOTE_STATUSES.APPROVED}
               votesFor={approvedCount}
               votesCount={allVoteCount}
-              voteOutcome={currentUserVote.voteOutcome}
+              voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
             />
             <VoteButton
@@ -691,7 +695,7 @@ const ProposalScreen = ({
               voteType={VOTE_STATUSES.ABSTAINED}
               votesFor={abstainedCount}
               votesCount={allVoteCount}
-              voteOutcome={currentUserVote.voteOutcome}
+              voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
             />
             <VoteButton
@@ -699,7 +703,7 @@ const ProposalScreen = ({
               voteType={VOTE_STATUSES.REJECTED}
               votesFor={rejectedCount}
               votesCount={allVoteCount}
-              voteOutcome={currentUserVote.voteOutcome}
+              voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
             />
           </View>
@@ -1087,7 +1091,7 @@ const ProposalScreen = ({
           votingProcessState={votingProcessState}
           currentUserPhotoUrl={currentUserPhotoUrl}
           onPressClose={closeChangeVoteModal}
-          voteOutcome={currentUserVote.voteOutcome}
+          voteOutcome={currentUserVote?.voteOutcome}
         />
       </BottomSheetModal>
     </React.Fragment>

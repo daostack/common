@@ -22,6 +22,7 @@ interface Props {
   onPressClose: () => void;
   currentUserPhotoUrl: string;
   votingProcessState: {
+    processingVoteType: VOTE_STATUSES;
     inProgress: boolean;
     error: boolean;
   };
@@ -53,82 +54,81 @@ export const ModalChangeVote = ({
       </View>
       <Text style={styles.title}>Change your vote</Text>
 
-      <View style={styles.btnsContainer}>
-        {!votingProcessState.inProgress ? (
-          <>
-            <TouchableOpacity
-              onPress={() => onVote(VOTE_STATUSES.APPROVED)}
-              style={[
-                styles.voteBtn,
-                {
-                  ...(voteOutcome === VOTE_STATUSES.APPROVED && {
-                    backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
-                  }),
-                },
-              ]}>
-              <Icon
-                name={VOTE_ICON_BY_STATUSES.approved}
-                size={24}
-                color={
-                  voteOutcome === VOTE_STATUSES.APPROVED
-                    ? colors.white
-                    : VOTE_COLORS_BY_STATUSES.approved
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onVote(VOTE_STATUSES.ABSTAINED)}
-              style={[
-                styles.voteBtn,
-                {
-                  ...(voteOutcome === VOTE_STATUSES.ABSTAINED && {
-                    backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
-                  }),
-                },
-              ]}>
-              <Icon
-                name={VOTE_ICON_BY_STATUSES.abstained}
-                size={24}
-                color={
-                  voteOutcome === VOTE_STATUSES.ABSTAINED
-                    ? colors.white
-                    : VOTE_COLORS_BY_STATUSES.abstained
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onVote(VOTE_STATUSES.REJECTED)}
-              style={[
-                styles.voteBtn,
-                {
-                  ...(voteOutcome === VOTE_STATUSES.REJECTED && {
-                    backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
-                  }),
-                },
-              ]}>
-              <Icon
-                name={VOTE_ICON_BY_STATUSES.rejected}
-                size={24}
-                color={
-                  voteOutcome === VOTE_STATUSES.REJECTED
-                    ? colors.white
-                    : VOTE_COLORS_BY_STATUSES.rejected
-                }
-              />
-            </TouchableOpacity>
-          </>
-        ) : (
-          <View
+      {!votingProcessState.inProgress ? (
+        <View style={styles.btnsContainer}>
+          <TouchableOpacity
+            onPress={() => onVote(VOTE_STATUSES.APPROVED)}
             style={[
-              styles.loading,
+              styles.voteBtn,
               {
-                borderColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
+                ...(voteOutcome === VOTE_STATUSES.APPROVED && {
+                  backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
+                }),
               },
             ]}>
-            <ActivityIndicator color={colors.white} />
-          </View>
-        )}
-      </View>
+            <Icon
+              name={VOTE_ICON_BY_STATUSES.approved}
+              size={24}
+              color={
+                voteOutcome === VOTE_STATUSES.APPROVED
+                  ? colors.white
+                  : VOTE_COLORS_BY_STATUSES.approved
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onVote(VOTE_STATUSES.ABSTAINED)}
+            style={[
+              styles.voteBtn,
+              {
+                ...(voteOutcome === VOTE_STATUSES.ABSTAINED && {
+                  backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
+                }),
+              },
+            ]}>
+            <Icon
+              name={VOTE_ICON_BY_STATUSES.abstained}
+              size={24}
+              color={
+                voteOutcome === VOTE_STATUSES.ABSTAINED
+                  ? colors.white
+                  : VOTE_COLORS_BY_STATUSES.abstained
+              }
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onVote(VOTE_STATUSES.REJECTED)}
+            style={[
+              styles.voteBtn,
+              {
+                ...(voteOutcome === VOTE_STATUSES.REJECTED && {
+                  backgroundColor: VOTE_COLORS_BY_STATUSES[voteOutcome],
+                }),
+              },
+            ]}>
+            <Icon
+              name={VOTE_ICON_BY_STATUSES.rejected}
+              size={24}
+              color={
+                voteOutcome === VOTE_STATUSES.REJECTED
+                  ? colors.white
+                  : VOTE_COLORS_BY_STATUSES.rejected
+              }
+            />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View
+          style={[
+            styles.loading,
+            {
+              backgroundColor:
+                VOTE_COLORS_BY_STATUSES[votingProcessState.processingVoteType],
+            },
+          ]}>
+          <ActivityIndicator color={colors.white} />
+        </View>
+      )}
     </View>
   </SafeAreaView>
 );
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   loading: {
-    marginTop: 47,
+    marginTop: 40,
     height: 48,
     width: 48,
     alignSelf: 'center',
