@@ -72,8 +72,8 @@ export const ModalApproval = ({
             </Text>
             <TouchableOpacity
               style={{
-                ...styles.btnAction,
                 ...layout.btnAction,
+                ...styles.btnAction,
                 ...layout.marginRightS,
                 backgroundColor: VOTE_COLORS_BY_STATUSES[voteType],
               }}
@@ -97,8 +97,8 @@ export const ModalApproval = ({
         {!votingProcessState.inProgress && (
           <TouchableOpacity
             style={{
-              ...styles.cancelBtn,
               ...layout.btnOutline,
+              ...styles.cancelBtn,
               ...layout.marginRightS,
             }}
             onPress={onPressClose}>
@@ -117,9 +117,6 @@ const styles = StyleSheet.create({
     ...layout.flexStart,
     paddingTop: 0,
     alignItems: 'center',
-    width: '100%',
-  },
-  background: {
     width: '100%',
   },
   plug: {
@@ -170,17 +167,11 @@ const styles = StyleSheet.create({
   },
   btnAction: {
     marginBottom: 16,
+    height: 48,
   },
   cancelBtn: {
     marginBottom: 40,
-  },
-  iconStyle: {
-    height: 116,
-    width: 116,
-    position: 'absolute',
-    alignSelf: 'center',
-    left: 41,
-    bottom: -8,
+    height: 48,
   },
   loading: {
     marginTop: 47,
@@ -190,19 +181,5 @@ const styles = StyleSheet.create({
     borderRadius: 48,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  rejectBackground: {
-    backgroundColor: colors.pinkishOrange,
-  },
-  rejectColor: {
-    color: colors.pinkishOrange,
-    borderColor: colors.pinkishOrange,
-  },
-  approveBackground: {
-    backgroundColor: colors.lightishGreen,
-  },
-  approveColor: {
-    color: colors.lightishGreen,
-    borderColor: colors.lightishGreen,
   },
 });

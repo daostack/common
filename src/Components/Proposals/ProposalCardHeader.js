@@ -105,12 +105,17 @@ const ProposalCardHeader = ({
           },
         }}>
         <Icon
-          style={styles.stateIcon}
+          style={[
+            styles.stateIcon,
+            {left: headerStatus.text === TITLES.COUNTDOWN ? 30 : sizeS},
+          ]}
           name={headerStatus.icon}
           color={colors.white}
         />
 
-        <Text style={{...styles.stateText}}>{headerStatus.text}</Text>
+        {headerStatus.text !== TITLES.COUNTDOWN && (
+          <Text style={{...styles.stateText}}>{headerStatus.text}</Text>
+        )}
 
         {headerStatus.text === TITLES.COUNTDOWN && (
           <ProposalCountDown closingAt={closingAt} />
@@ -237,7 +242,6 @@ const styles = StyleSheet.create({
   },
   stateIcon: {
     position: 'absolute',
-    left: sizeS,
   },
   rightIcon: {
     position: 'absolute',

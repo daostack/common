@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect, useCallback, useMemo} from 'react';
 import {
   LayoutAnimation,
   Dimensions,
@@ -97,7 +97,7 @@ const ProposalScreen = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const {userInfo, isDaoMember} = authStore;
-  const currentUserPhotoUrl = userInfo.photoURL;
+  const currentUserPhotoUrl = userInfo?.photoURL;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -161,7 +161,7 @@ const ProposalScreen = ({
 
   let currentUserVote;
   const filteredVotes = proposalInfo.votes.filter(
-    (item) => item.voterId === userInfo.uid,
+    (item) => item.voterId === userInfo?.uid,
   );
   if (filteredVotes.length !== 0) {
     currentUserVote = filteredVotes[0];
@@ -664,6 +664,7 @@ const ProposalScreen = ({
         <CopilotView
           style={{
             ...layout.content,
+            paddingTop: 0,
             width: '100%',
             paddingHorizontal: 0,
           }}>
@@ -680,7 +681,6 @@ const ProposalScreen = ({
             style={{
               height: 134,
               width: '100%',
-              paddingHorizontal: 24,
               justifyContent: 'space-between',
               marginBottom: 16,
               alignItems: 'flex-end',
@@ -742,6 +742,17 @@ const ProposalScreen = ({
       currentUserVote,
     ],
   );
+
+  const ProposalCardHeaderProps = useMemo(() => {
+    if (proposalInfo?.type === PROPOSAL_TYPE.FundingRequest) {
+      return {
+        onPress: () => openDebtInsufficientModal(),
+      };
+    }
+    return {
+      authInfo: authStore.userInfo,
+    };
+  }, [authStore.userInfo, proposalInfo.type, openDebtInsufficientModal]);
 
   return (
     <React.Fragment>
@@ -856,22 +867,6 @@ const ProposalScreen = ({
               <View style={headerContainerStyle}>
                 {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (showPaymentStatus) {
-                          paymentStatusModal();
-                        }
-                      }}>
-                      <ProposalCardHeader
-                        isScreenHeader={true}
-                        state={proposalInfo?.state}
-                        paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
-                        onPress={() => openDebtInsufficientModal()}
-                        hasPermission={hasPermission}
-                        viewerPermission={viewerPermission}
-                      />
-                    </TouchableOpacity>
                     {proposedUser && (
                       <UserAvatar
                         image={proposedUser?.photoURL}
@@ -1019,7 +1014,32 @@ const ProposalScreen = ({
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
-                <VoteContainer />
+                <View
+                  style={{
+                    marginTop: 16,
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (showPaymentStatus) {
+                        paymentStatusModal();
+                      }
+                    }}>
+                    <ProposalCardHeader
+                      isScreenHeader={true}
+                      state={proposalInfo?.state}
+                      paymentStatus={proposalInfo?.paymentState}
+                      closingAt={proposalInfo?.countdown}
+                      hasPermission={hasPermission}
+                      viewerPermission={viewerPermission}
+                      {...ProposalCardHeaderProps}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                {isMember && <VoteContainer />}
               </View>
             </View>
           )}

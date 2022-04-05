@@ -3,7 +3,7 @@ import colors from './colors';
 
 // Common style for reuse in Stylesheet
 const btn = {
-  height: 48,
+  height: 56,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',

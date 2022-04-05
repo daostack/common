@@ -87,7 +87,7 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
       setTimeout(() => {
         showBackendError({
           bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-          methodName: 'getVotesUsers',
+          methodName: 'getUsersVotesByType',
         });
       });
       return [];

@@ -37,7 +37,6 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#6e7d82',
-
         ...memberImageStyle,
         ...style,
       }}>
