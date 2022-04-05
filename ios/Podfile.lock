@@ -555,10 +555,10 @@ PODS:
     - BoringSSL-GRPC (= 0.0.7)
     - gRPC-Core/Interface (= 1.28.2)
   - gRPC-Core/Interface (1.28.2)
-  - GTMAppAuth (1.2.2):
+  - GTMAppAuth (1.2.3):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - GTMSessionFetcher/Core (1.7.0)
+  - GTMSessionFetcher/Core (1.7.1)
   - InputMask (6.1.0)
   - Intercom (8.1.1)
   - IQKeyboardManagerSwift (6.5.4)
@@ -980,7 +980,7 @@ PODS:
   - secp256k1.c (0.1.2)
   - SSZipArchive (2.2.3)
   - Starscream (4.0.4)
-  - web3swift (2.5.0):
+  - web3swift (2.5.1):
     - BigInt (~> 5.2.0)
     - CryptoSwift (~> 1.4.2)
     - PromiseKit (~> 6.15.3)
@@ -1267,7 +1267,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   web3swift:
-    :commit: ff538e874cf2f6ca0f5736bfd7deb89f4a0bd624
+    :commit: 6cb1440fe13a0558af970ae067ebb3fe2371a7b2
     :git: https://github.com/matter-labs/web3swift
 
 SPEC CHECKSUMS:
@@ -1306,8 +1306,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
-  GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
-  GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  GTMAppAuth: 987526d41b07efb1bedda5e936fe0cb718a03113
+  GTMSessionFetcher: 4577a4cc914a5a07c40a8a0ad0acc22080418c2d
   InputMask: 71d291dc54d2deaeac6512afb6ec2304228c0bb7
   Intercom: d9c8ad77472baa29bb0ef6101e46ff175d4d3473
   IQKeyboardManagerSwift: 2dde0fc70110e8eac7ccce2a46fdbec6a850b414
@@ -1388,9 +1388,9 @@ SPEC CHECKSUMS:
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  web3swift: 31ecb7a7da543f851344cdd64badea94c439b0d9
+  web3swift: 1071b71d9ac73147464110404c67901e642f4247
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
 
-PODFILE CHECKSUM: 0c3dddda65f5550707bd3914c105ed227c3c5e6b
+PODFILE CHECKSUM: 4fd650d13496bc76b99489ae56a457c5bb31059b
 
 COCOAPODS: 1.11.2

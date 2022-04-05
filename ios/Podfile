@@ -72,6 +72,13 @@ target 'common-stg' do
   native
 end
 
+target 'common-dev' do
+  use_frameworks!
+  use_native_modules!
+  reactnative
+  native
+end
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
