@@ -1,26 +1,22 @@
 import {observer} from 'mobx-react-lite';
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {Card} from '~/Stores/Models/Card';
 import {colors, font, text} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
+import {Divider} from '~/Components/Divider';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 interface Props {
-  handleSelectCard: (card: Card) => void;
   card: Card | undefined;
+  navigation: any;
 }
 
-export const CardItem = observer(({card, handleSelectCard}: Props) => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const handlePress = useCallback(() => {
-    console.log('pressed');
-    //handleSelectCard(card);
-  }, []);
-
+export const CardItem = observer(({card, navigation}: Props) => {
+  const replacePaymentMethod = () => {
+    navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
+  };
   const addPaymentMethod = () => (
     <View style={styles.cardBox}>
       <FastImage
@@ -32,7 +28,7 @@ export const CardItem = observer(({card, handleSelectCard}: Props) => {
         Add a payment method for future contributions
       </Text>
       <Pressable
-        onPress={() => navigation.navigate('ChoosePaymentMethodStep')}
+        onPress={() => replacePaymentMethod()}
         style={({pressed}) => [
           {
             opacity: pressed ? 0.5 : 1.0,
@@ -45,14 +41,7 @@ export const CardItem = observer(({card, handleSelectCard}: Props) => {
   );
 
   return card ? (
-    <Pressable
-      onPress={handlePress}
-      style={({pressed}) => [
-        {
-          opacity: pressed ? 0.5 : 1.0,
-        },
-        styles.container,
-      ]}>
+    <View style={styles.container}>
       <>
         <FastImage
           style={styles.paymentSystemLogo}
@@ -61,15 +50,26 @@ export const CardItem = observer(({card, handleSelectCard}: Props) => {
         />
         <View style={styles.cardInfoContainer}>
           <View />
-          {/* <Text style={[styles.text, styles.cardholderName]}>{card.metadata?.owner}</Text> */}
-          <Text style={styles.text}>********{card?.metadata?.digits}</Text>
-          <Text style={styles.text}>{card?.fullName}</Text>
+          <Text style={styles.ccdetails}>
+            {card?.metadata?.billingDetails?.name}
+          </Text>
         </View>
-        {/* <View style={styles.expirationDateContainer}>
-        <Text style={styles.text}>{card.metadata?.expirationDate}</Text>
-      </View> */}
+        <Text style={{...text.buttonblack, textAlign: 'left'}}>
+          ********{card?.metadata?.digits}
+        </Text>
+        <Divider mt={baseMargin * 3} mb={baseMargin * 2} />
+        <Pressable
+          onPress={() => replacePaymentMethod()}
+          style={({pressed}) => [
+            {
+              opacity: pressed ? 0.5 : 1.0,
+            },
+            styles.replacePaymentButton,
+          ]}>
+          <Text style={styles.addPaymentText}>Replace payment method</Text>
+        </Pressable>
       </>
-    </Pressable>
+    </View>
   ) : (
     addPaymentMethod()
   );
@@ -85,12 +85,11 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '30%',
     alignSelf: 'center',
-
     shadowColor: 'rgba(10, 10, 10, 0.2)',
     shadowOffset: {width: 1, height: 13},
     shadowOpacity: 1,
     shadowRadius: 15,
-    padding: 10,
+    padding: 20,
     elevation: 6,
     backgroundColor: 'white',
   },
@@ -123,14 +122,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     justifyContent: 'center',
   },
+  replacePaymentButton: {
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
   paymentSystemLogo: {
-    width: 64,
-    height: 32,
+    width: 70,
+    height: 40,
     marginRight: 12,
   },
   cardInfoContainer: {
     flexDirection: 'row',
-    flex: 1,
   },
   text: {
     fontSize: 14,
@@ -144,5 +147,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+  },
+  ccdetails: {
+    ...text.buttonblack,
+    fontWeight: 'bold',
   },
 });

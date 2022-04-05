@@ -7,17 +7,22 @@ import {useStore} from '~/Util/hooks/useStore';
 import {CardItem} from './CardItem';
 
 interface Props {
-  handleSelectCard: (card: Card) => void;
+  //handleSelectCard: (card: Card) => void;
+  navigation: any;
 }
 
 export const CardList = observer(
-  ({handleSelectCard}: Props): ReactElement => {
+  ({navigation}: Props): ReactElement => {
     const {
       authStore: {userInfo},
       cardStore,
     } = useStore('rootStore');
 
     const currCard = cardStore.getCurrentCard(userInfo?.uid);
+
+    const replacePaymentMethod = () => {
+      navigation.navigate('ChoosePaymentMethodStep');
+    };
 
     useEffect(() => {
       let unsubscribeFromCard = null;
@@ -32,18 +37,7 @@ export const CardList = observer(
     //const keyExtractor = useCallback((data) => data.id, []);
 
     return (
-      <View>
-        <CardItem handleSelectCard={handleSelectCard} card={currCard} />
-        {/*<FlatList
-            data={cards}
-            keyExtractor={keyExtractor}
-            initialNumToRender={3}
-            maxToRenderPerBatch={5}
-            renderItem={({item}: {item: Card}) => (
-              <CardItem handleSelectCard={handleSelectCard} card={item} />
-            )}
-          />*/}
-      </View>
+      <CardItem replacePaymentMethod={replacePaymentMethod} card={currCard} />
     );
   },
 );

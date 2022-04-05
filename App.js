@@ -521,13 +521,6 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
-            name="ChoosePaymentMethodStep"
-            component={ChoosePaymentMethodStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
             name="FirstJoinCommon"
             component={FirstJoinCommon}
             options={() => ({
@@ -680,7 +673,21 @@ const App = ({rootStore, navigation}) => {
             name="Billing"
             component={Billing}
           />
-
+          <Stack.Screen
+            options={({route, ...rest}) => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <TouchableOpacity
+                  style={styles.buttonRight}
+                  onPress={() => navigationRef.current.goBack()}>
+                  <Icon name="close" color={colors.black} size={20} />
+                </TouchableOpacity>
+              ),
+            })}
+            name="ChoosePaymentMethodStep"
+            component={ChoosePaymentMethodStep}
+          />
           <Stack.Screen
             options={{
               headerBackTitleVisible: false,

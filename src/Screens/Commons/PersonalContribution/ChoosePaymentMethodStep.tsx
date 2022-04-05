@@ -5,7 +5,6 @@ import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import {Divider} from '~/Components/Divider';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import UpdatePaymentMethod from '~/Components/Payment/UpdatePaymentMethod';
-//import {Card} from '~/Stores/Models/Card';
 import {text} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation';
@@ -13,51 +12,55 @@ import {useStore} from '~/Util/hooks/useStore';
 import {v4} from 'uuid';
 import PaymentService from '~/Services/PaymentsService';
 import Toast from '~/Util/Toast';
-//import logger from '~/Services/Logger';
 import {WebView} from 'react-native-webview';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import Loader from '~/Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 
 const {height} = Dimensions.get('window');
 
 const ChoosePaymentMethodStep = () => {
-  const cardStore = useStore('cardStore');
+  const {uiStore} = useStore('rootStore');
   const navigation = useNavigation();
   const [iFrame, setIFrame] = useState('');
-  const [newCard, setNewCard] = useState(null);
   const [respLink, setRespLink] = useState(false);
   const insets = useSafeAreaInsets();
   const cardId = v4();
+  const bottomSheetStore = uiStore.bottomSheetStore;
 
   useEffect(() => {
     (async () => {
       const {data} = await PaymentService.createBuyerTokenPage(cardId);
-      console.log('tkt data', data.link);
       setIFrame(data.link);
     })();
   }, []);
 
-  useEffect(() => {
-    // not good cuz token exists, handle in load webview
-    if (newCard?.token) {
-      //push();
-    }
-  }, [newCard?.token]);
-
   const redirectUser = (event) => {
-    //console.log('event', event, 'respLink');
     if (!respLink) {
       if (event?.url?.includes('loader')) {
-        setNewCard(cardStore.getCardById(cardId));
         setRespLink(true);
       }
+    } else {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.PAYMENT_UPDATE_STATUS,
+        {
+          navigation: navigation,
+          message: 'Payment method updated', // need to handle errors here
+          proceed: onProceed,
+        },
+      );
     }
+  };
+
+  const onProceed = () => {
+    bottomSheetStore.hideBottomSheet();
+    navigation.goBack();
   };
 
   const renderWebView = () =>
     iFrame ? (
-      <View style={{width: '100%', height: '80%', backgroundColor: 'pink'}}>
+      <View style={styles.iFrame}>
         <WebView
           scalesPageToFit={false}
           source={{uri: iFrame}}
@@ -70,7 +73,9 @@ const ChoosePaymentMethodStep = () => {
         />
       </View>
     ) : (
-      <Loader />
+      <View style={styles.iFrame}>
+        <Loader />
+      </View>
     );
 
   return (
@@ -79,7 +84,8 @@ const ChoosePaymentMethodStep = () => {
       stepDotHeaderTitle="Payment Details"
       currentIndex={2}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
-      layoutTitle={<UpdatePaymentMethod />}>
+      layoutTitle={<UpdatePaymentMethod />}
+      hideHeader>
       <View
         style={{
           ...styles.container,
@@ -109,6 +115,10 @@ const styles = StyleSheet.create({
   subTitle: {
     ...text.greyText,
     fontSize: 18,
+  },
+  iFrame: {
+    width: '100%',
+    height: '80%',
   },
 });
 

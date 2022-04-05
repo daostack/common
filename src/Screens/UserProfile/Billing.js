@@ -17,7 +17,6 @@ import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import SubscriptionService from '~/Services/SubscriptionService';
 import {authStorePropTypes} from '~/Types/propTypes';
-//import {CardList} from '../../Components/Payment/CardList';
 import {CardItem} from '../../Components/Payment/CardItem';
 import {useStore} from '~/Util/hooks/useStore';
 
@@ -74,6 +73,16 @@ const Billing = ({authStore, navigation}) => {
     })();
   }, []);
 
+  React.useEffect(() => {
+    let unsubscribeFromCard = null;
+    if (userInfo?.uid) {
+      unsubscribeFromCard = cardStore.subscribeToUserCards(userInfo?.uid);
+    }
+    return () => {
+      unsubscribeFromCard && unsubscribeFromCard();
+    };
+  }, [userInfo]);
+
   return (
     <ScrollView
       style={styles.scrollView}
@@ -93,9 +102,10 @@ const Billing = ({authStore, navigation}) => {
         </React.Fragment>
       )}
 
-      <Text style={styles.sectionTitle}>Saved payment method</Text>
-      <CardItem card={currCard} />
-      {/*<CardList navigation={navigation} />*/}
+      <React.Fragment>
+        <Text style={styles.sectionTitle}>Saved payment method</Text>
+        <CardItem navigation={navigation} card={currCard} />
+      </React.Fragment>
 
       {subs?.length === 0 && (
         <View style={styles.container}>
