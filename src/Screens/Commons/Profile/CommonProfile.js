@@ -64,6 +64,7 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {ModalCommonOptions} from '../components/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {CurrencySymbols} from '~/Util/locale';
+import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
 import {CommonProfileFlatList} from './CommonProfileFlatList';
 
@@ -130,8 +131,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     params.commonId || params.currCommon?.id,
   );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
-  const [showPending, setShowPending] = React.useState(false);
+  const [showReqToJoin, setShowRequestToJoin] = useState(false);
+  const [showPending, setShowPending] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
@@ -805,7 +806,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           <CommonProfileFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            hasPermission={hasPermission}>
+            hasPermission={hasPermission}
+            showReqToJoin={showReqToJoin}
+            renderRequestToJoinBtn={renderRequestToJoinBtn}
+            isMember={isMember}>
             <>
               {renderForeground()}
               {showPending && (
@@ -889,12 +893,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               )
             ) : (
               <React.Fragment>
-                {showReqToJoin && (
-                  <View style={styles.actionButtonContainer}>
-                    {renderRequestToJoinBtn()}
-                  </View>
-                )}
-
                 <Modal
                   isVisible={showRequestSentModal}
                   avoidKeyboard={true}
@@ -1046,13 +1044,6 @@ const styles = StyleSheet.create({
   upperActionButtonContainer: {
     paddingHorizontal: 20,
   },
-  actionButtonContainer: {
-    padding: 20,
-    position: 'absolute',
-    bottom: 28,
-    left: 0,
-    right: 0,
-  },
   agendaBox: {
     padding: 20,
     paddingTop: 20,
@@ -1079,7 +1070,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerButton: {
-    height: 48,
+    height: HEADER_BUTTON_HEIGHT,
     borderRadius: 32,
     flexDirection: 'row',
     paddingHorizontal: 10,
