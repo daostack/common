@@ -1,5 +1,11 @@
 import React, {ReactElement, useMemo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  GestureResponderEvent,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer} from 'mobx-react-lite';
 import MemberImage from '~/Components/Commons/MemberImage';
@@ -10,7 +16,6 @@ import {
   VOTE_STATUSES,
   VOTE_COLORS_BY_STATUSES,
 } from '~/Util/constants/votes';
-import {GestureHandlerGestureEvent} from 'react-native-gesture-handler';
 
 interface Props {
   voteType: VOTE_STATUSES;
@@ -18,7 +23,7 @@ interface Props {
   votesCount: number;
   votesFor: number;
   userInfo: UserModel;
-  onPress: (e: GestureHandlerGestureEvent) => void;
+  onPress: (e: GestureResponderEvent) => void;
 }
 
 const ONE_PERCENTAGE_HEIGHT = 0.64;
@@ -57,7 +62,10 @@ export const VoteButton = observer(
             },
           ]}
         />
-        <TouchableOpacity onPress={onPress} style={styles.voteBtn}>
+        <TouchableOpacity
+          disabled={!!voteOutcome}
+          onPress={onPress}
+          style={styles.voteBtn}>
           {voteOutcome === voteType ? (
             <MemberImage
               size={31}

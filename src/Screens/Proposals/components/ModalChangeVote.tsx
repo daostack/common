@@ -28,6 +28,8 @@ interface Props {
   };
 }
 
+// TODO: will use in future
+
 export const ModalChangeVote = ({
   onVote,
   voteOutcome,

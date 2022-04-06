@@ -24,15 +24,35 @@ interface Props {
     inProgress: boolean;
     error: boolean;
   };
+  isMember: boolean;
 }
 
-export const ModalApproval = ({
+export const ModalVote = ({
   onVote,
   voteType,
   onPressClose,
   currentUserPhotoUrl,
   votingProcessState,
+  isMember,
 }: Props) => {
+  if (!isMember) {
+    return (
+      <SafeAreaView
+        style={{
+          ...styles.body,
+          height: 250,
+        }}>
+        <View style={styles.plug} />
+        <View style={styles.content}>
+          <Text style={styles.title}>Only members can vote</Text>
+          <Text style={[styles.subTitle, {textAlign: 'center'}]}>
+            This proposal is ending soon - non-members {'\n'}cannot vote
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{

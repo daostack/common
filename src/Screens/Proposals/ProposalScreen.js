@@ -73,8 +73,7 @@ import {
   VOTE_MESSAGES,
   VOTE_STATUSES,
 } from '~/Util/constants/votes';
-import {ModalChangeVote} from './components/ModalChangeVote';
-import {ModalApproval} from './components/ModalApproval';
+import {ModalVote} from './components/ModalVote';
 import {VoteButton} from './components/VoteButton';
 
 const CopilotView = walkthroughable(View);
@@ -379,11 +378,7 @@ const ProposalScreen = ({
 
   const openApprovalSheet = (voteOutcome) => {
     setVoteType(voteOutcome);
-    if (currentUserVote?.voteOutcome) {
-      setChangeVoteModalVisible(true);
-    } else {
-      setVoteModalVisible(true);
-    }
+    setVoteModalVisible(true);
   };
 
   const viewUserProfile = () => {
@@ -534,12 +529,7 @@ const ProposalScreen = ({
       : Math.sign(availableFunds) * Math.abs(availableFunds);
   };
 
-  const [changeVoteModalVisible, setChangeVoteModalVisible] = useState(false);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
-
-  const closeChangeVoteModal = () => {
-    setChangeVoteModalVisible(false);
-  };
 
   const closeVoteModal = () => {
     setVoteModalVisible(false);
@@ -1039,7 +1029,7 @@ const ProposalScreen = ({
                   </TouchableOpacity>
                 </View>
 
-                {isMember && <VoteContainer />}
+                <VoteContainer />
               </View>
             </View>
           )}
@@ -1099,24 +1089,13 @@ const ProposalScreen = ({
         style={styles.voteModal}
         isVisible={voteModalVisible}
         onClose={closeVoteModal}>
-        <ModalApproval
+        <ModalVote
           onVote={onVote}
           votingProcessState={votingProcessState}
           voteType={voteType}
           currentUserPhotoUrl={currentUserPhotoUrl}
           onPressClose={closeVoteModal}
-        />
-      </BottomSheetModal>
-      <BottomSheetModal
-        style={styles.voteModal}
-        isVisible={changeVoteModalVisible}
-        onClose={closeChangeVoteModal}>
-        <ModalChangeVote
-          onVote={onVote}
-          votingProcessState={votingProcessState}
-          currentUserPhotoUrl={currentUserPhotoUrl}
-          onPressClose={closeChangeVoteModal}
-          voteOutcome={currentUserVote?.voteOutcome}
+          isMember={isMember}
         />
       </BottomSheetModal>
     </React.Fragment>
