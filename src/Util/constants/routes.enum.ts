@@ -32,5 +32,6 @@ export enum NAVIGATION_SCREENS {
   FUNDING_PROPOSAL = 'FundingProposal',
   BILLING = 'Billing',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
+  VOTES_SCREEN = 'VotesScreen',
   CHOOSE_PAYMENT_METHOD_STEP = 'ChoosePaymentMethodStep',
 }
