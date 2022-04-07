@@ -67,7 +67,7 @@ const calcStatus = (state, isScreenHeader, paymentStatus) => {
     status.text = TITLES.COUNTDOWN;
     status.lightColor = isScreenHeader ? colors.mango : colors.butterscotch;
     status.darkColor = colors.mango;
-    status.icon = 'clcok';
+    status.icon = 'clock';
     status.opacity = 0.2;
   }
   return status;

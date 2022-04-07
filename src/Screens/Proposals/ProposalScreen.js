@@ -897,7 +897,7 @@ const ProposalScreen = ({
                         <UserAvatar
                           image={proposedUser?.photoURL}
                           imageStyle={{width: 64, height: 64}}
-                          iconName={'clcok'}
+                          iconName="clock"
                         />
 
                         <View style={{...layout.content, ...layout.marginTopS}}>
@@ -1004,13 +1004,7 @@ const ProposalScreen = ({
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
-                <View
-                  style={{
-                    marginTop: 16,
-                    width: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                <View style={styles.proposalStatusContainer}>
                   <TouchableOpacity
                     onPress={() => {
                       if (showPaymentStatus) {
@@ -1246,6 +1240,12 @@ const styles = StyleSheet.create({
     marginTop: sizeS,
     marginBottom: sizeM,
     alignSelf: 'center',
+  },
+  proposalStatusContainer: {
+    marginTop: 16,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

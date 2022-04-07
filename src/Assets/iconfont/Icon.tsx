@@ -13,7 +13,7 @@ import IconcheckMark from './IconcheckMark';
 import IconcheckIcon from './IconcheckIcon';
 import Iconacknowledgement116 from './Iconacknowledgement116';
 import IconbillingDetails24Copy4 from './IconbillingDetails24Copy4';
-import Iconclcok from './Iconclcok';
+import Iconclock from './Iconclock';
 import Iconcountdown24 from './Iconcountdown24';
 import Icontrajectory from './Icontrajectory';
 import Iconaddpicture from './Iconaddpicture';
@@ -130,7 +130,7 @@ export type IconNames =
   | 'checkIcon'
   | 'acknowledgement-116'
   | 'billing-details-24-copy-4'
-  | 'clcok'
+  | 'clock'
   | 'countdown-24'
   | 'trajectory'
   | 'addpicture'
@@ -263,8 +263,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconacknowledgement116 {...rest} />;
     case 'billing-details-24-copy-4':
       return <IconbillingDetails24Copy4 {...rest} />;
-    case 'clcok':
-      return <Iconclcok {...rest} />;
+    case 'clock':
+      return <Iconclock {...rest} />;
     case 'countdown-24':
       return <Iconcountdown24 {...rest} />;
     case 'trajectory':

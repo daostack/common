@@ -11,7 +11,7 @@ interface Props extends GProps, ViewProps {
   color?: string | string[];
 }
 
-export const Iconclcok: FunctionComponent<Props> = ({size, color, ...rest}) => {
+export const Iconclock: FunctionComponent<Props> = ({size, color, ...rest}) => {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <G fill="none" fill-rule="evenodd">
@@ -30,8 +30,8 @@ export const Iconclcok: FunctionComponent<Props> = ({size, color, ...rest}) => {
   );
 };
 
-Iconclcok.defaultProps = {
+Iconclock.defaultProps = {
   size: 18,
 };
 
-export default Iconclcok;
+export default Iconclock;
