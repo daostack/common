@@ -6,6 +6,7 @@ import {Card} from '~/Stores/Models/Card';
 import {colors, font, text} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {Divider} from '~/Components/Divider';
+import {AddPaymentMethod} from './AddPaymentMethod';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 interface Props {
@@ -17,28 +18,6 @@ export const CardItem = observer(({card, navigation}: Props) => {
   const replacePaymentMethod = () => {
     navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
   };
-  const addPaymentMethod = () => (
-    <View style={styles.cardBox}>
-      <FastImage
-        style={styles.addPaymentImage}
-        source={require('~/Assets/addPaymentMethod.png')}
-        resizeMode="cover"
-      />
-      <Text style={styles.addPaymentText}>
-        Add a payment method for future contributions
-      </Text>
-      <Pressable
-        onPress={() => replacePaymentMethod()}
-        style={({pressed}) => [
-          {
-            opacity: pressed ? 0.5 : 1.0,
-          },
-          styles.addPaymentButton,
-        ]}>
-        <Text style={text.buttonblue}>Add a new card</Text>
-      </Pressable>
-    </View>
-  );
 
   return card ? (
     <View style={styles.container}>
@@ -71,7 +50,7 @@ export const CardItem = observer(({card, navigation}: Props) => {
       </>
     </View>
   ) : (
-    addPaymentMethod()
+    <AddPaymentMethod replacePaymentMethod={replacePaymentMethod} />
   );
 });
 

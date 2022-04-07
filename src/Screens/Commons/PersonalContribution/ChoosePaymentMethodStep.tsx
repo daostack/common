@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react-lite';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import {Divider} from '~/Components/Divider';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
@@ -26,17 +26,17 @@ const ChoosePaymentMethodStep = () => {
   const [iFrame, setIFrame] = useState('');
   const [respLink, setRespLink] = useState(false);
   const insets = useSafeAreaInsets();
-  const cardId = v4();
+  const cardId = useRef(v4());
   const bottomSheetStore = uiStore.bottomSheetStore;
 
   useEffect(() => {
     (async () => {
-      const {data} = await PaymentService.createBuyerTokenPage(cardId);
+      const {data} = await PaymentService.createBuyerTokenPage(cardId.current);
       setIFrame(data.link);
     })();
   }, []);
 
-  const redirectUser = (event) => {
+  const redirectUser = (event: any) => {
     if (!respLink) {
       if (event?.url?.includes('loader')) {
         setRespLink(true);
