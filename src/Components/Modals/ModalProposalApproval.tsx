@@ -37,7 +37,7 @@ const ModalProposalApproval = ({
             ...layout.marginRightS,
           }}
           onPress={onPressClose}>
-          <Text style={styles.doneBtn}>{'Let’s get to work'}</Text>
+          <Text style={styles.doneBtn}>Let’s get to work</Text>
         </TouchableOpacity>
       </View>
     </View>

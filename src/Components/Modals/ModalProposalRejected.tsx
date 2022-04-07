@@ -37,7 +37,7 @@ const ModalProposalRejected = ({
             ...layout.marginRightS,
           }}
           onPress={onPressClose}>
-          <Text style={styles.doneBtn}>{'Done'}</Text>
+          <Text style={styles.doneBtn}>Done</Text>
         </TouchableOpacity>
       </View>
     </View>
