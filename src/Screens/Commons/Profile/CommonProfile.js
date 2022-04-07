@@ -618,7 +618,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok" size={16} style={layout.marginRightXS} />
+          <Icon name="clock" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View

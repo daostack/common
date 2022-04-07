@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback, useMemo} from 'react';
 import {
   LayoutAnimation,
   Dimensions,
@@ -17,6 +17,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
@@ -24,7 +25,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
-import ApprovalSheetScreen from '../BottomSheetScreens/ApprovalSheetScreen';
 import Toast from '~/Util/Toast';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import ProposalService, {
@@ -39,7 +39,7 @@ import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape, func} from 'prop-types';
 import logger from '~/Services/Logger';
-import {LAYOUT_ANIMATION_CONFIG, LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
+import {LAYOUT_ANIMATION_CONFIG_SLOW} from '~/Util';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {
   Placeholder,
@@ -67,7 +67,14 @@ import {TooltipComponent} from './components/ModalTooltip';
 import {TOOLTIP_PROPOSAL_SEEN, TOOLTIP_PROPOSAL} from '~/Util/constants';
 import {CurrencySymbols} from '~/Util/locale';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {VOTE_STATUSES} from '~/Util/constants/votes';
+import {
+  VOTE_COLORS_BY_STATUSES,
+  VOTE_ICON_BY_STATUSES,
+  VOTE_MESSAGES,
+  VOTE_STATUSES,
+} from '~/Util/constants/votes';
+import {ModalVote} from './components/ModalVote';
+import {VoteButton} from './components/VoteButton';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
@@ -76,13 +83,7 @@ const screenHeight = Dimensions.get('window').height;
 const ProposalScreen = ({
   navigation,
   route: {
-    params: {
-      commonId,
-      proposalId,
-      tabIndex = 0,
-      hasPermission,
-      fromNotificationItem,
-    },
+    params: {proposalId, tabIndex = 0, hasPermission},
   },
   rootStore,
   start, // copilot modal tooltip start
@@ -95,6 +96,7 @@ const ProposalScreen = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const {userInfo, isDaoMember} = authStore;
+  const currentUserPhotoUrl = userInfo?.photoURL;
 
   const [votingProcessState, setVotingProcessState] = useState({
     inProgress: false,
@@ -156,14 +158,16 @@ const ProposalScreen = ({
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
-  let currentUserVote = {};
+  let currentUserVote;
   const filteredVotes = proposalInfo.votes.filter(
-    (item) => item.voterId === userInfo.uid,
+    (item) => item.voterId === userInfo?.uid,
   );
   if (filteredVotes.length !== 0) {
     currentUserVote = filteredVotes[0];
   }
-  const userVoted = Object.values(currentUserVote).length !== 0;
+  const userVoted = currentUserVote
+    ? Object.values(currentUserVote).length !== 0
+    : 0;
 
   useEffect(() => {
     const asyncData = async () => {
@@ -237,14 +241,9 @@ const ProposalScreen = ({
     }
   }, [proposalId, votingProcessState]);
 
-  const [
-    isApprovalBottomModalVisible,
-    setIsApprovalBottomModalVisible,
-  ] = useState(false);
-
-  const [isVoteByYou, setIsVoteByYou] = useState(
+  const [userVote, setUserVote] = useState(
     currentUserVote?.voteId && {
-      isApproved: currentUserVote.voteOutcome === VOTE_STATUSES.APPROVED,
+      voteOutcome: currentUserVote.voteOutcome,
     },
   );
 
@@ -377,13 +376,9 @@ const ProposalScreen = ({
     );
   };
 
-  const openApprovalSheet = (isApproval) => {
-    setVoteType(isApproval);
-    setIsApprovalBottomModalVisible(true);
-  };
-
-  const closeApprovalSheet = (e) => {
-    setIsApprovalBottomModalVisible(false);
+  const openApprovalSheet = (voteOutcome) => {
+    setVoteType(voteOutcome);
+    setVoteModalVisible(true);
   };
 
   const viewUserProfile = () => {
@@ -392,26 +387,34 @@ const ProposalScreen = ({
     });
   };
 
-  const onVote = async (isApproved) => {
+  const onVote = async (voteOutcome) => {
     setVotingProcessState({
       inProgress: true,
       error: false,
+      processingVoteType: voteOutcome,
     });
 
     try {
       const voteData = {
-        outcome: isApproved ? VOTE_STATUSES.APPROVED : VOTE_STATUSES.REJECTED,
+        outcome: voteOutcome,
         proposalId: proposalId || proposalInfo.id,
       };
 
       const createVoteResponse = await ProposalService.createVote(voteData);
       if (createVoteResponse.status === 200) {
-        setVotingProcessState({inProgress: false, error: false});
-        closeApprovalSheet();
-        Toast.done(isApproved ? 'Approved by you' : 'Rejected by you');
-        setIsVoteByYou({isApproved: isApproved});
+        closeVoteModal();
+        // wait till modal hide for smooth ui
+        setTimeout(() => {
+          setVotingProcessState({inProgress: false, error: false});
+        }, 1000);
+        Toast.done(VOTE_MESSAGES[voteOutcome]);
+        setUserVote({voteOutcome});
       } else {
-        setVotingProcessState({inProgress: false, error: true});
+        setVotingProcessState({
+          inProgress: false,
+          error: true,
+          processingVoteType: null,
+        });
         logger.log(createVoteResponse.status);
         Toast.error(`Status code ${createVoteResponse.status}`);
       }
@@ -419,21 +422,16 @@ const ProposalScreen = ({
       setVotingProcessState({
         inProgress: false,
         error: err,
+        processingVoteType: null,
       });
     }
   };
 
   const renderStickyBottomContent = () => {
-    if (isVoteByYou) {
-      let message = 'Rejected by you';
-      let iconName = 'close';
-      let color = colors.error;
-
-      if (isVoteByYou.isApproved) {
-        message = 'Approved by you';
-        iconName = 'check';
-        color = colors.lightishGreen;
-      }
+    if (userVote?.voteOutcome) {
+      let message = VOTE_MESSAGES[userVote.voteOutcome];
+      let iconName = VOTE_ICON_BY_STATUSES[userVote.voteOutcome];
+      let color = VOTE_COLORS_BY_STATUSES[userVote.voteOutcome];
 
       return (
         <View style={{...layout.content, ...layout.flexRow, padding: 0}}>
@@ -464,39 +462,6 @@ const ProposalScreen = ({
         <DebtErrorProposalNote onPress={() => openDebtErrorModal()} />
       );
     }
-  };
-
-  const renderVotingButtons = (reference) => {
-    LayoutAnimation.configureNext(LAYOUT_ANIMATION_CONFIG);
-    return (
-      PROPOSAL_STAGES_ACTIVE.some((stg) => stg === proposalInfo?.state) && (
-        <View
-          ref={reference}
-          style={{...layout.content, padding: 0, width: '100%'}}>
-          <Text
-            style={
-              reference
-                ? styles.topSheetVotingText
-                : styles.bottomSheetVotingText
-            }>
-            What's your vote?
-          </Text>
-          <View style={layout.flexRow}>
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(true)}
-              style={{...styles.actionBtnStyle, ...layout.marginRightS}}>
-              <Icon name="approved-24" color={colors.lightishGreen} size={24} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={(e) => openApprovalSheet(false)}
-              style={{...styles.actionBtnStyle, ...layout.marginLeftS}}>
-              <Icon name="reject-24" color={colors.against} size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    );
   };
 
   const initialLayout = {width: screenWidth};
@@ -562,6 +527,12 @@ const ProposalScreen = ({
           (Math.abs(availableFunds) / 1000).toFixed(1) +
           'K'
       : Math.sign(availableFunds) * Math.abs(availableFunds);
+  };
+
+  const [voteModalVisible, setVoteModalVisible] = useState(false);
+
+  const closeVoteModal = () => {
+    setVoteModalVisible(false);
   };
 
   const closeDebtModal = () => {
@@ -676,6 +647,109 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
+  const {
+    approvedCount,
+    abstainedCount,
+    rejectedCount,
+    allVoteCount,
+  } = proposalStore.getVotesCounts(proposalInfo?.votes);
+
+  const VoteContainer = useCallback(
+    () => (
+      <CopilotStep order={1} name="info">
+        <CopilotView
+          style={{
+            ...layout.content,
+            paddingTop: 0,
+            width: '100%',
+            paddingHorizontal: 0,
+          }}>
+          <Text
+            style={{
+              marginBottom: 16,
+              fontSize: 14,
+              color: colors.black,
+              ...font.primary.bold,
+            }}>
+            What's your vote?
+          </Text>
+          <View
+            style={{
+              height: 134,
+              width: '100%',
+              justifyContent: 'space-between',
+              marginBottom: 16,
+              alignItems: 'flex-end',
+              flexDirection: 'row',
+            }}>
+            <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.APPROVED)}
+              voteType={VOTE_STATUSES.APPROVED}
+              votesFor={approvedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote?.voteOutcome}
+              userInfo={userInfo}
+            />
+            <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
+              voteType={VOTE_STATUSES.ABSTAINED}
+              votesFor={abstainedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote?.voteOutcome}
+              userInfo={userInfo}
+            />
+            <VoteButton
+              onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
+              voteType={VOTE_STATUSES.REJECTED}
+              votesFor={rejectedCount}
+              votesCount={allVoteCount}
+              voteOutcome={currentUserVote?.voteOutcome}
+              userInfo={userInfo}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center'}}
+            onPress={() => {
+              navigation.navigate(NAVIGATION_SCREENS.VOTES_SCREEN, {
+                proposalId: proposalId || proposalInfo.id,
+                commonName: proposalCommon.name,
+              });
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                ...font.primary.regular,
+                letterSpacing: 0.28,
+              }}>
+              {allVoteCount}/{proposalCommon.members?.length || 1} votes
+            </Text>
+            <Icon name="right-arrow" size={16} />
+          </TouchableOpacity>
+        </CopilotView>
+      </CopilotStep>
+    ),
+    [
+      userInfo,
+      approvedCount,
+      rejectedCount,
+      abstainedCount,
+      allVoteCount,
+      currentUserVote,
+    ],
+  );
+
+  const ProposalCardHeaderProps = useMemo(() => {
+    if (proposalInfo?.type === PROPOSAL_TYPE.FundingRequest) {
+      return {
+        onPress: () => openDebtInsufficientModal(),
+      };
+    }
+    return {
+      authInfo: authStore.userInfo,
+    };
+  }, [authStore.userInfo, proposalInfo.type, openDebtInsufficientModal]);
+
   return (
     <React.Fragment>
       <ModerationModal
@@ -739,7 +813,6 @@ const ProposalScreen = ({
           backgroundColor: colors.white,
         }}
       />
-
       <SafeAreaView
         style={{
           flex: 1,
@@ -790,22 +863,6 @@ const ProposalScreen = ({
               <View style={headerContainerStyle}>
                 {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (showPaymentStatus) {
-                          paymentStatusModal();
-                        }
-                      }}>
-                      <ProposalCardHeader
-                        isScreenHeader={true}
-                        state={proposalInfo?.state}
-                        paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
-                        onPress={() => openDebtInsufficientModal()}
-                        hasPermission={hasPermission}
-                        viewerPermission={viewerPermission}
-                      />
-                    </TouchableOpacity>
                     {proposedUser && (
                       <UserAvatar
                         image={proposedUser?.photoURL}
@@ -846,7 +903,7 @@ const ProposalScreen = ({
                         <UserAvatar
                           image={proposedUser?.photoURL}
                           imageStyle={{width: 64, height: 64}}
-                          iconName={'clcok'}
+                          iconName="clock"
                         />
 
                         <View style={{...layout.content, ...layout.marginTopS}}>
@@ -953,89 +1010,26 @@ const ProposalScreen = ({
                   )}
                 </View>
                 {renderDebWarningIfNeeded()}
-
-                <CopilotStep order={1} name="info">
-                  <CopilotView
-                    style={{
-                      ...layout.content,
-                      width: '100%',
-                      paddingHorizontal: 0,
+                <View style={styles.proposalStatusContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (showPaymentStatus) {
+                        paymentStatusModal();
+                      }
                     }}>
-                    <View style={styles.proposalProgressInfo}>
-                      <View
-                        style={{
-                          ...layout.content,
-                          ...layout.flexRow,
-                          padding: 0,
-                        }}>
-                        <Icon
-                          name="user-approved"
-                          color={colors.lightishGreen}
-                          size={25}
-                          style={layout.marginRightXS}
-                        />
-                        <Text style={text.lightishGreenText}>
-                          {proposalInfo.votesFor}
-                        </Text>
-                      </View>
+                    <ProposalCardHeader
+                      isScreenHeader={true}
+                      state={proposalInfo?.state}
+                      paymentStatus={proposalInfo?.paymentState}
+                      closingAt={proposalInfo?.countdown}
+                      hasPermission={hasPermission}
+                      viewerPermission={viewerPermission}
+                      {...ProposalCardHeaderProps}
+                    />
+                  </TouchableOpacity>
+                </View>
 
-                      <Text style={text.smallBlackText}>
-                        {!proposalInfo.votesCount
-                          ? 'No votes yet'
-                          : `${proposalInfo.votesCount} ${
-                              proposalInfo.votesCount > 1 ? 'votes' : 'vote'
-                            }`}
-                      </Text>
-
-                      <View
-                        style={{
-                          ...layout.content,
-                          ...layout.flexRow,
-                          padding: 0,
-                        }}>
-                        <Text style={text.againstText}>
-                          {proposalInfo.votesAgainst}
-                        </Text>
-                        <Icon
-                          name="user-rejected"
-                          color={colors.against}
-                          size={25}
-                          style={layout.marginLeftXS}
-                        />
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        ...styles.proposalProgressBar,
-                        ...{
-                          backgroundColor: isNaN(
-                            proposalInfo?.progressBarWidthPercent,
-                          )
-                            ? colors.grey4
-                            : colors.against,
-                        },
-                      }}>
-                      <View
-                        style={{
-                          ...styles.proposalInnerProgressBar,
-                          width: `${
-                            proposalInfo?.progressBarWidthPercent || 0
-                          }%`,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        ...layout.flexRow,
-                        justifyContent: 'space-between',
-                        width: '100%',
-                      }}>
-                      {renderVoting &&
-                        !isVoteByYou &&
-                        renderVotingButtons(topVotingButtonsRef)}
-                    </View>
-                  </CopilotView>
-                </CopilotStep>
+                <VoteContainer />
               </View>
             </View>
           )}
@@ -1091,15 +1085,17 @@ const ProposalScreen = ({
           <React.Fragment>{messageInput()}</React.Fragment>
         )}
       </SafeAreaView>
-
       <BottomSheetModal
-        isVisible={isApprovalBottomModalVisible}
-        onClose={closeApprovalSheet}>
-        <ApprovalSheetScreen
-          voteType={voteType}
-          onApprove={onVote}
-          onClose={closeApprovalSheet}
+        style={styles.voteModal}
+        isVisible={voteModalVisible}
+        onClose={closeVoteModal}>
+        <ModalVote
+          onVote={onVote}
           votingProcessState={votingProcessState}
+          voteType={voteType}
+          currentUserPhotoUrl={currentUserPhotoUrl}
+          onPressClose={closeVoteModal}
+          isMember={isMember}
         />
       </BottomSheetModal>
     </React.Fragment>
@@ -1162,11 +1158,9 @@ const styles = StyleSheet.create({
     padding: 0,
     flex: 1,
   },
-  stickyVotingContainer: {
-    ...layout.flexRow,
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
+  voteModal: {
+    paddingTop: 16,
+    borderRadius: 27,
   },
   proposalProgressBar: {
     width: '100%',
@@ -1252,6 +1246,12 @@ const styles = StyleSheet.create({
     marginTop: sizeS,
     marginBottom: sizeM,
     alignSelf: 'center',
+  },
+  proposalStatusContainer: {
+    marginTop: 16,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
