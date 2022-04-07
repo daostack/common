@@ -5,7 +5,7 @@ import {Card} from '../Models/Card';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import CardsService from '~/Services/CardsService';
 import Logger from '~/Services/Logger';
-import _ from 'lodash';
+import {orderBy} from 'lodash';
 
 export default class CardStore extends BaseStore<Card, ICardEntity> {
   constructor(rootStore: RootStore) {
@@ -34,7 +34,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
       const cards = this.getCards(ownerId);
       if (cards) {
         return cards.length > 1
-          ? _.sortBy(cards, 'createdAt').reverse()[0]
+          ? orderBy(cards, 'createdAt', 'desc')[0]
           : cards[0];
       }
       return undefined;

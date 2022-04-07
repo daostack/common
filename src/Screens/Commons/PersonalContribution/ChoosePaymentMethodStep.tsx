@@ -67,7 +67,7 @@ const ChoosePaymentMethodStep = () => {
           onNavigationStateChange={(event) => {
             redirectUser(event);
           }}
-          onLoadEnd={(syntheticEvent) => {
+          onLoadEnd={() => {
             Toast.done('All done!');
           }}
         />

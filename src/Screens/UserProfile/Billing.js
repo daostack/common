@@ -9,14 +9,13 @@ import {
   View,
 } from 'react-native';
 
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import SubscriptionService from '~/Services/SubscriptionService';
-import {authStorePropTypes} from '~/Types/propTypes';
 import {CardItem} from '../../Components/Payment/CardItem';
 import {useStore} from '~/Util/hooks/useStore';
 
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Billing = ({authStore, navigation}) => {
+const Billing = ({navigation}) => {
   const [subs, setSubs] = React.useState(null);
   const {
     authStore: {userInfo},
@@ -64,12 +63,9 @@ const Billing = ({authStore, navigation}) => {
 
   React.useEffect(() => {
     (async () => {
-      await SubscriptionService.getUserSubscriptions(
-        authStore.userInfo.uid,
-        (snap) => {
-          setSubs(snap?.docs.map((doc) => doc.data()));
-        },
-      );
+      await SubscriptionService.getUserSubscriptions(userInfo.uid, (snap) => {
+        setSubs(snap?.docs.map((doc) => doc.data()));
+      });
     })();
   }, []);
 
@@ -138,7 +134,6 @@ const Billing = ({authStore, navigation}) => {
 
 Billing.propTypes = {
   navigation: PropTypes.object,
-  authStore: authStorePropTypes,
 };
 
-export default inject('authStore')(observer(Billing));
+export default observer(Billing);
