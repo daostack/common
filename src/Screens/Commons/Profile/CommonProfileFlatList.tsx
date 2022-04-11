@@ -11,6 +11,11 @@ import Animated, {
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
 import {CommonHeaderBar} from './CommonHeaderBar';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  HEADER_BUTTON_HEIGHT,
+  HEADER_HEIGHT,
+} from '~/Screens/Commons/components/commonConstants';
 
 const {width, height} = Dimensions.get('window');
 
@@ -24,11 +29,23 @@ interface FlatListProps {
   hasPermission: boolean;
   openCommonOptionsModal: () => void;
   children: React.ReactNode;
+  showReqToJoin: boolean;
+  renderRequestToJoinBtn: () => void;
+  isMember: boolean;
 }
 
 export const CommonProfileFlatList = (props: FlatListProps) => {
-  const {currCommon, children, openCommonOptionsModal, hasPermission} = props;
+  const {
+    currCommon,
+    children,
+    openCommonOptionsModal,
+    hasPermission,
+    showReqToJoin,
+    renderRequestToJoinBtn,
+    isMember,
+  } = props;
   const yIndex = useSharedValue(0);
+  const insets = useSafeAreaInsets();
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (e) => {
@@ -55,6 +72,18 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
         ),
       },
     ],
+  }));
+
+  const animatedOpacity = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      yIndex.value,
+      [
+        HEADER_HEIGHT - insets.top + 110,
+        HEADER_HEIGHT - insets.top + 110 + HEADER_BUTTON_HEIGHT,
+      ],
+      [0, 1],
+      Extrapolate.CLAMP,
+    ),
   }));
 
   const renderBackground = useCallback(
@@ -94,6 +123,11 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
           </>
         }
       />
+      {showReqToJoin && !isMember && (
+        <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
+          {renderRequestToJoinBtn()}
+        </Animated.View>
+      )}
     </>
   );
 };
@@ -113,5 +147,12 @@ const styles = StyleSheet.create({
   image: {
     height: DEFAULT_HEADER_HEIGHT,
     width: width,
+  },
+  actionButtonContainer: {
+    padding: 20,
+    position: 'absolute',
+    bottom: 28,
+    left: 0,
+    right: 0,
   },
 });

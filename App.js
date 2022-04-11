@@ -56,6 +56,7 @@ import {
   PhoneNumberStep1,
   VerificationStep2,
   FirstJoinCommon,
+  VotesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -466,6 +467,32 @@ const App = ({rootStore, navigation}) => {
                   <Icon name="left-arrow" color={colors.black} size={32} />
                 </TouchableOpacity>
               ),
+              headerTitle: () => (
+                <View style={{alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                    }}>
+                    {route?.params.title?.length > 20
+                      ? route?.params.title.substring(0, 17) + '...'
+                      : route?.params.title}
+                  </Text>
+
+                  {route?.params.subtitle && (
+                    <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                      {route.params.subtitle}
+                    </Text>
+                  )}
+                </View>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="VotesScreen"
+            component={VotesScreen}
+            options={({route, ...rest}) => ({
+              headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
               headerTitle: () => (
                 <View style={{alignItems: 'center'}}>
                   <Text

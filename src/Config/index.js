@@ -63,7 +63,7 @@ switch (Config.ENV) {
   }
   default: {
     throw Error(
-      `Unknown Config.ENV: must be one of "staging" or "production", but is ${Config.ENV}`,
+      `Unknown Config.ENV: must be one of "staging", "production" or "dev", but is ${Config.ENV}`,
     );
   }
 }

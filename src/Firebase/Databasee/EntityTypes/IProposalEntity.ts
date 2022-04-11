@@ -2,6 +2,8 @@ import {IBaseEntity} from './IBaseEntity';
 import {ContributionType, ICommonLink} from './ICommonEntity';
 import {VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
+import {UserModel} from '~/Stores/Models/UserModel';
+import {firebase} from '~/Firebase';
 
 export type FundingRequestState =
   | 'countdown'
@@ -102,6 +104,12 @@ export interface IProposalVote {
    * The outcome of the vote
    */
   voteOutcome: VoteOutcome;
+
+  updatedAt: firebase.firestore.Timestamp;
+}
+
+export interface VoteWithUserInfo extends IProposalVote {
+  user: UserModel;
 }
 
 export interface IBaseProposalDescription {
