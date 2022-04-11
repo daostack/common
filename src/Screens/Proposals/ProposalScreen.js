@@ -78,7 +78,6 @@ import {
 } from '~/Util/constants/votes';
 import {ModalVote} from './components/ModalVote';
 import {VoteButton} from './components/VoteButton';
-import ModalProposalApproval from '~/Components/Modals/ModalProposalApproval';
 import ModalProposalRejected from '~/Components/Modals/ModalProposalRejected';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
