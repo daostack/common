@@ -19,7 +19,6 @@
 		151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
 		151C20402499E3F4006170CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		151C20412499E3F4006170CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
-		151C20542499E4C4006170CC /* common-dev-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		151C20602499E503006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C205C2499E503006170CC /* GoogleService-Info.plist */; };
 		151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20612499E99B006170CC /* GoogleService-Info.plist */; };
 		153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
@@ -72,6 +71,7 @@
 		5BEF937EE445492510E23D40 /* Pods_common_dev.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1BCF6C52ED92C37DA4C09F3 /* Pods_common_dev.framework */; };
 		633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		736A9726E429ECF26A555355 /* Pods_common_stg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9237886088EA31D00DEDB8D /* Pods_common_stg.framework */; };
+		840F88F127FEDB510011ECD6 /* common-dev-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
 		9932C9CC0B2948FE94025468 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
 		99B0555A2C04A6E825D0244E /* Pods_common_stg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9237886088EA31D00DEDB8D /* Pods_common_stg.framework */; };
@@ -114,7 +114,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				151C20542499E4C4006170CC /* common-dev-notification-service-ext.appex in Embed App Extensions */,
+				840F88F127FEDB510011ECD6 /* common-dev-notification-service-ext.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1123,7 +1123,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.dev.common-notification-service-ext";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1145,7 +1145,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.dev.common-notification-service-ext";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;

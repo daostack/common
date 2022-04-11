@@ -2,6 +2,7 @@ import axios, {AxiosInstance} from 'axios';
 import {db} from '../Firebase';
 import {auth} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 import StorageService from './StorageService';
@@ -58,6 +59,16 @@ class PaymentService {
     PaymentsCollection.doc(paymentId).onSnapshot((snapshot: any) => {
       callback(snapshot);
     });
+
+  subscribeToUserPayments = (
+    userId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn =>
+    PaymentsCollection.where(userId, '==', 'userId').onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
 
   uploadInvoices = async (
     proposalID: string,

@@ -56,6 +56,7 @@ import {
   PhoneNumberStep1,
   VerificationStep2,
   FirstJoinCommon,
+  ContributionHistory,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -88,6 +89,7 @@ import {
   DYNAMIC_LINKS_SCREEN_PARAMS,
   DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
+import {layout} from '~/Theme';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -684,6 +686,24 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             options={{
               headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.CONTRIBUTION_HISTORY}
+            component={ContributionHistory}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
             }}
             name="MonthlyContribution"
             component={MonthlyContribution}
@@ -738,6 +758,11 @@ const styles = StyleSheet.create({
   },
   buttonRight: {
     marginRight: 20,
+  },
+  headerButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

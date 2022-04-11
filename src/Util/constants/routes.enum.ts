@@ -32,4 +32,5 @@ export enum NAVIGATION_SCREENS {
   FUNDING_PROPOSAL = 'FundingProposal',
   MONTHLY_CONTRIBUTIONS_LIST = 'MonthlyContributionsList',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
+  CONTRIBUTION_HISTORY = 'ContributionHistory',
 }

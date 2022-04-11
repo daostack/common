@@ -702,6 +702,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       onEdit(type);
     } else if (type === COMMON_OPTION_TYPES.delete) {
       setDeleteScreenOn(true);
+    } else if (type === COMMON_OPTION_TYPES.contributionHistory) {
+      closeCommonOptionsModal();
+      const actions = CommonActions.navigate({
+        name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
+        params: {
+          commonName: currCommon.name,
+        },
+      });
+
+      navigation.dispatch(actions);
     }
   };
 
@@ -934,6 +944,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 commonMembersCount={currCommon?.members?.length}
                 isFounderOrModerator={hasPermission}
                 onAction={onModalOptionsAction}
+                commonName={currCommon.name}
               />
             ) : (
               <ModalDeleteConfirmation

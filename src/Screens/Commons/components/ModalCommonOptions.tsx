@@ -44,6 +44,16 @@ export const ModalCommonOptions = ({
           />
           <Text style={styles.btnText}>Edit rules</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onAction(COMMON_OPTION_TYPES.contributionHistory)}>
+          <Icon
+            name="contribution-24"
+            style={layout.marginRightS}
+            color={colors.black}
+          />
+          <Text style={styles.btnText}>My contributions</Text>
+        </TouchableOpacity>
         {isFounderOrModerator && commonMembersCount <= 1 && (
           <TouchableOpacity
             style={styles.optionBtn}
