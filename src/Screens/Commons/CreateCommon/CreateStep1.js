@@ -152,7 +152,7 @@ const CreateStep1 = ({
           validation={{
             name: CreateCommonForm.DESCRIPTION,
             formStore: generalInfoFormStore,
-            validateRule: 'string',
+            validateRule: 'required',
             displayName: 'about',
           }}
         />

@@ -1,41 +1,22 @@
-import React, {useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
 import {inject, observer} from 'mobx-react';
-import {StackActions} from '@react-navigation/native';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  DYNAMIC_LINK_URI_PREFIX,
-  DYNAMIC_LINKS_TYPES,
-} from '~/Util/constants/dynamicLinks';
-
 import moment from 'moment';
-import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import RequestStepActionButton from '../RequestStepActionButton';
-import {numberFormatter, showErrorPopUp} from '~/Util';
-
-import Modal from 'react-native-modal';
-import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
-import Share from 'react-native-share';
-import CreateStep4Indicators from './CreateStep4Indicators';
-import {CommonActions} from '@react-navigation/native';
 import {object, shape} from 'prop-types';
-import CommonService from '~/Services/CommonService';
-import CommonImage from '~/Components/Commons/CommonImage';
-import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {escapeUrl} from '~/Util';
-import {Bold} from '~/Components/Text/Bold';
+import React from 'react';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {CurrencySymbols} from '~/Util/locale';
-
-import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
+import CommonImage from '~/Components/Commons/CommonImage';
+import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {Bold} from '~/Components/Text/Bold';
 import logger from '~/Services/Logger';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {colors, font, layout, sizeL, sizeM, sizeXL, text} from '~/Theme';
 import {rootStorePropTypes} from '~/Types/propTypes';
+import {escapeUrl, numberFormatter, showErrorPopUp} from '~/Util';
+import CommonService from '~/Services/CommonService';
+import {CurrencySymbols} from '~/Util/locale';
+import RequestStepActionButton from '../RequestStepActionButton';
+import CreateStep4Indicators from './CreateStep4Indicators';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -53,7 +34,6 @@ const CreateStep4 = ({
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
 
-  const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -70,46 +50,12 @@ const CreateStep4 = ({
     ? '0'
     : form[CreateCommonForm.MINIMUM];
 
-  const goToCommon = () => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        commonId: newCommonAddress.toLowerCase(),
-      },
-    });
-    navigation.popToTop();
-    navigation.dispatch(navigate);
-  };
-
-  const shareCommon = async () => {
-    try {
-      const {name, description, image} = form;
-      const currCommonId = newCommonAddress.toLowerCase();
-      const url = await dynamicLinks().buildShortLink({
-        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommonId}`,
-        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
-        social: {
-          title: name,
-          descriptionText: description,
-          imageUrl: image,
-        },
-      });
-      const options = {
-        url,
-        title: "Let's make it happen",
-        message: `${name} common`,
-      };
-      Share.open(options);
-    } catch (err) {
-      logger.log('Deep Linking works only in production');
-    }
-  };
-
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
 
-      const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
+      const contributionAmount =
+        parseFloat(formDataInit[CreateCommonForm.MINIMUM], 10) * 100;
 
       const data = {
         ...formDataInit,
@@ -146,16 +92,26 @@ const CreateStep4 = ({
       );
 
       if (createCommonResponse.status === 200) {
-        setNewCommonAddress(createCommonResponse.data.id);
-        navigation.pop();
+        const personalContributionFormStore = new PersonalContributionFormStore();
+
+        navigation.navigate({
+          name: 'PersonalContributionStep',
+          params: {
+            common: {
+              id: createCommonResponse.data.id,
+              ...formattedData,
+              minFeeToJoin: contributionAmount,
+            },
+            formStores: {
+              personalContributionFormStore,
+            },
+          },
+        });
       } else {
         navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
-
-      return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
-      //navigation.pop();
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
@@ -173,36 +129,9 @@ const CreateStep4 = ({
       navTitle="Final touches and review"
       currentIndex={4}
       isRequestButtonSticky={false}
-      prependedArea={
-        <Modal
-          isVisible={Boolean(newCommonAddress)}
-          avoidKeyboard={true}
-          backdropColor={colors.white}
-          backdropOpacity={1}
-          style={{padding: 0}}>
-          <SentTemplate
-            isCommonCreation={true}
-            title="Your journey starts now"
-            description="Your Common is ready. Spread the word and invite others to join you. You can always share it later."
-            onClose={() => navigation.dispatch(StackActions.popToTop())}>
-            <View style={styles.shareContainer}>
-              <TouchableOpacity
-                style={styles.modalRequestSentBtnPrimary}
-                onPress={shareCommon}>
-                <Text style={text.buttoncenterwhite}>Share now</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalRequestSentBtnOutline}
-                onPress={goToCommon}>
-                <Text style={text.buttonblue}>Go to Common</Text>
-              </TouchableOpacity>
-            </View>
-          </SentTemplate>
-        </Modal>
-      }
       requestStepActionButton={
         <RequestStepActionButton
-          title="Publish Common"
+          title="Personal Contribution"
           formStore={agendaFormStore}
           onPress={() => forgeCommon()}
           isSticky={false}

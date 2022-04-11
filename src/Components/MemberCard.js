@@ -15,18 +15,15 @@ import {
   object,
   oneOfType,
   func,
-  boolean,
+  bool,
 } from 'prop-types';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {CurrencySymbols} from '~/Util/locale';
-import ModerationMenu from '~/Components/Moderation/ModerationMenu';
 
 const MemberCard = ({
   userInfo,
   proposalInfo = null,
-  openCommonOptions,
-  showModerationMenu,
   moderatorId,
   commonId,
   rootStore,
@@ -48,16 +45,13 @@ const MemberCard = ({
 
       return (
         <View style={styles.rightContainer}>
-          <View style={{alignItems: 'flex-end'}}>
+          <View style={styles.timeContainer}>
             {proposalInfo.funding > 0 && (
               <View style={styles.priceContainer}>
                 <Text style={text.h2Black}>
                   {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
                   {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
                 </Text>
-                {showModerationMenu && (
-                  <ModerationMenu showOptions={openCommonOptions} />
-                )}
               </View>
             )}
 
@@ -157,7 +151,7 @@ MemberCard.propTypes = {
   }),
   commonId: string,
   openCommonOptions: func,
-  showModerationMenu: boolean,
+  showModerationMenu: bool,
 };
 
 const styles = StyleSheet.create({
@@ -181,12 +175,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   rightContainer: {
-    flex: 1.1,
+    flexDirection: 'row',
     alignItems: 'flex-end',
   },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginRight: 10,
+  },
+  timeContainer: {
+    alignItems: 'flex-end',
+    flexDirection: 'column',
+    marginRight: 5,
   },
 });
 

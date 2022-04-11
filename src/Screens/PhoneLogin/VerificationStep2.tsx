@@ -9,6 +9,7 @@ import {
   Keyboard,
   StyleSheet,
 } from 'react-native';
+import {useStore} from '~/Util/hooks/useStore';
 import Icon from '~/Assets/iconfont/Icon';
 import {text, font, colors} from '~/Theme';
 import {
@@ -43,6 +44,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
     params: {onSignIn, phoneNumber, confirm},
   },
 }) => {
+  const authStore = useStore('authStore');
   const [userInfo, setUserInfo] = useState(null);
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
@@ -53,7 +55,6 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   const [buttonText, setButtonText] = useState('timer');
   const [buttonColor, setButtonColor] = useState(colors.mainBlue);
   const [textColor, setTextColor] = useState(colors.white);
-  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     if (value.length === CELL_COUNT) {
@@ -63,7 +64,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
 
   useEffect(() => {
     if (userInfo) {
-      onSignIn(userInfo);
+      onSignIn(userInfo, false, true);
     }
   }, [userInfo]);
 
@@ -107,12 +108,12 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   };
 
   const verifyCode = async () => {
-    setShowLoader(true);
+    authStore.setIsLoading(true);
     try {
       const userInfoResp = await confirm.confirm(value);
       setUserInfo(userInfoResp);
     } catch (error) {
-      setShowLoader(false);
+      authStore.setIsLoading(false);
       Toast.error('Invalid code');
       setButtonText('Resend Code');
       setValue('');
@@ -141,8 +142,8 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
     }
   };
 
-  return showLoader ? (
-    <Loader isFullScreen />
+  return authStore.isLoading ? (
+    <Loader isFullScreen phoneLogin />
   ) : (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>

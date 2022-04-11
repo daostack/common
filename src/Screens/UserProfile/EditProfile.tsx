@@ -155,7 +155,7 @@ const EditProfile = ({route}: Props): ReactElement => {
       route.params.isCompleteAccount &&
       authStore.userInfo?.provider === 'phone'
     ) {
-      navigation.pop(3);
+      onClose();
     } else {
       navigation.goBack();
     }
@@ -163,6 +163,10 @@ const EditProfile = ({route}: Props): ReactElement => {
 
   const onFormClose = () => {
     navigation.pop();
+  };
+
+  const onClose = () => {
+    navigation.pop(3);
   };
 
   const closeBottomSheet = () => {

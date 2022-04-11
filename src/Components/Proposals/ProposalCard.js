@@ -26,6 +26,8 @@ import {
   Fade,
 } from 'rn-placeholder';
 import {useStore} from '~/Util/hooks/useStore';
+import ModerationMenu from '../Moderation/ModerationMenu';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -53,7 +55,8 @@ const ProposalCard = ({
     proposalInfo.commonId,
     authStore?.userInfo?.uid,
   );
-  const showCard = isVisible || (!isVisible && hasPermission);
+  const showCard =
+    isVisible || (!isVisible && hasPermission === PERMISSIONS.MODERATOR);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {
@@ -149,13 +152,20 @@ const ProposalCard = ({
 
         {showCard && (
           <View style={styles.containerView}>
-            {isFundingRequest && (
-              <View style={styles.titleContainer}>
+            <View style={styles.titleContainer}>
+              {isFundingRequest ? (
                 <Text style={styles.title}>
                   {proposalInfo?.description?.title || 'Unknown title'}
                 </Text>
-              </View>
-            )}
+              ) : (
+                <View style={{flex: 12}} />
+              )}
+              {showModerationMenu && (
+                <View style={{flex: 1}}>
+                  <ModerationMenu showOptions={openCommonOptions} />
+                </View>
+              )}
+            </View>
             <MemberCard
               openCommonOptions={openCommonOptions}
               showModerationMenu={showModerationMenu}
@@ -288,11 +298,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     flexWrap: 'wrap',
     fontSize: 16,
+    flex: 12,
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     width: '100%',
   },
 });
