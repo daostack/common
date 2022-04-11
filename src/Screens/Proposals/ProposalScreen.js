@@ -78,7 +78,6 @@ import {
 } from '~/Util/constants/votes';
 import {ModalVote} from './components/ModalVote';
 import {VoteButton} from './components/VoteButton';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 
 const CopilotView = walkthroughable(View);
 const screenWidth = Dimensions.get('window').width;
