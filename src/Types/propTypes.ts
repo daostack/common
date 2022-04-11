@@ -35,7 +35,7 @@ export const cardStorePropTypes = shape({
   getCardById: func,
   userCardExists: func,
   getEntityModel: func,
-  subscribeToCard: func,
+  subscribeToUserCards: func,
 });
 
 export const userStorePropTypes = shape({

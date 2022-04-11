@@ -1,10 +1,16 @@
 import {IBaseEntity} from './IBaseEntity';
 import {Nullable} from '../../types';
+import {PAYMENT_STATUSES} from '~/Util/constants';
 
 export type PaymentType = 'one-time' | 'subscription';
 export type PaymentStatus = 'pending' | 'confirmed' | 'paid' | 'failed';
 export type PaymentSource = 'card';
 export type PaymentCurrency = 'USD';
+
+export enum CONTRIBUTION_SOURCE_TYPE {
+  JOIN_PROPOSAL = 'joinProposal',
+  COMMON_IMMEDIATE = 'commonImmediate',
+}
 
 export type PaymentFailureResponseCodes =
   | 'payment_failed'
@@ -168,5 +174,64 @@ export interface ISaleEntity {
      * and will be used to create the proposal
      */
     cardId: string;
+  };
+}
+
+export interface PaymentResponse extends IBaseEntity {
+  /**
+   * Whether the payment was one-time payment or result of a subscription
+   */
+  type: 'one-time' | 'subscription';
+  /**
+   * The current status of the payment
+   */
+  status: PAYMENT_STATUSES;
+
+  /**
+   * The type of action that led to the payment
+   */
+  contributionSourceType: CONTRIBUTION_SOURCE_TYPE;
+
+  /**
+   * The type of the payment source
+   */
+  paymentMethod: 'card';
+  /**
+   * The amount and currency of the payment
+   */
+  amount: IPaymentAmount;
+  /**
+   * the fee charged
+   */
+  fees: IPaymentFees;
+  /**
+   * The source of the payment
+   */
+  source: IPaymentSource;
+  /**
+   * The ID of the proposal, for which the payment was created
+   */
+  proposalId?: string;
+
+  /*
+   *  The ID of the common that is the beneficiary of the payment
+   */
+  commonId?: string;
+  /**
+   * The ID of the subscription, for which the payment was created
+   * if created for subscription. Undefined otherwise
+   */
+  subscriptionId?: Nullable<string>;
+  /**
+   * The ID of the user that was charged. Useful for retrieving all
+   * payments of one user
+   */
+  userId: string;
+  /**
+   * Error code and description if exists
+   */
+  error?: {
+    code: number;
+    details: string;
   };
 }

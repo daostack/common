@@ -68,6 +68,7 @@ class FundingRequestForm extends React.Component {
           }}
         />
         <TextInputFieldWithIcon
+          isInteger
           iconName="shekel"
           iconSize={12}
           iconStyle={{paddingRight: 5}}

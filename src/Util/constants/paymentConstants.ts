@@ -10,3 +10,8 @@ export const ACTIVE_PAYMENT_STATES = [
 ];
 
 export const MAX_CONTRIBUTION = 5000;
+
+export enum PAYMENT_STATUSES {
+  CONFIRMED = 'confirmed',
+  FAILED = 'failed',
+}

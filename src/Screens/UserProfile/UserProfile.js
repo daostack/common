@@ -33,6 +33,7 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -144,7 +145,7 @@ const UserProfile = ({authStore}) => {
                     <AccordionBtn
                       title="Billing"
                       onPress={() => {
-                        navigation.navigate('MonthlyContributionsList');
+                        navigation.navigate(NAVIGATION_SCREENS.BILLING);
                       }}
                     />
                   </React.Fragment>

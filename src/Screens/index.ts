@@ -13,11 +13,14 @@ export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/Introdu
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
 export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
+export {default as PersonalContributionStep} from './Commons/PersonalContribution/PersonalContributionStep';
+export {default as PersonalPaymentDetailsStep} from './Commons/PersonalContribution/PersonalPaymentDetailsStep';
+export {default as ChoosePaymentMethodStep} from './Commons/PersonalContribution/ChoosePaymentMethodStep';
 export {default as EditCommon} from './Commons/EditCommon';
 export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
 
 //User Profile
-export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
+export {default as Billing} from './UserProfile/Billing';
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';
@@ -32,6 +35,7 @@ export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
 export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
+export {default as VotesScreen} from './Proposals/Votes/VotesScreen';
 
 //Viewers
 export {default as PDFViewer} from './Viewers/PDFViewer';
