@@ -20,7 +20,7 @@ export {default as EditCommon} from './Commons/EditCommon';
 export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
 
 //User Profile
-export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
+export {default as Billing} from './UserProfile/Billing';
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';

@@ -9,14 +9,15 @@ import {
   View,
 } from 'react-native';
 
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
 
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
 import {fontSize} from '~/Theme/font';
 import SubscriptionService from '~/Services/SubscriptionService';
-import {authStorePropTypes} from '~/Types/propTypes';
+import {CardItem} from '../../Components/Payment/CardItem';
+import {useStore} from '~/Util/hooks/useStore';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -37,7 +38,12 @@ const styles = StyleSheet.create({
   title: {
     ...text.h2Black,
   },
-
+  sectionTitle: {
+    ...text.h1Black,
+    textAlign: 'left',
+    paddingHorizontal: 20,
+    paddingTop: 30,
+  },
   subtitle: {
     ...fontSize(2),
     fontWeight: 'normal',
@@ -47,19 +53,31 @@ const styles = StyleSheet.create({
   },
 });
 
-const MonthlyContributionsList = ({authStore, navigation}) => {
+const Billing = ({navigation}) => {
   const [subs, setSubs] = React.useState(null);
+  const {
+    authStore: {userInfo},
+    cardStore,
+  } = useStore('rootStore');
+  const currCard = cardStore.getCurrentCard(userInfo?.uid);
 
   React.useEffect(() => {
     (async () => {
-      await SubscriptionService.getUserSubscriptions(
-        authStore.userInfo.uid,
-        (snap) => {
-          setSubs(snap?.docs.map((doc) => doc.data()));
-        },
-      );
+      await SubscriptionService.getUserSubscriptions(userInfo.uid, (snap) => {
+        setSubs(snap?.docs.map((doc) => doc.data()));
+      });
     })();
   }, []);
+
+  React.useEffect(() => {
+    let unsubscribeFromCard = null;
+    if (userInfo?.uid) {
+      unsubscribeFromCard = cardStore.subscribeToUserCards(userInfo?.uid);
+    }
+    return () => {
+      unsubscribeFromCard && unsubscribeFromCard();
+    };
+  }, [userInfo]);
 
   return (
     <ScrollView
@@ -80,6 +98,11 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
         </React.Fragment>
       )}
 
+      <React.Fragment>
+        <Text style={styles.sectionTitle}>Saved payment method</Text>
+        <CardItem navigation={navigation} card={currCard} />
+      </React.Fragment>
+
       {subs?.length === 0 && (
         <View style={styles.container}>
           <Image source={require('../../Assets/Subscriptions/funds.png')} />
@@ -94,6 +117,7 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
 
       {!!subs?.length && (
         <React.Fragment>
+          <Text style={styles.sectionTitle}>Monthly contributions</Text>
           {subs.map((subscription, index) => (
             <View style={styles.item} key={index}>
               <ContributionListItem
@@ -108,9 +132,8 @@ const MonthlyContributionsList = ({authStore, navigation}) => {
   );
 };
 
-MonthlyContributionsList.propTypes = {
+Billing.propTypes = {
   navigation: PropTypes.object,
-  authStore: authStorePropTypes,
 };
 
-export default inject('authStore')(observer(MonthlyContributionsList));
+export default observer(Billing);
