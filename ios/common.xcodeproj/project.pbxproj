@@ -1123,7 +1123,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.dev.common-notification-service-ext";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1145,7 +1145,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.dev.common-notification-service-ext";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.daostack.common.staging.common-notification-service-ext";
 				PRODUCT_NAME = "common-dev-notification-service-ext";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
