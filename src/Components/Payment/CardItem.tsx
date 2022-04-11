@@ -8,16 +8,18 @@ import {baseMargin} from '~/Theme/layout';
 import {Divider} from '~/Components/Divider';
 import {AddPaymentMethod} from './AddPaymentMethod';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {useNavigation} from '@react-navigation/native';
 
 interface Props {
-  card: Card | undefined;
-  navigation: any;
+  card?: Card;
 }
 
-export const CardItem = observer(({card, navigation}: Props) => {
+export const CardItem = observer(({card}: Props) => {
   const replacePaymentMethod = () => {
     navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
   };
+
+  const navigation = useNavigation();
 
   return card ? (
     <View style={styles.container}>
@@ -38,7 +40,7 @@ export const CardItem = observer(({card, navigation}: Props) => {
         </Text>
         <Divider mt={baseMargin * 3} mb={baseMargin * 2} />
         <Pressable
-          onPress={() => replacePaymentMethod()}
+          onPress={replacePaymentMethod}
           style={({pressed}) => [
             {
               opacity: pressed ? 0.5 : 1.0,

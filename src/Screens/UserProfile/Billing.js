@@ -11,6 +11,7 @@ import {
 
 import {observer} from 'mobx-react';
 import {Fade, Placeholder, PlaceholderLine} from 'rn-placeholder';
+import {useNavigation} from '@react-navigation/native';
 
 import {ContributionListItem} from '../../Components';
 import {colors, text} from '../../Theme';
@@ -53,13 +54,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const Billing = ({navigation}) => {
+const Billing = () => {
   const [subs, setSubs] = React.useState(null);
   const {
     authStore: {userInfo},
     cardStore,
   } = useStore('rootStore');
   const currCard = cardStore.getCurrentCard(userInfo?.uid);
+  const navigation = useNavigation();
 
   React.useEffect(() => {
     (async () => {
@@ -100,7 +102,7 @@ const Billing = ({navigation}) => {
 
       <React.Fragment>
         <Text style={styles.sectionTitle}>Saved payment method</Text>
-        <CardItem navigation={navigation} card={currCard} />
+        <CardItem card={currCard} />
       </React.Fragment>
 
       {subs?.length === 0 && (
