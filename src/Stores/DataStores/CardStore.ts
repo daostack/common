@@ -17,7 +17,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     try {
       return this.getDataById(id);
     } catch (e) {
-      Logger.log('------ cardstore error', e);
+      Logger.log('------ cardstore-getCardById error', e);
     }
   };
 
@@ -25,7 +25,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     try {
       return this.getDataArray.filter((card) => card.ownerId === ownerId);
     } catch (e) {
-      Logger.log('------ cardstore error', e);
+      Logger.log('------ cardstore-getCards error', e);
     }
   };
 
@@ -39,7 +39,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
       }
       return undefined;
     } catch (e) {
-      Logger.log('------ cardstore error', e);
+      Logger.log('------ cardstore-getCurrentCard error', e);
     }
   };
 
