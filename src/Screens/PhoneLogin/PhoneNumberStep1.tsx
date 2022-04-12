@@ -56,6 +56,8 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
     }
   };
 
+  const buttonEnabled = phoneNumber.length >= 11 && phoneNumber.length <= 14;
+
   return (
     <View style={{backgroundColor: colors.white, flex: 1}}>
       {authStore.isLoading ? (
@@ -84,10 +86,11 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
               <TouchableOpacity
                 style={{
                   ...styles.continueButton,
-                  backgroundColor:
-                    phoneNumber.length === 14 ? colors.mainBlue : colors.grey3,
+                  backgroundColor: buttonEnabled
+                    ? colors.mainBlue
+                    : colors.grey3,
                 }}
-                disabled={phoneNumber.length !== 14}
+                disabled={!buttonEnabled}
                 onPress={() => _signIn()}>
                 <Text style={styles.continueButtonText}>Send Code</Text>
               </TouchableOpacity>
