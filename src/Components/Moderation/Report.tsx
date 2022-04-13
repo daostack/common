@@ -7,14 +7,14 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  Platform,
 } from 'react-native';
 import {colors, text, layout, font} from '~/Theme';
 import {string, func, InferProps, shape} from 'prop-types';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {TITLES} from '~/Components/Moderation/constants';
-const {width} = Dimensions.get('window');
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+const {width, height} = Dimensions.get('window');
 
 const reasons = [
   ['Nudity', 'Violence', 'Harassment'],
@@ -44,6 +44,7 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
   onReportContent,
   hasPermission,
 }) => {
+  const insets = useSafeAreaInsets();
   if (title === TITLES.proposals && !reasons[2].includes(proposalReason)) {
     // this reason should only be displayed for proposals
     reasons[2].push(proposalReason);
@@ -99,50 +100,50 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
     setIsValid(note ? formStore.isFormValid(true) : false);
 
   return (
-    <View style={styles.root}>
-      <View style={styles.view}>
-        <ScrollView style={{marginHorizontal: 24}}>
-          <Text style={styles.title}>Report {title}</Text>
+    <View style={styles.view}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollContainer}
+        contentContainerStyle={{paddingBottom: insets.bottom}}>
+        <Text style={styles.title}>Report {title}</Text>
 
-          <Text style={styles.action}>Please select a problem to continue</Text>
-          <Text style={styles.explanation}>
-            You can hide the post after selecting a problem
+        <Text style={styles.action}>Please select a problem to continue</Text>
+        <Text style={styles.explanation}>
+          You can hide the post after selecting a problem
+        </Text>
+        <View style={{paddingVertical: 20}}>
+          {reasons.map((reasonRow, i) => (
+            <View key={i} style={{flexDirection: 'row'}}>
+              {reasonRow.map((reason) => problemButton(reason))}
+            </View>
+          ))}
+        </View>
+        <View style={styles.divider} />
+        <TextInputField
+          label={hasPermission ? 'Moderator note' : 'Add note:'}
+          placeholderText="This note is public and will be shown to all members."
+          multiline={true}
+          infoLabel="Required"
+          value={
+            formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)?.value
+          }
+          onChangeText={(noteText: string) => isValidNote(noteText)}
+          validation={{
+            name: 'moderatorNote',
+            formStore: formStore,
+            validateRule: 'string|required',
+            displayName: 'moderator note',
+          }}
+        />
+        <Pressable onPress={onReportContent} disabled={!isValid}>
+          <Text style={[styles.button, isValid && styles.buttonSelected]}>
+            Report
           </Text>
-          <View style={{paddingVertical: 20}}>
-            {reasons.map((reasonRow, i) => (
-              <View key={i} style={{flexDirection: 'row'}}>
-                {reasonRow.map((reason) => problemButton(reason))}
-              </View>
-            ))}
-          </View>
-          <View style={styles.divider} />
-          <TextInputField
-            label={hasPermission ? 'Moderator note' : 'Add note:'}
-            placeholderText="This note is public and will be shown to all members."
-            multiline={true}
-            infoLabel="Required"
-            value={
-              formStore.getFormField(ModerationForm.MODERATOR_NOTE, false)
-                ?.value
-            }
-            onChangeText={(noteText: string) => isValidNote(noteText)}
-            validation={{
-              name: 'moderatorNote',
-              formStore: formStore,
-              validateRule: 'string|required',
-              displayName: 'moderator note',
-            }}
-          />
-          <Pressable onPress={onReportContent} disabled={!isValid}>
-            <Text style={[styles.button, isValid && styles.buttonSelected]}>
-              Report
-            </Text>
-          </Pressable>
-          <Pressable onPress={onCancel}>
-            <Text style={styles.cancel}>Cancel</Text>
-          </Pressable>
-        </ScrollView>
-      </View>
+        </Pressable>
+        <Pressable onPress={onCancel}>
+          <Text style={styles.cancel}>Cancel</Text>
+        </Pressable>
+      </ScrollView>
     </View>
   );
 };
@@ -150,20 +151,12 @@ const Report: React.FC<InferProps<typeof reportProps>> = ({
 Report.propTypes = reportProps;
 
 const styles = StyleSheet.create({
-  root: {
-    height: '100%',
-    paddingTop: Platform.OS === 'ios' ? 200 : 100,
-    shadowColor: 'rgba(0, 0, 0, 0.9)',
-    shadowRadius: 100,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+  scrollContainer: {
+    marginHorizontal: 24,
   },
   view: {
-    flex: 1,
     backgroundColor: colors.white,
+    height: height * 0.7,
     width,
     borderTopLeftRadius: 27,
     borderTopRightRadius: 27,
