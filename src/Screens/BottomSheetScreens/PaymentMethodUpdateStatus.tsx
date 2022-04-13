@@ -21,7 +21,7 @@ const PaymentMethodUpdateStatus = ({
 
       <Text style={styles.title}>{message}</Text>
       <TouchableOpacity style={styles.continue} onPress={proceed}>
-        <Text style={text.buttonblack}>Ok</Text>
+        <Text style={text.buttonblack}>OK</Text>
       </TouchableOpacity>
     </View>
   </View>

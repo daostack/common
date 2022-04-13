@@ -20,6 +20,11 @@ export interface ICardEntity extends IBaseEntity {
   ownerId: string;
 
   /**
+   * The name of the card holder
+   */
+  fullName: string;
+
+  /**
    * Some metadata, useful for the UI
    */
   metadata?: ICardMetadata;
@@ -39,4 +44,9 @@ export interface ICardMetadata {
    * card identification by the user
    */
   digits: string;
+
+  /**
+   * Expiration date of the card, formatted as MMYY
+   */
+  expiration: string;
 }

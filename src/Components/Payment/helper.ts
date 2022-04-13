@@ -1,4 +1,4 @@
-export const getExpirationDate = (expiration: string) => {
+export const getExpirationDate = (expiration: string | undefined) => {
   if (expiration) {
     const [month, year] = [
       expiration?.substring(0, 2),
@@ -9,7 +9,7 @@ export const getExpirationDate = (expiration: string) => {
   return '00/00';
 };
 
-export const getCardNetwork = (network: string) => {
+export const getCardNetwork = (network: string | undefined) => {
   switch (network) {
     case 'VISA':
       return require('~/Assets/visa.png');
