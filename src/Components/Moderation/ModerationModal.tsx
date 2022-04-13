@@ -2,6 +2,7 @@ import React from 'react';
 import {func, string, bool, InferProps, object} from 'prop-types';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import Report from './Report';
+import {StyleSheet} from 'react-native';
 
 const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
   title,
@@ -13,7 +14,7 @@ const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
 }) => (
   <BottomSheetModal
     isVisible={visible}
-    transparent
+    style={styles.modal}
     onClose={setShowModerationModal}>
     <Report
       title={title}
@@ -24,6 +25,13 @@ const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
     />
   </BottomSheetModal>
 );
+
+const styles = StyleSheet.create({
+  modal: {
+    borderRadius: 27,
+    padding: 16,
+  },
+});
 
 const moderationModalProps = {
   title: string,
