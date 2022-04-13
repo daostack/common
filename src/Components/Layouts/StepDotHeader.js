@@ -32,7 +32,7 @@ const StepDotHeader = ({
       style={{
         ...styles.header,
         height: headerHeight,
-        borderBottomWidth: headerHeight > 1 ? 1 : 0,
+        borderBottomWidth: 0, //headerHeight > 1 ? 1 : 0,
       }}>
       <View style={styles.headerContent}>
         <TouchableOpacity style={styles.back} onPress={() => navigation.pop()}>
