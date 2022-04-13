@@ -9,6 +9,7 @@ import {Divider} from '~/Components/Divider';
 import {AddPaymentMethod} from './AddPaymentMethod';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {useNavigation} from '@react-navigation/native';
+import {getExpirationDate, getCardNetwork} from './helper';
 
 interface Props {
   card?: Card;
@@ -21,18 +22,20 @@ export const CardItem = observer(({card}: Props) => {
 
   const navigation = useNavigation();
 
+  const network = getCardNetwork(card?.metadata?.network);
+
   return card ? (
     <View style={styles.container}>
       <>
         <FastImage
           style={styles.paymentSystemLogo}
-          source={require('~/Assets/mastercard.png')}
+          source={network}
           resizeMode="cover"
         />
         <View style={styles.cardInfoContainer}>
-          <View />
-          <Text style={styles.ccdetails}>
-            {card?.metadata?.billingDetails?.name}
+          <Text style={styles.ccdetails}>{card?.fullName}</Text>
+          <Text style={text.buttonblack}>
+            {getExpirationDate(card?.metadata?.expiration)}
           </Text>
         </View>
         <Text style={{...text.buttonblack, textAlign: 'left'}}>
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
     marginVertical: baseMargin * 1.5,
     borderRadius: 10,
     width: '90%',
-    height: '30%',
+    height: 200,
     alignSelf: 'center',
     shadowColor: 'rgba(10, 10, 10, 0.2)',
     shadowOffset: {width: 1, height: 13},
@@ -111,10 +114,10 @@ const styles = StyleSheet.create({
   paymentSystemLogo: {
     width: 70,
     height: 40,
-    marginRight: 12,
   },
   cardInfoContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   text: {
     fontSize: 14,
