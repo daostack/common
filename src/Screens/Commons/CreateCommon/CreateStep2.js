@@ -13,8 +13,6 @@ import {CurrencySymbols} from '~/Util/locale';
 import {Bold} from '~/Components/Text/Bold';
 
 const CONTRIBUTION_TAB_VALUES = ['one-time', 'monthly'];
-const MAX_CONTRIBUTION = '500';
-const MIN_CONTRIBUTION = '10';
 
 const CreateStep2 = ({
   navigation,
@@ -46,7 +44,7 @@ const CreateStep2 = ({
 
   const [disabledStyle, setDisabledStyle] = useState(colors.grey);
 
-  const minimumFieldRules = `required|numeric|min:${MIN_CONTRIBUTION}|max:${MAX_CONTRIBUTION}`;
+  const minimumFieldRules = 'required|integer|contributionRange';
 
   useEffect(() => {
     fundingFormStore.registerFormField(
@@ -145,6 +143,7 @@ const CreateStep2 = ({
           onTabPress={onContributionTabChange}
         />
         <TextInputFieldWithIcon
+          isInteger
           key={contributionIndex}
           value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
           iconName="shekel"
@@ -174,11 +173,6 @@ const CreateStep2 = ({
             name: CreateCommonForm.MINIMUM,
             formStore: fundingFormStore,
             validateRule: minimumFieldRules,
-            customErrorMessage: `The amount must be at least ${
-              CurrencySymbols.SHEKEL
-            }${MIN_CONTRIBUTION} and at most ${
-              CurrencySymbols.SHEKEL
-            }${parseFloat(MAX_CONTRIBUTION).toLocaleString('en')}.`,
           }}
         />
         {contributionIndex === 0 && (

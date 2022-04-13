@@ -33,6 +33,7 @@ import {
 import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -76,7 +77,11 @@ const UserProfile = ({authStore}) => {
     }
   };
 
-  const onUserSignedIn = (isNewUser, isSignedWithApple = false) => {
+  const onUserSignedIn = (
+    isNewUser,
+    isSignedWithApple = false,
+    isPhoneLogin = false,
+  ) => {
     if (navigation && isNewUser) {
       const navigate = CommonActions.navigate({
         name: 'EditProfile',
@@ -86,6 +91,10 @@ const UserProfile = ({authStore}) => {
         },
       });
       navigation.dispatch(navigate);
+    }
+    if (navigation && !isNewUser && isPhoneLogin) {
+      authStore.setIsLoading(false);
+      navigation.pop(2);
     }
   };
 
@@ -136,7 +145,7 @@ const UserProfile = ({authStore}) => {
                     <AccordionBtn
                       title="Billing"
                       onPress={() => {
-                        navigation.navigate('MonthlyContributionsList');
+                        navigation.navigate(NAVIGATION_SCREENS.BILLING);
                       }}
                     />
                   </React.Fragment>

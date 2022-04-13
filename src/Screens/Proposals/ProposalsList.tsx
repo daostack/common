@@ -215,6 +215,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         {list && list.length > 0 ? (
           <FlatList
             style={flatListStyle}
+            listKey={(item, index) => 'Proposal' + index.toString()}
             data={list.slice()}
             keyExtractor={keyExtractor}
             initialNumToRender={1}

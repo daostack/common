@@ -45,14 +45,18 @@ import {
   PDFViewer,
   Browser,
   FullScreenCreationLoader,
-  MonthlyContributionsList,
+  Billing,
   MonthlyContribution,
   EditCommon,
   ReceiveFunds,
   AddInvoicesScreen,
+  PersonalContributionStep,
+  PersonalPaymentDetailsStep,
+  ChoosePaymentMethodStep,
   PhoneNumberStep1,
   VerificationStep2,
   FirstJoinCommon,
+  VotesScreen,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -79,7 +83,6 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
-import {UpdateModal} from '~/Components/Update/UpdateModal';
 import {
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
@@ -209,6 +212,7 @@ const App = ({rootStore, navigation}) => {
           proposalId: objectId,
           tabIndex: +tabIndex,
           fromNotificationItem: true,
+          eventType: remoteMessage.data.type,
           commonId,
         });
       }
@@ -484,6 +488,32 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
+            name="VotesScreen"
+            component={VotesScreen}
+            options={({route, ...rest}) => ({
+              headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
+              headerTitle: () => (
+                <View style={{alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                    }}>
+                    {route?.params.title?.length > 20
+                      ? route?.params.title.substring(0, 17) + '...'
+                      : route?.params.title}
+                  </Text>
+
+                  {route?.params.subtitle && (
+                    <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                      {route.params.subtitle}
+                    </Text>
+                  )}
+                </View>
+              ),
+            })}
+          />
+          <Stack.Screen
             name="AddInvoicesScreen"
             component={AddInvoicesScreen}
             options={({nav, route}) => ({
@@ -500,6 +530,20 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="IntroductionStep"
             component={IntroductionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalContributionStep"
+            component={PersonalContributionStep}
+            options={() => ({
+              headerShown: false,
+            })}
+          />
+          <Stack.Screen
+            name="PersonalPaymentDetailsStep"
+            component={PersonalPaymentDetailsStep}
             options={() => ({
               headerShown: false,
             })}
@@ -576,7 +620,7 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
-            name="New Post"
+            name={NAVIGATION_SCREENS.NEW_DISCUSSION}
             options={({nav, route}) => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
@@ -650,14 +694,28 @@ const App = ({rootStore, navigation}) => {
 
           <Stack.Screen
             options={{
-              title: 'Monthly Contributions',
+              title: 'Billing',
               headerBackTitleVisible: false,
               headerRight: () => <IntercomShowButton />,
             }}
-            name="MonthlyContributionsList"
-            component={MonthlyContributionsList}
+            name="Billing"
+            component={Billing}
           />
-
+          <Stack.Screen
+            options={({route, ...rest}) => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <TouchableOpacity
+                  style={styles.buttonRight}
+                  onPress={() => navigationRef.current.goBack()}>
+                  <Icon name="close" color={colors.black} size={20} />
+                </TouchableOpacity>
+              ),
+            })}
+            name="ChoosePaymentMethodStep"
+            component={ChoosePaymentMethodStep}
+          />
           <Stack.Screen
             options={{
               headerBackTitleVisible: false,
@@ -694,7 +752,6 @@ const App = ({rootStore, navigation}) => {
           style={{backgroundColor: 'transparent'}}
           positionValue={160}
         />
-        <UpdateModal />
       </NavigationContainer>
     </ErrorBoundary>
   );

@@ -148,10 +148,11 @@ const CreateStep1 = ({
           placeholderText="Describe your cause and let others know why they should join you. What makes you passionate about it? What does success look like?"
           autoCapitalize="none"
           autoCorrect={false}
+          maxLength={200}
           validation={{
             name: CreateCommonForm.DESCRIPTION,
             formStore: generalInfoFormStore,
-            validateRule: 'string',
+            validateRule: 'required',
             displayName: 'about',
           }}
         />

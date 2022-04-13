@@ -150,3 +150,10 @@ export interface CommonCreatedBody {
   contributionAmount: number;
   zeroContribution: boolean;
 }
+
+export interface CommonImmediateContributionBody {
+  amount: number;
+  commonId: string;
+  contributionType: string;
+  saveCard: boolean;
+}

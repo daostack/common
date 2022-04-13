@@ -23,3 +23,8 @@ export type RouteProps<T> = {
 };
 
 export type AddInvoicesRouteProps = RouteProps<{proposalId: string}>;
+
+export type VotesScreenRouteProps = RouteProps<{
+  proposalId: string;
+  commonName: string;
+}>;

@@ -7,12 +7,12 @@ import {
   Text,
   View,
   Platform,
+  FlatList,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {layout, font, sizeS, colors} from '~/Theme';
 import {func, InferProps, shape} from 'prop-types';
-import {FlatList} from 'react-native-gesture-handler';
 import Loader from '~/Components/Loader';
 import {inject, observer} from 'mobx-react';
 import {notificationStorePropTypes} from '~/Types/propTypes';

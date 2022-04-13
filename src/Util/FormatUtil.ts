@@ -55,3 +55,18 @@ export const formatContributionAmount = (amount: number): number => {
   }
   return amount;
 };
+
+export const formatMinFeeToJoin = ({
+  numberValue = false,
+  zeroContribution,
+  minFeeToJoin,
+}: {
+  numberValue?: boolean;
+  zeroContribution: boolean;
+  minFeeToJoin: number;
+}) => {
+  const minValue = zeroContribution ? 0 : +minFeeToJoin;
+  return !numberValue
+    ? formatNumber(minValue / 100).toString()
+    : (minValue / 100).toString();
+};

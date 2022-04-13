@@ -29,7 +29,6 @@ const props = {
 const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const phoneInput = useRef(null);
-  const [showLoader, setShowLoader] = useState(false);
   const authStore = useStore('authStore');
   const navigation = useNavigation();
   const route = useRoute();
@@ -41,26 +40,29 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
       Toast.error('Invalid number');
     } else {
       try {
-        setShowLoader(true);
+        authStore.setIsLoading(true);
         const confirm = await AuthService.signInPhone(phoneNumber);
-        setShowLoader(false);
+        authStore.setIsLoading(false);
         navigation.navigate('VerifyPhone', {
           phoneNumber,
           confirm,
           onSignIn: route.params?.onSignIn,
         });
       } catch (error) {
+        authStore.setIsLoading(false);
         authStore.setSignInError(error.toString());
         navigation.goBack();
       }
     }
   };
 
+  const buttonEnabled = phoneNumber.length >= 11 && phoneNumber.length <= 14;
+
   return (
     <View style={{backgroundColor: colors.white, flex: 1}}>
-      {showLoader ? (
+      {authStore.isLoading ? (
         <View style={{flex: 0.5, justifyContent: 'flex-end'}}>
-          <Loader />
+          <Loader phoneLogin />
         </View>
       ) : (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -84,10 +86,11 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
               <TouchableOpacity
                 style={{
                   ...styles.continueButton,
-                  backgroundColor:
-                    phoneNumber.length === 14 ? colors.mainBlue : colors.grey3,
+                  backgroundColor: buttonEnabled
+                    ? colors.mainBlue
+                    : colors.grey3,
                 }}
-                disabled={phoneNumber.length !== 14}
+                disabled={!buttonEnabled}
                 onPress={() => _signIn()}>
                 <Text style={styles.continueButtonText}>Send Code</Text>
               </TouchableOpacity>

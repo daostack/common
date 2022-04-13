@@ -17,6 +17,7 @@ import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -42,7 +43,8 @@ const DiscussionCard = ({
     data.moderation?.flag === FLAGS.reported;
 
   const isVisible = data.moderation?.flag !== FLAGS.hidden || !data.moderation;
-  const showCard = isVisible || (!isVisible && hasPermission);
+  const showCard =
+    isVisible || (!isVisible && hasPermission === PERMISSIONS.MODERATOR);
   const isOwner = authStore.isCurrentlyLogged(data.ownerId);
   const navigateToDiscussion = () => {
     if (data.isModerationHidden) {

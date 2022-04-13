@@ -68,6 +68,7 @@ class FundingRequestForm extends React.Component {
           }}
         />
         <TextInputFieldWithIcon
+          isInteger
           iconName="shekel"
           iconSize={12}
           iconStyle={{paddingRight: 5}}
@@ -85,9 +86,9 @@ class FundingRequestForm extends React.Component {
           validation={{
             name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
             formStore: this.props.fundingRequestFormStore,
-            validateRule: `required|numeric|max:${common.balance / 100}|min:0`,
-            customErrorMessage:
-              'The amount requested cannot be greater than the Common balance.',
+            validateRule: `required|integer|maxAmount:${
+              common.balance / 100
+            }|min:0`,
           }}
         />
         {this.props.rootStore.bankAccountStore?.data?.size === 0 &&

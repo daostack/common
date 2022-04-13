@@ -41,7 +41,10 @@ const PaymentDetailsStep = ({
   let currCard = cardStore.getCardById(cardId);
 
   useEffect(() => {
-    const unsubscribeFromCard = cardStore.subscribeToCard(cardId);
+    let unsubscribeFromCard = null;
+    if (userInfo?.uid) {
+      unsubscribeFromCard = cardStore.subscribeToUserCards(userInfo.uid);
+    }
     return () => {
       unsubscribeFromCard && unsubscribeFromCard();
     };

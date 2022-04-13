@@ -1,4 +1,4 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {auth, db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
@@ -309,7 +309,7 @@ class ProposalService {
 
   createRequestToJoin = async (
     formData: JoinRequestPayload,
-  ): Promise<IJoinRequestProposal> => {
+  ): Promise<AxiosResponse<IJoinRequestProposal>> => {
     try {
       return await this.axiosClient.post(this.endpoints.createJoin, formData, {
         headers: {

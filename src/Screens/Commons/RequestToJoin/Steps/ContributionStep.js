@@ -192,7 +192,6 @@ const ContributionStep = ({
       <View
         style={{
           flex: 1,
-          // padding: 24,
           backgroundColor: 'white',
         }}>
         {isMonthly ? (
