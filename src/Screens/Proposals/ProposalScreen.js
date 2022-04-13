@@ -1188,6 +1188,8 @@ const styles = StyleSheet.create({
   voteModal: {
     paddingTop: 16,
     borderRadius: 27,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   proposalProgressBar: {
     width: '100%',
