@@ -1,4 +1,5 @@
 import {MAX_CONTRIBUTION} from '~/Util/constants/paymentConstants';
+import {isNumber} from 'lodash';
 
 export const unFormatNumber = (number: string): string => {
   const lastCommaIndex = number.split('').lastIndexOf(',');
@@ -22,7 +23,7 @@ export const formatNumber = (number: string | number) => {
 
   // new Intl.NumberFormat('en-US').format(number);
 
-  if (!number) {
+  if (!isNumber(Number(number))) {
     return '';
   }
 
