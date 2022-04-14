@@ -1,11 +1,11 @@
 import React, {ReactNode} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import {
-  TabBar,
-  SceneRendererProps,
   NavigationState,
+  SceneRendererProps,
+  TabBar,
 } from 'react-native-tab-view';
-import {colors, font, layout} from '~/Theme';
+import {colors, font} from '~/Theme';
 
 export const VoteTabBar = (
   props: SceneRendererProps & {
@@ -23,16 +23,9 @@ export const VoteTabBar = (
     }}
     scrollEnabled
     renderLabel={({route, focused}) => (
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexRow,
-          padding: 0,
-        }}>
-        <Text style={[focused ? styles.textStyleActive : styles.textStyle]}>
-          {route.title}
-        </Text>
-      </View>
+      <Text style={[focused ? styles.textStyleActive : styles.textStyle]}>
+        {route.title}
+      </Text>
     )}
     style={styles.commonStyles}
     tabStyle={styles.tabStyle}
@@ -45,18 +38,22 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     borderColor: colors.grey4,
-    width: 'auto',
-    paddingHorizontal: 24,
   },
   textStyle: {
     ...font.primary.regular,
     color: colors.grey3,
     ...font.fontSize(2),
+    flexShrink: 1,
+    paddingHorizontal: 8,
   },
   textStyleActive: {
     ...font.primary.semiBold,
     ...font.fontSize(2),
     color: colors.mainBlue,
-    flex: 1,
+    flexShrink: 1,
+    flexWrap: 'nowrap',
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
 });

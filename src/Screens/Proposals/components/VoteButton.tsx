@@ -51,7 +51,7 @@ export const VoteButton = observer(
             styles.percentageText,
             {color: VOTE_COLORS_BY_STATUSES[voteType]},
           ]}>
-          {percentage}%
+          {Number(percentage).toFixed(1)}%
         </Text>
         <View
           style={[
