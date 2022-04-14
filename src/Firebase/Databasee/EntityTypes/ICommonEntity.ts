@@ -3,6 +3,11 @@ import {firebase} from '~/Firebase';
 
 export interface ICommonEntity extends IBaseEntity {
   /**
+   * Common creator id
+   */
+  userId: string;
+
+  /**
    * The name of the common showed in the app and
    * other places (email, notification etc.)
    */
@@ -14,59 +19,16 @@ export interface ICommonEntity extends IBaseEntity {
    */
   image: string;
 
-  /**
-   * The currently available funds of
-   * the common in cents
-   */
-  balance: number;
+  byline: string;
 
-  /**
-   * Funds already in processing
-   * the common in shekels
-   */
-  reservedBalance: number;
-
-  /**
-   * The total amount of funds that the
-   * common has raised to date in cents
-   */
-  raised: number;
-
-  /**
-   * List of all users, that are members of this common
-   */
-  members: ICommonMember[];
-
-  /**
-   * List of the rules, that a member must agree
-   * to be a part if the common
-   */
-  rules: ICommonRule[];
+  description: string;
 
   /**
    * List of links, that the common provided
    */
   links: ICommonLink[];
 
-  /**
-   * The common metadata properties
-   */
-  metadata: ICommonMetadata;
-
-  /**
-   * The whitelisting status of the common
-   */
-  register: CommonRegister;
-
-  /**
-   * Is common active
-   */
-  active: boolean;
-
-  /**
-   * Updated at
-   */
-  updatedAt: firebase.firestore.Timestamp;
+  searchable: boolean;
 }
 
 export interface ICommonRule {
@@ -98,57 +60,13 @@ export interface ICommonLink {
   value: string;
 }
 
-export interface ICommonMetadata {
-  action: string;
-  byline: string;
-  description: string;
-
-  /**
-   * The id of the user, who created the common
-   */
-  founderId: string;
-
-  /**
-   * The minimum amount in cents, required
-   * to join the common
-   */
-  minFeeToJoin: number;
-
-  /**
-   * Whether the user should be charged every
-   * month, that they are member of the common,
-   * or only when they join
-   */
-  contributionType: ContributionType;
-
-  zeroContribution: boolean;
-}
-
-export type ContributionType = 'one-time' | 'monthly';
-
-/**
- * Used to showcase whether the common is whitelisted
- *
- * na - The common is not whitelisted and thus visible only to members
- * registered - The common is whitelisted and part of the featured list
- */
-export type CommonRegister = 'na' | 'registered';
-
-export interface ICommonMember {
-  userId: string;
-  joinedAt?: firebase.firestore.Timestamp;
-}
-
 export interface CommonCreatedBody {
+  userId: string;
   name: string;
   image: string;
-  rules: ICommonRule[];
-  links: ICommonLink[];
   byline: string;
+  links: ICommonLink[];
   description: string;
-  contributionType: ContributionType;
-  contributionAmount: number;
-  zeroContribution: boolean;
 }
 
 export interface CommonImmediateContributionBody {
