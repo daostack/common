@@ -681,24 +681,8 @@ const ProposalScreen = ({
             width: '100%',
             paddingHorizontal: 0,
           }}>
-          <Text
-            style={{
-              marginBottom: 16,
-              fontSize: 14,
-              color: colors.black,
-              ...font.primary.bold,
-            }}>
-            What's your vote?
-          </Text>
-          <View
-            style={{
-              height: 134,
-              width: '100%',
-              justifyContent: 'space-between',
-              marginBottom: 16,
-              alignItems: 'flex-end',
-              flexDirection: 'row',
-            }}>
+          <Text style={styles.voteContainerTitle}>What's your vote?</Text>
+          <View style={styles.voteContainer}>
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.APPROVED)}
               voteType={VOTE_STATUSES.APPROVED}
@@ -726,19 +710,14 @@ const ProposalScreen = ({
           </View>
 
           <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center'}}
+            style={styles.voteCountButton}
             onPress={() => {
               navigation.navigate(NAVIGATION_SCREENS.VOTES_SCREEN, {
                 proposalId: proposalId || proposalInfo.id,
                 commonName: proposalCommon.name,
               });
             }}>
-            <Text
-              style={{
-                fontSize: 14,
-                ...font.primary.regular,
-                letterSpacing: 0.28,
-              }}>
+            <Text style={styles.voteCountButtonText}>
               {allVoteCount}/{proposalCommon.members?.length || 1} votes
             </Text>
             <Icon name="right-arrow" size={16} />
@@ -1171,6 +1150,28 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 15 : 10,
     paddingHorizontal: 15,
   },
+  voteContainerTitle: {
+    marginBottom: 16,
+    fontSize: 14,
+    color: colors.black,
+    ...font.primary.bold,
+  },
+  voteContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+  },
+  voteCountButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  voteCountButtonText: {
+    fontSize: 14,
+    ...font.primary.regular,
+    letterSpacing: 0.28,
+  },
   // New styles
   contributionCard: {
     ...layout.content,
@@ -1188,6 +1189,8 @@ const styles = StyleSheet.create({
   voteModal: {
     paddingTop: 16,
     borderRadius: 27,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   proposalProgressBar: {
     width: '100%',
