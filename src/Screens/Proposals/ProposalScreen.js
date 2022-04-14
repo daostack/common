@@ -671,7 +671,7 @@ const ProposalScreen = ({
     allVoteCount,
   } = proposalStore.getVotesCounts(proposalInfo?.votes);
 
-  const isDisableVoteButton = useMemo(
+  const isDisabledVoteButton = useMemo(
     () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,
     [proposalInfo?.state],
   );
@@ -711,7 +711,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
-              disabled={isDisableVoteButton}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
@@ -720,7 +720,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
-              disabled={isDisableVoteButton}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
@@ -729,7 +729,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
-              disabled={isDisableVoteButton}
+              disabled={isDisabledVoteButton}
             />
           </View>
 
