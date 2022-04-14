@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     height: 250,
     padding: 0,
-    marginBottom: 10,
-    ...layout.flexEnd,
+    marginTop: 10,
   },
   headerContainerCenterContent: {
     justifyContent: 'center',
