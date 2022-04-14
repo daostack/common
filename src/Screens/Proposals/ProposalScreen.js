@@ -671,6 +671,11 @@ const ProposalScreen = ({
     allVoteCount,
   } = proposalStore.getVotesCounts(proposalInfo?.votes);
 
+  const isDisableVoteButton = useMemo(
+    () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,
+    [proposalInfo?.state],
+  );
+
   const VoteContainer = useCallback(
     () => (
       <CopilotStep order={1} name="info">
@@ -706,6 +711,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisableVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
@@ -714,6 +720,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisableVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
@@ -722,6 +729,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisableVoteButton}
             />
           </View>
 
@@ -908,23 +916,6 @@ const ProposalScreen = ({
                   </View>
                 ) : (
                   <React.Fragment>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (showPaymentStatus) {
-                          paymentStatusModal();
-                        }
-                      }}>
-                      <ProposalCardHeader
-                        isScreenHeader={true}
-                        state={proposalInfo?.state}
-                        paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
-                        hasPermission={hasPermission}
-                        authInfo={authStore.userInfo}
-                        viewerPermission={viewerPermission}
-                      />
-                    </TouchableOpacity>
-
                     {proposedUser ? (
                       <>
                         <UserAvatar
