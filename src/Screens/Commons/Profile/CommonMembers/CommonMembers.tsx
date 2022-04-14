@@ -140,13 +140,19 @@ const CommonMembers = ({rootStore}: CommonMembersProps) => {
     setShowModerationModal(false);
     Toast.loading('Reporting content...');
     bottomSheetStore.hideBottomSheet();
-    await ModerationService.report(
-      TITLES.discussionMessage,
-      moderationFormStore.getFormFieldsJson(),
-    );
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
+    try {
+      await ModerationService.report(
+        TITLES.discussionMessage,
+        moderationFormStore.getFormFieldsJson(),
+      );
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+    } catch (error) {
+      Toast.hide();
+      Toast.error('Something went wrong');
+    }
+
     moderationFormStore.clearFormStoreState();
   };
 
