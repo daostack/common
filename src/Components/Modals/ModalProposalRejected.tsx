@@ -4,17 +4,20 @@ import {font, layout, text} from '~/Theme';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import FastImage from 'react-native-fast-image';
 import ProposalInfo from '../Proposals/ProposalInfo';
+import {Proposal} from '~/Stores/Models/Proposal';
 
 type Props = {
   isVisible: boolean;
   onPressClose: () => void;
-  proposalInfo: object;
+  proposalInfo?: Proposal;
+  goToProposal: () => void;
 };
 
 const ModalProposalRejected = ({
   isVisible,
   onPressClose,
   proposalInfo,
+  goToProposal,
 }: Props): ReactElement => (
   <BottomSheetModal
     isVisible={isVisible}
@@ -36,7 +39,7 @@ const ModalProposalRejected = ({
             ...layout.marginTopL,
             ...layout.marginRightS,
           }}
-          onPress={onPressClose}>
+          onPress={goToProposal}>
           <Text style={styles.doneBtn}>Done</Text>
         </TouchableOpacity>
       </View>
