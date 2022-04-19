@@ -24,4 +24,7 @@ export type RouteProps<T> = {
 
 export type AddInvoicesRouteProps = RouteProps<{proposalId: string}>;
 
-export type ContributionHistoryRouteProps = RouteProps<{commonName: string}>;
+export type ContributionHistoryRouteProps = RouteProps<{
+  commonName: string;
+  commonId: string;
+}>;

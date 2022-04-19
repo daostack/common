@@ -708,6 +708,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
         name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
         params: {
           commonName: currCommon.name,
+          commonId: currCommon.id,
         },
       });
 

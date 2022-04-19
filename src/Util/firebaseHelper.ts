@@ -21,6 +21,7 @@ export function getDataById<T>(
 }
 
 export const updateStoreData = <IEntity, IEntityModel>(
+  data: ObservableMap<string, IEntity>,
   getEntityModel: (entity: IEntity) => IEntityModel,
 ) => (
   updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
@@ -52,10 +53,7 @@ export const updateStoreData = <IEntity, IEntityModel>(
     updatesMap.set(docData.id, getEntityModel(docData));
   }
 
-  // runInAction(() => {
-  //   this.data.merge(updatesMap);
-  //   this.isLoading = false;
-  // });
+  data.merge(updatesMap);
 };
 
 export function firestoreDocToEntity<T>(firebaseDoc: IFirebaseDoc<T>): T {

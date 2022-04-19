@@ -1,18 +1,15 @@
-import BaseStore from './BaseStore';
-import RootStore from '../RootStore';
 import {makeAutoObservable, observable, ObservableMap} from 'mobx';
 import {IPaymentEntityBase} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
+import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
+import Logger from '~/Services/Logger';
+import PaymentsService from '~/Services/PaymentsService';
 import {Payment} from '~/Stores/Models/Payment';
 import {Subscription} from '~/Stores/Models/Subscription';
-import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
-import {Card} from '../Models/Card';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-import PaymentsService from '~/Services/PaymentsService';
-import Logger from '~/Services/Logger';
 import {
-  updateStoreData,
   getDataArray,
   getDataById,
+  updateStoreData,
 } from '~/Util/firebaseHelper';
 
 export default class PaymentStore {
@@ -37,9 +34,9 @@ export default class PaymentStore {
 
   getCommonSubscriptions(commonId: string): Array<Subscription> | undefined {
     try {
-      return getDataArray(this.subscriptions).filter(
-        (subscription) => subscription.metadata.common.id === commonId,
-      );
+      return getDataArray(this.subscriptions).filter((subscription) => {
+        return subscription.metadata.common.id === commonId;
+      });
     } catch (e) {
       Logger.log('------ getCommonSubscriptions error', e);
     }
@@ -57,9 +54,29 @@ export default class PaymentStore {
     this.payments.clear();
   }
 
+  resetSubscriptions(): void {
+    this.subscriptions.clear();
+  }
+
   subscribeToUserPayments = (userId: string): FirestoreUnsubscribeFn =>
     PaymentsService.subscribeToUserPayments(
       userId,
-      updateStoreData(this.getPaymentEntityModel),
+      updateStoreData<IPaymentEntityBase, Payment>(
+        this.payments,
+        this.getPaymentEntityModel,
+      ),
+    );
+
+  getSubscriptionEntityModel(entity: ISubscriptionEntity): Subscription {
+    return new Subscription(entity);
+  }
+
+  subscribeToUserSubscriptions = (userId: string): FirestoreUnsubscribeFn =>
+    PaymentsService.subscribeToUserSubscriptions(
+      userId,
+      updateStoreData<ISubscriptionEntity, Subscription>(
+        this.subscriptions,
+        this.getSubscriptionEntityModel,
+      ),
     );
 }

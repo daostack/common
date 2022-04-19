@@ -13,6 +13,7 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
 import {PaymentsCollection} from '~/Firebase/Databasee/Collections/PaymentsCollection';
+import {SubscriptionsCollection} from '~/Firebase/Databasee/Collections/SubscriptionsCollection';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
@@ -63,12 +64,24 @@ class PaymentService {
   subscribeToUserPayments = (
     userId: string,
     callback: any,
-  ): FirestoreUnsubscribeFn =>
-    PaymentsCollection.where(userId, '==', 'userId').onSnapshot(
+  ): FirestoreUnsubscribeFn => {
+    return PaymentsCollection.where('userId', '==', userId).onSnapshot(
       (snapshot: any) => {
         callback(snapshot);
       },
     );
+  };
+
+  subscribeToUserSubscriptions = (
+    userId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn => {
+    return SubscriptionsCollection.where('userId', '==', userId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
+  };
 
   uploadInvoices = async (
     proposalID: string,
