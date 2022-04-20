@@ -71,3 +71,12 @@ export const formatMinFeeToJoin = ({
     ? formatNumber(minValue / 100).toString()
     : (minValue / 100).toString();
 };
+
+export const formatExpirationDate = (date?: string): string => {
+  if (!date) {
+    return '';
+  }
+  const month = date.substring(0, 2);
+  const year = date.substring(2, 4);
+  return `${month}/20${year}`;
+};

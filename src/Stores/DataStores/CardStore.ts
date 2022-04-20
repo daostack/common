@@ -34,7 +34,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
       const cards = this.getCards(ownerId);
       if (cards) {
         return cards.length > 1
-          ? orderBy(cards, 'createdAt', 'desc')[0]
+          ? orderBy(cards, 'createdAt.seconds', 'desc')[0]
           : cards[0];
       }
       return undefined;
