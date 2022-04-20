@@ -24,9 +24,12 @@ export default class PaymentStore {
 
   getCommonPayments(commonId: string): Array<Payment> | undefined {
     try {
-      return getDataArray(this.payments).filter(
-        (payment) => payment.commonId === commonId,
-      );
+      return getDataArray(this.payments)
+        .filter((payment) => payment.commonId === commonId)
+        .sort(
+          (payment, prevPayment) =>
+            prevPayment?.updatedAt?.seconds - payment?.updatedAt?.seconds,
+        );
     } catch (e) {
       Logger.log('------ getCommonPayments error', e);
     }
@@ -34,9 +37,15 @@ export default class PaymentStore {
 
   getCommonSubscriptions(commonId: string): Array<Subscription> | undefined {
     try {
-      return getDataArray(this.subscriptions).filter((subscription) => {
-        return subscription.metadata.common.id === commonId;
-      });
+      return getDataArray(this.subscriptions)
+        .filter((subscription) => {
+          return subscription.metadata.common.id === commonId;
+        })
+        .sort(
+          (subscription, prevSubscription) =>
+            prevSubscription?.updatedAt?.seconds -
+            subscription?.updatedAt?.seconds,
+        );
     } catch (e) {
       Logger.log('------ getCommonSubscriptions error', e);
     }

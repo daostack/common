@@ -14,7 +14,7 @@ const ContributionHistory = () => {
 
   const userId = authStore?.userInfo?.uid;
 
-  console.log(paymentStore.getCommonSubscriptions(commonId));
+  console.log(paymentStore.getCommonPayments(commonId));
 
   useEffect(() => {
     let unsubscribeToUserPayments: FirestoreUnsubscribeFn;
