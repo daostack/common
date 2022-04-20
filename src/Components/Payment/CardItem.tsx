@@ -15,11 +15,11 @@ interface Props {
 }
 
 export const CardItem = observer(({card}: Props) => {
+  const navigation = useNavigation();
+
   const replacePaymentMethod = () => {
     navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
   };
-
-  const navigation = useNavigation();
 
   return card ? (
     <View style={styles.container}>
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     marginVertical: baseMargin * 1.5,
     borderRadius: 10,
     width: '90%',
-    height: '30%',
     alignSelf: 'center',
     shadowColor: 'rgba(10, 10, 10, 0.2)',
     shadowOffset: {width: 1, height: 13},
