@@ -69,11 +69,6 @@ const styles = StyleSheet.create({
   body: {
     width: '100%',
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.white,
-    padding: 20,
-  },
   optionBtn: {
     alignSelf: 'stretch',
     ...layout.content,

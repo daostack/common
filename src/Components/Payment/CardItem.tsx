@@ -16,11 +16,11 @@ interface Props {
 }
 
 export const CardItem = observer(({card}: Props) => {
+  const navigation = useNavigation();
+
   const replacePaymentMethod = () => {
     navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
   };
-
-  const navigation = useNavigation();
 
   const network = getCardNetwork(card?.metadata?.network);
 
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     marginVertical: baseMargin * 1.5,
     borderRadius: 10,
     width: '90%',
-    height: 200,
     alignSelf: 'center',
     shadowColor: 'rgba(10, 10, 10, 0.2)',
     shadowOffset: {width: 1, height: 13},
@@ -118,6 +117,9 @@ const styles = StyleSheet.create({
   cardInfoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: baseMargin * 1.5,
+    marginBottom: baseMargin,
   },
   text: {
     fontSize: 14,
