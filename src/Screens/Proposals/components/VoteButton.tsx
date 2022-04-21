@@ -24,6 +24,7 @@ interface Props {
   votesFor: number;
   userInfo: UserModel;
   onPress: (e: GestureResponderEvent) => void;
+  disabled: boolean;
 }
 
 const ONE_PERCENTAGE_HEIGHT = 0.64;
@@ -36,6 +37,7 @@ export const VoteButton = observer(
     votesFor,
     userInfo,
     onPress,
+    disabled,
   }: Props): ReactElement => {
     const percentage = useMemo(() => {
       if (votesFor === 0) {
@@ -51,7 +53,7 @@ export const VoteButton = observer(
             styles.percentageText,
             {color: VOTE_COLORS_BY_STATUSES[voteType]},
           ]}>
-          {percentage}%
+          {Number(percentage).toFixed(1)}%
         </Text>
         <View
           style={[
@@ -63,7 +65,7 @@ export const VoteButton = observer(
           ]}
         />
         <TouchableOpacity
-          disabled={!!voteOutcome}
+          disabled={disabled || !!voteOutcome}
           onPress={onPress}
           style={styles.voteBtn}>
           {voteOutcome === voteType ? (
