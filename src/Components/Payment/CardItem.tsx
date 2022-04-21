@@ -9,7 +9,7 @@ import {Divider} from '~/Components/Divider';
 import {AddPaymentMethod} from './AddPaymentMethod';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {useNavigation} from '@react-navigation/native';
-import {formatExpirationDate} from '~/Util/FormatUtil';
+import {getExpirationDate, getCardNetwork} from './helper';
 
 interface Props {
   card?: Card;
@@ -22,18 +22,20 @@ export const CardItem = observer(({card}: Props) => {
     navigation.navigate(NAVIGATION_SCREENS.CHOOSE_PAYMENT_METHOD_STEP);
   };
 
+  const network = getCardNetwork(card?.metadata?.network);
+
   return card ? (
     <View style={styles.container}>
       <>
         <FastImage
           style={styles.paymentSystemLogo}
-          source={require('~/Assets/mastercard.png')}
+          source={network}
           resizeMode="cover"
         />
         <View style={styles.cardInfoContainer}>
           <Text style={styles.ccdetails}>{card?.fullName}</Text>
           <Text style={text.buttonblack}>
-            {formatExpirationDate(card?.metadata?.expiration)}
+            {getExpirationDate(card?.metadata?.expiration)}
           </Text>
         </View>
         <Text style={{...text.buttonblack, textAlign: 'left'}}>
@@ -111,7 +113,6 @@ const styles = StyleSheet.create({
   paymentSystemLogo: {
     width: 70,
     height: 40,
-    marginRight: 12,
   },
   cardInfoContainer: {
     flexDirection: 'row',
