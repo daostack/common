@@ -9,7 +9,8 @@ import {Divider} from '~/Components/Divider';
 import {AddPaymentMethod} from './AddPaymentMethod';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {useNavigation} from '@react-navigation/native';
-import {getExpirationDate, getCardNetwork} from './helper';
+import {getCardNetwork} from './helper';
+import {formatExpirationDate} from '~/Util/FormatUtil';
 
 interface Props {
   card?: Card;
@@ -35,7 +36,7 @@ export const CardItem = observer(({card}: Props) => {
         <View style={styles.cardInfoContainer}>
           <Text style={styles.ccdetails}>{card?.fullName}</Text>
           <Text style={text.buttonblack}>
-            {getExpirationDate(card?.metadata?.expiration)}
+            {formatExpirationDate(card?.metadata?.expiration)}
           </Text>
         </View>
         <Text style={{...text.buttonblack, textAlign: 'left'}}>
