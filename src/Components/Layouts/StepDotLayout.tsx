@@ -51,6 +51,7 @@ const props = {
     }),
   ),
   goBack: func,
+  isFullWidthProgressBar: bool,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -102,6 +103,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   headerDotsInfo,
   goBack,
   hideHeader,
+  isFullWidthProgressBar = true,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -187,6 +189,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             skipFirstDot={Boolean(skipFirstStep)}
             currentIndex={Number(currentIndex) - 1}
             dotInfo={headerDotsInfo || currDotInfo}
+            isFullWidthProgressBar={isFullWidthProgressBar}
           />
           {children}
           {!isRequestButtonSticky && requestStepActionButton}

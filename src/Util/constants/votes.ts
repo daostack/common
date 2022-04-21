@@ -38,12 +38,12 @@ export const VOTE_MODAL_INFO = {
     btnMessage: 'Vote to approve',
   },
   rejected: {
-    title: 'Approve',
+    title: 'Reject',
     subtitle: 'Vote to reject this proposal',
     btnMessage: 'Vote to reject',
   },
   abstained: {
-    title: 'Approve',
+    title: 'Abstain',
     subtitle: 'Vote to abstain this proposal',
     btnMessage: 'Vote to abstain',
   },

@@ -1,6 +1,7 @@
 import React from 'react';
-import {func, string, bool, InferProps, object} from 'prop-types';
+import {bool, func, InferProps, object, string} from 'prop-types';
 import BottomSheetModal from '~/Components/BottomSheetModal';
+import {layout} from '~/Theme';
 import Report from './Report';
 
 const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
@@ -13,7 +14,7 @@ const ModerationModal: React.FC<InferProps<typeof moderationModalProps>> = ({
 }) => (
   <BottomSheetModal
     isVisible={visible}
-    transparent
+    style={layout.optionsModal}
     onClose={setShowModerationModal}>
     <Report
       title={title}

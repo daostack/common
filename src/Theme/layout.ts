@@ -298,4 +298,11 @@ export default StyleSheet.create({
   backgroundWhite: {
     backgroundColor: colors.white,
   },
+
+  optionsModal: {
+    borderRadius: 27,
+    padding: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
 });

@@ -671,6 +671,11 @@ const ProposalScreen = ({
     allVoteCount,
   } = proposalStore.getVotesCounts(proposalInfo?.votes);
 
+  const isDisabledVoteButton = useMemo(
+    () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,
+    [proposalInfo?.state],
+  );
+
   const VoteContainer = useCallback(
     () => (
       <CopilotStep order={1} name="info">
@@ -681,24 +686,8 @@ const ProposalScreen = ({
             width: '100%',
             paddingHorizontal: 0,
           }}>
-          <Text
-            style={{
-              marginBottom: 16,
-              fontSize: 14,
-              color: colors.black,
-              ...font.primary.bold,
-            }}>
-            What's your vote?
-          </Text>
-          <View
-            style={{
-              height: 134,
-              width: '100%',
-              justifyContent: 'space-between',
-              marginBottom: 16,
-              alignItems: 'flex-end',
-              flexDirection: 'row',
-            }}>
+          <Text style={styles.voteContainerTitle}>What's your vote?</Text>
+          <View style={styles.voteContainer}>
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.APPROVED)}
               voteType={VOTE_STATUSES.APPROVED}
@@ -706,6 +695,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
@@ -714,6 +704,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
@@ -722,23 +713,19 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
           </View>
 
           <TouchableOpacity
-            style={{flexDirection: 'row', alignItems: 'center'}}
+            style={styles.voteCountButton}
             onPress={() => {
               navigation.navigate(NAVIGATION_SCREENS.VOTES_SCREEN, {
                 proposalId: proposalId || proposalInfo.id,
                 commonName: proposalCommon.name,
               });
             }}>
-            <Text
-              style={{
-                fontSize: 14,
-                ...font.primary.regular,
-                letterSpacing: 0.28,
-              }}>
+            <Text style={styles.voteCountButtonText}>
               {allVoteCount}/{proposalCommon.members?.length || 1} votes
             </Text>
             <Icon name="right-arrow" size={16} />
@@ -908,23 +895,6 @@ const ProposalScreen = ({
                   </View>
                 ) : (
                   <React.Fragment>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (showPaymentStatus) {
-                          paymentStatusModal();
-                        }
-                      }}>
-                      <ProposalCardHeader
-                        isScreenHeader={true}
-                        state={proposalInfo?.state}
-                        paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
-                        hasPermission={hasPermission}
-                        authInfo={authStore.userInfo}
-                        viewerPermission={viewerPermission}
-                      />
-                    </TouchableOpacity>
-
                     {proposedUser ? (
                       <>
                         <UserAvatar
@@ -1113,7 +1083,7 @@ const ProposalScreen = ({
         )}
       </SafeAreaView>
       <BottomSheetModal
-        style={styles.voteModal}
+        style={layout.optionsModal}
         isVisible={voteModalVisible}
         onClose={closeVoteModal}>
         <ModalVote
@@ -1171,6 +1141,28 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 15 : 10,
     paddingHorizontal: 15,
   },
+  voteContainerTitle: {
+    marginBottom: 16,
+    fontSize: 14,
+    color: colors.black,
+    ...font.primary.bold,
+  },
+  voteContainer: {
+    width: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+  },
+  voteCountButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  voteCountButtonText: {
+    fontSize: 14,
+    ...font.primary.regular,
+    letterSpacing: 0.28,
+  },
   // New styles
   contributionCard: {
     ...layout.content,
@@ -1184,10 +1176,6 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
     flex: 1,
-  },
-  voteModal: {
-    paddingTop: 16,
-    borderRadius: 27,
   },
   proposalProgressBar: {
     width: '100%',
