@@ -51,7 +51,7 @@ export const UpdateModal = ({}: Props) => {
 
   return (
     <BottomSheetModal
-      style={styles.optionsModal}
+      style={layout.optionsModal}
       isVisible={modalVisible}
       onClose={closeCommonOptionsModal}>
       <View style={[styles.body, {marginBottom: insets.bottom + 16}]}>
@@ -128,9 +128,5 @@ const styles = StyleSheet.create({
   },
   bold: {
     ...font.primary.bold,
-  },
-  optionsModal: {
-    borderRadius: 27,
-    padding: 16,
   },
 });

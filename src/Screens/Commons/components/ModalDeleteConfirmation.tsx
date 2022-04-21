@@ -30,7 +30,7 @@ export const ModalDeleteConfirmation = ({
         <TouchableOpacity
           style={[styles.btn, styles.deleteBtn]}
           onPress={onDelete}>
-          <Text style={styles.btnDeleteText}>Delete commmon</Text>
+          <Text style={styles.btnDeleteText}>Delete common</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={onCancel}>
           <Text style={styles.btnText}>Cancel</Text>
