@@ -17,7 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const props = {
   isMember: bool,
-  headerHeightLayouted: func,
+  headerHeightLayouted: func.isRequired,
   commonInfo: shape({
     logo: string,
     name: string.isRequired,
@@ -41,6 +41,7 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
 }) => {
   const navigation = useNavigation();
   const openAgendaScreen = () => {
+    // @ts-expect-error
     navigation.navigate(NAVIGATION_SCREENS.COMMON_AGENDA, {
       commonId: common.id,
       canEdit,
@@ -96,26 +97,6 @@ const CommonHeader: React.FC<InferProps<typeof props>> = ({
 CommonHeader.propTypes = props;
 
 const styles = StyleSheet.create({
-  coverBackground: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  coverOverlay: {
-    paddingVertical: 0,
-    paddingBottom: 20,
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  backgoundRoundedTopEdges: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-  },
-  headerContainerWrap: {
-    ...layout.flexRow,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
   headerContainer: {
     ...layout.content,
     alignSelf: 'stretch',
@@ -124,9 +105,6 @@ const styles = StyleSheet.create({
     padding: 0,
     marginBottom: 10,
     ...layout.flexEnd,
-  },
-  headerContainerCenterContent: {
-    justifyContent: 'center',
   },
   logoImage: {
     ...layout.marginBottomM,
@@ -146,11 +124,6 @@ const styles = StyleSheet.create({
     ...text.greyText,
     fontWeight: '600',
     color: colors.grey4,
-  },
-  headerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
   },
   headerViewAgenda: {
     ...text.smallGreyText,

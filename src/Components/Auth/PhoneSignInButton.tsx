@@ -5,6 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import {func, InferProps} from 'prop-types';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const props = {
   onSignIn: func,
@@ -12,7 +13,8 @@ const props = {
 const PhoneSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
   const navigation = useNavigation();
   const _signIn = async () => {
-    navigation.navigate('PhoneNumber', {onSignIn});
+    // @ts-expect-error
+    navigation.navigate(NAVIGATION_SCREENS.PHONE_NUMBER_STEP_1, {onSignIn});
   };
 
   return (
