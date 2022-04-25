@@ -104,6 +104,7 @@ const AmountField = ({
         toggleName="Other"
         value={{value: currFieldValue?.value || '', index: -1}}
         maxLength={5}
+        mask={true}
         validation={{
           name: RequestToJoinForm.FIELD_AMOUNT,
           formStore: formStore,
