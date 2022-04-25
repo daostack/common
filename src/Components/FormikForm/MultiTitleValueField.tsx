@@ -66,7 +66,7 @@ const MultiTitleValueField = (props: Props) => {
       setCount(values.rules?.length);
     }
     canAddMore();
-  }, []);
+  }, [values.rules]);
 
   const onFieldDeleted = (currIndex: number) => {
     setCount(count - 1);
@@ -125,7 +125,6 @@ const MultiTitleValueField = (props: Props) => {
                 autoCorrect={false}
                 onChangeText={handleChange(currRuleTitleName)}
                 isTopPosition={true}
-                multiline={multiline}
                 maxLength={maxLength}
               />
             )}
