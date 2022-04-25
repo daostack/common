@@ -263,7 +263,7 @@ class TextInputFieldWithIcon extends React.Component {
     };*/
 
     const getMaskValue = () => {
-      var maskValue = '';
+      let maskValue = '';
       for (let i = 0; i < maxLength - 1; i++) {
         maskValue = maskValue + 0;
       }
