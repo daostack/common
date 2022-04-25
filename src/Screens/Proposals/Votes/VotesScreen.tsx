@@ -12,9 +12,9 @@ import {VoteTabBar} from './VoteTabBar';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
-const getTabName = (objectName: string, count: number): string =>
-  `${objectName} (${count ? count : 0})`;
-
+const getTabName = (objectName: string, count: number): string => {
+  return ` ${objectName} (${count ? count : 0}) `;
+};
 const VotesScreen = (): ReactElement => {
   const navigation = useNavigation();
   const navigationRoute = useRoute<VotesScreenRouteProps>();
@@ -58,7 +58,7 @@ const VotesScreen = (): ReactElement => {
         title: getTabName(VOTE_TABS.REJECTED, rejectedCount),
       },
     ],
-    [],
+    [allVoteCount, approvedCount, abstainedCount, rejectedCount],
   );
 
   const renderScene = useCallback(({route}: {route: Route}) => {
