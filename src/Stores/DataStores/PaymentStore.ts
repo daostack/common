@@ -11,6 +11,7 @@ import {
   getDataById,
   updateStoreData,
 } from '~/Util/firebaseHelper';
+import {CONTRIBUTION_TYPES} from '~/Util/constants/paymentConstants';
 
 export default class PaymentStore {
   private payments: ObservableMap<string, Payment> = observable.map({});
@@ -33,6 +34,26 @@ export default class PaymentStore {
     } catch (e) {
       Logger.log('------ getCommonPayments error', e);
     }
+  }
+
+  getCommonOneTimePayments(commonId: string): Array<Payment> | undefined {
+    try {
+      return this.getCommonPayments(commonId)?.filter(
+        (payment) => payment.type === CONTRIBUTION_TYPES.ONE_TIME,
+      );
+    } catch (e) {
+      Logger.log('------ getCommonOneTimePayments error', e);
+    }
+  }
+
+  getCommonTotalPaymentsAmount(commonId: string): number {
+    return getDataArray(this.payments)
+      .filter((payment) => payment.commonId === commonId)
+      .reduce(
+        (previousValue, currentValue) =>
+          currentValue.amount?.amount + previousValue,
+        0,
+      );
   }
 
   getCommonSubscriptions(commonId: string): Array<Subscription> | undefined {
