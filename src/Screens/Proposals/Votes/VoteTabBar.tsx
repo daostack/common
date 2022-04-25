@@ -23,7 +23,11 @@ export const VoteTabBar = (
     }}
     scrollEnabled
     renderLabel={({route, focused}) => (
-      <Text style={[focused ? styles.textStyleActive : styles.textStyle]}>
+      <Text
+        style={[
+          styles.tabTextStyle,
+          focused ? styles.activeTextStyle : styles.inactiveTextStyle,
+        ]}>
         {route.title}
       </Text>
     )}
@@ -39,21 +43,17 @@ const styles = StyleSheet.create({
   tabStyle: {
     borderColor: colors.grey4,
   },
-  textStyle: {
-    ...font.primary.regular,
-    color: colors.grey3,
+  tabTextStyle: {
     ...font.fontSize(2),
     flexShrink: 1,
     paddingHorizontal: 8,
   },
-  textStyleActive: {
+  inactiveTextStyle: {
+    ...font.primary.regular,
+    color: colors.grey3,
+  },
+  activeTextStyle: {
     ...font.primary.semiBold,
-    ...font.fontSize(2),
     color: colors.mainBlue,
-    flexShrink: 1,
-    flexWrap: 'nowrap',
-    paddingHorizontal: 8,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
 });

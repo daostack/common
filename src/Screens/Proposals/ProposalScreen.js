@@ -1083,7 +1083,7 @@ const ProposalScreen = ({
         )}
       </SafeAreaView>
       <BottomSheetModal
-        style={styles.voteModal}
+        style={layout.optionsModal}
         isVisible={voteModalVisible}
         onClose={closeVoteModal}>
         <ModalVote
@@ -1176,12 +1176,6 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
     flex: 1,
-  },
-  voteModal: {
-    paddingTop: 16,
-    borderRadius: 27,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
   },
   proposalProgressBar: {
     width: '100%',
