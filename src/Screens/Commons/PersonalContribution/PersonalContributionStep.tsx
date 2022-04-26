@@ -194,7 +194,6 @@ const PersonalContributionStep = () => {
         />
         <AmountField
           isMonthly={isMonthly}
-          navigation={navigation}
           formStore={personalContributionFormStore}
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}
