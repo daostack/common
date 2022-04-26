@@ -11,7 +11,6 @@ import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation
 import {useStore} from '~/Util/hooks/useStore';
 import {v4} from 'uuid';
 import PaymentService from '~/Services/PaymentsService';
-import Toast from '~/Util/Toast';
 import {WebView} from 'react-native-webview';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
@@ -66,9 +65,6 @@ const ChoosePaymentMethodStep = () => {
           source={{uri: iFrame}}
           onNavigationStateChange={(event) => {
             redirectUser(event);
-          }}
-          onLoadEnd={() => {
-            Toast.done('All done!');
           }}
         />
       </View>

@@ -929,7 +929,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             )}
           </SafeAreaView>
           <BottomSheetModal
-            style={styles.optionsModal}
+            style={layout.optionsModal}
             isVisible={optionsModalVisible}
             onClose={closeCommonOptionsModal}>
             {!deleteScreenOn ? (
@@ -1123,10 +1123,6 @@ const styles = StyleSheet.create({
   fixedSectionText: {
     color: '#999',
     fontSize: 20,
-  },
-  optionsModal: {
-    borderRadius: 27,
-    padding: 16,
   },
 });
 

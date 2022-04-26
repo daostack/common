@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useRoute} from '@react-navigation/native';
 import {
   Placeholder,
   PlaceholderMedia,
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
-
+import {ModalProposalStatus} from '~/Components/Modals/ModalProposalStatus';
 import {CommonBox, BottomRightButton, ModalPreview} from '~/Components';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {font, colors} from '~/Theme';
@@ -34,6 +34,7 @@ const groupTitle = (title, arrLength) =>
   arrLength > 0 ? `${title} (${arrLength})` : '';
 
 const CommonsList = ({navigation, rootStore}) => {
+  const {params} = useRoute();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -239,6 +240,11 @@ const CommonsList = ({navigation, rootStore}) => {
             isInModal={showModal}
           />
         </ModalPreview>
+        <ModalProposalStatus
+          proposalId={params?.proposalId}
+          fromNotificationItem={params?.fromNotificationItem}
+          eventType={params?.eventType}
+        />
       </SafeAreaView>
     </>
   );

@@ -3,15 +3,28 @@ import {View, StyleSheet, Dimensions} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors} from '~/Theme';
 import * as Progress from 'react-native-progress';
-import {bool, number, array} from 'prop-types';
+import {bool, number, array, string} from 'prop-types';
 const {width} = Dimensions.get('window');
+const ICON_RADIUS = 24;
+const ICON_DIAMETER = 48;
+const BASE_PROGRESS_BAR_WIDTH = 75;
 
-const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
+const StepHeader = ({
+  dotInfo,
+  currentIndex,
+  skipFirstDot = false,
+  iconName = 'check',
+  isFullWidthProgressBar = true,
+}) => {
   const getDotProgress = (index) => {
     let dotsCount = dotInfo.length;
     if (skipFirstDot) {
       dotsCount = dotsCount - 1;
       index = index - 1;
+    }
+
+    if (index === dotsCount - 1) {
+      return 1;
     }
 
     // adding 0.1 for the dot width
@@ -48,13 +61,21 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: '100%',
+        width: isFullWidthProgressBar
+          ? '100%'
+          : BASE_PROGRESS_BAR_WIDTH + ICON_DIAMETER * dotInfo.length,
         marginBottom: 24,
         paddingHorizontal: 30,
       }}>
       <Progress.Bar
         progress={getDotProgress(currentIndex)}
-        width={width - 50 - 60}
+        width={
+          isFullWidthProgressBar
+            ? width - 50 - 60
+            : BASE_PROGRESS_BAR_WIDTH +
+              ICON_RADIUS +
+              ICON_DIAMETER * (dotInfo.length - 2)
+        }
         color={colors.mainBlue}
         borderWidth={0}
         unfilledColor={colors.grey4}
@@ -73,7 +94,7 @@ const StepHeader = ({dotInfo, currentIndex, skipFirstDot = false}) => {
             <View key={dotIndex} style={ovalStyle(dotIndex)}>
               <Icon
                 name={
-                  currentIndex <= dotIndex ? currDotInfo.dotIconName : 'check'
+                  currentIndex <= dotIndex ? currDotInfo.dotIconName : iconName
                 }
                 size={currentIndex === dotIndex ? 24 : 16}
                 color={iconColor(dotIndex)}
@@ -90,6 +111,8 @@ StepHeader.propTypes = {
   dotInfo: array,
   currentIndex: number,
   skipFirstDot: bool,
+  iconName: string,
+  isFullWidthProgressBar: bool,
 };
 
 const styles = StyleSheet.create({

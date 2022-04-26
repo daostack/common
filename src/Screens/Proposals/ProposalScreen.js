@@ -671,6 +671,11 @@ const ProposalScreen = ({
     allVoteCount,
   } = proposalStore.getVotesCounts(proposalInfo?.votes);
 
+  const isDisabledVoteButton = useMemo(
+    () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,
+    [proposalInfo?.state],
+  );
+
   const VoteContainer = useCallback(
     () => (
       <CopilotStep order={1} name="info">
@@ -690,6 +695,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
@@ -698,6 +704,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
@@ -706,6 +713,7 @@ const ProposalScreen = ({
               votesCount={allVoteCount}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
+              disabled={isDisabledVoteButton}
             />
           </View>
 
@@ -887,23 +895,6 @@ const ProposalScreen = ({
                   </View>
                 ) : (
                   <React.Fragment>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (showPaymentStatus) {
-                          paymentStatusModal();
-                        }
-                      }}>
-                      <ProposalCardHeader
-                        isScreenHeader={true}
-                        state={proposalInfo?.state}
-                        paymentStatus={proposalInfo?.paymentState}
-                        closingAt={proposalInfo?.countdown}
-                        hasPermission={hasPermission}
-                        authInfo={authStore.userInfo}
-                        viewerPermission={viewerPermission}
-                      />
-                    </TouchableOpacity>
-
                     {proposedUser ? (
                       <>
                         <UserAvatar
@@ -1092,7 +1083,7 @@ const ProposalScreen = ({
         )}
       </SafeAreaView>
       <BottomSheetModal
-        style={styles.voteModal}
+        style={layout.optionsModal}
         isVisible={voteModalVisible}
         onClose={closeVoteModal}>
         <ModalVote
@@ -1185,12 +1176,6 @@ const styles = StyleSheet.create({
     ...layout.flexRow,
     padding: 0,
     flex: 1,
-  },
-  voteModal: {
-    paddingTop: 16,
-    borderRadius: 27,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
   },
   proposalProgressBar: {
     width: '100%',

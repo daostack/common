@@ -6,7 +6,7 @@ import AmountField from '~/Components/FormFields/AmountField';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
-import MembershipRequest from '~/Screens/Commons/RequestToJoin/MembershipRequest';
+import {PersonalContributionTitle} from './PersonalContributionTitle';
 import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
 import CommonService from '~/Services/CommonService';
 import logger from '~/Services/Logger';
@@ -147,8 +147,9 @@ const PersonalContributionStep = () => {
       navTitle={common.name}
       currentIndex={1}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
-      layoutTitle={<MembershipRequest />}
+      layoutTitle={<PersonalContributionTitle />}
       goBack={() => navigation.pop(2)}
+      isFullWidthProgressBar={false}
       prependedArea={
         <CommonCreatedModal
           isVisible={Boolean(newCommonId)}
@@ -193,7 +194,6 @@ const PersonalContributionStep = () => {
         />
         <AmountField
           isMonthly={isMonthly}
-          navigation={navigation}
           formStore={personalContributionFormStore}
           onCustomSelect={onCustomSelect}
           onCustomClose={onCustomClose}

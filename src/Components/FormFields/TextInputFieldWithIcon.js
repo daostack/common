@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  TextInput,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import ValidationMessage from './ValidationMessage';
 import {inject, observer} from 'mobx-react';
 import Icon from '~/Assets/iconfont/Icon';
@@ -22,6 +16,7 @@ import {
 } from 'prop-types';
 import {formatNumber, unFormatNumber} from '~/Util/FormatUtil';
 import {uiStorePropTypes} from '~/Types/propTypes';
+import TextInputMask from 'react-native-text-input-mask';
 
 class TextInputFieldWithIcon extends React.Component {
   fieldValidation;
@@ -188,6 +183,7 @@ class TextInputFieldWithIcon extends React.Component {
       iconEndName,
 
       // Validation management properties
+      mask,
       validation,
       subLabel,
       textContentType,
@@ -266,6 +262,14 @@ class TextInputFieldWithIcon extends React.Component {
       }
     };*/
 
+    const getMaskValue = () => {
+      let maskValue = '';
+      for (let i = 0; i < maxLength - 1; i++) {
+        maskValue = maskValue + 0;
+      }
+      return maskValue;
+    };
+
     return (
       <View style={{alignSelf: 'stretch'}}>
         <View style={{flexDirection: 'row'}}>
@@ -281,7 +285,7 @@ class TextInputFieldWithIcon extends React.Component {
               color={getValue() === '' ? iconEmptyColor : iconFillColor}
             />
           </View>
-          <TextInput
+          <TextInputMask
             ref={this.props.forwardRef}
             {...defaultMultilineProps}
             {...otherProps}
@@ -294,7 +298,11 @@ class TextInputFieldWithIcon extends React.Component {
             keyboardType={keyboardType}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            mask={mask ? `[${getMaskValue()}]` : ''}
             secureTextEntry={this.state.showPassword}
+            affineFormats={[]}
+            customNotations={[]}
+            affinityCalculationStrategy={'WHOLE_STRING'}
             onKeyPress={({nativeEvent}) => {
               if (nativeEvent.key === 'Backspace') {
                 this.updateSize(-10);
@@ -405,6 +413,7 @@ TextInputFieldWithIcon.propTypes = {
   disabledLabelStyle: object,
   disabledBackgroundStyle: object,
   isInteger: bool,
+  mask: bool,
 };
 
 const styles = StyleSheet.create({
