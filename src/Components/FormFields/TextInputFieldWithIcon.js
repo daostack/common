@@ -300,6 +300,9 @@ class TextInputFieldWithIcon extends React.Component {
             onBlur={this.onBlur}
             mask={mask ? `[${getMaskValue()}]` : ''}
             secureTextEntry={this.state.showPassword}
+            affineFormats={[]}
+            customNotations={[]}
+            affinityCalculationStrategy={'WHOLE_STRING'}
             onKeyPress={({nativeEvent}) => {
               if (nativeEvent.key === 'Backspace') {
                 this.updateSize(-10);
