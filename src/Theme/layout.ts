@@ -305,4 +305,12 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
+  governanceTemp: {
+    backgroundColor: 'lime',
+    borderWidth: 1,
+    borderColor: 'maroon',
+    width: '50%',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
 });

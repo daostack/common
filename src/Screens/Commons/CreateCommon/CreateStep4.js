@@ -1,22 +1,41 @@
+import React, {useState} from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import {inject, observer} from 'mobx-react';
+import {StackActions} from '@react-navigation/native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {
+  DYNAMIC_LINK_URI_PREFIX,
+  DYNAMIC_LINKS_TYPES,
+} from '~/Util/constants/dynamicLinks';
+
 import moment from 'moment';
-import {object, shape} from 'prop-types';
-import React from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import Icon from '~/Assets/iconfont/Icon';
-import CommonImage from '~/Components/Commons/CommonImage';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {Bold} from '~/Components/Text/Bold';
-import logger from '~/Services/Logger';
-import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
-import {colors, font, layout, sizeL, sizeM, sizeXL, text} from '~/Theme';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {escapeUrl, numberFormatter, showErrorPopUp} from '~/Util';
-import CommonService from '~/Services/CommonService';
-import {CurrencySymbols} from '~/Util/locale';
 import RequestStepActionButton from '../RequestStepActionButton';
+import {numberFormatter, showErrorPopUp} from '~/Util';
+
+import Modal from 'react-native-modal';
+import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import Share from 'react-native-share';
 import CreateStep4Indicators from './CreateStep4Indicators';
+import {CommonActions} from '@react-navigation/native';
+import {object, shape} from 'prop-types';
+import CommonService from '~/Services/CommonService';
+import CommonImage from '~/Components/Commons/CommonImage';
+import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {escapeUrl} from '~/Util';
+import {Bold} from '~/Components/Text/Bold';
+import Icon from '~/Assets/iconfont/Icon';
+import {CurrencySymbols} from '~/Util/locale';
+
+import {colors, font, text, layout, sizeM, sizeL, sizeXL} from '~/Theme';
+import logger from '~/Services/Logger';
+import {rootStorePropTypes} from '~/Types/propTypes';
 
 const {width} = Dimensions.get('window');
 const CONTRIBUTION = {
@@ -32,8 +51,9 @@ const CreateStep4 = ({
   rootStore,
 }) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
-  const authStore = rootStore.authStore;
+  //const authStore = rootStore.authStore;
 
+  const [newCommonAddress, setNewCommonAddress] = useState(false);
   const generalInfoFormStore = formStores.generalInfoFormStore;
   const fundingFormStore = formStores.fundingFormStore;
   const agendaFormStore = formStores.agendaFormStore;
@@ -46,37 +66,42 @@ const CreateStep4 = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
+  /*const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
     ? '0'
-    : form[CreateCommonForm.MINIMUM];
+    : form[CreateCommonForm.MINIMUM];*/
+
+  const goToCommon = () => {
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        commonId: newCommonAddress.toLowerCase(),
+      },
+    });
+    navigation.popToTop();
+    navigation.dispatch(navigate);
+  };
 
   const forgeCommon = async () => {
     try {
       const formDataInit = {...form};
 
-      const contributionAmount =
-        parseFloat(formDataInit[CreateCommonForm.MINIMUM], 10) * 100;
+      //const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
 
       const data = {
         ...formDataInit,
-        founderId: authStore.userInfo?.uid,
-        minFeeToJoin: contributionAmount,
-        contributionAmount,
-        contributionType: formDataInit.contribution,
-        fundingGoal: parseInt(formDataInit.funding, 10) * 100,
       };
       logger.log('calling createCommon(...)');
 
       const formattedData = {
-        name: data.name,
+        name: 'GOVERNANCE_TEST', //data.name,
         image: data.image,
         rules: data.rules,
         links: escapeUrl(data.links),
         byline: data.byline || '',
         description: data.description || '',
-        contributionType: data.contributionType,
-        contributionAmount: data.contributionAmount,
-        zeroContribution: data.zeroContribution,
+        contributionType: 'one-time', //data.contributionType,
+        contributionAmount: 0, //data.contributionAmount,
+        zeroContribution: true, //data.zeroContribution,
       };
 
       navigation.navigate({
@@ -92,26 +117,16 @@ const CreateStep4 = ({
       );
 
       if (createCommonResponse.status === 200) {
-        const personalContributionFormStore = new PersonalContributionFormStore();
-
-        navigation.navigate({
-          name: 'PersonalContributionStep',
-          params: {
-            common: {
-              id: createCommonResponse.data.id,
-              ...formattedData,
-              minFeeToJoin: contributionAmount,
-            },
-            formStores: {
-              personalContributionFormStore,
-            },
-          },
-        });
+        setNewCommonAddress(createCommonResponse.data.id);
+        navigation.pop();
       } else {
         navigation.pop();
         showErrorPopUp(bottomSheetStore, createCommonResponse);
       }
+
+      return {commonAddress: createCommonResponse.data.id};
     } catch (e) {
+      //navigation.pop();
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
@@ -119,8 +134,8 @@ const CreateStep4 = ({
     }
   };
 
-  const displayString = () =>
-    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;
+  /*const displayString = () =>
+    `${numberFormatter(minContribution)}${CONTRIBUTION[form.contribution]}`;*/
 
   return (
     <StepDotLayout
@@ -129,9 +144,31 @@ const CreateStep4 = ({
       navTitle="Final touches and review"
       currentIndex={4}
       isRequestButtonSticky={false}
+      prependedArea={
+        <Modal
+          isVisible={Boolean(newCommonAddress)}
+          avoidKeyboard={true}
+          backdropColor={colors.white}
+          backdropOpacity={1}
+          style={{padding: 0}}>
+          <SentTemplate
+            isCommonCreation={true}
+            title="Your journey starts now"
+            description="Your Common draft is ready. Create governance to publish it."
+            onClose={() => navigation.dispatch(StackActions.popToTop())}>
+            <View style={styles.shareContainer}>
+              <TouchableOpacity
+                style={styles.modalRequestSentBtnOutline}
+                onPress={goToCommon}>
+                <Text style={text.buttonblue}>Go to Common</Text>
+              </TouchableOpacity>
+            </View>
+          </SentTemplate>
+        </Modal>
+      }
       requestStepActionButton={
         <RequestStepActionButton
-          title="Personal Contribution"
+          title="Create draft"
           formStore={agendaFormStore}
           onPress={() => forgeCommon()}
           isSticky={false}
@@ -154,31 +191,31 @@ const CreateStep4 = ({
         <View
           style={{height: 1, width: width, backgroundColor: colors.grey4}}
         />
-        <View style={{...styles.sectionTitle, justifyContent: 'center'}}>
-          {/* <View style={{minWidth: 90, marginRight: 10}}>
+        {/*<View style={{...styles.sectionTitle, justifyContent: 'center'}}>
+            <View style={{minWidth: 90, marginRight: 10}}>
               <CreateStep4Indicators
                 title="Goal"
                 number={numberFormatter(form[CreateCommonForm.FUNDING_GOAL])}
               />
-            </View> */}
-          <View style={{width: 120, marginHorizontal: 10}}>
-            <CreateStep4Indicators
-              title="Min. Contribution"
-              value={displayString()}
-              contribution
-              amount={minContribution}
-            />
-          </View>
+            </View>
+            <View style={{width: 120, marginHorizontal: 10}}>
+              <CreateStep4Indicators
+                title="Min. Contribution"
+                value={displayString()}
+                contribution
+                amount={minContribution}
+              />
+            </View>
 
-          <View style={{width: 120, marginHorizontal: 10}}>
-            <CreateStep4Indicators
-              title="Safety period"
-              currencySymbol={false}
-              value={moment().fromNow(true)}
-              date={moment().format('MMM DD, YYYY')}
-            />
-          </View>
-        </View>
+            <View style={{width: 120, marginHorizontal: 10}}>
+              <CreateStep4Indicators
+                title="Safety period"
+                currencySymbol={false}
+                value={moment().fromNow(true)}
+                date={moment().format('MMM DD, YYYY')}
+              />
+            </View>
+          </View>*/}
         <View style={styles.sectionTitle}>
           <Text style={styles.textTitle}>About</Text>
         </View>
@@ -242,35 +279,35 @@ const CreateStep4 = ({
               <Text style={styles.textContent}>{rule.value}</Text>
             </View>
           ))}
-        <>
-          <View style={styles.sectionTitle}>
-            <Text style={styles.textTitle}>Minimum contribution</Text>
-          </View>
-          {minContribution > 0 && (
-            <Text style={styles.textContent}>
-              {CurrencySymbols.SHEKEL}
-              {minContribution}{' '}
-              <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} />{' '}
-              contribution
+        {/*<>
+            <View style={styles.sectionTitle}>
+              <Text style={styles.textTitle}>Minimum contribution</Text>
+            </View>
+            {minContribution > 0 && (
+              <Text style={styles.textContent}>
+                {CurrencySymbols.SHEKEL}
+                {minContribution}{' '}
+                <Bold boldText={form[CreateCommonForm.CONTRIBUTION]} />{' '}
+                contribution
+              </Text>
+            )}
+            {form.zeroContribution && (
+              <Text style={styles.textContent}>
+                Members will be able to join the Common without a personal
+                contribution
+              </Text>
+            )}
+          </>*/}
+        {/*<View style={styles.textContainer}>
+            <Text style={styles.text}>
+              To publish the Common, add a personal contribution.
+              <Bold
+                boldText=" Don't worry, you will be able to
+              make changes "
+              />
+              to the Common info after it is published.
             </Text>
-          )}
-          {form.zeroContribution && (
-            <Text style={styles.textContent}>
-              Members will be able to join the Common without a personal
-              contribution
-            </Text>
-          )}
-        </>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            To publish the Common, add a personal contribution.
-            <Bold
-              boldText=" Don't worry, you will be able to
-            make changes "
-            />
-            to the Common info after it is published.
-          </Text>
-        </View>
+          </View>*/}
       </View>
     </StepDotLayout>
   );

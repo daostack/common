@@ -843,6 +843,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
               {renderMembersRow()}
 
+              <TouchableOpacity style={layout.governanceTemp}>
+                <Text>CREATE GOVERNANCE</Text>
+              </TouchableOpacity>
+
               {!isMember && showReqToJoin && (
                 <View
                   style={styles.upperActionButtonContainer}

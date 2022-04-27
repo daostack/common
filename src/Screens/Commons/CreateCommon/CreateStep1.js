@@ -31,7 +31,7 @@ const CreateStep1 = ({
 
   const continueToFunding = () => {
     if (generalInfoFormStore.isFormValid()) {
-      navigation.navigate('CreateStep2', {formStores});
+      navigation.navigate('CreateStep3', {formStores});
     }
   };
 
@@ -121,7 +121,7 @@ const CreateStep1 = ({
             generalInfoFormStore.getFormField(CreateCommonForm.BYLINE)?.value
           }
           viewStyle={{alignSelf: 'stretch'}}
-          label="Tagline"
+          label="Byline"
           numberOfLines={3}
           // returnKeyType="next"
           multiline={true}
@@ -141,7 +141,7 @@ const CreateStep1 = ({
             generalInfoFormStore.form.fields[CreateCommonForm.DESCRIPTION]
               ?.value
           }
-          label="About"
+          label="Description"
           numberOfLines={5}
           multiline={true}
           returnKeyType="next"
