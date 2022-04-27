@@ -24,3 +24,26 @@ export const getType = (type: string) => {
       return type;
   }
 };
+
+export const dateFormat = (updatedAt: firebase.firestore.Timestamp) => {
+  const dateTime = updatedAt?.seconds * 1000;
+  const now = new Date().getTime();
+
+  const diffMinutes = Math.floor((now - dateTime) / (1000 * 60));
+  const diffHours = Math.floor((now - dateTime) / (1000 * 60 * 60));
+  const diffDays = Math.floor((now - dateTime) / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor((now - dateTime) / (1000 * 60 * 60 * 24 * 30));
+
+  let resultedDiff = diffMonths + 'mo';
+  if (diffMonths === 0) {
+    resultedDiff = diffDays + 'd';
+  }
+  if (diffDays === 0) {
+    resultedDiff = diffHours + 'h';
+  }
+  if (diffHours === 0) {
+    resultedDiff = diffMinutes + 'min';
+  }
+
+  return resultedDiff;
+};
