@@ -10,6 +10,7 @@ import {
   shape,
   InferProps,
   oneOfType,
+  arrayOf,
 } from 'prop-types';
 import {colors, layout} from '~/Theme';
 import StepHeader from './StepHeader';
@@ -31,6 +32,7 @@ const props = {
   currentIndex: number,
   skipFirstStep: bool,
   isRequestToJoin: bool,
+  hideHeader: bool,
 
   //ScrollView:
   onScrollEndDrag: func,
@@ -43,6 +45,13 @@ const props = {
   uiStore: uiStorePropTypes.isRequired,
   onContentSizeChange: func,
   isRequestButtonSticky: bool,
+  headerDotsInfo: arrayOf(
+    shape({
+      dotIconName: string,
+    }),
+  ),
+  goBack: func,
+  isFullWidthProgressBar: bool,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -91,6 +100,10 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   uiStore,
   onContentSizeChange,
   isRequestButtonSticky = true,
+  headerDotsInfo,
+  goBack,
+  hideHeader,
+  isFullWidthProgressBar = true,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -132,22 +145,31 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           flex: 1,
           backgroundColor: colors.white,
         }}>
-        <StepDotHeaderBar
-          title={navTitle || ''}
-          closeDialog={closeDialog}
-          onLeftPress={() => navigation.pop()}
-        />
+        {!hideHeader && (
+          <StepDotHeaderBar
+            title={navTitle || ''}
+            closeDialog={closeDialog}
+            onLeftPress={() => {
+              if (goBack) {
+                goBack();
+              } else {
+                navigation.pop(2);
+              }
+            }}
+          />
+        )}
         <StepDotHeader
           title={stepDotHeaderTitle}
           currentIndex={currentIndex}
           navigation={navigation}
           headerHeight={headerHeight}
           isFirstStepSkipped={skipFirstStep}
-          totalDots={currDotInfo.length}
+          totalDots={(headerDotsInfo || currDotInfo).length}
           onClose={closeDialog}
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
           keyboardShouldPersistTaps="handled"
           width={width}
           onContentSizeChange={onContentSizeChange}
@@ -166,7 +188,8 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           <StepHeader
             skipFirstDot={Boolean(skipFirstStep)}
             currentIndex={Number(currentIndex) - 1}
-            dotInfo={currDotInfo}
+            dotInfo={headerDotsInfo || currDotInfo}
+            isFullWidthProgressBar={isFullWidthProgressBar}
           />
           {children}
           {!isRequestButtonSticky && requestStepActionButton}

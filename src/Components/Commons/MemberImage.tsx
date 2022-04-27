@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {colors, font} from '~/Theme';
 import FastImage from 'react-native-fast-image';
 import {InferProps, number, object} from 'prop-types';
@@ -7,17 +7,25 @@ import {InferProps, number, object} from 'prop-types';
 const props = {
   userInfo: object,
   style: object,
+  imgStyle: object,
   id: number,
+  size: number,
 };
 const MemberImage: React.FC<InferProps<typeof props>> = ({
   userInfo,
   style,
+  imgStyle,
   id,
-}) =>
-  userInfo?.photoURL ? (
+  size = 50,
+}) => {
+  const memberImageStyle = useMemo(() => {
+    return {width: size, height: size, borderRadius: size / 2};
+  }, [size]);
+
+  return userInfo?.photoURL ? (
     <FastImage
       key={id}
-      style={styles.memberImage}
+      style={[styles.memberImage, memberImageStyle, imgStyle]}
       source={{
         uri: userInfo?.photoURL,
       }}
@@ -29,11 +37,13 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#6e7d82',
+        ...memberImageStyle,
         ...style,
       }}>
       <Text style={styles.memberImageDisplayName}>{userInfo?.displayName}</Text>
     </View>
   );
+};
 
 MemberImage.propTypes = props;
 

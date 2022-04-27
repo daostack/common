@@ -9,16 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Animated,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
-import Share from 'react-native-share';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  DYNAMIC_LINK_URI_PREFIX,
-  DYNAMIC_LINKS_TYPES,
-} from '~/Util/constants/dynamicLinks';
-import logger from '~/Services/Logger';
 import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView, SceneMap} from 'react-native-tab-view';
@@ -32,7 +23,6 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import CommonHeader from '~/Components/Commons/CommonHeader';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
@@ -74,15 +64,15 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {ModalCommonOptions} from '../components/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {CurrencySymbols} from '~/Util/locale';
-import {CommonHeaderBar} from './CommonHeaderBar';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
+
+import {CommonProfileFlatList} from './CommonProfileFlatList';
 
 const {width} = Dimensions.get('window');
 
 let stickyHeightAddon = 62;
 let statusBarHeight = Math.round(getStatusBarHeight(true));
 const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
-const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100;
 
 const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   /* all of  params.commonId,
@@ -92,7 +82,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   is this sth we plan on having in future?
    */
 
-  const insets = useSafeAreaInsets();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -142,28 +131,17 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     params.commonId || params.currCommon?.id,
   );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [showReqToJoin, setShowRequestToJoin] = React.useState(false);
-  const [showPending, setShowPending] = React.useState(false);
+  const [showReqToJoin, setShowRequestToJoin] = useState(false);
+  const [showPending, setShowPending] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
-  const [showStickyRequestToJoinBtn, setShowStickyRequestToJoinBtn] = useState(
-    false,
-  );
-
-  const [dark, setDark] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
   const upperRequestToJoinBtnRef = useRef(null);
 
   // Sticky Tab Bar
-  const [showStickyTabBar, setShowStickyTabBar] = useState(false);
   const stickyTabBarRef = useRef(null);
   const originTabBarRef = useRef(null);
-  const [stickyTabBarState] = useState({animation: new Animated.Value(0)});
-  const [isHeaderClosingInProgress, setIsHeaderClosingInProgress] = useState(
-    false,
-  );
 
   // checking if user is the founder or had moderator permissions
   const [hasPermission, setHasPermission] = useState(
@@ -198,10 +176,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     setShowRequestSentModal(params.showRequestSentModal);
     if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
       setMemberState(true);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT + stickyHeightAddon);
     } else {
       setMemberState(false);
-      setHeaderHeight(DEFAULT_HEADER_HEIGHT);
     }
     setHasPermission(
       authStore.getPermission(commonId, authStore?.userInfo?.uid),
@@ -450,28 +426,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     });
   };
 
-  const shareCommon = async () => {
-    try {
-      const url = await dynamicLinks().buildShortLink({
-        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
-        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
-        social: {
-          title: currCommon.name,
-          descriptionText: currCommon.metadata.description,
-          imageUrl: currCommon.image,
-        },
-      });
-      const options = {
-        url,
-        title: currCommon.name,
-        message: `${currCommon.byline}. Download the Common app to join now.`,
-      };
-      Share.open(options);
-    } catch (err) {
-      logger.log('Deep Linking works only in production');
-    }
-  };
-
   const onEdit = (type) => {
     // bottomSheetStore.hideBottomSheet();
     setOptionsModalVisible(false);
@@ -536,13 +490,18 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     bottomSheetStore.hideBottomSheet();
     Toast.loading('Reporting content...');
 
-    await ModerationService.report(
-      membershipRequestType(moderationType).toLowerCase(),
-      moderationFormStore.getFormFieldsJson(),
-    );
-    Toast.hide();
-    Toast.success('Done');
-    setShowModerationSuccessModal(true);
+    try {
+      await ModerationService.report(
+        membershipRequestType(moderationType).toLowerCase(),
+        moderationFormStore.getFormFieldsJson(),
+      );
+      Toast.hide();
+      Toast.success('Done');
+      setShowModerationSuccessModal(true);
+    } catch (error) {
+      Toast.hide();
+      Toast.error('Something went wrong');
+    }
     moderationFormStore.clearFormStoreState();
   };
 
@@ -573,13 +532,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       type: type,
     });
   };
-
-  /*
-  const openNotif = event => {
-    commonOperationalStateNotifRef.current.snapTo(1);
-    commonOperationalStateNotifRef.current.snapTo(1);
-  };
-  */
 
   const requestToJoin = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -666,7 +618,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             ...layout.flexRow,
             ...{padding: 0},
           }}>
-          <Icon name="clcok" size={16} style={layout.marginRightXS} />
+          <Icon name="clock" size={16} style={layout.marginRightXS} />
           <Text style={text.smallBoldGreyText}>Pending Approval</Text>
         </View>
         <View
@@ -748,16 +700,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     </ScrollView>
   );
 
-  const fixedHeaderHeight = () => (
-    <CommonHeaderBar
-      onLeftPress={() => navigation.pop()}
-      shareCommon={shareCommon}
-      openCommonOptions={openCommonOptionsModal}
-      dark={dark}
-      hasPermission={hasPermission}
-    />
-  );
-
   const onModalOptionsAction = (type) => {
     if (
       type === COMMON_OPTION_TYPES.info ||
@@ -809,48 +751,10 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const initialLayout = {width};
 
-  const slideUp = {
-    transform: [
-      {
-        translateY: stickyTabBarState.animation.interpolate({
-          inputRange: [0.01, 1],
-          outputRange: [0, 80],
-          extrapolate: 'clamp',
-        }),
-      },
-    ],
-  };
-
-  const stickyTabBarStyle = {
-    position: 'absolute',
-    top: Platform.OS === 'android' ? -25 : insets.top > 20 ? 25 : 0,
-    width: '100%',
-    paddingBottom: 5,
-    zIndex: 1,
-  };
-
-  const renderBackground = useCallback(
-    () => (
-      <FastImage
-        source={{
-          uri: currCommon.image,
-        }}
-        style={{
-          width: width,
-          height: headerHeight,
-          backgroundColor: colors.grey4,
-        }}>
-        <View style={{backgroundColor: 'rgba(0,0,0,0.2)', flex: 1}} />
-      </FastImage>
-    ),
-    [currCommon.image, headerHeight, width],
-  );
-
   const renderForeground = useCallback(
     () => (
       <CommonHeader
         isMember={isMember}
-        navigation={navigation}
         headerHeightLayouted={headerHeightLayouted}
         onHeaderMenuOpen={() => openCommonOptions()}
         commonInfo={{
@@ -867,63 +771,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     ),
     [isMember, currCommon, hasPermission, headerHeightLayouted],
   );
-
-  const renderStickyHeader = useCallback(
-    () => (
-      <View style={{height: '100%'}}>
-        <Animated.View style={[stickyTabBarStyle, slideUp]}>
-          <TabBarRenderer
-            navigationState={{index, routes}}
-            jumpTo={originTabBarRef.current?.props?.jumpTo}
-            parentRef={originTabBarRef}
-            indexChange={setIndex}
-          />
-        </Animated.View>
-        <View key="sticky-header" style={styles.stickySection}>
-          <View style={styles.stickyTextContainer}>
-            <Text style={styles.stickySectionText} numberOfLines={1}>
-              {currCommon.name}
-            </Text>
-          </View>
-        </View>
-      </View>
-    ),
-    [currCommon.name, originTabBarRef, index, routes],
-  );
-
-  const handleScrollEvent = (e) => {
-    setDark(e.nativeEvent.contentOffset.y > STICKY_HEADER_HEIGHT);
-    upperRequestToJoinBtnRef?.current?.measure(
-      (fx, fy, mWidth, height, px, py) => {
-        setShowStickyRequestToJoinBtn(py < stickyHeightAddon);
-      },
-    );
-    stickyTabBarRef?.current?.measure((fx, fy, mWidth, height, px, py) => {
-      const isVisible = py < STICKY_HEADER_HEIGHT - 80;
-      if (isVisible !== showStickyTabBar) {
-        if (isVisible) {
-          setShowStickyTabBar(isVisible);
-          Animated.timing(stickyTabBarState.animation).stop();
-          Animated.timing(stickyTabBarState.animation, {
-            toValue: 1,
-            duration: 200,
-            useNativeDriver: true,
-          }).start();
-        } else if (!isHeaderClosingInProgress) {
-          setIsHeaderClosingInProgress(true);
-          setShowStickyTabBar(isVisible);
-          Animated.timing(stickyTabBarState.animation).stop();
-          Animated.timing(stickyTabBarState.animation, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true,
-          }).start(({finished}) => {
-            setIsHeaderClosingInProgress(!finished);
-          });
-        }
-      }
-    });
-  };
 
   return (
     <View style={{flex: 1, backgroundColor: colors.white}}>
@@ -961,70 +808,66 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             />
           </TouchableOpacity>
 
-          <ParallaxScrollView
-            contentContainerStyle={{position: 'relative', zIndex: 99}}
-            backgroundColor="white"
-            showsVerticalScrollIndicator={false}
-            stickyHeaderHeight={
-              showStickyTabBar || isHeaderClosingInProgress
-                ? STICKY_HEADER_HEIGHT + 80
-                : STICKY_HEADER_HEIGHT
-            }
-            parallaxHeaderHeight={headerHeight}
-            renderBackground={renderBackground}
-            scrollEvent={handleScrollEvent}
-            renderForeground={renderForeground}
-            renderStickyHeader={renderStickyHeader}
-            renderFixedHeader={fixedHeaderHeight}>
-            {showPending && (
-              <React.Fragment>
-                {pendingProposalsData?.usersPendingProposal &&
-                  renderPendingApproval()}
-              </React.Fragment>
-            )}
+          <CommonProfileFlatList
+            openCommonOptionsModal={openCommonOptionsModal}
+            currCommon={currCommon}
+            hasPermission={hasPermission}
+            showReqToJoin={showReqToJoin}
+            renderRequestToJoinBtn={renderRequestToJoinBtn}
+            isMember={isMember}>
+            <>
+              {renderForeground()}
+              {showPending && (
+                <React.Fragment>
+                  {pendingProposalsData?.usersPendingProposal &&
+                    renderPendingApproval()}
+                </React.Fragment>
+              )}
 
-            <View style={{paddingVertical: sizeS}}>
-              <CommonStageSummary
-                time={currCommon.fundingGoalDeadline}
-                activeProposals={
-                  currCommon.numberOfBoostedProposals +
-                  currCommon.numberOfPreBoostedProposals +
-                  currCommon.numberOfQueuedProposals
-                }
-                /* goal: currCommon.fundingGoal, */
-                members={currCommon?.members?.length}
-                balance={currCommon.balance}
-                raised={currCommon.raised}
-                reservedBalance={currCommon.reservedBalance}
-              />
-            </View>
-
-            {renderMembersRow()}
-
-            {!isMember && showReqToJoin && (
               <View
-                style={styles.upperActionButtonContainer}
-                ref={upperRequestToJoinBtnRef}
-                collapsable={false}>
-                {renderRequestToJoinBtn()}
+                style={{paddingVertical: sizeS, backgroundColor: colors.white}}>
+                <CommonStageSummary
+                  time={currCommon.fundingGoalDeadline}
+                  activeProposals={
+                    currCommon.numberOfBoostedProposals +
+                    currCommon.numberOfPreBoostedProposals +
+                    currCommon.numberOfQueuedProposals
+                  }
+                  /* goal: currCommon.fundingGoal, */
+                  members={currCommon?.members?.length}
+                  balance={currCommon.balance}
+                  raised={currCommon.raised}
+                  reservedBalance={currCommon.reservedBalance}
+                />
               </View>
-            )}
 
-            {renderAgendaForNonMembers()}
+              {renderMembersRow()}
 
-            <View ref={stickyTabBarRef} collapsable={false}>
-              <TabView
-                navigationState={{index, routes}}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={initialLayout}
-                renderTabBar={renderTabBar}
-                style={{
-                  backgroundColor: colors.paleGrey,
-                }}
-              />
-            </View>
-          </ParallaxScrollView>
+              {!isMember && showReqToJoin && (
+                <View
+                  style={styles.upperActionButtonContainer}
+                  ref={upperRequestToJoinBtnRef}
+                  collapsable={false}>
+                  {renderRequestToJoinBtn()}
+                </View>
+              )}
+
+              {renderAgendaForNonMembers()}
+
+              <View ref={stickyTabBarRef} collapsable={false}>
+                <TabView
+                  navigationState={{index, routes}}
+                  renderScene={renderScene}
+                  onIndexChange={setIndex}
+                  initialLayout={initialLayout}
+                  renderTabBar={renderTabBar}
+                  style={{
+                    backgroundColor: colors.paleGrey,
+                  }}
+                />
+              </View>
+            </>
+          </CommonProfileFlatList>
 
           <SafeAreaView>
             {isMember ? (
@@ -1055,12 +898,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               )
             ) : (
               <React.Fragment>
-                {showStickyRequestToJoinBtn && showReqToJoin && (
-                  <View style={styles.actionButtonContainer}>
-                    {renderRequestToJoinBtn()}
-                  </View>
-                )}
-
                 <Modal
                   isVisible={showRequestSentModal}
                   avoidKeyboard={true}
@@ -1092,7 +929,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             )}
           </SafeAreaView>
           <BottomSheetModal
-            style={styles.optionsModal}
+            style={layout.optionsModal}
             isVisible={optionsModalVisible}
             onClose={closeCommonOptionsModal}>
             {!deleteScreenOn ? (
@@ -1183,6 +1020,7 @@ const styles = StyleSheet.create({
   },
   membersContainerWrapper: {
     paddingHorizontal: 20,
+    backgroundColor: colors.white,
   },
   membersContainer: {
     ...layout.content,
@@ -1211,13 +1049,6 @@ const styles = StyleSheet.create({
   upperActionButtonContainer: {
     paddingHorizontal: 20,
   },
-  actionButtonContainer: {
-    padding: 20,
-    position: 'absolute',
-    bottom: 28,
-    left: 0,
-    right: 0,
-  },
   agendaBox: {
     padding: 20,
     paddingTop: 20,
@@ -1244,7 +1075,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   headerButton: {
-    height: 48,
+    height: HEADER_BUTTON_HEIGHT,
     borderRadius: 32,
     flexDirection: 'row',
     paddingHorizontal: 10,
@@ -1292,10 +1123,6 @@ const styles = StyleSheet.create({
   fixedSectionText: {
     color: '#999',
     fontSize: 20,
-  },
-  optionsModal: {
-    borderRadius: 27,
-    padding: 16,
   },
 });
 

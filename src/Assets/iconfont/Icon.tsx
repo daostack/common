@@ -3,7 +3,7 @@
 
 import React, {FunctionComponent} from 'react';
 import {ViewProps, Text} from 'react-native';
-import {GProps} from 'react-native-svg';
+import {GProps, PathProps} from 'react-native-svg';
 import Iconlifebuoy32 from './Iconlifebuoy32';
 import Iconshow from './Iconshow';
 import Iconhidden from './Iconhidden';
@@ -13,7 +13,7 @@ import IconcheckMark from './IconcheckMark';
 import IconcheckIcon from './IconcheckIcon';
 import Iconacknowledgement116 from './Iconacknowledgement116';
 import IconbillingDetails24Copy4 from './IconbillingDetails24Copy4';
-import Iconclcok from './Iconclcok';
+import Iconclock from './Iconclock';
 import Iconcountdown24 from './Iconcountdown24';
 import Icontrajectory from './Icontrajectory';
 import Iconaddpicture from './Iconaddpicture';
@@ -73,6 +73,7 @@ import Iconlink from './Iconlink';
 import IconpersonalInfo241 from './IconpersonalInfo241';
 import IconpersonalInfo16 from './IconpersonalInfo16';
 import Iconmenu1 from './Iconmenu1';
+import IconmenuAnimated from './IconmenuAnimated';
 import Iconpicture1 from './Iconpicture1';
 import Iconreport16 from './Iconreport16';
 import Iconsort1 from './Iconsort1';
@@ -85,6 +86,7 @@ import Iconfile1 from './Iconfile1';
 import Icondollar from './Icondollar';
 import Iconsort from './Iconsort';
 import Iconshare32 from './Iconshare32';
+import IconshareAnimated from './IconshareAnimated';
 import IconmenuHorizontal from './IconmenuHorizontal';
 import Iconalert from './Iconalert';
 import IconaccountPlaceHolder2 from './IconaccountPlaceHolder2';
@@ -99,6 +101,7 @@ import Icongroup from './Icongroup';
 import Iconreport from './Iconreport';
 import Iconpicture from './Iconpicture';
 import IconleftArrow from './IconleftArrow';
+import IconleftArrowAnimated from './IconleftArrowAnimated';
 import Iconcommon from './Iconcommon';
 import IconrightArrow from './IconrightArrow';
 import IcondownArrow from './IcondownArrow';
@@ -114,6 +117,9 @@ import {IconShekel} from './IconShekel';
 import IconCamera from './IconCamera';
 import IconNoImage from './IconNoImage';
 import IconCalendar from './IconCalendar';
+import IconAbstained from './IconAbstained';
+import IconNewCard from './IconNewCard';
+import {AnimateProps} from 'react-native-reanimated';
 
 export type IconNames =
   | 'lifebuoy-32'
@@ -125,7 +131,7 @@ export type IconNames =
   | 'checkIcon'
   | 'acknowledgement-116'
   | 'billing-details-24-copy-4'
-  | 'clcok'
+  | 'clock'
   | 'countdown-24'
   | 'trajectory'
   | 'addpicture'
@@ -185,6 +191,7 @@ export type IconNames =
   | 'personal-info-241'
   | 'personal-info-16'
   | 'menu1'
+  | 'menu-animated'
   | 'picture1'
   | 'report-16'
   | 'sort1'
@@ -197,6 +204,7 @@ export type IconNames =
   | 'dollar'
   | 'sort'
   | 'share-32'
+  | 'share-animated'
   | 'menu-horizontal'
   | 'alert'
   | 'account-place-holder2'
@@ -211,6 +219,7 @@ export type IconNames =
   | 'report'
   | 'picture'
   | 'left-arrow'
+  | 'left-arrow-animated'
   | 'common'
   | 'right-arrow'
   | 'down-arrow'
@@ -225,12 +234,15 @@ export type IconNames =
   | 'add-document-approved'
   | 'calendar'
   | 'facebook'
-  | 'phone';
+  | 'phone'
+  | 'abstained-24'
+  | 'newCard';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
   size?: number;
   color?: string | string[];
+  animatedIconStyle?: Partial<AnimateProps<PathProps>>;
 }
 
 export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
@@ -253,8 +265,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconacknowledgement116 {...rest} />;
     case 'billing-details-24-copy-4':
       return <IconbillingDetails24Copy4 {...rest} />;
-    case 'clcok':
-      return <Iconclcok {...rest} />;
+    case 'clock':
+      return <Iconclock {...rest} />;
     case 'countdown-24':
       return <Iconcountdown24 {...rest} />;
     case 'trajectory':
@@ -265,6 +277,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconreject24 {...rest} />;
     case 'approved-24':
       return <Iconapproved24 {...rest} />;
+    case 'abstained-24':
+      return <IconAbstained {...rest} />;
     case 'discussion':
       return <Icondiscussion {...rest} />;
     case 'history':
@@ -373,6 +387,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconpersonalInfo16 {...rest} />;
     case 'menu1':
       return <Iconmenu1 {...rest} />;
+    case 'menu-animated':
+      return <IconmenuAnimated {...rest} />;
     case 'picture1':
       return <Iconpicture1 {...rest} />;
     case 'report-16':
@@ -397,6 +413,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconsort {...rest} />;
     case 'share-32':
       return <Iconshare32 {...rest} />;
+    case 'share-animated':
+      return <IconshareAnimated {...rest} />;
     case 'menu-horizontal':
       return <IconmenuHorizontal {...rest} />;
     case 'alert':
@@ -425,6 +443,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconpicture {...rest} />;
     case 'left-arrow':
       return <IconleftArrow {...rest} />;
+    case 'left-arrow-animated':
+      return <IconleftArrowAnimated {...rest} />;
     case 'common':
       return <Iconcommon {...rest} />;
     case 'right-arrow':
@@ -436,9 +456,9 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
     case 'google':
       return <Icongoogle {...rest} />;
     case 'facebook':
-      return <Iconfacebook {...rest} />
+      return <Iconfacebook {...rest} />;
     case 'phone':
-      return <Iconphone {...rest} />
+      return <Iconphone {...rest} />;
     case 'shekel':
       return <IconShekel {...rest} />;
     case 'camera':
@@ -455,6 +475,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconAddDocumentApproved {...rest} />;
     case 'calendar':
       return <IconCalendar {...rest} />;
+    case 'newCard':
+      return <IconNewCard {...rest} />;
   }
 
   return null;

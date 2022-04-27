@@ -143,6 +143,7 @@ const CreateStep2 = ({
           onTabPress={onContributionTabChange}
         />
         <TextInputFieldWithIcon
+          isInteger
           key={contributionIndex}
           value={fundingFormStore.getFormField(CreateCommonForm.MINIMUM)?.value}
           iconName="shekel"

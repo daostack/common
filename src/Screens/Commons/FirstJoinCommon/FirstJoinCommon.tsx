@@ -18,6 +18,7 @@ import {
 } from '~/Stores/FormStores/RequestToJoin';
 import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const props = {
   navigation: shape({
@@ -33,12 +34,15 @@ const props = {
   }).isRequired,
 };
 
+const {height, width} = Dimensions.get('window');
+
 const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
   navigation,
   route: {
     params: {currCommon, currDaoId, refreshFeed},
   },
 }) => {
+  const insets = useSafeAreaInsets();
   const handleContinue = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
     const paymentFormStore = new PaymentFormStore();
@@ -64,12 +68,14 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
   };
 
   return (
-    <ScrollView>
+    <ScrollView bounces={false} contentContainerStyle={styles.container}>
       <FastImage
         source={require('~/Assets/headerBg.png')}
         style={styles.backgroundImage}
       />
-      <Text style={styles.title}>{'How to \njoin a \ncommon'}</Text>
+      <Text style={[styles.title, {marginTop: insets.top + 15}]}>
+        {'How to \njoin a \ncommon'}
+      </Text>
 
       <View style={styles.card}>
         <Text style={styles.cardText}>
@@ -98,7 +104,9 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
           style={[styles.cardImage]}
         />
       </View>
-      <TouchableOpacity style={styles.btn} onPress={handleContinue}>
+      <TouchableOpacity
+        style={[styles.btn, {bottom: insets.bottom + 15}]}
+        onPress={handleContinue}>
         <Text style={text.buttoncenterwhite}>Got it</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -110,22 +118,24 @@ export default observer(FirstJoinCommon);
 FirstJoinCommon.propTypes = props;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   title: {
     color: colors.white,
     ...font.heading.bold,
-    fontSize: 57,
+    fontSize: 53,
     lineHeight: 57,
     marginHorizontal: 35,
-    marginTop: 70,
-    marginBottom: 40,
+    marginBottom: height * 0.03,
   },
   card: {
     flexDirection: 'row',
     backgroundColor: colors.white,
-    borderRadius: 20,
+    borderRadius: 34,
     marginHorizontal: 20,
     marginVertical: 10,
-    height: 130,
+    height: height * 0.145,
   },
   cardText: {
     color: colors.black,
@@ -141,7 +151,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   backgroundImage: {
-    width: Dimensions.get('window').width,
+    width: width,
     height: 420,
     position: 'absolute',
     top: 0,
@@ -152,8 +162,8 @@ const styles = StyleSheet.create({
   },
   btn: {
     ...layout.btnPrimary,
+    position: 'absolute',
     width: '85%',
     alignSelf: 'center',
-    marginTop: 20,
   },
 });

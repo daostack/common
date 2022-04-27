@@ -27,6 +27,7 @@ import {
 } from 'rn-placeholder';
 import {useStore} from '~/Util/hooks/useStore';
 import ModerationMenu from '../Moderation/ModerationMenu';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
 const {width} = Dimensions.get('window');
 
@@ -54,7 +55,8 @@ const ProposalCard = ({
     proposalInfo.commonId,
     authStore?.userInfo?.uid,
   );
-  const showCard = isVisible || (!isVisible && hasPermission);
+  const showCard =
+    isVisible || (!isVisible && hasPermission === PERMISSIONS.MODERATOR);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
 
   useEffect(() => {

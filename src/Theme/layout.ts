@@ -52,6 +52,8 @@ export const sizeXL = 40;
 export const sizeXXL = 55;
 export const sizeLineHeight = 26;
 
+export const baseMargin = 8;
+
 // Layout Stylesheet
 export default StyleSheet.create({
   content: {
@@ -259,6 +261,10 @@ export default StyleSheet.create({
     borderRadius: 28,
     borderColor: colors.grey4,
   },
+  btnAction: {
+    ...btn,
+    borderRadius: 28,
+  },
   btnLeftIcon: {
     position: 'absolute',
     left: 12,
@@ -291,5 +297,12 @@ export default StyleSheet.create({
   // Backgrounds {
   backgroundWhite: {
     backgroundColor: colors.white,
+  },
+
+  optionsModal: {
+    borderRadius: 27,
+    padding: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
 });

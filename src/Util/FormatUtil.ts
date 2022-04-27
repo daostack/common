@@ -1,4 +1,5 @@
 import {MAX_CONTRIBUTION} from '~/Util/constants/paymentConstants';
+import {isNumber} from 'lodash';
 
 export const unFormatNumber = (number: string): string => {
   const lastCommaIndex = number.split('').lastIndexOf(',');
@@ -22,7 +23,7 @@ export const formatNumber = (number: string | number) => {
 
   // new Intl.NumberFormat('en-US').format(number);
 
-  if (!number) {
+  if (!isNumber(Number(number))) {
     return '';
   }
 
@@ -54,4 +55,28 @@ export const formatContributionAmount = (amount: number): number => {
     return Math.floor(amount / 100) * 100;
   }
   return amount;
+};
+
+export const formatMinFeeToJoin = ({
+  numberValue = false,
+  zeroContribution,
+  minFeeToJoin,
+}: {
+  numberValue?: boolean;
+  zeroContribution: boolean;
+  minFeeToJoin: number;
+}) => {
+  const minValue = zeroContribution ? 0 : +minFeeToJoin;
+  return !numberValue
+    ? formatNumber(minValue / 100).toString()
+    : (minValue / 100).toString();
+};
+
+export const formatExpirationDate = (date?: string): string => {
+  if (!date) {
+    return '';
+  }
+  const month = date.substring(0, 2);
+  const year = date.substring(2, 4);
+  return `${month}/20${year}`;
 };
