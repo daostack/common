@@ -18,9 +18,7 @@ const CommonBoxImage = ({
   description,
   updatedAt,
 }: Props): ReactElement => {
-  console.log('common', dateFormat(updatedAt));
   const activeDate = dateFormat(updatedAt);
-
   return (
     <FastImage source={{uri: cover}} style={styles.coverBackground}>
       <View style={styles.coverOverlay}>
