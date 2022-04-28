@@ -4,32 +4,37 @@ import {StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
 import {colors, font} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
-import {firebase} from '~/Firebase';
+import {Subscription} from '~/Stores/Models/Subscription';
 import {CurrencySymbols} from '~/Util/locale';
+import {SUBSCRIPTION_STATUSES} from '~/Util/constants';
 
 interface Props {
-  createdAt: firebase.firestore.Timestamp;
-  amount: number;
+  subscription?: Subscription;
 }
 
-export const ContributionItem = ({createdAt, amount}: Props) => {
-  const paymentDate = useMemo(() => moment(createdAt).format('DD MMMM YYYY'), [
-    createdAt,
-  ]);
+export const MonthlyContributionItem = observer(({subscription}: Props) => {
+  const nextPaymentDate = useMemo(
+    () => moment(subscription?.dueDate).format('DD MMMM YYYY'),
+    [subscription?.dueDate],
+  );
+
+  if (subscription?.status !== SUBSCRIPTION_STATUSES.ACTIVE) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.paymentType}>One-time Contribution</Text>
-        <Text style={styles.paymentInfo}>{paymentDate}</Text>
+        <Text style={styles.paymentType}>Monthly Contribution</Text>
+        <Text style={styles.paymentInfo}>Next payment: {nextPaymentDate}</Text>
       </View>
       <Text style={styles.paymentInfo}>
         {CurrencySymbols.SHEKEL}
-        {amount ? amount / 100 : '0'}
+        {subscription?.amount ? subscription.amount / 100 : '0'}/mo
       </Text>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

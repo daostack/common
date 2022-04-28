@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.16.7",
+    "@babel/runtime": "^7.17.9",
     "@invertase/react-native-apple-authentication": "^1.1.2",
     "@react-native-async-storage/async-storage": "^1.16.1",
     "@react-native-clipboard/clipboard": "^1.9.0",
@@ -63,12 +64,11 @@
     "lodash": "^4.17.15",
     "mobx": "^6.3.10",
     "mobx-persist": "^0.4.1",
-    "mobx-react": "^6.1.8",
-    "mobx-react-lite": "^3.2.3",
+    "mobx-react": "^7.3.0",
     "mobx-utils": "^6.0.3",
     "moment": "^2.24.0",
-    "react": "16.11.0",
-    "react-native": "0.63.2",
+    "react": "17.0.2",
+    "react-native": "0.66.0",
     "react-native-code-push": "^6.2.1",
     "react-native-config": "^1.4.5",
     "react-native-confirmation-code-field": "6",
@@ -128,7 +128,7 @@
     "@babel/core": "^7.8.7",
     "@babel/helper-validator-identifier": "^7.9.0",
     "@babel/plugin-proposal-decorators": "^7.16.5",
-    "@babel/runtime": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
     "@react-native-community/eslint-config": "^0.0.7",
     "@testing-library/jest-native": "^4.0.4",
     "@testing-library/react-native": "^9.1.0",
@@ -154,13 +154,29 @@
     "metro-react-native-babel-preset": "^0.58.0",
     "prettier": "^2.1.0",
     "prop-types": "^15.7.2",
+    "react-dom": "^18.1.0",
     "react-test-renderer": "16.11.0",
     "typescript": "^4.0.2"
   },
   "jest": {
     "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
     "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
+      "@testing-library/jest-native/extend-expect",
+      "<rootDir>/__mocks__/jest-setup.js"
+    ],
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!@react-native-community/google-signin|react-native|reactxp-webview|react-pose-core|animated-pose|@react-native-community/async-storage|@unimodules/|expo-apple-authentication|mobx-react-lite)"
     ]
   }
 }

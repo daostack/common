@@ -1,4 +1,4 @@
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {ReactElement, useCallback, useEffect} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {Card} from '~/Stores/Models/Card';

@@ -1,5 +1,5 @@
 import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Divider} from '~/Components/Divider';

@@ -1,4 +1,4 @@
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useCallback} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';

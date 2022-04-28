@@ -3,6 +3,7 @@ import {IPaymentEntityBase} from '~/Firebase/Databasee/EntityTypes/IPaymentEntit
 import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import Logger from '~/Services/Logger';
+import {first} from 'lodash';
 import PaymentsService from '~/Services/PaymentsService';
 import {Payment} from '~/Stores/Models/Payment';
 import {Subscription} from '~/Stores/Models/Subscription';
@@ -69,6 +70,14 @@ export default class PaymentStore {
         );
     } catch (e) {
       Logger.log('------ getCommonSubscriptions error', e);
+    }
+  }
+
+  getCommonLastSubscriptions(commonId: string): Subscription | undefined {
+    try {
+      return first(this.getCommonSubscriptions(commonId));
+    } catch (e) {
+      Logger.log('------ getCommonLastSubscriptions error', e);
     }
   }
 

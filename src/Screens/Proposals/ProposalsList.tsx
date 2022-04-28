@@ -24,7 +24,7 @@ import {
   InferProps,
   object,
 } from 'prop-types';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {Proposal} from '~/Stores/Models/Proposal';
 import {
   isTypeFilterJoin,

@@ -1,5 +1,5 @@
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';

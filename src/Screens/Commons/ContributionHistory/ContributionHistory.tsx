@@ -1,25 +1,36 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-import {ContributionItem} from '~/Components/Payment';
+import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './PaymentsHistoryInfo';
+import {colors, font, layout} from '~/Theme';
+import {baseMargin} from '~/Theme/layout';
 
 const ContributionHistory = () => {
   const {paymentStore, authStore} = useStore('rootStore');
   const navigation = useNavigation();
   const route = useRoute<ContributionHistoryRouteProps>();
   const {commonName, commonId} = route.params;
+
+  const payments = paymentStore.getCommonOneTimePayments(commonId);
   const commonTotalPaymentsAmount = paymentStore.getCommonTotalPaymentsAmount(
     commonId,
   );
+  const activeSubscription = paymentStore.getCommonLastSubscriptions(commonId);
+
+  console.log('activeSubscription', activeSubscription);
 
   const userId = authStore?.userInfo?.uid;
-
-  console.log(paymentStore.getCommonTotalPaymentsAmount(commonId));
 
   useEffect(() => {
     let unsubscribeToUserPayments: FirestoreUnsubscribeFn;
@@ -44,18 +55,55 @@ const ContributionHistory = () => {
   }, [commonName]);
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={styles.container}>
       <PaymentsHistoryInfo amount={commonTotalPaymentsAmount} />
-      <ContributionItem
-        createdAt={
-          paymentStore.getCommonOneTimePayments(commonId)[0]?.createdAt
-        }
-        amount={
-          paymentStore.getCommonOneTimePayments(commonId)[0]?.amount.amount
-        }
-      />
-    </View>
+      <Text style={styles.historyTitle}>History</Text>
+      <MonthlyContributionItem subscription={activeSubscription} />
+      <ContributionList payments={payments} />
+      <View style={styles.btnContainer}>
+        {activeSubscription && (
+          <TouchableOpacity style={layout.btnPrimary}>
+            <Text style={styles.btnText}>Change my monthly contribution</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={[layout.btnOutline, styles.btnOutline]}>
+          <Text style={[styles.btnText, styles.btnOutlineText]}>
+            Add a one-time contribution
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  historyTitle: {
+    ...font.primary.bold,
+    ...font.fontSize(3),
+    paddingHorizontal: 24,
+    marginBottom: 16,
+  },
+  btnContainer: {
+    marginTop: 16,
+    marginBottom: 24,
+    marginHorizontal: 24,
+  },
+  btnText: {
+    ...font.primary.regular,
+    ...font.fontSize(3),
+    color: colors.white,
+  },
+  btnOutline: {
+    borderColor: colors.mainBlue,
+    marginTop: baseMargin * 2,
+  },
+  btnOutlineText: {
+    color: colors.mainBlue,
+  },
+});
 
 export default observer(ContributionHistory);
