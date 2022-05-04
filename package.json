@@ -95,7 +95,7 @@
     "react-native-modal": "^11.5.6",
     "react-native-parallax-scroll-view": "^0.21.3",
     "react-native-pdf": "^6.5.0",
-    "react-native-permissions": "2.0.2",
+    "react-native-permissions": "^3.3.1",
     "react-native-phone-number-input": "^2.1.0",
     "react-native-progress": "^4.1.2",
     "react-native-push-notification": "^7.3.1",
@@ -128,6 +128,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/helper-validator-identifier": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-decorators": "^7.16.5",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@react-native-community/eslint-config": "^3.0.1",
@@ -136,7 +137,7 @@
     "@types/jest": "^27.4.1",
     "@types/react": "^16.9.46",
     "@types/react-native": "^0.63.9",
-    "@types/react-test-renderer": "^16.9.3",
+    "@types/react-test-renderer": "17.0.2",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
     "babel-jest": "^27.5.1",
@@ -155,12 +156,12 @@
     "metro-react-native-babel-preset": "^0.70.2",
     "prettier": "^2.1.0",
     "prop-types": "^15.7.2",
-    "react-dom": "^18.1.0",
-    "react-test-renderer": "^18.1.0",
+    "react-dom": "17.0.2",
+    "react-test-renderer": "17.0.2",
     "typescript": "^4.0.2"
   },
   "jest": {
-    "preset": "react-native",
+    "preset": "@testing-library/react-native",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -171,13 +172,16 @@
     ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect",
-      "<rootDir>/__mocks__/jest-setup.js"
+      "<rootDir>/node_modules/react-native-gesture-handler/jestSetup.js"
+    ],
+    "setupFiles": [
+      "<rootDir>/__mocks__/jest.setup.js"
     ],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!@react-native-community/google-signin|react-native|reactxp-webview|react-pose-core|animated-pose|@react-native-community/async-storage|@unimodules/|expo-apple-authentication|mobx-react-lite)"
+      "node_modules/(?!@react-native-community/google-signin|react-native|@react-native-async-storage/async-storage|mobx-react-lite|@react-native|react-native-permissions)"
     ]
   }
 }

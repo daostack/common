@@ -1,12 +1,33 @@
-import '@testing-library/jest-native/extend-expect';
-
 import {NativeModules} from 'react-native';
 
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+);
+
+jest.mock('rn-fetch-blob', () => ({
+  fs: {
+    dirs: {
+      CacheDir: './',
+    },
+    unlink: jest.fn(),
+  },
+  config: () => ({
+    fetch: jest.fn(),
+  }),
+}));
+jest.mock('react-native-permissions', () =>
+  require('react-native-permissions/mock'),
+);
+jest.mock('react-native-text-input-mask', () => () => null);
 jest.mock('@invertase/react-native-apple-authentication', () => jest.fn());
 
 jest.mock('@react-native-firebase/app', () => ({}));
 jest.mock('@react-native-firebase/storage', () => jest.fn());
-jest.mock('@react-native-firebase/auth', () => ({}));
+jest.mock('@react-native-firebase/auth', () =>
+  jest.fn().mockReturnValue({
+    onAuthStateChanged: jest.fn(),
+  }),
+);
 jest.mock('@react-native-firebase/firestore', () =>
   jest.fn().mockReturnValue({
     collection: jest.fn().mockReturnValue({

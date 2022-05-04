@@ -9,6 +9,10 @@ module.exports = {
       },
     ],
     ['@babel/plugin-proposal-decorators', {legacy: true}],
+    ['@babel/plugin-proposal-class-properties', {loose: false}],
     'react-native-reanimated/plugin', // must be last
   ],
+  assumptions: {
+    setPublicClassFields: false,
+  },
 };
