@@ -12,16 +12,21 @@ interface Props {
   amount: number;
 }
 
-export const ContributionItem = ({createdAt, amount}: Props) => {
-  const paymentDate = useMemo(() => moment(createdAt).format('DD MMMM YYYY'), [
-    createdAt,
-  ]);
+export const ContributionItem = observer(({createdAt, amount}: Props) => {
+  const paymentDate = useMemo(() => {
+    const momentDate = moment(createdAt);
+    if (momentDate.isValid()) {
+      return moment(createdAt).format('DD MMMM YYYY');
+    }
+
+    return false;
+  }, [createdAt]);
 
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.paymentType}>One-time Contribution</Text>
-        <Text style={styles.paymentInfo}>{paymentDate}</Text>
+        {paymentDate && <Text style={styles.paymentInfo}>{paymentDate}</Text>}
       </View>
       <Text style={styles.paymentInfo}>
         {CurrencySymbols.SHEKEL}
@@ -29,7 +34,7 @@ export const ContributionItem = ({createdAt, amount}: Props) => {
       </Text>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
