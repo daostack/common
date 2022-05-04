@@ -3,8 +3,8 @@ import {ContributionItem} from './ContributionItem';
 import {render} from '@testing-library/react-native';
 
 describe('ContributionItem', () => {
-  let createdDate = new Date('10-20-2022');
-  let formattedDate = '20 October 2022';
+  const createdDate = new Date('10-20-2022');
+  const formattedDate = '20 October 2022';
   const amount = 100;
 
   test('ContributionItem should render correctly', () => {

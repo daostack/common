@@ -23,9 +23,8 @@ const ContributionHistory = () => {
   const {commonName, commonId} = route.params;
 
   const payments = paymentStore.getCommonOneTimePayments(commonId);
-  const commonTotalPaymentsAmount = paymentStore.getCommonTotalPaymentsAmount(
-    commonId,
-  );
+  const commonTotalPaymentsAmount =
+    paymentStore.getCommonTotalPaymentsAmount(commonId);
   const activeSubscription = paymentStore.getCommonLastSubscriptions(commonId);
 
   console.log('activeSubscription', activeSubscription);
@@ -37,9 +36,8 @@ const ContributionHistory = () => {
     let unsubscribeToUserSubscriptions: FirestoreUnsubscribeFn;
     if (userId) {
       unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(userId);
-      unsubscribeToUserSubscriptions = paymentStore.subscribeToUserSubscriptions(
-        userId,
-      );
+      unsubscribeToUserSubscriptions =
+        paymentStore.subscribeToUserSubscriptions(userId);
     }
 
     return () => {
@@ -58,7 +56,13 @@ const ContributionHistory = () => {
     <SafeAreaView style={styles.container}>
       <PaymentsHistoryInfo amount={commonTotalPaymentsAmount} />
       <Text style={styles.historyTitle}>History</Text>
-      <MonthlyContributionItem subscription={activeSubscription} />
+      {activeSubscription && (
+        <MonthlyContributionItem
+          dueDate={activeSubscription.dueDate}
+          status={activeSubscription.status}
+          amount={activeSubscription.amount}
+        />
+      )}
       <ContributionList payments={payments} />
       <View style={styles.btnContainer}>
         {activeSubscription && (
