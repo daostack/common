@@ -6,10 +6,11 @@ import {colors, font} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {CurrencySymbols} from '~/Util/locale';
 import {SUBSCRIPTION_STATUSES} from '~/Util/constants';
+import {SubscriptionStatus} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
 
 interface Props {
   dueDate: Date;
-  status: typeof SUBSCRIPTION_STATUSES[keyof typeof SUBSCRIPTION_STATUSES];
+  status: SubscriptionStatus;
   amount?: number;
 }
 
