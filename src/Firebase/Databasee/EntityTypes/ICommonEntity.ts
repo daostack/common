@@ -67,6 +67,21 @@ export interface ICommonEntity extends IBaseEntity {
    * Updated at
    */
   updatedAt: firebase.firestore.Timestamp;
+
+  /**
+   * proposalCount
+   */
+  proposalCount: number;
+
+  /**
+   * messageCount
+   */
+  messageCount: number;
+
+  /**
+   * discussionCount
+   */
+  discussionCount: number;
 }
 
 export interface ICommonRule {

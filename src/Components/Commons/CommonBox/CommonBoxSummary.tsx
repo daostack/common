@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {font, layout, text} from '~/Theme';
+import {font, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from '../CommonNumberBox';
 import {formatMoney} from '~/Util/FormatUtil';

@@ -5,30 +5,10 @@ import CommonBoxImage from './CommonBoxImage';
 import CommonBoxSummary from './CommonBoxSummary';
 import {colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {useStore} from '~/Util/hooks/useStore';
-import {PROPOSAL_STAGE, PROPOSAL_TYPE} from '~/Config';
-import {firebase} from '~/Firebase';
+import {Common} from '~/Stores/Models/Common';
 
 interface CommonBoxProps {
-  common: {
-    id: string;
-    image: string;
-    name: string;
-    metadata: {
-      byline: string;
-    };
-    fundingGoalDeadline: number;
-    numberOfBoostedProposals: number;
-    numberOfPreBoostedProposals: number;
-    numberOfQueuedProposals: number;
-    fundingGoal: number;
-    members: [];
-    balance: number;
-    tokenTotalSupply: string;
-    raised: number;
-    reservedBalance: number;
-    updatedAt: firebase.firestore.Timestamp;
-  };
+  common: Common;
   onPress: () => void;
   width: string;
   headerHeightLayouted: (height: number) => void;
@@ -40,19 +20,11 @@ const CommonBox = ({
   width = '100%',
   headerHeightLayouted,
 }: CommonBoxProps) => {
-  const rootStore = useStore('rootStore');
   const navigation = useNavigation();
-  const proposalFilter = {
-    stage: PROPOSAL_STAGE.Active,
-    type: PROPOSAL_TYPE.FundingRequest,
-  };
-  const proposalsCount = rootStore.proposalStore.getCommonProposals(
-    common.id,
-    proposalFilter,
-  )?.length;
-  const discussionsCount = rootStore.discussionStore.getCommonDiscussions(
-    common.id,
-  )?.length;
+
+  const proposalsCount = common.proposalCount;
+  const discussionsCount = common.discussionCount;
+  const messageCount = common.messageCount;
 
   return (
     <TouchableOpacity
@@ -99,7 +71,7 @@ const CommonBox = ({
             style={styles.messageImage}
             source={require('~/Assets/message.png')}
           />
-          <Text style={styles.bottomBarText}>{proposalsCount}</Text>
+          <Text style={styles.bottomBarText}>{messageCount}</Text>
         </View>
       </View>
     </TouchableOpacity>
