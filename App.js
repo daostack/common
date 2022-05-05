@@ -57,6 +57,7 @@ import {
   VerificationStep2,
   FirstJoinCommon,
   ContributionHistory,
+  MonthlyContributionCharges,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -695,8 +696,18 @@ const App = ({rootStore, navigation}) => {
               headerBackTitleVisible: false,
               headerRight: () => <IntercomShowButton />,
             }}
-            name="MonthlyContributionsList"
+            name={NAVIGATION_SCREENS.MONTHLY_CONTRIBUTIONS_LIST}
             component={MonthlyContributionsList}
+          />
+
+          <Stack.Screen
+            options={{
+              title: 'My Contributions',
+              headerBackTitleVisible: false,
+              headerRight: () => <IntercomShowButton />,
+            }}
+            name={NAVIGATION_SCREENS.MONTHLY_CONTRIBUTION_CHARGES}
+            component={MonthlyContributionCharges}
           />
 
           <Stack.Screen

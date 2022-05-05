@@ -1,4 +1,4 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useEffect} from 'react';
 import {
@@ -14,6 +14,7 @@ import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './PaymentsHistoryInfo';
 import {colors, font, layout} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const ContributionHistory = () => {
   const {paymentStore} = useStore('rootStore');
@@ -25,6 +26,18 @@ const ContributionHistory = () => {
   const commonTotalPaymentsAmount =
     paymentStore.getCommonTotalPaymentsAmount(commonId);
   const activeSubscription = paymentStore.getCommonLastSubscriptions(commonId);
+
+  function navigateToMonthlyContributionCharges(): void {
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: NAVIGATION_SCREENS.MONTHLY_CONTRIBUTION_CHARGES,
+        params: {
+          commonName,
+          commonId,
+        },
+      }),
+    );
+  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -41,6 +54,7 @@ const ContributionHistory = () => {
           dueDate={activeSubscription.dueDate}
           status={activeSubscription.status}
           amount={activeSubscription.amount}
+          onPress={navigateToMonthlyContributionCharges}
         />
       )}
       <ContributionList payments={payments} />
