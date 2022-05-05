@@ -8,7 +8,7 @@ describe('MonthlyContributionItem', () => {
   const dueDate = new Date('10-20-2022');
   const activeStatus = SUBSCRIPTION_STATUSES.ACTIVE;
   const paymentFailedStatus = SUBSCRIPTION_STATUSES.PAYMENT_FAILED;
-  const formattedDate = '20 October 2022';
+  const formattedDate = '20 November 2022';
   const amount = 100;
 
   test('MonthlyContributionItem should render correctly', () => {

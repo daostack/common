@@ -113,6 +113,7 @@ const App = ({rootStore, navigation}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
   const bankAccountStore = rootStore.bankAccountStore;
+  const paymentStore = rootStore.paymentStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -151,7 +152,8 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -162,6 +164,24 @@ const App = ({rootStore, navigation}) => {
           unsubscribeLoggedUserNotificationsBatch &&
           unsubscribeLoggedUserNotificationsBatch(),
       );
+    };
+  }, [authStore.userInfo?.uid]);
+
+  // Initialize To User Payments and Subscriptions
+  useEffect(() => {
+    let unsubscribeToUserPayments = null;
+    let unsubscribeToUserSubscriptions = null;
+    if (authStore.userInfo?.uid) {
+      unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
+        authStore.userInfo?.uid,
+      );
+      unsubscribeToUserSubscriptions =
+        paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
+    }
+
+    return () => {
+      unsubscribeToUserPayments && unsubscribeToUserPayments();
+      unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -189,12 +209,8 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});

@@ -17,7 +17,7 @@ interface Props {
 export const MonthlyContributionItem = observer(
   ({dueDate, status, amount}: Props) => {
     const nextPaymentDate = useMemo(
-      () => moment(dueDate).format('DD MMMM YYYY'),
+      () => moment(dueDate).add(1, 'M').format('DD MMMM YYYY'),
       [dueDate],
     );
 
@@ -29,11 +29,11 @@ export const MonthlyContributionItem = observer(
       <View style={styles.container}>
         <View>
           <Text style={styles.paymentType}>Monthly Contribution</Text>
-          <Text style={styles.paymentInfo}>
+          <Text style={[styles.paymentText, styles.paymentInfo]}>
             Next payment: {nextPaymentDate}
           </Text>
         </View>
-        <Text style={styles.paymentInfo}>
+        <Text style={[styles.paymentText, styles.paymentAmount]}>
           {CurrencySymbols.SHEKEL}
           {amount ? amount / 100 : '0'}/mo
         </Text>
@@ -55,10 +55,16 @@ const styles = StyleSheet.create({
     ...font.primary.bold,
     ...font.fontSize(2),
     marginBottom: baseMargin,
+    color: colors.mainBlue,
   },
-  paymentInfo: {
+  paymentText: {
     ...font.primary.regular,
     ...font.fontSize(1),
+  },
+  paymentInfo: {
+    color: colors.mainBlue,
+  },
+  paymentAmount: {
     color: colors.black,
   },
 });

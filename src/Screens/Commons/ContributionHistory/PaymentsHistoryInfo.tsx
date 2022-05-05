@@ -17,7 +17,7 @@ export const PaymentsHistoryInfo = observer(({amount}: Props) => {
       </Text>
       <Text style={styles.paymentAmount}>
         {CurrencySymbols.SHEKEL}
-        {amount}
+        {amount ? amount / 100 : '0'}
       </Text>
     </View>
   );

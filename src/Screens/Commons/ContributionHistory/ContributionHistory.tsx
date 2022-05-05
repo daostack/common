@@ -10,14 +10,13 @@ import {
 } from 'react-native';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
-import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './PaymentsHistoryInfo';
 import {colors, font, layout} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 
 const ContributionHistory = () => {
-  const {paymentStore, authStore} = useStore('rootStore');
+  const {paymentStore} = useStore('rootStore');
   const navigation = useNavigation();
   const route = useRoute<ContributionHistoryRouteProps>();
   const {commonName, commonId} = route.params;
@@ -26,25 +25,6 @@ const ContributionHistory = () => {
   const commonTotalPaymentsAmount =
     paymentStore.getCommonTotalPaymentsAmount(commonId);
   const activeSubscription = paymentStore.getCommonLastSubscriptions(commonId);
-
-  console.log('activeSubscription', activeSubscription);
-
-  const userId = authStore?.userInfo?.uid;
-
-  useEffect(() => {
-    let unsubscribeToUserPayments: FirestoreUnsubscribeFn;
-    let unsubscribeToUserSubscriptions: FirestoreUnsubscribeFn;
-    if (userId) {
-      unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(userId);
-      unsubscribeToUserSubscriptions =
-        paymentStore.subscribeToUserSubscriptions(userId);
-    }
-
-    return () => {
-      unsubscribeToUserPayments && unsubscribeToUserPayments();
-      unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
-    };
-  }, [userId]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -66,11 +46,12 @@ const ContributionHistory = () => {
       <ContributionList payments={payments} />
       <View style={styles.btnContainer}>
         {activeSubscription && (
-          <TouchableOpacity style={layout.btnPrimary}>
+          <TouchableOpacity style={[layout.btnPrimary, styles.btn]}>
             <Text style={styles.btnText}>Change my monthly contribution</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={[layout.btnOutline, styles.btnOutline]}>
+        <TouchableOpacity
+          style={[layout.btnOutline, styles.btnOutline, styles.btn]}>
           <Text style={[styles.btnText, styles.btnOutlineText]}>
             Add a one-time contribution
           </Text>
@@ -95,6 +76,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 24,
     marginHorizontal: 24,
+  },
+  btn: {
+    paddingHorizontal: 8,
   },
   btnText: {
     ...font.primary.regular,
