@@ -1,9 +1,20 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icon from '~/Assets/iconfont/Icon';
+import Share from 'react-native-share';
+import logger from '~/Services/Logger';
 import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 import {colors, font, layout, text} from '~/Theme';
+import {
+  DYNAMIC_LINKS_TYPES,
+  DYNAMIC_LINK_URI_PREFIX,
+} from '~/Util/constants/dynamicLinks';
+import {Common} from '~/Stores/Models/Common';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {useNavigation} from '@react-navigation/native';
+import Toast from '~/Util/Toast';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {useStore} from '~/Util/hooks/useStore';
 
 interface Props {
   moderatorOptions: null;
@@ -11,49 +22,102 @@ interface Props {
   hasPermission: boolean;
   commonMembersCount: number;
   isFounderOrModerator: boolean;
+  currCommon: Common;
+  closeModal: () => void;
+  isMember: boolean;
 }
 
 export const ModalCommonOptions = ({
   onAction,
   commonMembersCount,
   isFounderOrModerator,
+  currCommon,
+  closeModal,
+  isMember,
 }: Props) => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const commonStore = useStore('commonStore');
+  const shareCommon = async () => {
+    closeModal();
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+        social: {
+          title: currCommon.name,
+          descriptionText: currCommon.metadata.description,
+          imageUrl: currCommon.image,
+        },
+      });
+      const options = {
+        url,
+        title: currCommon.name,
+        message: `${currCommon.byline}. Download the Common app to join now.`,
+      };
+      Share.open(options);
+    } catch (err) {
+      console.log('err', err);
+      logger.log('Deep Linking works only in production');
+    }
+  };
+
+  const onMyWallet = () => {
+    closeModal();
+    // screen My Wallet to be implemented
+    // navigation.navigate(NAVIGATION_SCREENS.MY_WALLET);
+  };
+
+  const onCommonWallet = () => {
+    closeModal();
+    // screen Common Wallet to be implemented
+    // navigation.navigate(NAVIGATION_SCREENS.COMMON_WALLET);
+  };
+
+  const onLeave = async () => {
+    try {
+      closeModal();
+      Toast.loading('Leaving');
+      await commonStore.leaveCommon(currCommon.id);
+      navigation.navigate(NAVIGATION_SCREENS.EXPLORE);
+      Toast.done('You left the Common');
+    } catch (err) {
+      closeModal();
+      Toast.error('Could not leave the Common');
+    }
+  };
 
   return (
     <View style={[styles.body, {marginBottom: insets.bottom + 16}]}>
+      <View style={styles.plug} />
       <Text style={styles.text}>Options</Text>
       <>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onAction(COMMON_OPTION_TYPES.info)}>
-          <Icon
-            name="dao-general-info-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={styles.btnText}>Edit info and cover photo</Text>
+        <TouchableOpacity style={styles.optionBtn} onPress={shareCommon}>
+          <Text style={styles.btnText}>Share Common</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onAction(COMMON_OPTION_TYPES.rules)}>
-          <Icon
-            name="agenda-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={styles.btnText}>Edit rules</Text>
+        <TouchableOpacity style={styles.optionBtn} onPress={onMyWallet}>
+          <Text style={styles.btnText}>My Wallet</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.optionBtn} onPress={onCommonWallet}>
+          <Text style={styles.btnText}>Common Wallet</Text>
+        </TouchableOpacity>
+        {isMember && (
+          <TouchableOpacity style={styles.optionBtn} onPress={onLeave}>
+            <Text style={styles.btnText}>Leave Common</Text>
+          </TouchableOpacity>
+        )}
+        {isFounderOrModerator && (
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onAction(COMMON_OPTION_TYPES.info)}>
+            <Text style={styles.btnText}>Edit Agenda</Text>
+          </TouchableOpacity>
+        )}
         {isFounderOrModerator && commonMembersCount <= 1 && (
           <TouchableOpacity
             style={styles.optionBtn}
             onPress={() => onAction(COMMON_OPTION_TYPES.delete)}>
-            <Icon
-              name="delete"
-              style={layout.marginRightS}
-              color={colors.pinkishOrange}
-            />
-            <Text style={styles.btnOptionText}>Delete common</Text>
+            <Text style={styles.btnOptionText}>Delete Common</Text>
           </TouchableOpacity>
         )}
       </>
@@ -82,7 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 28,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: 24,
   },
   btnText: {
     fontFamily: 'NunitoSans-SemiBold',
@@ -95,5 +159,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     color: colors.pinkishOrange,
+  },
+  plug: {
+    backgroundColor: colors.paleblue,
+    width: 72,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 24,
+    marginTop: 8,
   },
 });

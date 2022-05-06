@@ -934,9 +934,12 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             onClose={closeCommonOptionsModal}>
             {!deleteScreenOn ? (
               <ModalCommonOptions
+                currCommon={currCommon}
                 commonMembersCount={currCommon?.members?.length}
                 isFounderOrModerator={hasPermission}
                 onAction={onModalOptionsAction}
+                closeModal={closeCommonOptionsModal}
+                isMember={isMember}
               />
             ) : (
               <ModalDeleteConfirmation
