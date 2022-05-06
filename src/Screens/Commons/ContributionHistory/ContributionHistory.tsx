@@ -17,7 +17,7 @@ import {baseMargin} from '~/Theme/layout';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
 const ContributionHistory = () => {
-  const {paymentStore} = useStore('rootStore');
+  const paymentStore = useStore('paymentStore');
   const navigation = useNavigation();
   const route = useRoute<ContributionHistoryRouteProps>();
   const {commonName, commonId} = route.params;
