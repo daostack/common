@@ -12,7 +12,7 @@ import {ContributionHistoryRouteProps} from '~/Types/navigation';
 import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 import {useStore} from '~/Util/hooks/useStore';
 import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
-import {PaymentsHistoryInfo} from './PaymentsHistoryInfo';
+import {PaymentsHistoryInfo} from './components/PaymentsHistoryInfo';
 import {colors, font, layout} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';

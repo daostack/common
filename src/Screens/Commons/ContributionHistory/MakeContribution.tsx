@@ -1,35 +1,23 @@
-import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
+import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
+import CommonService from '~/Services/CommonService';
 import logger from '~/Services/Logger';
-import {colors, font, text} from '~/Theme';
+import SubscriptionService from '~/Services/SubscriptionService';
+import {colors, text} from '~/Theme';
+import {baseMargin} from '~/Theme/layout';
 import {MakeContributionRouteProps} from '~/Types/navigation';
 import {showErrorPopUp} from '~/Util';
 import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 import {useStore} from '~/Util/hooks/useStore';
-import Toast from '~/Util/Toast';
-import CommonService from '~/Services/CommonService';
-import SubscriptionService from '~/Services/SubscriptionService';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
-import {baseMargin, sizeM} from '~/Theme/layout';
-import {layout} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
-import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
-import BottomSheetModal from '~/Components/BottomSheetModal';
-import FastImage from 'react-native-fast-image';
+import Toast from '~/Util/Toast';
+import {SuccessfulSentModal} from './components/SuccessfulSentModal';
 
 const MakeContribution = () => {
   const navigation = useNavigation();
@@ -91,29 +79,6 @@ const MakeContribution = () => {
 
   const onCustomSelect = () => {
     setIsActionBtnHidden(false);
-  };
-
-  const resetNavigation = (): void => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 2,
-        routes: [
-          {
-            name: NAVIGATION_SCREENS.COMMON_HOME,
-          },
-          {
-            name: NAVIGATION_SCREENS.COMMON_PROFILE,
-            params: {commonId: common.id, common},
-          },
-          {
-            name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
-            params: {
-              common,
-            },
-          },
-        ],
-      }),
-    );
   };
 
   const updateMonthlyContributionAmount = async () => {
@@ -236,38 +201,11 @@ const MakeContribution = () => {
         onPress={push}
         hidden={isActionBtnHidden}
       />
-      <BottomSheetModal
-        style={styles.bottomSheetContainer}
+      <SuccessfulSentModal
         isVisible={isVisible}
-        onClose={() => {
-          setVisible(false);
-        }}>
-        <Pressable style={{width: '100%'}} onPress={resetNavigation}>
-          <View style={styles.plug} />
-        </Pressable>
-        <View
-          style={{
-            height: 330,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <FastImage
-            style={styles.image}
-            source={require('~/Assets/send.png')}
-          />
-          <Text style={styles.modalTitle}>
-            {isMonthly
-              ? `Your monthly Contribution ${'\n'} has been changed`
-              : 'Contribution was sent'}
-          </Text>
-          <TouchableOpacity
-            style={styles.modalRequestSentBtnPrimary}
-            onPress={resetNavigation}>
-            <Text style={text.buttonblack}>OK</Text>
-          </TouchableOpacity>
-        </View>
-      </BottomSheetModal>
+        isMonthly={isMonthly}
+        common={common}
+      />
     </SafeAreaView>
   );
 };
@@ -298,35 +236,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.greySubtitle,
     marginBottom: 10,
-  },
-  modalRequestSentBtnPrimary: {
-    ...layout.btnOutline,
-    ...layout.marginTopL,
-    flexGrow: 0,
-    width: '100%',
-  },
-  bottomSheetContainer: {
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-  },
-  image: {
-    top: 0,
-    height: 130,
-    alignSelf: 'center',
-    aspectRatio: 1,
-  },
-  modalTitle: {
-    ...font.fontSize(4),
-    textAlign: 'center',
-    ...font.heading.bold,
-    marginVertical: sizeM,
-  },
-  plug: {
-    backgroundColor: colors.paleblue,
-    width: 72,
-    height: 6,
-    borderRadius: 2,
-    alignSelf: 'center',
   },
 });
 

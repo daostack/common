@@ -4,7 +4,7 @@ import {render} from '@testing-library/react-native';
 import {CurrencySymbols} from '~/Util/locale';
 
 describe('PaymentsHistoryInfo', () => {
-  const amount = 100;
+  const amount = 10000;
 
   test('PaymentsHistoryInfo should render correctly', () => {
     const {getByText, toJSON} = render(<PaymentsHistoryInfo amount={amount} />);
@@ -16,6 +16,8 @@ describe('PaymentsHistoryInfo', () => {
 
   test('PaymentsHistoryInfo should set amount correctly', () => {
     const {getByText} = render(<PaymentsHistoryInfo amount={amount} />);
-    expect(getByText(`${CurrencySymbols.SHEKEL}${amount}`)).not.toBeNull();
+    expect(
+      getByText(`${CurrencySymbols.SHEKEL}${amount / 100}`),
+    ).not.toBeNull();
   });
 });
