@@ -135,13 +135,13 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
-        {/* {isOptions && renderEditActions()} */}
-        {/* {item && (
+        {isOptions && renderEditActions()}
+        {item && (
           <>
             {hasShare && renderCommonShare()}
             {renderModeratorTools()}
           </>
-        )} */}
+        )}
       </View>
     </ScrollView>
   );
