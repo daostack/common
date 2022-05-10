@@ -7,7 +7,7 @@ import {colors, font, layout, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/Util/Toast';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 
 const ReceiveFunds = () => {
   const insets = useSafeAreaInsets();

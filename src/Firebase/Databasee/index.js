@@ -9,6 +9,7 @@ export const DB_COLLECTIONS = {
   payments: 'payments',
   cards: 'cards',
   bankAccount: 'bankAccountDetails',
+  subscriptions: 'subscriptions',
 
   // Old collections definitions.
   // Keep it here until all the migration to mobx store is finished.

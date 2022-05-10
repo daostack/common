@@ -1,5 +1,5 @@
 import auth from '@react-native-firebase/auth';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import moment from 'moment';
 import PropTypes, {bool, func, string} from 'prop-types';
 import React, {useRef, useEffect} from 'react';

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {colors, font} from '~/Theme';
