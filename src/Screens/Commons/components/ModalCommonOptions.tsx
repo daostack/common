@@ -11,10 +11,6 @@ import {
 } from '~/Util/constants/dynamicLinks';
 import {Common} from '~/Stores/Models/Common';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {useNavigation} from '@react-navigation/native';
-import Toast from '~/Util/Toast';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
-import {useStore} from '~/Util/hooks/useStore';
 
 interface Props {
   moderatorOptions: null;
@@ -36,8 +32,6 @@ export const ModalCommonOptions = ({
   isMember,
 }: Props) => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const commonStore = useStore('commonStore');
   const shareCommon = async () => {
     closeModal();
     try {
@@ -74,19 +68,6 @@ export const ModalCommonOptions = ({
     // navigation.navigate(NAVIGATION_SCREENS.COMMON_WALLET);
   };
 
-  const onLeave = async () => {
-    try {
-      closeModal();
-      Toast.loading('Leaving');
-      await commonStore.leaveCommon(currCommon.id);
-      navigation.navigate(NAVIGATION_SCREENS.EXPLORE);
-      Toast.done('You left the Common');
-    } catch (err) {
-      closeModal();
-      Toast.error('Could not leave the Common');
-    }
-  };
-
   return (
     <View style={[styles.body, {marginBottom: insets.bottom + 16}]}>
       <View style={styles.plug} />
@@ -95,14 +76,21 @@ export const ModalCommonOptions = ({
         <TouchableOpacity style={styles.optionBtn} onPress={shareCommon}>
           <Text style={styles.btnText}>Share Common</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionBtn} onPress={onMyWallet}>
-          <Text style={styles.btnText}>My Wallet</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionBtn} onPress={onCommonWallet}>
-          <Text style={styles.btnText}>Common Wallet</Text>
-        </TouchableOpacity>
+        {/* disabled till we get a these screens */}
+        {false && (
+          <>
+            <TouchableOpacity style={styles.optionBtn} onPress={onMyWallet}>
+              <Text style={styles.btnText}>My Wallet</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionBtn} onPress={onCommonWallet}>
+              <Text style={styles.btnText}>Common Wallet</Text>
+            </TouchableOpacity>
+          </>
+        )}
         {isMember && (
-          <TouchableOpacity style={styles.optionBtn} onPress={onLeave}>
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onAction(COMMON_OPTION_TYPES.leave)}>
             <Text style={styles.btnText}>Leave Common</Text>
           </TouchableOpacity>
         )}

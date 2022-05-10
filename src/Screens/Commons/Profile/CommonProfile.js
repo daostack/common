@@ -63,6 +63,7 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {ModalCommonOptions} from '../components/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
+import {ModalLeaveConfirmation} from '../components/ModalLeaveConfirmation';
 import {CurrencySymbols} from '~/Util/locale';
 import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
@@ -99,6 +100,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
   const [action, setAction] = useState(ACTIONS.report);
   const [optionsModalVisible, setOptionsModalVisible] = useState(false);
   const [deleteScreenOn, setDeleteScreenOn] = useState(false);
+  const [leaveScreenOn, setLeaveScreenOn] = useState(false);
 
   const {refreshFeed} = params;
 
@@ -708,6 +710,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       onEdit(type);
     } else if (type === COMMON_OPTION_TYPES.delete) {
       setDeleteScreenOn(true);
+    } else if (type === COMMON_OPTION_TYPES.leave) {
+      setLeaveScreenOn(true);
     }
   };
 
@@ -724,12 +728,14 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
     }
   };
 
-  const onDeleteCancel = () => {
+  const onModalCancel = () => {
     setDeleteScreenOn(false);
+    setLeaveScreenOn(false);
   };
 
   const closeCommonOptionsModal = () => {
     setDeleteScreenOn(false);
+    setLeaveScreenOn(false);
     setOptionsModalVisible(false);
   };
 
@@ -932,7 +938,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             style={layout.optionsModal}
             isVisible={optionsModalVisible}
             onClose={closeCommonOptionsModal}>
-            {!deleteScreenOn ? (
+            {!deleteScreenOn && !leaveScreenOn ? (
               <ModalCommonOptions
                 currCommon={currCommon}
                 commonMembersCount={currCommon?.members?.length}
@@ -941,11 +947,18 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                 closeModal={closeCommonOptionsModal}
                 isMember={isMember}
               />
-            ) : (
+            ) : deleteScreenOn ? (
               <ModalDeleteConfirmation
                 onDelete={onDelete}
-                onCancel={onDeleteCancel}
+                onCancel={onModalCancel}
               />
+            ) : (
+              leaveScreenOn && (
+                <ModalLeaveConfirmation
+                  closeModal={closeCommonOptionsModal}
+                  onCancel={onModalCancel}
+                />
+              )
             )}
           </BottomSheetModal>
         </View>
