@@ -42,7 +42,7 @@ const PaymentDetailsStep = ({
 
   useEffect(() => {
     let unsubscribeFromCard = null;
-    if (userInfo?.id) {
+    if (userInfo?.uid) {
       unsubscribeFromCard = cardStore.subscribeToUserCards(userInfo.uid);
     }
     return () => {

@@ -18,5 +18,6 @@ export default {
   notificationStore: rootStore.notificationStore,
   bankAccountStore: rootStore.bankAccountStore,
   uiStore: rootStore.uiStore,
+  cardStore: rootStore.cardStore,
   paymentStore: rootStore.paymentStore,
 };

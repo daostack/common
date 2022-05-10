@@ -5,7 +5,7 @@ import {Dimensions, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {WebView} from 'react-native-webview';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import MembershipRequest from '~/Screens/Commons/RequestToJoin/MembershipRequest';
+import {PersonalContributionTitle} from './PersonalContributionTitle';
 import PaymentsService from '~/Services/PaymentsService';
 import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import {PAYMENT_STATUSES} from '~/Util/constants/paymentConstants';
@@ -44,6 +44,7 @@ const PersonalPaymentDetailsStep = () => {
       stepDotHeaderTitle="Payment Details"
       navTitle={common.name}
       currentIndex={2}
+      goBack={() => navigation.pop(2)}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
       prependedArea={
         <CommonCreatedModal
@@ -56,7 +57,8 @@ const PersonalPaymentDetailsStep = () => {
           }}
         />
       }
-      layoutTitle={<MembershipRequest />}>
+      isFullWidthProgressBar={false}
+      layoutTitle={<PersonalContributionTitle />}>
       <View
         style={[
           styles.container,

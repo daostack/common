@@ -1,83 +1,97 @@
-import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
-import {observer} from 'mobx-react';
-import React, {useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {observer} from 'mobx-react-lite';
+import React, {useState, useEffect, useRef} from 'react';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import {Divider} from '~/Components/Divider';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {CardList} from '~/Components/Payment/CardList';
-import {PaymentDetailsHeader} from '~/Components/Payment/PaymentDetailsHeader';
-import MembershipRequest from '~/Screens/Commons/RequestToJoin/MembershipRequest';
-import {Card} from '~/Stores/Models/Card';
-import {colors} from '~/Theme';
+import UpdatePaymentMethod from '~/Components/Payment/UpdatePaymentMethod';
+import {text} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation';
-import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
+import {useStore} from '~/Util/hooks/useStore';
 import {v4} from 'uuid';
 import PaymentService from '~/Services/PaymentsService';
-import Toast from '~/Util/Toast';
-import logger from '~/Services/Logger';
+import {WebView} from 'react-native-webview';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
+import Loader from '~/Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+
+const {height} = Dimensions.get('window');
 
 const ChoosePaymentMethodStep = () => {
+  const {uiStore} = useStore('rootStore');
   const navigation = useNavigation();
-  const router = useRoute<PersonalPaymentDetailsRouteProps>();
+  const [iFrame, setIFrame] = useState('');
+  const [respLink, setRespLink] = useState(false);
+  const insets = useSafeAreaInsets();
+  const cardId = useRef(v4());
+  const bottomSheetStore = uiStore.bottomSheetStore;
 
-  const {common, formStores} = router.params;
+  useEffect(() => {
+    (async () => {
+      const {data} = await PaymentService.createBuyerTokenPage(cardId.current);
+      setIFrame(data.link);
+    })();
+  }, []);
 
-  const [selectedCard, setSelectedCard] = useState<Card>();
-
-  function handleSelectCard(card: Card): void {
-    setSelectedCard(card);
-
-    // TODO: Currently we don't have API for using chosen card
-    logger.log(selectedCard);
-  }
-
-  async function handleReplacePaymentMethod(): Promise<void> {
-    Toast.loading('One moment please');
-    const cardId = v4();
-    const {data} = await PaymentService.createBuyerTokenPage(cardId);
-    const link = data.link;
-
-    Toast.done('Success');
-    Toast.hide();
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'PersonalPaymentDetailsStep',
-        params: {
-          formStores,
-          common,
-          iFrameLink: link,
-          cardId,
+  const redirectUser = (event: any) => {
+    if (!respLink) {
+      if (event?.url?.includes('loader')) {
+        setRespLink(true);
+      }
+    } else {
+      bottomSheetStore.showBottomSheet(
+        BOTTOM_SHEET_TEMPLATES.PAYMENT_UPDATE_STATUS,
+        {
+          navigation: navigation,
+          message: 'Payment method updated', // need to handle errors here
+          proceed: onProceed,
         },
-      }),
+      );
+    }
+  };
+
+  const onProceed = () => {
+    bottomSheetStore.hideBottomSheet();
+    navigation.goBack();
+  };
+
+  const renderWebView = () =>
+    iFrame ? (
+      <View style={styles.iFrame}>
+        <WebView
+          scalesPageToFit={false}
+          source={{uri: iFrame}}
+          onNavigationStateChange={(event) => {
+            redirectUser(event);
+          }}
+        />
+      </View>
+    ) : (
+      <View style={styles.iFrame}>
+        <Loader />
+      </View>
     );
-  }
 
   return (
     <StepDotLayout
       navigation={navigation}
       stepDotHeaderTitle="Payment Details"
-      navTitle={common.name}
       currentIndex={2}
       headerDotsInfo={DOT_INFO_PERSONAL_CONTRIBUTION}
-      layoutTitle={<MembershipRequest />}>
-      <View style={styles.container}>
-        <PaymentDetailsHeader
-          minFeeToJoin={common.minFeeToJoin}
-          contributionType={common.contributionType}
-        />
+      layoutTitle={<UpdatePaymentMethod />}
+      hideHeader>
+      <View
+        style={{
+          ...styles.container,
+          height:
+            height / 2 + insets.top + insets.bottom + STEP_HEADER_BAR_HEIGHT,
+        }}>
+        <Text style={styles.title}>Payment Details</Text>
+        <Text style={styles.subTitle}>Update your payment details below</Text>
         <Divider mt={baseMargin * 3} mb={baseMargin * 2} />
-        <CardList handleSelectCard={handleSelectCard} />
-        <Pressable
-          onPress={handleReplacePaymentMethod}
-          style={({pressed}) => [
-            {
-              opacity: pressed ? 0.5 : 1.0,
-            },
-            {marginTop: baseMargin * 2},
-          ]}>
-          <Text style={{color: colors.linkBlue}}>Replace payment method?</Text>
-        </Pressable>
+        {renderWebView()}
       </View>
     </StepDotLayout>
   );
@@ -86,6 +100,21 @@ const ChoosePaymentMethodStep = () => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'column',
+  },
+  title: {
+    ...text.h2Black,
+    paddingVertical: 10,
+  },
+  subTitle: {
+    ...text.greyText,
+    fontSize: 18,
+  },
+  iFrame: {
+    width: '100%',
+    height: '80%',
   },
 });
 

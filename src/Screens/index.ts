@@ -24,7 +24,7 @@ export {default as ContributionHistory} from './Commons/ContributionHistory/Cont
 export {default as MonthlyContributionCharges} from './Commons/ContributionHistory/MonthlyContributionCharges';
 
 //User Profile
-export {default as MonthlyContributionsList} from './UserProfile/MonthlyContributionsList';
+export {default as Billing} from './UserProfile/Billing';
 export {default as MonthlyContribution} from './UserProfile/MonthlyContribution';
 export {default as UserProfile} from './UserProfile/UserProfile';
 export {default as CreateAccount} from './UserProfile/CreateAccount';
@@ -39,6 +39,7 @@ export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingProposal} from './Proposals/FundingProposal';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
 export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
+export {default as VotesScreen} from './Proposals/Votes/VotesScreen';
 
 //Viewers
 export {default as PDFViewer} from './Viewers/PDFViewer';

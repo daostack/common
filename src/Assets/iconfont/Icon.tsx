@@ -13,7 +13,7 @@ import IconcheckMark from './IconcheckMark';
 import IconcheckIcon from './IconcheckIcon';
 import Iconacknowledgement116 from './Iconacknowledgement116';
 import IconbillingDetails24Copy4 from './IconbillingDetails24Copy4';
-import Iconclcok from './Iconclcok';
+import Iconclock from './Iconclock';
 import Iconcountdown24 from './Iconcountdown24';
 import Icontrajectory from './Icontrajectory';
 import Iconaddpicture from './Iconaddpicture';
@@ -117,6 +117,8 @@ import {IconShekel} from './IconShekel';
 import IconCamera from './IconCamera';
 import IconNoImage from './IconNoImage';
 import IconCalendar from './IconCalendar';
+import IconAbstained from './IconAbstained';
+import IconNewCard from './IconNewCard';
 import {AnimateProps} from 'react-native-reanimated';
 
 export type IconNames =
@@ -129,7 +131,7 @@ export type IconNames =
   | 'checkIcon'
   | 'acknowledgement-116'
   | 'billing-details-24-copy-4'
-  | 'clcok'
+  | 'clock'
   | 'countdown-24'
   | 'trajectory'
   | 'addpicture'
@@ -232,7 +234,9 @@ export type IconNames =
   | 'add-document-approved'
   | 'calendar'
   | 'facebook'
-  | 'phone';
+  | 'phone'
+  | 'abstained-24'
+  | 'newCard';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -261,8 +265,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconacknowledgement116 {...rest} />;
     case 'billing-details-24-copy-4':
       return <IconbillingDetails24Copy4 {...rest} />;
-    case 'clcok':
-      return <Iconclcok {...rest} />;
+    case 'clock':
+      return <Iconclock {...rest} />;
     case 'countdown-24':
       return <Iconcountdown24 {...rest} />;
     case 'trajectory':
@@ -273,6 +277,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconreject24 {...rest} />;
     case 'approved-24':
       return <Iconapproved24 {...rest} />;
+    case 'abstained-24':
+      return <IconAbstained {...rest} />;
     case 'discussion':
       return <Icondiscussion {...rest} />;
     case 'history':
@@ -450,9 +456,9 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
     case 'google':
       return <Icongoogle {...rest} />;
     case 'facebook':
-      return <Iconfacebook {...rest} />
+      return <Iconfacebook {...rest} />;
     case 'phone':
-      return <Iconphone {...rest} />
+      return <Iconphone {...rest} />;
     case 'shekel':
       return <IconShekel {...rest} />;
     case 'camera':
@@ -469,6 +475,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconAddDocumentApproved {...rest} />;
     case 'calendar':
       return <IconCalendar {...rest} />;
+    case 'newCard':
+      return <IconNewCard {...rest} />;
   }
 
   return null;

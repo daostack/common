@@ -10,6 +10,7 @@ import {default as CancelSubscription} from './CancelSubscriptionSheetScreen';
 import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/BackendErrorSheetScreen';
 import {default as LoadingExpired} from './LoadingExpired';
 import {default as HiddenContentInfo} from './HiddenContentInfo';
+import {default as PaymentMethodUpdateStatus} from './PaymentMethodUpdateStatus';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -49,6 +50,10 @@ export const BOTTOM_SHEET_TEMPLATES = {
   UNSAVED_CHANGES: {
     topSnap: 500,
     content: UnsavedChanges,
+  },
+  PAYMENT_UPDATE_STATUS: {
+    topSnap: 400,
+    content: PaymentMethodUpdateStatus,
   },
   PAYMENT_STATUS: {
     topSnap: 500,

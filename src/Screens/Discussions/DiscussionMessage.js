@@ -22,18 +22,19 @@ import {reporterName} from '../../Components/Moderation/helper';
 import {FLAGS} from '../../Components/Moderation/constants';
 import Icon from '~/Assets/iconfont/Icon';
 import _ from 'lodash';
+import {useStore} from '~/Util/hooks/useStore';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionMessage = ({
   data,
   showCurrentUserAvatar,
-  rootStore,
   commonId,
   openMessageOptions,
   isMember,
   viewerPermission,
 }) => {
+  const rootStore = useStore('rootStore');
   let currentUserUid = null;
   const isHidden = data.moderation?.flag === FLAGS.hidden;
   const flag = data.moderation?.flag || '';
@@ -52,7 +53,7 @@ const DiscussionMessage = ({
 
   function goToUserProfile() {
     navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
-      userId: ownerInfo.id,
+      userId: ownerInfo.uid,
       ownerInfo,
     });
   }

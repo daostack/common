@@ -45,7 +45,7 @@ import {
   PDFViewer,
   Browser,
   FullScreenCreationLoader,
-  MonthlyContributionsList,
+  Billing,
   MonthlyContribution,
   EditCommon,
   ReceiveFunds,
@@ -56,6 +56,7 @@ import {
   PhoneNumberStep1,
   VerificationStep2,
   FirstJoinCommon,
+  VotesScreen,
   ContributionHistory,
   MonthlyContributionCharges,
 } from './src/Screens';
@@ -230,6 +231,7 @@ const App = ({rootStore, navigation}) => {
           proposalId: objectId,
           tabIndex: +tabIndex,
           fromNotificationItem: true,
+          eventType: remoteMessage.data.type,
           commonId,
         });
       }
@@ -505,6 +507,32 @@ const App = ({rootStore, navigation}) => {
             })}
           />
           <Stack.Screen
+            name="VotesScreen"
+            component={VotesScreen}
+            options={({route, ...rest}) => ({
+              headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
+              headerTitle: () => (
+                <View style={{alignItems: 'center'}}>
+                  <Text
+                    style={{
+                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                    }}>
+                    {route?.params.title?.length > 20
+                      ? route?.params.title.substring(0, 17) + '...'
+                      : route?.params.title}
+                  </Text>
+
+                  {route?.params.subtitle && (
+                    <Text style={{opacity: 0.4, ...fontSize(1)}}>
+                      {route.params.subtitle}
+                    </Text>
+                  )}
+                </View>
+              ),
+            })}
+          />
+          <Stack.Screen
             name="AddInvoicesScreen"
             component={AddInvoicesScreen}
             options={({nav, route}) => ({
@@ -535,13 +563,6 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="PersonalPaymentDetailsStep"
             component={PersonalPaymentDetailsStep}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="ChoosePaymentMethodStep"
-            component={ChoosePaymentMethodStep}
             options={() => ({
               headerShown: false,
             })}
@@ -692,14 +713,28 @@ const App = ({rootStore, navigation}) => {
 
           <Stack.Screen
             options={{
-              title: 'Monthly Contributions',
+              title: 'Billing',
               headerBackTitleVisible: false,
               headerRight: () => <IntercomShowButton />,
             }}
-            name={NAVIGATION_SCREENS.MONTHLY_CONTRIBUTIONS_LIST}
+            name="MonthlyContributionsList"
             component={MonthlyContributionsList}
           />
-
+          <Stack.Screen
+            options={({route, ...rest}) => ({
+              title: '',
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <TouchableOpacity
+                  style={styles.buttonRight}
+                  onPress={() => navigationRef.current.goBack()}>
+                  <Icon name="close" color={colors.black} size={20} />
+                </TouchableOpacity>
+              ),
+            })}
+            name="ChoosePaymentMethodStep"
+            component={ChoosePaymentMethodStep}
+          />
           <Stack.Screen
             options={{
               title: 'My Contributions',

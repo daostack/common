@@ -22,6 +22,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Path} from 'react-native-svg';
 import Icon from '~/Assets/iconfont/Icon';
+import {HEADER_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
 export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -31,8 +32,6 @@ interface HeaderProps {
   openCommonOptions: () => void;
   yIndex: SharedValue<number>;
 }
-
-const HEADER_HEIGHT = 260;
 
 export const CommonHeaderBar = (props: HeaderProps) => {
   const {yIndex, currCommon, hasPermission, openCommonOptions} = props;

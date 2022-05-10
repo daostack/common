@@ -32,6 +32,7 @@ const props = {
   currentIndex: number,
   skipFirstStep: bool,
   isRequestToJoin: bool,
+  hideHeader: bool,
 
   //ScrollView:
   onScrollEndDrag: func,
@@ -50,6 +51,7 @@ const props = {
     }),
   ),
   goBack: func,
+  isFullWidthProgressBar: bool,
 };
 
 const DOT_INFO_JOIN_REQUEST = [
@@ -100,6 +102,8 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
   isRequestButtonSticky = true,
   headerDotsInfo,
   goBack,
+  hideHeader,
+  isFullWidthProgressBar = true,
 }) => {
   const [headerHeight, setHeaderHeight] = useState(new Animated.Value(0));
   const [scrollY] = useState(new Animated.Value(0));
@@ -141,17 +145,19 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
           flex: 1,
           backgroundColor: colors.white,
         }}>
-        <StepDotHeaderBar
-          title={navTitle || ''}
-          closeDialog={closeDialog}
-          onLeftPress={() => {
-            if (goBack) {
-              goBack();
-            } else {
-              navigation.pop(2);
-            }
-          }}
-        />
+        {!hideHeader && (
+          <StepDotHeaderBar
+            title={navTitle || ''}
+            closeDialog={closeDialog}
+            onLeftPress={() => {
+              if (goBack) {
+                goBack();
+              } else {
+                navigation.pop(2);
+              }
+            }}
+          />
+        )}
         <StepDotHeader
           title={stepDotHeaderTitle}
           currentIndex={currentIndex}
@@ -183,6 +189,7 @@ const StepDotLayout: React.FC<InferProps<typeof props>> = ({
             skipFirstDot={Boolean(skipFirstStep)}
             currentIndex={Number(currentIndex) - 1}
             dotInfo={headerDotsInfo || currDotInfo}
+            isFullWidthProgressBar={isFullWidthProgressBar}
           />
           {children}
           {!isRequestButtonSticky && requestStepActionButton}

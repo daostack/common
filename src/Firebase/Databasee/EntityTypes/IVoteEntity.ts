@@ -23,7 +23,7 @@ export interface IVoteEntity extends IBaseEntity {
   outcome: VoteOutcome;
 }
 
-export type VoteOutcome = 'approved' | 'rejected';
+export type VoteOutcome = 'approved' | 'rejected' | 'abstained';
 
 export interface CreateVotePayload {
   outcome: VoteOutcome;

@@ -58,6 +58,8 @@ const EditRules = (formik: {
         rule
         allowsEditing={true}
         title="Rule title"
+        maxLength={80}
+        maxLengthDescription={512}
         placeholderValueText="Rule description"
         multiline={true}
         addMultiFieldBtnName="Add Rule"

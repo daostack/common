@@ -5,6 +5,7 @@ import {Card} from '../Models/Card';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import CardsService from '~/Services/CardsService';
 import Logger from '~/Services/Logger';
+import {orderBy} from 'lodash';
 
 export default class CardStore extends BaseStore<Card, ICardEntity> {
   constructor(rootStore: RootStore) {
@@ -16,7 +17,7 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     try {
       return this.getDataById(id);
     } catch (e) {
-      Logger.log('------ cardstore error', e);
+      Logger.log('------ cardstore-getCardById error', e);
     }
   };
 
@@ -24,7 +25,21 @@ export default class CardStore extends BaseStore<Card, ICardEntity> {
     try {
       return this.getDataArray.filter((card) => card.ownerId === ownerId);
     } catch (e) {
-      Logger.log('------ cardstore error', e);
+      Logger.log('------ cardstore-getCards error', e);
+    }
+  };
+
+  getCurrentCard = (ownerId?: string): Card | undefined => {
+    try {
+      const cards = this.getCards(ownerId);
+      if (cards) {
+        return cards.length > 1
+          ? orderBy(cards, 'createdAt.seconds', 'desc')[0]
+          : cards[0];
+      }
+      return undefined;
+    } catch (e) {
+      Logger.log('------ cardstore-getCurrentCard error', e);
     }
   };
 
