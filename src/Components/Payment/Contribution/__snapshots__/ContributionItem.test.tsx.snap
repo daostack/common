@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContributionItem ContributionItem should render correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "borderBottomColor": "#eeeeee",
+      "borderBottomWidth": 1,
+      "flexDirection": "row",
+      "justifyContent": "space-between",
+      "padding": 24,
+    }
+  }
+>
+  <View>
+    <Text
+      style={
+        Object {
+          "fontFamily": "NunitoSans-Bold",
+          "fontSize": 14,
+          "fontWeight": "bold",
+          "letterSpacing": 0.2,
+          "marginBottom": 8,
+        }
+      }
+    >
+      One-time Contribution
+    </Text>
+    <Text
+      style={
+        Object {
+          "color": "#001a36",
+          "fontFamily": "NunitoSans-Regular",
+          "fontSize": 13,
+          "fontWeight": "normal",
+          "letterSpacing": 0.3,
+        }
+      }
+    >
+      20 October 2022
+    </Text>
+  </View>
+  <Text
+    style={
+      Object {
+        "color": "#001a36",
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 13,
+        "fontWeight": "normal",
+        "letterSpacing": 0.3,
+      }
+    }
+  >
+    ₪
+    1
+  </Text>
+</View>
+`;

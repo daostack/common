@@ -34,4 +34,9 @@ export enum NAVIGATION_SCREENS {
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
   VOTES_SCREEN = 'VotesScreen',
   CHOOSE_PAYMENT_METHOD_STEP = 'ChoosePaymentMethodStep',
+  MONTHLY_CONTRIBUTION_CHARGES = 'MonthlyContributionCharges',
+  CONTRIBUTION_HISTORY = 'ContributionHistory',
+  MAKE_CONTRIBUTION = 'MakeContribution',
+  CONTRIBUTION_PAYMENT_DETAILS = 'ContributionPaymentDetails',
+  UPDATE_PAYMENT_DETAILS = 'UpdatePaymentDetails',
 }

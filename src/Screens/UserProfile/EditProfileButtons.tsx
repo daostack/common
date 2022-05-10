@@ -1,6 +1,6 @@
 import {useFormikContext} from 'formik';
 import {isEqual} from 'lodash';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {ReactElement, useMemo} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';

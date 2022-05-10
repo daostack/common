@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useEffect, useCallback, useMemo, ReactElement} from 'react';
 import {Dimensions, SafeAreaView, StatusBar, Text, View} from 'react-native';
 import {TabView, Route} from 'react-native-tab-view';
@@ -28,12 +28,8 @@ const VotesScreen = (): ReactElement => {
     });
   }, [commonName]);
 
-  const {
-    approvedCount,
-    abstainedCount,
-    rejectedCount,
-    allVoteCount,
-  } = proposalStore.getVotesCounts(proposalInfo?.votes);
+  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
+    proposalStore.getVotesCounts(proposalInfo?.votes);
 
   const routes = useMemo(
     () => [

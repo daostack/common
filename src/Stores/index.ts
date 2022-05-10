@@ -19,4 +19,5 @@ export default {
   bankAccountStore: rootStore.bankAccountStore,
   uiStore: rootStore.uiStore,
   cardStore: rootStore.cardStore,
+  paymentStore: rootStore.paymentStore,
 };

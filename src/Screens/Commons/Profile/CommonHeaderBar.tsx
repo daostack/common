@@ -28,13 +28,13 @@ export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface HeaderProps {
   currCommon: Common;
-  hasPermission: boolean;
+  isMember: boolean;
   openCommonOptions: () => void;
   yIndex: SharedValue<number>;
 }
 
 export const CommonHeaderBar = (props: HeaderProps) => {
-  const {yIndex, currCommon, hasPermission, openCommonOptions} = props;
+  const {yIndex, currCommon, isMember, openCommonOptions} = props;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
@@ -56,7 +56,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       const options = {
         url,
         title: currCommon.name,
-        message: `${currCommon.byline}. Download the Common app to join now.`,
+        message: `${currCommon.metadata.byline}. Download the Common app to join now.`,
       };
       Share.open(options);
     } catch (err) {
@@ -139,7 +139,7 @@ export const CommonHeaderBar = (props: HeaderProps) => {
             />
           </Animated.View>
         </Pressable>
-        {hasPermission && (
+        {isMember && (
           <Pressable
             style={styles.rightButton}
             onPress={() => openCommonOptions()}>

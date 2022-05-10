@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PaymentsHistoryInfo PaymentsHistoryInfo should render correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#f4f6ff",
+      "borderRadius": 10,
+      "justifyContent": "space-between",
+      "marginHorizontal": 24,
+      "marginVertical": 16,
+      "padding": 16,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "#001a36",
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 14,
+        "fontWeight": "normal",
+        "letterSpacing": 0.2,
+        "marginBottom": 16,
+        "textAlign": "center",
+      }
+    }
+  >
+    To this day, I have contributed to 
+    
+
+     this common
+  </Text>
+  <Text
+    style={
+      Object {
+        "fontFamily": "NunitoSans-Bold",
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "letterSpacing": 0.4,
+      }
+    }
+  >
+    ₪
+    100
+  </Text>
+</View>
+`;
