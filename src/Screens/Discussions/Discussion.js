@@ -330,6 +330,7 @@ const Discussion = ({
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
+        hasShare: true,
         moderatorOptions: {
           item: message,
         },
