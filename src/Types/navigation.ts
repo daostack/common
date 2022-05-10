@@ -1,4 +1,6 @@
 import {StackActionType} from '@react-navigation/native';
+import {Common} from '~/Stores/Models/Common';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 
 interface NavigationProps {
   dispatch: (arg: StackActionType) => void;
@@ -30,6 +32,18 @@ export type VotesScreenRouteProps = RouteProps<{
 }>;
 
 export type ContributionHistoryRouteProps = RouteProps<{
+  common: Common;
+}>;
+
+export type MakeContributionRouteProps = RouteProps<{
+  common: Common;
+  isMonthly: boolean;
+  subscriptionId?: string;
+  formStores: {
+    personalContributionFormStore: PersonalContributionFormStore;
+  };
+}>;
+
+export type ContributionPaymentDetailsRouteProps = RouteProps<{
   commonName: string;
-  commonId: string;
 }>;

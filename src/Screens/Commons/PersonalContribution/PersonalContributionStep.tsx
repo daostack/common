@@ -70,14 +70,13 @@ const PersonalContributionStep = () => {
         return;
       }
 
-      const immediateContributionResponse = await CommonService.immediateContribution(
-        {
+      const immediateContributionResponse =
+        await CommonService.immediateContribution({
           amount: form.amount * 100,
           commonId: common.id,
           contributionType: common.contributionType,
           saveCard: true,
-        },
-      );
+        });
 
       Toast.done('Success');
       Toast.hide();

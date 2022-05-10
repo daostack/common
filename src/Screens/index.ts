@@ -22,6 +22,9 @@ export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCom
 //Contribution History
 export {default as ContributionHistory} from './Commons/ContributionHistory/ContributionHistory';
 export {default as MonthlyContributionCharges} from './Commons/ContributionHistory/MonthlyContributionCharges';
+export {default as MakeContribution} from './Commons/ContributionHistory/MakeContribution';
+export {default as ContributionPaymentDetails} from './Commons/ContributionHistory/ContributionPaymentDetails';
+export {default as UpdatePaymentDetails} from './Commons/ContributionHistory/UpdatePaymentDetails';
 
 //User Profile
 export {default as Billing} from './UserProfile/Billing';

@@ -59,6 +59,9 @@ import {
   VotesScreen,
   ContributionHistory,
   MonthlyContributionCharges,
+  MakeContribution,
+  ContributionPaymentDetails,
+  UpdatePaymentDetails,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -717,8 +720,8 @@ const App = ({rootStore, navigation}) => {
               headerBackTitleVisible: false,
               headerRight: () => <IntercomShowButton />,
             }}
-            name="MonthlyContributionsList"
-            component={MonthlyContributionsList}
+            name="Billing"
+            component={Billing}
           />
           <Stack.Screen
             options={({route, ...rest}) => ({
@@ -761,6 +764,60 @@ const App = ({rootStore, navigation}) => {
             }}
             name={NAVIGATION_SCREENS.CONTRIBUTION_HISTORY}
             component={ContributionHistory}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.MAKE_CONTRIBUTION}
+            component={MakeContribution}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.CONTRIBUTION_PAYMENT_DETAILS}
+            component={ContributionPaymentDetails}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.UPDATE_PAYMENT_DETAILS}
+            component={UpdatePaymentDetails}
           />
 
           <Stack.Screen

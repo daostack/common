@@ -24,26 +24,30 @@ export const ModalCommonOptions = ({
     <View style={[styles.body, {marginBottom: insets.bottom + 16}]}>
       <Text style={styles.text}>Options</Text>
       <>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onAction(COMMON_OPTION_TYPES.info)}>
-          <Icon
-            name="dao-general-info-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={styles.btnText}>Edit info and cover photo</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onAction(COMMON_OPTION_TYPES.rules)}>
-          <Icon
-            name="agenda-24"
-            style={layout.marginRightS}
-            color={colors.black}
-          />
-          <Text style={styles.btnText}>Edit rules</Text>
-        </TouchableOpacity>
+        {isFounderOrModerator && (
+          <>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction(COMMON_OPTION_TYPES.info)}>
+              <Icon
+                name="dao-general-info-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={styles.btnText}>Edit info and cover photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionBtn}
+              onPress={() => onAction(COMMON_OPTION_TYPES.rules)}>
+              <Icon
+                name="agenda-24"
+                style={layout.marginRightS}
+                color={colors.black}
+              />
+              <Text style={styles.btnText}>Edit rules</Text>
+            </TouchableOpacity>
+          </>
+        )}
         <TouchableOpacity
           style={styles.optionBtn}
           onPress={() => onAction(COMMON_OPTION_TYPES.contributionHistory)}>

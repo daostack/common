@@ -91,9 +91,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -162,9 +161,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
         currCommon?.id,
       );
-      unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-        currCommon?.id,
-      );
+      unsubscribeFromCommonDiscussions =
+        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
     }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
@@ -713,8 +711,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       const actions = CommonActions.navigate({
         name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
         params: {
-          commonName: currCommon.name,
-          commonId: currCommon.id,
+          common: currCommon,
         },
       });
 
@@ -822,7 +819,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           <CommonProfileFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            hasPermission={hasPermission}
             showReqToJoin={showReqToJoin}
             renderRequestToJoinBtn={renderRequestToJoinBtn}
             isMember={isMember}>
@@ -844,7 +840,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals
                   }
-                  /* goal: currCommon.fundingGoal, */
                   members={currCommon?.members?.length}
                   balance={currCommon.balance}
                   raised={currCommon.raised}

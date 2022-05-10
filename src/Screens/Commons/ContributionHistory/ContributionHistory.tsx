@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 import {useStore} from '~/Util/hooks/useStore';
 import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './PaymentsHistoryInfo';
@@ -20,7 +21,9 @@ const ContributionHistory = () => {
   const paymentStore = useStore('paymentStore');
   const navigation = useNavigation();
   const route = useRoute<ContributionHistoryRouteProps>();
-  const {commonName, commonId} = route.params;
+  const {
+    common: {name: commonName, id: commonId},
+  } = route.params;
 
   const payments = paymentStore.getCommonOneTimePayments(commonId);
   const commonTotalPaymentsAmount =
@@ -32,11 +35,36 @@ const ContributionHistory = () => {
       CommonActions.navigate({
         name: NAVIGATION_SCREENS.MONTHLY_CONTRIBUTION_CHARGES,
         params: {
-          commonName,
-          commonId,
+          common: route.params.common,
         },
       }),
     );
+  }
+
+  function navigateToMakeContribution(isMonthly: boolean): void {
+    const personalContributionFormStore = new PersonalContributionFormStore();
+
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: NAVIGATION_SCREENS.MAKE_CONTRIBUTION,
+        params: {
+          common: route.params.common,
+          isMonthly,
+          ...(isMonthly && {subscriptionId: activeSubscription?.id}),
+          formStores: {
+            personalContributionFormStore,
+          },
+        },
+      }),
+    );
+  }
+
+  function navigateToMakeOneTimeContribution(): void {
+    navigateToMakeContribution(false);
+  }
+
+  function navigateToChangeMonthlyContribution(): void {
+    navigateToMakeContribution(true);
   }
 
   useEffect(() => {
@@ -60,11 +88,14 @@ const ContributionHistory = () => {
       <ContributionList payments={payments} />
       <View style={styles.btnContainer}>
         {activeSubscription && (
-          <TouchableOpacity style={[layout.btnPrimary, styles.btn]}>
+          <TouchableOpacity
+            style={[layout.btnPrimary, styles.btn]}
+            onPress={navigateToChangeMonthlyContribution}>
             <Text style={styles.btnText}>Change my monthly contribution</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
+          onPress={navigateToMakeOneTimeContribution}
           style={[layout.btnOutline, styles.btnOutline, styles.btn]}>
           <Text style={[styles.btnText, styles.btnOutlineText]}>
             Add a one-time contribution
