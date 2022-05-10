@@ -11,7 +11,6 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Common} from '~/Stores/Models/Common';
 import {colors, font, layout} from '~/Theme';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {useStore} from '~/Util/hooks/useStore';
 import Toast from '~/Util/Toast';
 
@@ -37,7 +36,7 @@ export const ModalLeaveConfirmation = ({
       closeModal();
       Toast.loading('Leaving');
       await commonStore.leaveCommon(currCommon.id);
-      navigation.navigate(NAVIGATION_SCREENS.EXPLORE);
+      navigation.navigate('Explore');
       Toast.done('You left the Common');
     } catch (err) {
       closeModal();

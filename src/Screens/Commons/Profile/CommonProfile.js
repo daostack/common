@@ -955,6 +955,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
             ) : (
               leaveScreenOn && (
                 <ModalLeaveConfirmation
+                  currCommon={currCommon}
                   closeModal={closeCommonOptionsModal}
                   onCancel={onModalCancel}
                 />
