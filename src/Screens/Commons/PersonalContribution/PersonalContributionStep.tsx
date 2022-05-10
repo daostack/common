@@ -1,5 +1,5 @@
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
@@ -70,14 +70,13 @@ const PersonalContributionStep = () => {
         return;
       }
 
-      const immediateContributionResponse = await CommonService.immediateContribution(
-        {
+      const immediateContributionResponse =
+        await CommonService.immediateContribution({
           amount: form.amount * 100,
           commonId: common.id,
           contributionType: common.contributionType,
           saveCard: true,
-        },
-      );
+        });
 
       Toast.done('Success');
       Toast.hide();

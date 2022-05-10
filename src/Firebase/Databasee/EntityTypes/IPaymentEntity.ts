@@ -1,16 +1,12 @@
 import {IBaseEntity} from './IBaseEntity';
 import {Nullable} from '../../types';
 import {PAYMENT_STATUSES} from '~/Util/constants';
+import {CONTRIBUTION_SOURCE_TYPE} from './shared';
 
 export type PaymentType = 'one-time' | 'subscription';
 export type PaymentStatus = 'pending' | 'confirmed' | 'paid' | 'failed';
 export type PaymentSource = 'card';
 export type PaymentCurrency = 'USD';
-
-export enum CONTRIBUTION_SOURCE_TYPE {
-  JOIN_PROPOSAL = 'joinProposal',
-  COMMON_IMMEDIATE = 'commonImmediate',
-}
 
 export type PaymentFailureResponseCodes =
   | 'payment_failed'
@@ -25,7 +21,7 @@ export type PaymentFailureResponseCodes =
   | 'payment_stopped_by_issuer'
   | 'card_account_ineligible';
 
-interface IPaymentEntityBase extends IBaseEntity {
+export interface IPaymentEntityBase extends IBaseEntity {
   /**
    * Whether the payment was one-time payment or result of
    * a subscription
@@ -36,6 +32,16 @@ interface IPaymentEntityBase extends IBaseEntity {
    * The current status of the payment
    */
   status: PaymentStatus;
+
+  /**
+   * The type of action that led to the payment
+   */
+  contributionSourceType: CONTRIBUTION_SOURCE_TYPE;
+
+  /**
+   * The type of the payment source
+   */
+  paymentMethod: 'card';
 
   /**
    * The amount and currency of the payment
@@ -73,11 +79,6 @@ interface IPaymentEntityBase extends IBaseEntity {
    * payments of one user
    */
   userId: string;
-
-  /**
-   * The ID of the payment on circle side
-   */
-  circlePaymentId: string;
 }
 
 export interface IPaymentAmount {
