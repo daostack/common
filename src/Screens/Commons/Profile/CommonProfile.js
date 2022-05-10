@@ -477,6 +477,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               onModerate(actionType, membershipRequestType(itemType), item.id)
           : (type) => onEdit(type),
         hasPermission,
+        hasShare: true,
         moderatorOptions: {
           item,
           isMember,

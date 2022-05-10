@@ -9,12 +9,13 @@ import React, {useState, useEffect} from 'react';
 import {text, layout, colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {inject, observer} from 'mobx-react';
-import {object, func, string} from 'prop-types';
+import {object, func, string, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
   onAction,
   hasPermission,
+  hasShare = false,
 }) => {
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
@@ -75,8 +76,10 @@ const CommonProfileOptions = ({
       <TouchableOpacity
         style={styles.optionBtn}
         onPress={() => onAction('Copy link')}>
-        <Icon name="link" style={layout.marginRightS} color={colors.black} />
-        <Text style={{...text.buttonblack, lineHeight: 20}}>Copy Link</Text>
+        <Icon name="copy" style={layout.marginRightL} color={colors.black} />
+        <Text style={{...text.buttonblack, lineHeight: 20, marginLeft: 10}}>
+          Copy Link
+        </Text>
       </TouchableOpacity>
       <View style={styles.lineHorizontal} />
     </>
@@ -84,9 +87,9 @@ const CommonProfileOptions = ({
 
   const renderModeratorTools = () => (
     <>
+      <Text style={styles.text}>Moderator tools</Text>
       {hasPermission && (
         <>
-          <Text style={styles.text}>Moderator tools</Text>
           <TouchableOpacity
             style={styles.optionBtn}
             onPress={() => onAction(actions[0])}>
@@ -125,7 +128,7 @@ const CommonProfileOptions = ({
         {isOptions && renderEditActions()}
         {item && (
           <>
-            {isOptions && renderCommonShare()}
+            {hasShare && renderCommonShare()}
             {renderModeratorTools()}
           </>
         )}
@@ -139,6 +142,7 @@ CommonProfileOptions.propTypes = {
   moderatorOptions: object,
   onAction: func,
   hasPermission: string,
+  hasShare: bool,
 };
 
 const styles = StyleSheet.create({
