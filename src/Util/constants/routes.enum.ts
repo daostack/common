@@ -79,4 +79,9 @@ export type NavigationRoutes = {
   MonthlyContribution: undefined;
   VotesScreen: undefined;
   ChoosePaymentMethodStep: undefined;
+  MonthlyContributionCharges: undefined;
+  ContributionHistory: undefined;
+  MakeContribution: undefined;
+  ContributionPaymentDetails: undefined;
+  UpdatePaymentDetails: undefined;
 };

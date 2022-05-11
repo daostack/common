@@ -51,7 +51,6 @@ export const ModalCommonOptions = ({
       };
       Share.open(options);
     } catch (err) {
-      console.log('err', err);
       logger.log('Deep Linking works only in production');
     }
   };

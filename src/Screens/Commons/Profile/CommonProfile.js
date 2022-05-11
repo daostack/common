@@ -18,7 +18,7 @@ import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
@@ -75,14 +75,14 @@ let stickyHeightAddon = 62;
 let statusBarHeight = Math.round(getStatusBarHeight(true));
 const STICKY_HEADER_HEIGHT = statusBarHeight + stickyHeightAddon;
 
-const CommonProfile = ({navigation, route: {params}, rootStore}) => {
+const CommonProfile = ({route: {params}, rootStore}) => {
   /* all of  params.commonId,
   params.showRequestSentModal,
   params.createdProposalId
   are undefined
   is this sth we plan on having in future?
    */
-
+  const navigation = useNavigation();
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
@@ -92,8 +92,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
+    false,
+  );
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -163,8 +164,9 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
         currCommon?.id,
       );
-      unsubscribeFromCommonDiscussions =
-        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
+      unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
+        currCommon?.id,
+      );
     }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
@@ -713,14 +715,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setLeaveScreenOn(true);
     } else if (type === COMMON_OPTION_TYPES.contributionHistory) {
       closeCommonOptionsModal();
-      const actions = CommonActions.navigate({
-        name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
-        params: {
-          common: currCommon,
-        },
-      });
-
-      navigation.dispatch(actions);
+      navigation.navigate('ContributionHistory', {common: currCommon});
     }
   };
 
