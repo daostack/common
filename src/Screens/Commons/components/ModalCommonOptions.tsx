@@ -55,12 +55,6 @@ export const ModalCommonOptions = ({
     }
   };
 
-  const onMyWallet = () => {
-    closeModal();
-    // screen My Wallet to be implemented
-    // navigation.navigate(NAVIGATION_SCREENS.MY_WALLET);
-  };
-
   const onCommonWallet = () => {
     closeModal();
     // screen Common Wallet to be implemented
@@ -75,12 +69,14 @@ export const ModalCommonOptions = ({
         <TouchableOpacity style={styles.optionBtn} onPress={shareCommon}>
           <Text style={styles.btnText}>Share Common</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionBtn}
+          onPress={() => onAction(COMMON_OPTION_TYPES.contributionHistory)}>
+          <Text style={styles.btnText}>My Wallet</Text>
+        </TouchableOpacity>
         {/* disabled till we get a these screens */}
         {false && (
           <>
-            <TouchableOpacity style={styles.optionBtn} onPress={onMyWallet}>
-              <Text style={styles.btnText}>My Wallet</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.optionBtn} onPress={onCommonWallet}>
               <Text style={styles.btnText}>Common Wallet</Text>
             </TouchableOpacity>
