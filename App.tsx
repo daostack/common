@@ -75,7 +75,7 @@ import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
-import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
@@ -84,7 +84,10 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
-import {NavigationRoutes, NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {
+  NavigationRoutes,
+  NAVIGATION_SCREENS,
+} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
@@ -95,6 +98,7 @@ import {
   DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
 import {layout} from '~/Theme';
+import {useStore} from '~/Util/hooks/useStore';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -115,7 +119,8 @@ declare global {
   }
 }
 
-const App = ({rootStore, navigation}) => {
+const App = () => {
+  const rootStore = useStore('rootStore');
   const authStore = rootStore.authStore;
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
@@ -140,8 +145,8 @@ const App = ({rootStore, navigation}) => {
 
   useEffect(
     () =>
-      messaging().onTokenRefresh((token) => {
-        NotificationService.saveTokenToDatabase(token);
+      messaging().onTokenRefresh(() => {
+        NotificationService.saveTokenToDatabase();
       }),
     [],
   );
@@ -163,8 +168,7 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -186,8 +190,9 @@ const App = ({rootStore, navigation}) => {
       unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
         authStore.userInfo?.uid,
       );
-      unsubscribeToUserSubscriptions =
-        paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
+      unsubscribeToUserSubscriptions = paymentStore.subscribeToUserSubscriptions(
+        authStore.userInfo?.uid,
+      );
     }
 
     return () => {
@@ -220,8 +225,12 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] =
-        remoteMessage.data.path?.split('/');
+      const [
+        screenName,
+        commonId,
+        objectId,
+        tabIndex = 0,
+      ] = remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -448,11 +457,11 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="VerifyPhone"
             component={VerificationStep2}
-            options={() => ({
-              title: '',
+            options={{
               headerBackTitleVisible: false,
-              headerLeft: null,
-            })}
+              headerLeft: () => null,
+              title: '',
+            }}
           />
           <Stack.Screen
             name="EditCommon"
@@ -499,7 +508,7 @@ const App = ({rootStore, navigation}) => {
                 <View style={{alignItems: 'center'}}>
                   <Text
                     style={{
-                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                      ...fontSize(route?.params?.subtitle ? 4 : 3),
                     }}>
                     {route?.params?.title?.length > 20
                       ? route?.params?.title.substring(0, 17) + '...'
@@ -525,7 +534,7 @@ const App = ({rootStore, navigation}) => {
                 <View style={{alignItems: 'center'}}>
                   <Text
                     style={{
-                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                      ...fontSize(route?.params?.subtitle ? 4 : 3),
                     }}>
                     {route?.params?.title?.length > 20
                       ? route?.params?.title.substring(0, 17) + '...'
