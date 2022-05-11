@@ -3,4 +3,5 @@ export const COMMON_OPTION_TYPES = {
   rules: 'rules',
   delete: 'delete',
   leave: 'leave',
+  contributionHistory: 'contributionHistory',
 };

@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {colors, font, layout, text} from '~/Theme';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import FastImage from 'react-native-fast-image';
 import {ScrollView} from 'react-native-gesture-handler';
 import {

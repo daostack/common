@@ -120,6 +120,7 @@ import IconCalendar from './IconCalendar';
 import IconAbstained from './IconAbstained';
 import IconNewCard from './IconNewCard';
 import {AnimateProps} from 'react-native-reanimated';
+import IconCopy from './IconCopy';
 
 export type IconNames =
   | 'lifebuoy-32'
@@ -236,6 +237,7 @@ export type IconNames =
   | 'facebook'
   | 'phone'
   | 'abstained-24'
+  | 'copy'
   | 'newCard';
 
 interface Props extends GProps, ViewProps {
@@ -393,6 +395,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <Iconpicture1 {...rest} />;
     case 'report-16':
       return <Iconreport16 {...rest} />;
+    case 'copy':
+      return <IconCopy {...rest} />;
     case 'sort1':
       return <Iconsort1 {...rest} />;
     case 'style-16':

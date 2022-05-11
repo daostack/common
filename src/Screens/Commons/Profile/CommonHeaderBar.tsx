@@ -20,13 +20,13 @@ export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface HeaderProps {
   currCommon: Common;
-  hasPermission: boolean;
+  isMember: boolean;
   openCommonOptions: () => void;
   yIndex: SharedValue<number>;
 }
 
 export const CommonHeaderBar = (props: HeaderProps) => {
-  const {yIndex, currCommon, hasPermission, openCommonOptions} = props;
+  const {yIndex, currCommon, openCommonOptions} = props;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 

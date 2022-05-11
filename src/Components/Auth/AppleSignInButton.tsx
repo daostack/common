@@ -2,7 +2,7 @@ import {TouchableOpacity} from 'react-native';
 import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {AppleAuthError} from '@invertase/react-native-apple-authentication';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';

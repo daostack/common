@@ -15,7 +15,7 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import ImageField from '~/Components/FormikForm/ImageField';
 import {CountrySelectField} from '~/Components/FormikForm/CountrySelectField';
 import {layout, text, font, colors} from '~/Theme';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import Loader from '~/Components/Loader';

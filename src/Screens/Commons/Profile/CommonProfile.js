@@ -92,9 +92,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -164,9 +163,8 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
         currCommon?.id,
       );
-      unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-        currCommon?.id,
-      );
+      unsubscribeFromCommonDiscussions =
+        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
     }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();
@@ -479,6 +477,7 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
               onModerate(actionType, membershipRequestType(itemType), item.id)
           : (type) => onEdit(type),
         hasPermission,
+        hasShare: true,
         moderatorOptions: {
           item,
           isMember,
@@ -712,6 +711,16 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
       setDeleteScreenOn(true);
     } else if (type === COMMON_OPTION_TYPES.leave) {
       setLeaveScreenOn(true);
+    } else if (type === COMMON_OPTION_TYPES.contributionHistory) {
+      closeCommonOptionsModal();
+      const actions = CommonActions.navigate({
+        name: NAVIGATION_SCREENS.CONTRIBUTION_HISTORY,
+        params: {
+          common: currCommon,
+        },
+      });
+
+      navigation.dispatch(actions);
     }
   };
 
@@ -817,7 +826,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
           <CommonProfileFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            hasPermission={hasPermission}
             showReqToJoin={showReqToJoin}
             renderRequestToJoinBtn={renderRequestToJoinBtn}
             isMember={isMember}>
@@ -839,7 +847,6 @@ const CommonProfile = ({navigation, route: {params}, rootStore}) => {
                     currCommon.numberOfPreBoostedProposals +
                     currCommon.numberOfQueuedProposals
                   }
-                  /* goal: currCommon.fundingGoal, */
                   members={currCommon?.members?.length}
                   balance={currCommon.balance}
                   raised={currCommon.raised}
