@@ -271,12 +271,12 @@ const App = ({rootStore, navigation}) => {
         hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
       },
     );
-    const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
+    const hudHidelistenter = DeviceEventEmitter.addListener('HUDHide', () => {
       hudRef.current.close();
     });
     return () => {
       showLisenter.remove();
-      hidelisenter.remove();
+      hudHidelistenter.remove();
     };
   }, []);
 
