@@ -67,6 +67,11 @@ export interface ICommonEntity extends IBaseEntity {
    * Updated at
    */
   updatedAt: firebase.firestore.Timestamp;
+
+  /**
+   * byline
+   */
+  byline: string;
 }
 
 export interface ICommonRule {

@@ -50,7 +50,7 @@ class NotificationService {
 
   TODELETE = 'To Delete';
 
-  saveTokenToDatabase =  async (): Promise<void> => {
+  saveTokenToDatabase = async (): Promise<void> => {
     if (auth().currentUser === null) {
       return;
     }

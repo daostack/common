@@ -1,3 +1,5 @@
+import {UserModel} from '~/Stores/Models/UserModel';
+
 export enum NAVIGATION_SCREENS {
   ONBOARDING = 'Onboarding',
   COMMON_HOME = 'CommonHome',
@@ -20,7 +22,7 @@ export enum NAVIGATION_SCREENS {
   CREATE_STEP_4 = 'CreateStep4',
   DISCUSSIONS = 'Discussions',
   FULL_SCREEN_CREATION_LOADER = 'FullScreenCreationLoader',
-  NEW_DISCUSSION = 'New Discussion',
+  NEW_DISCUSSION = 'NewDiscussion',
   EDIT_PROFILE = 'EditProfile',
   PDF_VIEWER = 'PDFViewer',
   BROWSER = 'Browser',
@@ -40,3 +42,46 @@ export enum NAVIGATION_SCREENS {
   CONTRIBUTION_PAYMENT_DETAILS = 'ContributionPaymentDetails',
   UPDATE_PAYMENT_DETAILS = 'UpdatePaymentDetails',
 }
+
+export type NavigationRoutes = {
+  Onboarding: undefined;
+  CommonHome: undefined;
+  CommonProfile: undefined;
+  Explore: undefined;
+  Profile: {userId: string; userInfo: UserModel};
+  EditCommon: undefined;
+  CommonAgenda: {commonId: string; canEdit: boolean; onEdit: () => void};
+  CommonExplanation: undefined;
+  ProposalScreen: undefined;
+  AddInvoicesScreen: undefined;
+  RulesStep: undefined;
+  IntroductionStep: undefined;
+  ContributionStep: undefined;
+  BillingDetailsStep: undefined;
+  PaymentDetailsStep: undefined;
+  CreateStep1: undefined;
+  CreateStep2: undefined;
+  CreateStep3: undefined;
+  CreateStep4: undefined;
+  Discussions: undefined;
+  FullScreenCreationLoader: undefined;
+  NewDiscussion: undefined;
+  EditProfile: undefined;
+  PDFViewer: undefined;
+  Browser: undefined;
+  MyWallet: undefined;
+  MyProposals: undefined;
+  MyCommons: undefined;
+  Notifications: undefined;
+  CommonMembers: undefined;
+  FundingProposal: undefined;
+  Billing: undefined;
+  MonthlyContribution: undefined;
+  VotesScreen: undefined;
+  ChoosePaymentMethodStep: undefined;
+  MonthlyContributionCharges: undefined;
+  ContributionHistory: undefined;
+  MakeContribution: undefined;
+  ContributionPaymentDetails: undefined;
+  UpdatePaymentDetails: undefined;
+};

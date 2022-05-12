@@ -21,9 +21,9 @@ const ContributionHistory = () => {
   const paymentStore = useStore('paymentStore');
   const navigation = useNavigation();
   const route = useRoute<ContributionHistoryRouteProps>();
-  const {
-    common: {name: commonName, id: commonId},
-  } = route.params;
+  const common = route.params.common;
+  const commonName = common?.name;
+  const commonId = common?.id;
 
   const payments = paymentStore.getCommonOneTimePayments(commonId);
   const commonTotalPaymentsAmount =
