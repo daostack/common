@@ -754,9 +754,9 @@ PODS:
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
     - nanopb (~> 2.30908.0)
-  - GoogleDataTransport (9.1.2):
-    - GoogleUtilities/Environment (~> 7.2)
-    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.4):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleSignIn (5.0.2):
     - AppAuth (~> 1.2)
@@ -832,10 +832,10 @@ PODS:
     - gRPC-Core/Interface (= 1.44.0)
     - Libuv-gRPC (= 0.0.10)
   - gRPC-Core/Interface (1.44.0)
-  - GTMAppAuth (1.2.3):
+  - GTMAppAuth (1.3.0):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - GTMSessionFetcher/Core (1.7.1)
+  - GTMSessionFetcher/Core (1.7.2)
   - InputMask (6.1.0)
   - Intercom (8.1.1)
   - IQKeyboardManagerSwift (6.5.4)
@@ -863,9 +863,9 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - Permission-Camera (2.0.2):
+  - Permission-Camera (3.3.1):
     - RNPermissions
-  - Permission-PhotoLibrary (2.0.2):
+  - Permission-PhotoLibrary (3.3.1):
     - RNPermissions
   - PromiseKit (6.15.3):
     - PromiseKit/CorePromise (= 6.15.3)
@@ -1256,8 +1256,8 @@ PODS:
     - React
   - RNLocalize (1.4.3):
     - React-Core
-  - RNPermissions (2.0.2):
-    - React
+  - RNPermissions (3.3.1):
+    - React-Core
   - RNReanimated (2.8.0):
     - DoubleConversion
     - FBLazyVector
@@ -1301,12 +1301,12 @@ PODS:
   - secp256k1.c (0.1.2)
   - SSZipArchive (2.2.3)
   - Starscream (4.0.4)
-  - web3swift (2.6.3):
-    - BigInt (~> 5.2.0)
-    - CryptoSwift (~> 1.4.2)
-    - PromiseKit (~> 6.15.3)
+  - web3swift (2.6.4):
+    - BigInt (= 5.2.0)
+    - CryptoSwift (= 1.4.3)
+    - PromiseKit (= 6.15.3)
     - secp256k1.c (~> 0.1)
-    - Starscream (~> 4.0.4)
+    - Starscream (= 4.0.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1318,8 +1318,8 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - IQKeyboardManagerSwift
   - KeychainAccess
-  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
-  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary.podspec`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera/Permission-Camera.podspec`)
+  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary/Permission-PhotoLibrary.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -1457,9 +1457,9 @@ EXTERNAL SOURCES:
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   Permission-Camera:
-    :path: "../node_modules/react-native-permissions/ios/Camera.podspec"
+    :path: "../node_modules/react-native-permissions/ios/Camera/Permission-Camera.podspec"
   Permission-PhotoLibrary:
-    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary.podspec"
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary/Permission-PhotoLibrary.podspec"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -1604,7 +1604,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   web3swift:
-    :commit: e7c98db72d27833fcf910ec37d2aa827c3b556e8
+    :commit: 53b3c3699660cbde8ab22673c819cbda62c739b7
     :git: https://github.com/matter-labs/web3swift
 
 SPEC CHECKSUMS:
@@ -1638,13 +1638,13 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   "gRPC-C++": 9675f953ace2b3de7c506039d77be1f2e77a8db2
   gRPC-Core: 943e491cb0d45598b0b0eb9e910c88080369290b
-  GTMAppAuth: 987526d41b07efb1bedda5e936fe0cb718a03113
-  GTMSessionFetcher: 4577a4cc914a5a07c40a8a0ad0acc22080418c2d
+  GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
+  GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   InputMask: 71d291dc54d2deaeac6512afb6ec2304228c0bb7
   Intercom: d9c8ad77472baa29bb0ef6101e46ff175d4d3473
   IQKeyboardManagerSwift: 2dde0fc70110e8eac7ccce2a46fdbec6a850b414
@@ -1654,8 +1654,8 @@ SPEC CHECKSUMS:
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  Permission-Camera: 626e0ac1c9e92e680b223522dcf9344bb1041fff
-  Permission-PhotoLibrary: 5ff534553bd84abcd1190bc80a7dcb8671a41e1a
+  Permission-Camera: bae27a8503530770c35aadfecbb97ec71823382a
+  Permission-PhotoLibrary: ddb5a158725b29cb12e9e477e8a5f5151c66cc3c
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
@@ -1721,7 +1721,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 4f4986408310a43f1606c391f38f76e0d6e790d5
   RNGoogleSignin: ccf71ee4b6cfd324fd788a41e457e2043838c0d9
   RNLocalize: 7c7aeda16c01db7a0918981c14875c0a53be9b79
-  RNPermissions: 9525b0f4d209fdf9a373d52d1492ae2943e691e5
+  RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   RNReanimated: 58b57be69a237fb02ec8099d25171057638cf41a
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNShare: d22507fa5e80c72f236b5622556cf831de5b1e93
@@ -1731,9 +1731,9 @@ SPEC CHECKSUMS:
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  web3swift: 4f6b3d5270e767986f3012bb27398ae5eec7d981
+  web3swift: 54eb4f659a57e9cb746169c6dc1a8ae8bc10dd95
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
 
-PODFILE CHECKSUM: 0849e83b375c9bea627f6b5345963135a0d95bf3
+PODFILE CHECKSUM: cb0dc1f35f693ae69a85864d3485efddb6427b0a
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

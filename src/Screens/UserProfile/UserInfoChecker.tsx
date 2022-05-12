@@ -8,6 +8,7 @@ import {inject, observer} from 'mobx-react';
 
 type Props = WithNavigationRef & {
   authStore: AuthStore;
+  navigation: React.MutableRefObject<null>;
 };
 
 const UserInfoChecker: FC<Props> = ({navigation, authStore}) => {
