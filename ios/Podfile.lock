@@ -754,9 +754,9 @@ PODS:
     - GoogleUtilities/Network (~> 7.7)
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
     - nanopb (~> 2.30908.0)
-  - GoogleDataTransport (9.1.2):
-    - GoogleUtilities/Environment (~> 7.2)
-    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.4):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleSignIn (5.0.2):
     - AppAuth (~> 1.2)
@@ -832,10 +832,10 @@ PODS:
     - gRPC-Core/Interface (= 1.44.0)
     - Libuv-gRPC (= 0.0.10)
   - gRPC-Core/Interface (1.44.0)
-  - GTMAppAuth (1.2.3):
+  - GTMAppAuth (1.3.0):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - GTMSessionFetcher/Core (1.7.1)
+  - GTMSessionFetcher/Core (1.7.2)
   - InputMask (6.1.0)
   - Intercom (8.1.1)
   - IQKeyboardManagerSwift (6.5.4)
@@ -1118,12 +1118,8 @@ PODS:
     - React-Core
   - react-native-restart (0.0.22):
     - React-Core
-  - react-native-safe-area-context (4.2.5):
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React
-    - ReactCommon/turbomodule/core
+  - react-native-safe-area-context (3.4.1):
+    - React-Core
   - react-native-text-input-mask (3.1.4):
     - InputMask (~> 6.1.0)
     - React-Core
@@ -1292,7 +1288,7 @@ PODS:
   - RNScreens (3.13.1):
     - React-Core
     - React-RCTImage
-  - RNShare (7.4.0):
+  - RNShare (4.1.2):
     - React-Core
   - RNSVG (12.2.0):
     - React-Core
@@ -1305,12 +1301,12 @@ PODS:
   - secp256k1.c (0.1.2)
   - SSZipArchive (2.2.3)
   - Starscream (4.0.4)
-  - web3swift (2.6.3):
-    - BigInt (~> 5.2.0)
-    - CryptoSwift (~> 1.4.2)
-    - PromiseKit (~> 6.15.3)
+  - web3swift (2.6.4):
+    - BigInt (= 5.2.0)
+    - CryptoSwift (= 1.4.3)
+    - PromiseKit (= 6.15.3)
     - secp256k1.c (~> 0.1)
-    - Starscream (~> 4.0.4)
+    - Starscream (= 4.0.4)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1608,7 +1604,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   web3swift:
-    :commit: e7c98db72d27833fcf910ec37d2aa827c3b556e8
+    :commit: 53b3c3699660cbde8ab22673c819cbda62c739b7
     :git: https://github.com/matter-labs/web3swift
 
 SPEC CHECKSUMS:
@@ -1620,7 +1616,7 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   CodePush: 352a7efabd0a7079a1138a5c6f677baedb0dedf9
   CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
-  DoubleConversion: cde416483dac037923206447da6e1454df403714
+  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBAEMKit: 955ca52eba8219c20f90774e8c6ff8bc7b3192a3
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
@@ -1640,15 +1636,15 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 5e5118a2383b3531e730d974680954c679ca0a13
   FirebaseStorage: 8019af461599b2c3bc61c6a5dbdfa3d2de66a4d9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   "gRPC-C++": 9675f953ace2b3de7c506039d77be1f2e77a8db2
   gRPC-Core: 943e491cb0d45598b0b0eb9e910c88080369290b
-  GTMAppAuth: 987526d41b07efb1bedda5e936fe0cb718a03113
-  GTMSessionFetcher: 4577a4cc914a5a07c40a8a0ad0acc22080418c2d
+  GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
+  GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   InputMask: 71d291dc54d2deaeac6512afb6ec2304228c0bb7
   Intercom: d9c8ad77472baa29bb0ef6101e46ff175d4d3473
   IQKeyboardManagerSwift: 2dde0fc70110e8eac7ccce2a46fdbec6a850b414
@@ -1688,7 +1684,7 @@ SPEC CHECKSUMS:
   react-native-progress-bar-android: be43138ab7da30d51fc038bafa98e9ed594d0c40
   react-native-progress-view: 9e6b6a5305a9115c2157ae3b8852081aba0aab7c
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979
-  react-native-safe-area-context: ebf8c413eb8b5f7c392a036a315eb7b46b96845f
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-text-input-mask: 36a546b378fadd2efe1b7484a859d34bc2c80395
   react-native-webview: 6b7950628616679d81bdd75747e50cf6de9b5a5f
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
@@ -1728,16 +1724,16 @@ SPEC CHECKSUMS:
   RNPermissions: 34d678157c800b25b22a488e4d8babb57456e796
   RNReanimated: 58b57be69a237fb02ec8099d25171057638cf41a
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
-  RNShare: 7c4868fdd769705a24692497592ae0b1cfc7419d
+  RNShare: d22507fa5e80c72f236b5622556cf831de5b1e93
   RNSVG: 4ecc2e8f38b6ebe7889909570c26f3abe8059767
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  web3swift: 4f6b3d5270e767986f3012bb27398ae5eec7d981
+  web3swift: 54eb4f659a57e9cb746169c6dc1a8ae8bc10dd95
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
 
-PODFILE CHECKSUM: ac37e8f517beb5aa70c363be90ec943748aa5fb4
+PODFILE CHECKSUM: cb0dc1f35f693ae69a85864d3485efddb6427b0a
 
 COCOAPODS: 1.11.3
