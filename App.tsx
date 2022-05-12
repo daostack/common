@@ -273,7 +273,7 @@ const App = () => {
         hudRef?.current?.show(content, isLoading ? DURATION.FOREVER : 1500);
       },
     );
-    const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
+    const hidelisenter = DeviceEventEmitter.addListener('HUDHide', () => {
       hudRef?.current?.close();
     });
     return () => {

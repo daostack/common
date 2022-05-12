@@ -108,7 +108,6 @@ const MakeContribution = () => {
       amount: number;
     };
     Toast.loading('One moment please');
-
     const immediateContributionResponse =
       await CommonService.immediateContribution({
         amount: form.amount * 100,
@@ -130,15 +129,16 @@ const MakeContribution = () => {
   const push = async () => {
     try {
       if (isMonthly) {
-        updateMonthlyContributionAmount();
+        await updateMonthlyContributionAmount();
       } else {
-        makeOneTimeContribution();
+        await makeOneTimeContribution();
       }
     } catch (e) {
       logger.log('error -> ', e);
       showErrorPopUp(bottomSheetStore, e);
 
       navigation.goBack();
+      Toast.hide();
     }
   };
 
