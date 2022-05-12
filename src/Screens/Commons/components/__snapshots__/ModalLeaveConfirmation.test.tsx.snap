@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalLeaveConfirmation ModalLeaveConfirmation should render correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "paddingHorizontal": 7,
+        "width": "100%",
+      },
+      Object {
+        "marginBottom": NaN,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "alignSelf": "center",
+        "backgroundColor": "#d5dee4",
+        "borderRadius": 2,
+        "height": 4,
+        "marginBottom": 24,
+        "marginTop": 8,
+        "width": 72,
+      }
+    }
+  />
+  <Image
+    source={
+      Object {
+        "testUri": "../../../src/Assets/illustrationsMediumEdit.png",
+      }
+    }
+    style={
+      Object {
+        "aspectRatio": 1,
+        "height": 116,
+      }
+    }
+  />
+  <Text
+    style={
+      Object {
+        "alignSelf": "center",
+        "fontFamily": "NunitoSans-Bold",
+        "fontSize": 20,
+        "fontWeight": "bold",
+        "lineHeight": 28,
+        "marginBottom": 32,
+        "marginTop": 16,
+        "textAlign": "center",
+      }
+    }
+  >
+    Are you sure you want to Leave this Common?
+  </Text>
+  <Text
+    style={
+      Object {
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 16,
+        "fontWeight": "normal",
+        "lineHeight": 20,
+        "marginBottom": 32,
+        "textAlign": "center",
+        "width": 562.5,
+      }
+    }
+  >
+    By leaving the common you will loose your role and voting power. No more contributions will be charged
+  </Text>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignContent": "flex-start",
+        "alignItems": "flex-start",
+        "alignSelf": "stretch",
+        "borderColor": "#eeeeee",
+        "borderRadius": 32,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "marginBottom": 16,
+        "opacity": 1,
+        "padding": 20,
+        "paddingVertical": 14,
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "#ff603e",
+          "fontFamily": "NunitoSans-Regular",
+          "fontSize": 16,
+          "fontWeight": "normal",
+          "lineHeight": 20,
+          "textAlign": "center",
+        }
+      }
+    >
+      Leave Common
+    </Text>
+  </View>
+  <View
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "alignContent": "flex-start",
+        "alignItems": "flex-start",
+        "alignSelf": "stretch",
+        "borderColor": "#eeeeee",
+        "borderRadius": 32,
+        "borderWidth": 1,
+        "flexDirection": "row",
+        "justifyContent": "center",
+        "opacity": 1,
+        "padding": 20,
+        "paddingVertical": 14,
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "#001a36",
+          "fontFamily": "NunitoSans-Regular",
+          "fontSize": 16,
+          "fontWeight": "normal",
+          "lineHeight": 20,
+          "textAlign": "center",
+        }
+      }
+    >
+      Cancel
+    </Text>
+  </View>
+</View>
+`;

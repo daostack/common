@@ -11,6 +11,7 @@ import {default as BackendErrorSheetScreen} from '~/Screens/BottomSheetScreens/B
 import {default as LoadingExpired} from './LoadingExpired';
 import {default as HiddenContentInfo} from './HiddenContentInfo';
 import {default as PaymentMethodUpdateStatus} from './PaymentMethodUpdateStatus';
+import {default as UserProfileSheetScreen} from './UserProfileSheetScreen';
 
 export const BOTTOM_SHEET_TEMPLATES = {
   COMMON_OPERATIONAL_STATE_NOTIF: {
@@ -70,5 +71,9 @@ export const BOTTOM_SHEET_TEMPLATES = {
   HIDDEN_CONTENT_INFO: {
     topSnap: 350,
     content: HiddenContentInfo,
+  },
+  USER_PROFILE_SHEET_SCREEN: {
+    topSnap: 500,
+    content: UserProfileSheetScreen,
   },
 };

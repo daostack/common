@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
-import {CommonHeaderBar} from './CommonHeaderBar';
+import {CommonHeaderBar} from './CommonHeader/CommonHeaderBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   HEADER_BUTTON_HEIGHT,
