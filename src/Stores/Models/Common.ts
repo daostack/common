@@ -30,6 +30,7 @@ export class Common implements ICommonEntity {
   proposalCount: number;
   messageCount: number;
   discussionCount: number;
+  byline: string;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;
@@ -49,6 +50,7 @@ export class Common implements ICommonEntity {
     this.proposalCount = newCommonInfo.proposalCount;
     this.messageCount = newCommonInfo.messageCount;
     this.discussionCount = newCommonInfo.discussionCount;
+    this.byline = newCommonInfo.byline;
     makeAutoObservable(this);
   }
 

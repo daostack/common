@@ -26,7 +26,6 @@ const DEFAULT_HEADER_HEIGHT = STICKY_HEADER_HEIGHT + 100 + stickyHeightAddon;
 
 interface FlatListProps {
   currCommon: Common;
-  hasPermission: boolean;
   openCommonOptionsModal: () => void;
   children: React.ReactNode;
   showReqToJoin: boolean;
@@ -39,7 +38,6 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
     currCommon,
     children,
     openCommonOptionsModal,
-    hasPermission,
     showReqToJoin,
     renderRequestToJoinBtn,
     isMember,
@@ -107,7 +105,7 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
       <CommonHeaderBar
         currCommon={currCommon}
         openCommonOptions={openCommonOptionsModal}
-        hasPermission={hasPermission}
+        isMember={isMember}
         yIndex={yIndex}
       />
       <Animated.FlatList

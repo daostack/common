@@ -1,6 +1,7 @@
 import {firebase} from '~/Firebase';
 import {IBaseEntity} from './IBaseEntity';
 import {PaymentStatus} from './IPaymentEntity';
+import {CONTRIBUTION_SOURCE_TYPE} from './shared';
 
 export interface ISubscriptionEntity extends IBaseEntity {
   /**
@@ -13,6 +14,8 @@ export interface ISubscriptionEntity extends IBaseEntity {
    * created
    */
   userId: string;
+
+  contributionSourceType: CONTRIBUTION_SOURCE_TYPE;
 
   /**
    * The id of the proposal, from witch the subscription

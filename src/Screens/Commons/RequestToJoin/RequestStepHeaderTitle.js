@@ -3,14 +3,16 @@ import {Text, StyleSheet} from 'react-native';
 import {colors, font, sizeLineHeight, sizeM, sizeL, sizeS} from '~/Theme';
 import {string, oneOfType, func} from 'prop-types';
 
-const RequestStepHeaderTitle = ({title, subtitle}) => (
+const RequestStepHeaderTitle = ({title, subtitle, subtitleStyle}) => (
   <>
     <Text style={styles.generalInfoTitle}>{title}</Text>
 
     {typeof subtitle === 'function' ? (
       subtitle(styles.generalInfoSubtitle)
     ) : (
-      <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
+      <Text style={[styles.generalInfoSubtitle, subtitleStyle]}>
+        {subtitle}
+      </Text>
     )}
   </>
 );

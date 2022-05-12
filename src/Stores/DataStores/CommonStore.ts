@@ -139,4 +139,11 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
       throw err;
     }
   };
+  leaveCommon = async (commonId: string) => {
+    try {
+      return await CommonService.leaveCommon(commonId);
+    } catch (err) {
+      throw err;
+    }
+  };
 }

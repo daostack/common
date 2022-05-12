@@ -1,17 +1,6 @@
-import React from 'react';
-import {View, StyleSheet, Pressable, Text} from 'react-native';
-import {font, text} from '~/Theme';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  DYNAMIC_LINKS_TYPES,
-  DYNAMIC_LINK_URI_PREFIX,
-} from '~/Util/constants/dynamicLinks';
-import Share from 'react-native-share';
-import logger from '~/Services/Logger';
-import {Common} from '~/Stores/Models/Common';
-import {colors} from '~/Theme';
+import React from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -20,48 +9,29 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Path} from 'react-native-svg';
 import Icon from '~/Assets/iconfont/Icon';
 import {HEADER_HEIGHT} from '~/Screens/Commons/components/commonConstants';
+import {Common} from '~/Stores/Models/Common';
+import {colors, font, text} from '~/Theme';
 
 export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface HeaderProps {
   currCommon: Common;
-  hasPermission: boolean;
+  isMember: boolean;
   openCommonOptions: () => void;
   yIndex: SharedValue<number>;
 }
 
 export const CommonHeaderBar = (props: HeaderProps) => {
-  const {yIndex, currCommon, hasPermission, openCommonOptions} = props;
+  const {yIndex, currCommon, openCommonOptions} = props;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   const onLeftPress = () => {
     navigation.pop();
-  };
-
-  const shareCommon = async () => {
-    try {
-      const url = await dynamicLinks().buildShortLink({
-        link: `${DYNAMIC_LINK_URI_PREFIX}/${DYNAMIC_LINKS_TYPES.COMMON}/${currCommon.id}`,
-        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
-        social: {
-          title: currCommon.name,
-          descriptionText: currCommon.metadata.description,
-          imageUrl: currCommon.image,
-        },
-      });
-      const options = {
-        url,
-        title: currCommon.name,
-        message: `${currCommon.byline}. Download the Common app to join now.`,
-      };
-      Share.open(options);
-    } catch (err) {
-      logger.log('Deep Linking works only in production');
-    }
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -130,28 +100,17 @@ export const CommonHeaderBar = (props: HeaderProps) => {
       </Animated.View>
 
       <View style={[styles.rightContainer, {top: insets.top + 10}]}>
-        <Pressable style={styles.rightButton} onPress={shareCommon}>
+        <Pressable
+          style={styles.rightButton}
+          onPress={() => openCommonOptions()}>
           <Animated.View style={[styles.blur, animatedBlurStyle]}>
             <Icon
-              name="share-animated"
+              name="menu-animated"
               size={32}
               animatedIconStyle={animatedIconStyle}
             />
           </Animated.View>
         </Pressable>
-        {hasPermission && (
-          <Pressable
-            style={styles.rightButton}
-            onPress={() => openCommonOptions()}>
-            <Animated.View style={[styles.blur, animatedBlurStyle]}>
-              <Icon
-                name="menu-animated"
-                size={32}
-                animatedIconStyle={animatedIconStyle}
-              />
-            </Animated.View>
-          </Pressable>
-        )}
       </View>
     </Animated.View>
   );

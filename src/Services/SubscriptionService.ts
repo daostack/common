@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
-import auth from '@react-native-firebase/auth';
+import {auth} from '~/Firebase';
 import {subscriptionsUrl} from '~/Config';
-import {db} from '../Firebase';
+import {SubscriptionsCollection} from '~/Firebase/Databasee/Collections/SubscriptionsCollection';
 import {IFirebaseSnapshot} from '~/Firebase/types';
 import {ISubscriptionEntity} from '~/Firebase/Databasee/EntityTypes/ISubscriptionEntity';
 
@@ -18,7 +18,7 @@ export type SubscriptionSnapshot = (
 
 class SubscriptionService {
   private axiosClient: AxiosInstance;
-  private endpoints: {cancelSubscription: string};
+  private endpoints: {cancelSubscription: string; updateSubscription: string};
 
   constructor() {
     this.axiosClient = axios.create({
@@ -28,6 +28,7 @@ class SubscriptionService {
 
     this.endpoints = {
       cancelSubscription: '/cancel',
+      updateSubscription: '/update',
     };
   }
 
@@ -49,21 +50,42 @@ class SubscriptionService {
     userId: string,
     onSnapshot: SubscriptionSnapshot,
   ): Promise<void> => {
-    await db
-      .collection('subscriptions')
-      .where('userId', '==', userId)
-      .onSnapshot(onSnapshot);
+    await SubscriptionsCollection.where('userId', '==', userId).onSnapshot(
+      onSnapshot,
+    );
   };
 
   getSubscription = async (
     subscriptionId: string,
     onSnapshot: SubscriptionSnapshot,
   ): Promise<void> => {
-    await db
-      .collection('subscriptions')
-      .doc(subscriptionId)
-      .onSnapshot(onSnapshot);
+    await SubscriptionsCollection.doc(subscriptionId).onSnapshot(onSnapshot);
   };
+
+  async updateSubscriptionAmount({
+    subscriptionId,
+    amount,
+  }: {
+    subscriptionId: string;
+    amount: number;
+  }): Promise<any> {
+    try {
+      return await this.axiosClient.post(
+        this.endpoints.updateSubscription,
+        {
+          subscriptionId,
+          amount,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new SubscriptionService();

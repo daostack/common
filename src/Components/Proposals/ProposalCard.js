@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import {
   Text,
   StyleSheet,

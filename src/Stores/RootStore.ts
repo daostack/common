@@ -10,6 +10,7 @@ import DiscussionMessageStore from './DataStores/DiscussionMessageStore';
 import CardStore from './DataStores/CardStore';
 import UIStore from './UIStore';
 import BankAccountStore from './DataStores/BankAccount';
+import PaymentStore from './DataStores/PaymentStore';
 
 const hydrate = create({
   storage: AsyncStorage,
@@ -27,6 +28,7 @@ export default class RootStore {
   cardStore: CardStore;
   bankAccountStore: BankAccountStore;
   uiStore: UIStore;
+  paymentStore: PaymentStore;
 
   constructor() {
     this.authStore = new AuthStore(this);
@@ -39,6 +41,7 @@ export default class RootStore {
     this.cardStore = new CardStore(this);
     this.bankAccountStore = new BankAccountStore(this);
     this.uiStore = new UIStore(this);
+    this.paymentStore = new PaymentStore();
 
     Promise.all([
       hydrate('authStore', this.authStore),

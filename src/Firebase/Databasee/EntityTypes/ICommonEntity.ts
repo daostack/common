@@ -82,6 +82,11 @@ export interface ICommonEntity extends IBaseEntity {
    * discussionCount
    */
   discussionCount: number;
+
+  /**
+   * byline
+   */
+  byline: string;
 }
 
 export interface ICommonRule {
