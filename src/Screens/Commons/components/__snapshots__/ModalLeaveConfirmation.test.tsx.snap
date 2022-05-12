@@ -74,7 +74,9 @@ exports[`ModalLeaveConfirmation ModalLeaveConfirmation should render correctly 1
   </Text>
   <View
     accessible={true}
+    collapsable={false}
     focusable={true}
+    nativeID="animatedComponent"
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}
@@ -116,7 +118,9 @@ exports[`ModalLeaveConfirmation ModalLeaveConfirmation should render correctly 1
   </View>
   <View
     accessible={true}
+    collapsable={false}
     focusable={true}
+    nativeID="animatedComponent"
     onClick={[Function]}
     onResponderGrant={[Function]}
     onResponderMove={[Function]}

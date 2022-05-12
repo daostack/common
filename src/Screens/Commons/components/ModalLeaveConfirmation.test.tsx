@@ -7,6 +7,7 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({insets: null}),
 }));
 jest.mock('@react-navigation/native');
+jest.mock('react-native-intercom', () => jest.fn());
 
 describe('ModalLeaveConfirmation', () => {
   const currCommon: Common = {
