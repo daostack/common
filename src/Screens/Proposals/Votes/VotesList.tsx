@@ -8,7 +8,6 @@ import MemberImage from '~/Components/Commons/MemberImage';
 import {VoteWithUserInfo} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {colors, font, layout, sizeS, text} from '~/Theme';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {VOTE_ICON_BY_STATUSES, VOTE_STATUSES} from '~/Util/constants/votes';
 import {useStore} from '~/Util/hooks/useStore';
 
@@ -27,7 +26,7 @@ export const VotesList = observer(({proposalId, voteType}: Props) => {
   const navigation = useNavigation();
 
   const showUserProfile = (userInfo: UserModel) => {
-    navigation.navigate(NAVIGATION_SCREENS.PROFILE, {
+    navigation.navigate('Profile', {
       userId: userInfo.uid,
       userInfo,
     });

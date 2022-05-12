@@ -47,8 +47,10 @@ describe('ContributionHistory', () => {
   beforeEach(() => {
     jest.spyOn(Navigation, 'useRoute').mockReturnValue({
       params: {
-        commonName: 'Common Name',
-        commonId: 1,
+        common: {
+          name: 'Common Name',
+          id: 1,
+        },
       },
     } as any);
   });
@@ -73,8 +75,10 @@ describe('ContributionHistory', () => {
   test('ContributionHistory should not render "MonthlyContributionItem" and "Change my monthly contribution" button if activeSubscription=null', () => {
     jest.spyOn(Navigation, 'useRoute').mockReturnValue({
       params: {
-        commonName: 'Common Name',
-        commonId: 0,
+        common: {
+          name: 'Common Name',
+          id: 0,
+        },
       },
     } as any);
     const {queryByText} = render(<ContributionHistory />);
