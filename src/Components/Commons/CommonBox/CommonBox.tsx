@@ -6,6 +6,7 @@ import CommonBoxSummary from './CommonBoxSummary';
 import {colors, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {Common} from '~/Stores/Models/Common';
+import {observer} from 'mobx-react';
 
 interface CommonBoxProps {
   common: Common;
@@ -119,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommonBox;
+export default observer(CommonBox);

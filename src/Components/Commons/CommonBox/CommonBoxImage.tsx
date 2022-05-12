@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image';
 import {colors, font, layout, text} from '~/Theme';
 import {firebase} from '~/Firebase';
 import {dateFormat} from '~/Components/Moderation/helper';
+import {observer} from 'mobx-react';
 
 interface Props {
   cover: string;
@@ -109,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(CommonBoxImage);
+export default observer(CommonBoxImage);
