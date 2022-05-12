@@ -92,9 +92,8 @@ const CommonProfile = ({route: {params}, rootStore}) => {
 
   const [isMember, setMemberState] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [action, setAction] = useState(ACTIONS.report);
@@ -164,9 +163,8 @@ const CommonProfile = ({route: {params}, rootStore}) => {
       unsubscribeFromCommonProposals = proposalStore.subscribeToCommonProposals(
         currCommon?.id,
       );
-      unsubscribeFromCommonDiscussions = discussionStore.subscribeToCommonDiscussions(
-        currCommon?.id,
-      );
+      unsubscribeFromCommonDiscussions =
+        discussionStore.subscribeToCommonDiscussions(currCommon?.id);
     }
     return () => {
       unsubscribeFromCommonProposals && unsubscribeFromCommonProposals();

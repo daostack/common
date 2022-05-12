@@ -84,10 +84,7 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
-import {
-  NavigationRoutes,
-  NAVIGATION_SCREENS,
-} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
@@ -110,12 +107,6 @@ if (Platform.OS === 'ios') {
 if (Platform.OS === 'android') {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
-
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends NavigationRoutes {}
   }
 }
 
@@ -168,7 +159,8 @@ const App = () => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -190,9 +182,8 @@ const App = () => {
       unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
         authStore.userInfo?.uid,
       );
-      unsubscribeToUserSubscriptions = paymentStore.subscribeToUserSubscriptions(
-        authStore.userInfo?.uid,
-      );
+      unsubscribeToUserSubscriptions =
+        paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
     }
 
     return () => {
@@ -225,12 +216,8 @@ const App = () => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});

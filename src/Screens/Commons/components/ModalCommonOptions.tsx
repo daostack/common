@@ -69,12 +69,14 @@ export const ModalCommonOptions = ({
         <TouchableOpacity style={styles.optionBtn} onPress={shareCommon}>
           <Text style={styles.btnText}>Share Common</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.optionBtn}
-          onPress={() => onAction(COMMON_OPTION_TYPES.contributionHistory)}>
-          <Text style={styles.btnText}>My Wallet</Text>
-        </TouchableOpacity>
-        {/* disabled till we get a these screens */}
+        {isMember && (
+          <TouchableOpacity
+            style={styles.optionBtn}
+            onPress={() => onAction(COMMON_OPTION_TYPES.contributionHistory)}>
+            <Text style={styles.btnText}>My Contributions</Text>
+          </TouchableOpacity>
+        )}
+        {/* disabled till we get the screen */}
         {false && (
           <>
             <TouchableOpacity style={styles.optionBtn} onPress={onCommonWallet}>
