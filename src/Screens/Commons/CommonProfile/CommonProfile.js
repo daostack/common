@@ -23,7 +23,7 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
-import CommonHeader from '~/Components/Commons/CommonHeader';
+import CommonHeader from '~/Screens/Commons/CommonProfile/CommonHeader/CommonHeader';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
 import CommonMembersList from './CommonMembersList';
 import ProposalService from '~/Services/ProposalService';

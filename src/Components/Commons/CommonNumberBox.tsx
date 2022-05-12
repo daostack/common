@@ -1,7 +1,7 @@
 import {observer} from 'mobx-react';
 import React, {ReactElement, ReactNode} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {layout, text} from '~/Theme';
+import {colors, font, layout, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 
 interface Props {
@@ -31,7 +31,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerSmallText: {
-    ...text.smallBlackText,
+    ...font.primary.regular,
+    ...font.fontSize(0),
+    textAlign: 'center',
+    color: colors.black,
     ...text.fontColorGreySteel,
   },
   raisedContainer: {
