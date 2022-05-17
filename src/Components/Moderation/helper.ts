@@ -7,7 +7,9 @@ export const reporterName = (
   user: {firstName: string; lastName: string; uid: string},
   currentUID: string,
 ) =>
-  user?.uid === currentUID
+  !user?.uid
+    ? 'anonymous'
+    : user?.uid === currentUID
     ? 'you'
     : `${user?.firstName || ''} ${user?.lastName || ''}`;
 
