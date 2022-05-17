@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {inject, observer} from 'mobx-react';
-import CommonBox from '~/Components/CommonBox';
+import CommonBox from '~/Components/Commons/CommonBox/CommonBox';
 import {layout, colors, text, font, sizeS} from '~/Theme';
 import {CommonActions} from '@react-navigation/native';
 import {object} from 'prop-types';

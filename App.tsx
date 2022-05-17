@@ -57,6 +57,11 @@ import {
   VerificationStep2,
   FirstJoinCommon,
   VotesScreen,
+  ContributionHistory,
+  MonthlyContributionCharges,
+  MakeContribution,
+  ContributionPaymentDetails,
+  UpdatePaymentDetails,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -70,7 +75,7 @@ import messaging from '@react-native-firebase/messaging';
 import NotificationService from './src/Services/NotificationService';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DeepLinking from 'react-native-deep-linking';
-import {BOTTOM_SHEET_TEMPLATES} from './src/Stores/BottomSheetStore';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
@@ -89,6 +94,8 @@ import {
   DYNAMIC_LINKS_SCREEN_PARAMS,
   DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
+import {layout} from '~/Theme';
+import {useStore} from '~/Util/hooks/useStore';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -103,7 +110,8 @@ if (Platform.OS === 'android') {
   }
 }
 
-const App = ({rootStore, navigation}) => {
+const App = () => {
+  const rootStore = useStore('rootStore');
   const authStore = rootStore.authStore;
   const userStore = rootStore.userStore;
   const commonStore = rootStore.commonStore;
@@ -112,13 +120,14 @@ const App = ({rootStore, navigation}) => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
   const bankAccountStore = rootStore.bankAccountStore;
+  const paymentStore = rootStore.paymentStore;
 
   const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notificationRouting, setNotificationRouting] = useState(null);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
-  const hudRef = useRef();
-  const navigationRef = useRef();
+  const hudRef = useRef<ToastView>(null);
+  const navigationRef = useRef(null);
 
   useEffect(() => {
     Text.defaultProps = Text.defaultProps || {};
@@ -127,8 +136,8 @@ const App = ({rootStore, navigation}) => {
 
   useEffect(
     () =>
-      messaging().onTokenRefresh((token) => {
-        NotificationService.saveTokenToDatabase(token);
+      messaging().onTokenRefresh(() => {
+        NotificationService.saveTokenToDatabase();
       }),
     [],
   );
@@ -150,7 +159,8 @@ const App = ({rootStore, navigation}) => {
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
-      unsubscribeLoggedUserNotifications = notificationStore.subscribeToLoggedUserNotifications();
+      unsubscribeLoggedUserNotifications =
+        notificationStore.subscribeToLoggedUserNotifications();
     }
     return () => {
       unsubscribeUsers && unsubscribeUsers();
@@ -161,6 +171,24 @@ const App = ({rootStore, navigation}) => {
           unsubscribeLoggedUserNotificationsBatch &&
           unsubscribeLoggedUserNotificationsBatch(),
       );
+    };
+  }, [authStore.userInfo?.uid]);
+
+  // Initialize To User Payments and Subscriptions
+  useEffect(() => {
+    let unsubscribeToUserPayments = null;
+    let unsubscribeToUserSubscriptions = null;
+    if (authStore.userInfo?.uid) {
+      unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
+        authStore.userInfo?.uid,
+      );
+      unsubscribeToUserSubscriptions =
+        paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
+    }
+
+    return () => {
+      unsubscribeToUserPayments && unsubscribeToUserPayments();
+      unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
     };
   }, [authStore.userInfo?.uid]);
 
@@ -188,12 +216,8 @@ const App = ({rootStore, navigation}) => {
     appLoaderStore.showLoader();
     logger.log('remoteMessage -> ', remoteMessage);
     if (remoteMessage) {
-      const [
-        screenName,
-        commonId,
-        objectId,
-        tabIndex = 0,
-      ] = remoteMessage.data.path?.split('/');
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
       // whitelist;approve/reject requestToJoin
       if (screenName === 'CommonProfile') {
         routing(screenName, {commonId});
@@ -246,11 +270,11 @@ const App = ({rootStore, navigation}) => {
     const showLisenter = DeviceEventEmitter.addListener(
       'HUD',
       (content, isLoading = false) => {
-        hudRef.current.show(content, isLoading ? DURATION.FOREVER : 1500);
+        hudRef?.current?.show(content, isLoading ? DURATION.FOREVER : 1500);
       },
     );
-    const hidelisenter = DeviceEventEmitter.addListener('HideHUD', () => {
-      hudRef.current.close();
+    const hidelisenter = DeviceEventEmitter.addListener('HUDHide', () => {
+      hudRef?.current?.close();
     });
     return () => {
       showLisenter.remove();
@@ -310,7 +334,7 @@ const App = ({rootStore, navigation}) => {
     }
   };
 
-  const routing = (screenName, params) => {
+  const routing = (screenName: string, params) => {
     const actions = CommonActions.navigate({
       name: screenName,
       params: params,
@@ -398,14 +422,14 @@ const App = ({rootStore, navigation}) => {
             name={NAVIGATION_SCREENS.COMMON_AGENDA}
             component={CommonAgenda}
             options={({route}) => ({
-              title: route.params.screenTitle,
+              title: route?.params?.screenTitle,
               headerBackTitleVisible: false,
             })}
           />
           <Stack.Screen
             name="Profile"
             component={UserProfile}
-            options={({route}) => ({
+            options={() => ({
               headerBackTitleVisible: false,
             })}
           />
@@ -420,11 +444,11 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="VerifyPhone"
             component={VerificationStep2}
-            options={() => ({
-              title: '',
+            options={{
               headerBackTitleVisible: false,
-              headerLeft: null,
-            })}
+              headerLeft: () => null,
+              title: '',
+            }}
           />
           <Stack.Screen
             name="EditCommon"
@@ -436,7 +460,7 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="CommonExplanation"
             component={CommonExplanation}
-            options={({nav, route}) => ({
+            options={() => ({
               headerTitle: 'Create a Common',
               headerBackTitleVisible: false,
               headerLeftContainerStyle: {marginLeft: 20},
@@ -456,13 +480,13 @@ const App = ({rootStore, navigation}) => {
               headerLeft: () => (
                 <TouchableOpacity
                   onPress={() =>
-                    route?.params.fromNotificationItem
+                    route?.params?.fromNotificationItem
                       ? route?.params.commonId
                         ? rest?.navigation.replace('CommonProfile', {
                             commonId: route?.params.commonId,
                           })
                         : rest?.navigation.pop()
-                      : navigationRef.current.goBack()
+                      : navigationRef?.current?.goBack()
                   }>
                   <Icon name="left-arrow" color={colors.black} size={32} />
                 </TouchableOpacity>
@@ -471,14 +495,14 @@ const App = ({rootStore, navigation}) => {
                 <View style={{alignItems: 'center'}}>
                   <Text
                     style={{
-                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                      ...fontSize(route?.params?.subtitle ? 4 : 3),
                     }}>
-                    {route?.params.title?.length > 20
-                      ? route?.params.title.substring(0, 17) + '...'
-                      : route?.params.title}
+                    {route?.params?.title?.length > 20
+                      ? route?.params?.title.substring(0, 17) + '...'
+                      : route?.params?.title}
                   </Text>
 
-                  {route?.params.subtitle && (
+                  {route?.params?.subtitle && (
                     <Text style={{opacity: 0.4, ...fontSize(1)}}>
                       {route.params.subtitle}
                     </Text>
@@ -490,21 +514,21 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="VotesScreen"
             component={VotesScreen}
-            options={({route, ...rest}) => ({
+            options={({route}) => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerTitle: () => (
                 <View style={{alignItems: 'center'}}>
                   <Text
                     style={{
-                      ...fontSize(navigation?.route.params.subtitle ? 4 : 3),
+                      ...fontSize(route?.params?.subtitle ? 4 : 3),
                     }}>
-                    {route?.params.title?.length > 20
-                      ? route?.params.title.substring(0, 17) + '...'
-                      : route?.params.title}
+                    {route?.params?.title?.length > 20
+                      ? route?.params?.title.substring(0, 17) + '...'
+                      : route?.params?.title}
                   </Text>
 
-                  {route?.params.subtitle && (
+                  {route?.params?.subtitle && (
                     <Text style={{opacity: 0.4, ...fontSize(1)}}>
                       {route.params.subtitle}
                     </Text>
@@ -516,7 +540,7 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="AddInvoicesScreen"
             component={AddInvoicesScreen}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
@@ -579,35 +603,35 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="CreateStep1"
             component={CreateStep1}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
             name="CreateStep2"
             component={CreateStep2}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
             name="CreateStep3"
             component={CreateStep3}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
             name="CreateStep4"
             component={CreateStep4}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
             name="Discussions"
             component={Discussions}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
@@ -615,20 +639,20 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen
             name="FullScreenCreationLoader"
             component={FullScreenCreationLoader}
-            options={({nav, route}) => ({
+            options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
             name={NAVIGATION_SCREENS.NEW_DISCUSSION}
-            options={({nav, route}) => ({
+            options={() => ({
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
               headerRight: () => (
                 <TouchableOpacity
                   style={styles.buttonRight}
-                  onPress={() => navigationRef.current.goBack()}>
+                  onPress={() => navigationRef?.current?.goBack()}>
                   <Icon name="close" color={colors.black} size={20} />
                 </TouchableOpacity>
               ),
@@ -637,7 +661,9 @@ const App = ({rootStore, navigation}) => {
           />
           <Stack.Screen
             options={({route}) => ({
-              title: route.params.isCompleteAccount ? false : 'Edit my profile',
+              title: route?.params?.isCompleteAccount
+                ? false
+                : 'Edit my profile',
             })}
             name="EditProfile"
             component={EditProfile}
@@ -645,7 +671,7 @@ const App = ({rootStore, navigation}) => {
           <Stack.Screen name="PDFViewer" component={PDFViewer} />
           <Stack.Screen
             name="Browser"
-            options={({nav, route}) => ({headerBackTitle: 'Back'})}
+            options={() => ({headerBackTitle: 'Back'})}
             component={Browser}
           />
           <Stack.Screen
@@ -677,13 +703,13 @@ const App = ({rootStore, navigation}) => {
             name="CommonMembers"
             component={CommonMembers}
             options={({route}) => ({
-              title: route?.params.screenTitle,
+              title: route?.params?.screenTitle,
               headerBackTitleVisible: false,
             })}
           />
           <Stack.Screen
             options={({route}) => ({
-              title: route?.params.screenTitle,
+              title: route?.params?.screenTitle,
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerRight: () => <IntercomShowButton />,
@@ -702,13 +728,13 @@ const App = ({rootStore, navigation}) => {
             component={Billing}
           />
           <Stack.Screen
-            options={({route, ...rest}) => ({
+            options={() => ({
               title: '',
               headerBackTitleVisible: false,
               headerRight: () => (
                 <TouchableOpacity
                   style={styles.buttonRight}
-                  onPress={() => navigationRef.current.goBack()}>
+                  onPress={() => navigationRef?.current?.goBack()}>
                   <Icon name="close" color={colors.black} size={20} />
                 </TouchableOpacity>
               ),
@@ -716,6 +742,88 @@ const App = ({rootStore, navigation}) => {
             name="ChoosePaymentMethodStep"
             component={ChoosePaymentMethodStep}
           />
+          <Stack.Screen
+            options={{
+              title: 'My Contributions',
+              headerBackTitleVisible: false,
+              headerRight: () => <IntercomShowButton />,
+            }}
+            name={NAVIGATION_SCREENS.MONTHLY_CONTRIBUTION_CHARGES}
+            component={MonthlyContributionCharges}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.CONTRIBUTION_HISTORY}
+            component={ContributionHistory}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.MAKE_CONTRIBUTION}
+            component={MakeContribution}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.CONTRIBUTION_PAYMENT_DETAILS}
+            component={ContributionPaymentDetails}
+          />
+
+          <Stack.Screen
+            options={{
+              headerBackTitleVisible: false,
+              headerRight: () => (
+                <View style={styles.headerButtonContainer}>
+                  <IntercomShowButton />
+                  <TouchableOpacity
+                    style={[[styles.buttonRight, layout.marginLeftS]]}
+                    onPress={() => navigationRef.current.goBack()}>
+                    <Icon name="close" color={colors.black} size={20} />
+                  </TouchableOpacity>
+                </View>
+              ),
+            }}
+            name={NAVIGATION_SCREENS.UPDATE_PAYMENT_DETAILS}
+            component={UpdatePaymentDetails}
+          />
+
           <Stack.Screen
             options={{
               headerBackTitleVisible: false,
@@ -769,10 +877,16 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     shadowOffset: {
       height: 0,
+      width: 0,
     },
   },
   buttonRight: {
     marginRight: 20,
+  },
+  headerButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

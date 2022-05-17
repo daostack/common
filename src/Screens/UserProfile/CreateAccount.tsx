@@ -59,9 +59,12 @@ const CreateAccount = (props: CreateAccountProps) => {
 
   const renderError = () => {
     if (authStore.signInError) {
-      const errorText = `${authStore.signInError.toString()} ${
+      let errorText = `${authStore.signInError.toString()} ${
         authStore.signInError.code ? authStore.signInError.code : ''
       }`;
+      if (errorText.includes('reCAPTCHA') || errorText.includes('cancelled')) {
+        errorText = 'Canceled';
+      }
       return (
         <>
           <View style={styles.errorTriangle} />

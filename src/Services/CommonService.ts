@@ -23,6 +23,7 @@ class CommonService {
     create: string;
     update: string;
     delete: string;
+    leave: string;
     immediateContribution: string;
   };
 
@@ -36,6 +37,7 @@ class CommonService {
       create: '/create',
       update: '/update',
       delete: '/deactivate',
+      leave: '/leave',
       immediateContribution: '/immediate-contribution',
     };
   }
@@ -98,6 +100,20 @@ class CommonService {
   deleteCommon = async (commonId: string): Promise<void> => {
     await this.axiosClient.post(
       this.endpoints.delete,
+      {
+        commonId,
+      },
+      {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      },
+    );
+  };
+
+  leaveCommon = async (commonId: string): Promise<void> => {
+    await this.axiosClient.post(
+      this.endpoints.leave,
       {
         commonId,
       },

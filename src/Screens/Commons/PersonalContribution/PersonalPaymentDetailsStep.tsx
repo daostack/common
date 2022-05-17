@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import {PAYMENT_STATUSES} from '~/Util/constants/paymentConstants';
 import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation';
 import Toast from '~/Util/Toast';
-import {PersonalPaymentDetailsRouteProps} from '../Profile/CommonMembers/types';
+import {PersonalPaymentDetailsRouteProps} from '../CommonProfile/CommonMembers/types';
 import {CommonCreatedModal} from './CommonCreatedModal';
 
 const {height} = Dimensions.get('window');
