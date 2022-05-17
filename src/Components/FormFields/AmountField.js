@@ -19,8 +19,9 @@ const AmountField = ({
   isMonthly,
   zeroContribution,
 }) => {
-  const currFieldValue = formStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
-    ?.value;
+  const currFieldValue = formStore.getFormField(
+    RequestToJoinForm.FIELD_AMOUNT,
+  )?.value;
   const [isCustomSelected, setIsCustomSelected] = useState(0);
   const [selectedAmountId, setSelectedAmountId] = useState(
     currFieldValue ? currFieldValue.index : -1,

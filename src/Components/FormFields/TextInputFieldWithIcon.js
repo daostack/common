@@ -35,13 +35,8 @@ class TextInputFieldWithIcon extends React.Component {
       isDecimal: false,
     };
 
-    const {
-      validation,
-      value,
-      fieldActionComponent,
-      onTogglePress,
-      toggleName,
-    } = this.props;
+    const {validation, value, fieldActionComponent, onTogglePress, toggleName} =
+      this.props;
 
     // Register form field for validation message component if name,formStore and validateRule props are provided
     if (validation) {

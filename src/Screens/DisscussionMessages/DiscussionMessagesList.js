@@ -29,9 +29,10 @@ const DiscussionMessagesList = ({
   );
 
   useEffect(() => {
-    const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
-      discussionId,
-    );
+    const unsubscribeFromDiscussionMessages =
+      rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+        discussionId,
+      );
     return () => {
       unsubscribeFromDiscussionMessages && unsubscribeFromDiscussionMessages();
     };
