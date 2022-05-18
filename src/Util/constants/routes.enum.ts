@@ -16,10 +16,9 @@ export enum NAVIGATION_SCREENS {
   CONTRIBUTION_STEP = 'ContributionStep',
   BILLING_DETAILS_STEP = 'BillingDetailsStep',
   PAYMENT_DETAILS_STEP = 'PaymentDetailsStep',
-  CREATE_STEP_1 = 'CreateStep1',
-  CREATE_STEP_2 = 'CreateStep2',
-  CREATE_STEP_3 = 'CreateStep3',
-  CREATE_STEP_4 = 'CreateStep4',
+  CREATE_COMMON_GENERAL_INFO = 'CreateCommonGeneralInfo',
+  CREATE_COMMON_RULES = 'CreateCommonRules',
+  CREATE_COMMON_REVIEW = 'CreateCommonReview',
   DISCUSSIONS = 'Discussions',
   FULL_SCREEN_CREATION_LOADER = 'FullScreenCreationLoader',
   NEW_DISCUSSION = 'NewDiscussion',
@@ -61,10 +60,9 @@ export type NavigationRoutes = {
   ContributionStep: undefined;
   BillingDetailsStep: undefined;
   PaymentDetailsStep: undefined;
-  CreateStep1: undefined;
-  CreateStep2: undefined;
-  CreateStep3: undefined;
-  CreateStep4: undefined;
+  CreateCommonGeneralInfo: undefined;
+  CreateCommonRules: undefined;
+  CreateCommonReview: undefined;
   Discussions: undefined;
   FullScreenCreationLoader: undefined;
   NewDiscussion: undefined;

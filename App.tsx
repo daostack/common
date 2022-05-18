@@ -29,10 +29,9 @@ import {
   CommonAgenda,
   CommonMembers,
   CommonExplanation,
-  CreateStep1,
-  CreateStep2,
-  CreateStep3,
-  CreateStep4,
+  CreateCommonGeneralInfo,
+  CreateCommonRules,
+  CreateCommonReview,
   RulesStep,
   IntroductionStep,
   ContributionStep,
@@ -601,29 +600,22 @@ const App = () => {
             })}
           />
           <Stack.Screen
-            name="CreateStep1"
-            component={CreateStep1}
+            name="CreateCommonGeneralInfo"
+            component={CreateCommonGeneralInfo}
             options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
-            name="CreateStep2"
-            component={CreateStep2}
+            name="CreateCommonRules"
+            component={CreateCommonRules}
             options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
-            name="CreateStep3"
-            component={CreateStep3}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep4"
-            component={CreateStep4}
+            name="CreateCommonReview"
+            component={CreateCommonReview}
             options={() => ({
               headerShown: false,
             })}

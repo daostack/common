@@ -7,46 +7,21 @@ import RequestStepActionButton from '../RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
-const CreateStep3 = ({
+const CreateCommonRules = ({
   navigation,
   route: {
     params: {formStores},
   },
 }) => {
   const agendaFormStore = formStores.agendaFormStore;
-  // var ruleBody = [];
-
-  /*
-  const handleRuleTitles = (x, text) => {
-    props.agendaFormStore.registerFormField(`ruleTitles_${x}`, 'string');
-    props.agendaFormStore.fieldChanged(`ruleTitles_${x}`, text);
-  };
-
-  const handleRuleBody = (x, text) => {
-    props.agendaFormStore.registerFormField(`ruleBody_${x}`, 'string');
-    props.agendaFormStore.fieldChanged(`ruleBody_${x}`, text);
-  };
-
-
-  const isValid = () => {
-    const titles = [...Array(ruleCount).keys()].map(x => `ruleTitles_${x}`);
-    const bodys = [...Array(ruleCount).keys()].map(x => `ruleBody_${x}`);
-
-    const result = props.agendaFormStore.isFormValidSelectedFields([
-      CreateCommonForm.ACTION,
-      ...titles,
-      ...bodys,
-    ]);
-    setPass(result);
-    return result;
-  };
-
-  */
 
   const push = () => {
     if (agendaFormStore.isFormValid()) {
-      navigation.navigate('CreateStep4', {formStores});
+      navigation.navigate(NAVIGATION_SCREENS.CREATE_COMMON_REVIEW, {
+        formStores,
+      });
     }
   };
 
@@ -161,7 +136,7 @@ const CreateStep3 = ({
   );
 };
 
-CreateStep3.propTypes = {
+CreateCommonRules.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -175,4 +150,4 @@ CreateStep3.propTypes = {
   }),
 };
 
-export default CreateStep3;
+export default CreateCommonRules;

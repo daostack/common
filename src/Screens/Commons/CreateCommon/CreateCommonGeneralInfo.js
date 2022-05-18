@@ -10,28 +10,28 @@ import {shape, func, object} from 'prop-types';
 import {BlurView} from '@react-native-community/blur';
 import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
+import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 
-const CreateStep1 = ({
+const CreateCommonGeneralInfo = ({
   navigation,
   route: {
     params: {formStores},
   },
 }) => {
   const generalInfoFormStore = formStores.generalInfoFormStore;
-  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(
-    false,
-  );
+  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] =
+    useState(false);
   const [agreed, setAgreed] = useState(false);
 
   const push = () => {
     setAgreed(true);
     setUseAcknowledgmentVisible(false);
-    continueToFunding();
+    continueToNextStep();
   };
 
-  const continueToFunding = () => {
+  const continueToNextStep = () => {
     if (generalInfoFormStore.isFormValid()) {
-      navigation.navigate('CreateStep3', {formStores});
+      navigation.navigate(NAVIGATION_SCREENS.CREATE_COMMON_RULES, {formStores});
     }
   };
 
@@ -64,12 +64,12 @@ const CreateStep1 = ({
       }
       requestStepActionButton={
         <RequestStepActionButton
-          title="Continue to Funding"
+          title="Continue"
           formStore={generalInfoFormStore}
           onPress={() => {
             if (generalInfoFormStore.isFormValid()) {
               if (agreed) {
-                continueToFunding();
+                continueToNextStep();
               } else {
                 setUseAcknowledgmentVisible(true);
               }
@@ -175,7 +175,7 @@ const CreateStep1 = ({
   );
 };
 
-CreateStep1.propTypes = {
+CreateCommonGeneralInfo.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -193,4 +193,4 @@ const styles = StyleSheet.create({
   blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
 });
 
-export default CreateStep1;
+export default CreateCommonGeneralInfo;

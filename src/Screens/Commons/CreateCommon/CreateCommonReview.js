@@ -43,7 +43,7 @@ const CONTRIBUTION = {
   'one-time': '',
 };
 
-const CreateStep4 = ({
+const CreateCommonReview = ({
   route: {
     params: {formStores},
   },
@@ -313,7 +313,7 @@ const CreateStep4 = ({
   );
 };
 
-CreateStep4.propTypes = {
+CreateCommonReview.propTypes = {
   navigation: object,
   rootStore: rootStorePropTypes,
   route: shape({
@@ -432,4 +432,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(CreateStep4));
+export default inject('rootStore')(observer(CreateCommonReview));

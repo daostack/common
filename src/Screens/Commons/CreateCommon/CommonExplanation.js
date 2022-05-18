@@ -27,7 +27,7 @@ const CommonExplanation = ({navigation}) => {
   const [index, setIndex] = useState(0);
 
   const goToCreateScreen = async () => {
-    navigation.navigate(NAVIGATION_SCREENS.CREATE_STEP_1, {
+    navigation.navigate(NAVIGATION_SCREENS.CREATE_COMMON_GENERAL_INFO, {
       formStores: {
         generalInfoFormStore: new GeneralInfoFormStore(),
         fundingFormStore: new FundingFormStore(),
