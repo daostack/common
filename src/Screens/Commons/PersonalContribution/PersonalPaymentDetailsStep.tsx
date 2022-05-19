@@ -23,9 +23,8 @@ const PersonalPaymentDetailsStep = () => {
   const {common, iFrameLink, paymentId} = router.params;
 
   const insets = useSafeAreaInsets();
-  const [isVisibleFinishModal, setVisibleFinishModal] = useState<boolean>(
-    false,
-  );
+  const [isVisibleFinishModal, setVisibleFinishModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     PaymentsService.subscribeToPaymentById(

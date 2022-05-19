@@ -20,41 +20,43 @@ export function getDataById<T>(
   }
 }
 
-export const updateStoreData = <IEntity, IEntityModel>(
-  data: ObservableMap<string, IEntity>,
-  getEntityModel: (entity: IEntity) => IEntityModel,
-) => (
-  updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
-): void => {
-  if (!updatedSnapshot) {
-    // TBD: Decide what to do in that case. Probably show a Toast with a warning.
-    // That's happening sometimes when there is a problem with firebase like missing index, rules etc.
-    return;
-  }
-  const updatesMap = new Map<string, IEntityModel>();
+export const updateStoreData =
+  <IEntity, IEntityModel>(
+    data: ObservableMap<string, IEntity>,
+    getEntityModel: (entity: IEntity) => IEntityModel,
+  ) =>
+  (
+    updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
+  ): void => {
+    if (!updatedSnapshot) {
+      // TBD: Decide what to do in that case. Probably show a Toast with a warning.
+      // That's happening sometimes when there is a problem with firebase like missing index, rules etc.
+      return;
+    }
+    const updatesMap = new Map<string, IEntityModel>();
 
-  // Shapshot handling in case of doc list result
-  if (typeof updatedSnapshot?.docChanges === 'function') {
-    (updatedSnapshot as IFirebaseSnapshot<IEntity>)
-      .docChanges()
-      .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
-        const updatedEntity = firestoreDocChangeToEntity(updatedUserDoc);
-        updatesMap.set(updatedEntity.id, getEntityModel(updatedEntity));
-      });
-  }
-  // Shapshot handling in case of single doc result.
-  // * Used for subscribeToEntityById type subscriptions
-  else {
-    const updatedFirebaseDoc = updatedSnapshot as IFirebaseDoc<IEntity>;
-    const docData = prepareDocData(
-      updatedFirebaseDoc.data(),
-      updatedFirebaseDoc.id,
-    );
-    updatesMap.set(docData.id, getEntityModel(docData));
-  }
+    // Shapshot handling in case of doc list result
+    if (typeof updatedSnapshot?.docChanges === 'function') {
+      (updatedSnapshot as IFirebaseSnapshot<IEntity>)
+        .docChanges()
+        .forEach((updatedUserDoc: IFirebaseDocChange<IEntity>) => {
+          const updatedEntity = firestoreDocChangeToEntity(updatedUserDoc);
+          updatesMap.set(updatedEntity.id, getEntityModel(updatedEntity));
+        });
+    }
+    // Shapshot handling in case of single doc result.
+    // * Used for subscribeToEntityById type subscriptions
+    else {
+      const updatedFirebaseDoc = updatedSnapshot as IFirebaseDoc<IEntity>;
+      const docData = prepareDocData(
+        updatedFirebaseDoc.data(),
+        updatedFirebaseDoc.id,
+      );
+      updatesMap.set(docData.id, getEntityModel(docData));
+    }
 
-  data.merge(updatesMap);
-};
+    data.merge(updatesMap);
+  };
 
 export function firestoreDocToEntity<T>(firebaseDoc: IFirebaseDoc<T>): T {
   let docData: T = firebaseDoc.data() as T;

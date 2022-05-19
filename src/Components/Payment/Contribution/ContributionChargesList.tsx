@@ -1,6 +1,6 @@
 import {observer} from 'mobx-react';
 import React, {ReactNode, useCallback} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList} from 'react-native';
 import {Subscription} from '~/Stores/Models/Subscription';
 import {ContributionChargesItem} from './ContributionChargesItem';
 
