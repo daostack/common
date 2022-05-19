@@ -47,7 +47,7 @@ export const ModalCommonOptions = ({
       const options = {
         url,
         title: currCommon.name,
-        message: `${currCommon.byline}. Download the Common app to join now.`,
+        message: 'Download the Common app to join now.',
       };
       Share.open(options);
     } catch (err) {
