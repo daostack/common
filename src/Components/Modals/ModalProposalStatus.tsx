@@ -44,9 +44,8 @@ export const ModalProposalStatus = ({
   useEffect(() => {
     let unsubscribeFromProposalById: FirestoreUnsubscribeFn;
     if (proposalId) {
-      unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-        proposalId,
-      );
+      unsubscribeFromProposalById =
+        proposalStore.subscribeToProposalById(proposalId);
     }
 
     return () => {

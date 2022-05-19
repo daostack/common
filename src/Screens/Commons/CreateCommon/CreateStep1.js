@@ -18,9 +18,8 @@ const CreateStep1 = ({
   },
 }) => {
   const generalInfoFormStore = formStores.generalInfoFormStore;
-  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] = useState(
-    false,
-  );
+  const [useAcknowledgmentVisible, setUseAcknowledgmentVisible] =
+    useState(false);
   const [agreed, setAgreed] = useState(false);
 
   const push = () => {

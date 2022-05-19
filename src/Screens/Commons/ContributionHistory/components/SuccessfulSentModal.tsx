@@ -72,7 +72,7 @@ export const SuccessfulSentModal = observer(
               onPress={resetNavigation}>
               <Text style={text.buttonblack}>OK</Text>
             </TouchableOpacity>
-           </View>
+          </View>
         </>
       </BottomSheetModal>
     );
