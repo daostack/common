@@ -58,16 +58,6 @@ const CommonProfileOptions = ({
         />
         <Text style={text.buttonblack}>Edit rules</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.optionBtn}
-        onPress={() => onAction('rules')}>
-        <Icon
-          name="agenda-24"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Edit123 rules</Text>
-      </TouchableOpacity>
     </>
   );
 
@@ -91,15 +81,15 @@ const CommonProfileOptions = ({
           Copy Link
         </Text>
       </TouchableOpacity>
-      <View style={styles.lineHorizontal} />
     </>
   );
 
   const renderModeratorTools = () => (
     <>
-      <Text style={styles.text}>Moderator tools</Text>
       {hasPermission && (
         <>
+          <View style={styles.lineHorizontal} />
+          <Text style={styles.text}>Moderator tools</Text>
           <TouchableOpacity
             style={styles.optionBtn}
             onPress={() => onAction(actions[0])}>
@@ -135,6 +125,7 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
+        <Text style={styles.text}>Options</Text>
         {isOptions && renderEditActions()}
         {item && (
           <>
