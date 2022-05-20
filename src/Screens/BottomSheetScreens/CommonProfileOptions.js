@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {text, layout, colors, font} from '~/Theme';
+import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {object, func, string, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
@@ -37,7 +37,6 @@ const CommonProfileOptions = ({
 
   const renderEditActions = () => (
     <>
-      {<Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>}
       <TouchableOpacity
         style={styles.optionBtn}
         onPress={() => onAction('info')}>
@@ -185,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(CommonProfileOptions));
+export default observer(CommonProfileOptions);
