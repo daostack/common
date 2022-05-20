@@ -649,6 +649,7 @@ const App = () => {
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
+              title: 'New Discussion',
               headerRight: () => (
                 <TouchableOpacity
                   style={styles.buttonRight}
