@@ -84,7 +84,7 @@ export const ModalCommonOptions = ({
             </TouchableOpacity>
           </>
         )}
-        {isMember && (
+        {isMember && commonMembersCount > 1 && (
           <TouchableOpacity
             style={styles.optionBtn}
             onPress={() => onAction(COMMON_OPTION_TYPES.leave)}>
