@@ -57,6 +57,10 @@ class ModerationService {
     type: keyof typeof ENTITY_TYPES,
     moderationData: Record<string, string>,
   ): Promise<void> {
+    let token;
+    if (token && auth().currentUser) {
+      token = await auth().currentUser.getIdToken(true);
+    }
     await this.axiosClient.post(
       this.endpoints.report,
       {
@@ -64,9 +68,11 @@ class ModerationService {
         type,
       },
       {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
+        ...(token && {
+          headers: {
+            Authorization: token,
+          },
+        }),
       },
     );
   }
