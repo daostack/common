@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import axios, {AxiosInstance} from 'axios';
+import Share from 'react-native-share';
 import {ACTIONS, ENTITY_TYPES} from '~/Components/Moderation/constants';
 import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
@@ -56,6 +57,10 @@ class ModerationService {
     type: keyof typeof ENTITY_TYPES,
     moderationData: Record<string, string>,
   ): Promise<void> {
+    let token;
+    if (token && auth().currentUser) {
+      token = await auth().currentUser.getIdToken(true);
+    }
     await this.axiosClient.post(
       this.endpoints.report,
       {
@@ -63,9 +68,11 @@ class ModerationService {
         type,
       },
       {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
+        ...(token && {
+          headers: {
+            Authorization: token,
+          },
+        }),
       },
     );
   }
@@ -104,6 +111,25 @@ class ModerationService {
     }
   };
 
+  share = async (
+    itemId: string,
+    type: keyof typeof ENTITY_TYPES,
+  ): Promise<void> => {
+    try {
+      const url = await dynamicLinks().buildShortLink({
+        link: `${DYNAMIC_LINK_URI_PREFIX}/${type}/${itemId}`,
+        domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
+      });
+      const options = {
+        url,
+        message: 'Download the Common app to join now.',
+      };
+      Share.open(options);
+    } catch (err) {
+      logger.log('Deep Linking works only in production');
+    }
+  };
+
   onModerate = async (
     actionType: keyof typeof ACTIONS,
     itemId: string,
@@ -127,6 +153,9 @@ class ModerationService {
         case ACTIONS.copyLink:
           this.copyLink(itemId, itemType);
           Toast.success('Link copied to clipboard');
+          return false;
+        case ACTIONS.share:
+          this.share(itemId, itemType);
           return false;
         default:
           // reporting

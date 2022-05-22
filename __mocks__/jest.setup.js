@@ -87,6 +87,15 @@ jest.mock('@react-native-community/google-signin', () => {
   return mockGoogleSignin;
 });
 
+NativeModules.RNDocumentPicker = {
+  pick: jest.fn(),
+  types: {
+    allFiles: '*',
+    pdf: '.pdf',
+  },
+  isCancel: jest.fn(),
+};
+
 NativeModules.RNGoogleSignin = {
   BUTTON_SIZE_ICON: 0,
   BUTTON_SIZE_STANDARD: 0,

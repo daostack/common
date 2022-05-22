@@ -121,17 +121,14 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [modalSuccessVisible, setModalSuccessVisible] = useState(
     fromNotificationItem && eventType === EventTypeState.fundingRequestAccepted,
   );
@@ -157,13 +154,11 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
+    const unsubscribeFromProposalDiscussionMessages =
+      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
-    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-      proposalId,
-    );
+    let unsubscribeFromProposalById =
+      proposalStore.subscribeToProposalById(proposalId);
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
@@ -665,12 +660,8 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
-  const {
-    approvedCount,
-    abstainedCount,
-    rejectedCount,
-    allVoteCount,
-  } = proposalStore.getVotesCounts(proposalInfo?.votes);
+  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
+    proposalStore.getVotesCounts(proposalInfo?.votes);
 
   const isDisabledVoteButton = useMemo(
     () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,

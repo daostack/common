@@ -39,9 +39,10 @@ class FundingRequestForm extends React.Component {
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
-    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
-      FundingRequestForm.FIELD_AMOUNT_REQUESTED
-    ];
+    const amountRequested =
+      fundingRequestFormStore.getChangedFormFieldsJson()[
+        FundingRequestForm.FIELD_AMOUNT_REQUESTED
+      ];
 
     return (
       <View
