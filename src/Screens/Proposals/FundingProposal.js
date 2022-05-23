@@ -76,9 +76,8 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.createFundingProposal(
-          data,
-        );
+        const createFundingProposalResponse =
+          await ProposalService.createFundingProposal(data);
 
         if (createFundingProposalResponse.status === 200) {
           const proposalId = createFundingProposalResponse.data.id;
@@ -119,9 +118,10 @@ const FundingProposal = ({
   };
 
   const onCreateProposalButtonPressed = async () => {
-    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
-      FundingRequestForm.FIELD_AMOUNT_REQUESTED
-    ];
+    const amountRequested =
+      fundingRequestFormStore.getChangedFormFieldsJson()[
+        FundingRequestForm.FIELD_AMOUNT_REQUESTED
+      ];
 
     let bankError = bankAccountState.hasError; //This is needed because the state wasn't update before the next if was chekcing his new value, and this was causing issues
 

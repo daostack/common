@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {text, layout, colors, font} from '~/Theme';
+import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {object, func, string, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
@@ -37,7 +37,6 @@ const CommonProfileOptions = ({
 
   const renderEditActions = () => (
     <>
-      {<Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>}
       <TouchableOpacity
         style={styles.optionBtn}
         onPress={() => onAction('info')}>
@@ -57,16 +56,6 @@ const CommonProfileOptions = ({
           color={colors.black}
         />
         <Text style={text.buttonblack}>Edit rules</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.optionBtn}
-        onPress={() => onAction('rules')}>
-        <Icon
-          name="agenda-24"
-          style={layout.marginRightS}
-          color={colors.black}
-        />
-        <Text style={text.buttonblack}>Edit123 rules</Text>
       </TouchableOpacity>
     </>
   );
@@ -91,15 +80,15 @@ const CommonProfileOptions = ({
           Copy Link
         </Text>
       </TouchableOpacity>
-      <View style={styles.lineHorizontal} />
     </>
   );
 
   const renderModeratorTools = () => (
     <>
-      <Text style={styles.text}>Moderator tools</Text>
       {hasPermission && (
         <>
+          <View style={styles.lineHorizontal} />
+          <Text style={styles.text}>Moderator tools</Text>
           <TouchableOpacity
             style={styles.optionBtn}
             onPress={() => onAction(actions[0])}>
@@ -135,6 +124,7 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
+        <Text style={styles.text}>Options</Text>
         {isOptions && renderEditActions()}
         {item && (
           <>
@@ -194,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(CommonProfileOptions));
+export default observer(CommonProfileOptions);

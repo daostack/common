@@ -32,10 +32,8 @@ interface IPropOverrides {
 export const ErrorExpand: React.FC<
   PropTypes.InferProps<typeof propTypes> & IPropOverrides
 > = ({bottomSheetStore, ...props}) => {
-  const [
-    formattedError,
-    setFormattedError,
-  ] = React.useState<IFormattedError | null>(null);
+  const [formattedError, setFormattedError] =
+    React.useState<IFormattedError | null>(null);
   const [containerHeight, setContainerHeight] = React.useState<number>(0);
   const [showDetails, setShowDetails] = React.useState<boolean>(false);
 
