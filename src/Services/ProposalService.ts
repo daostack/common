@@ -11,8 +11,7 @@ import {
   JoinRequestPayload,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {
-  CreateVotePayload,
-  UpdateVotePayload,
+  ChangeVotePayload,
   IVoteEntity,
 } from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 import {
@@ -325,7 +324,7 @@ class ProposalService {
     }
   };
 
-  createVote = async (formData: CreateVotePayload): Promise<IVoteEntity> => {
+  createVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
       return await this.axiosClient.post(this.endpoints.createVote, formData, {
         headers: {
@@ -338,7 +337,7 @@ class ProposalService {
     }
   };
 
-  updateVote = async (formData: UpdateVotePayload): Promise<IVoteEntity> => {
+  updateVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
       return await this.axiosClient.post(this.endpoints.updateVote, formData, {
         headers: {

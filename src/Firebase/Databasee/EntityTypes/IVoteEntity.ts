@@ -7,17 +7,6 @@ export interface IVoteEntity extends IBaseEntity {
   voterId: string;
 
   /**
-   * The id of the proposal, for witch this vote was created
-   */
-  proposalId: string;
-
-  /**
-   * The id of the common, for witch the proposal, that
-   * this vote is for, was created
-   */
-  commonId: string;
-
-  /**
    * The outcome of this voter of this proposal
    */
   outcome: VoteOutcome;
@@ -25,13 +14,7 @@ export interface IVoteEntity extends IBaseEntity {
 
 export type VoteOutcome = 'approved' | 'rejected' | 'abstained';
 
-export interface CreateVotePayload {
+export interface ChangeVotePayload {
   outcome: VoteOutcome;
   proposalId: string;
-  voterId: string;
-}
-
-export interface UpdateVotePayload {
-  id: string;
-  outcome: VoteOutcome;
 }

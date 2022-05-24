@@ -410,7 +410,6 @@ const ProposalScreen = ({
       const voteData = {
         outcome: voteOutcome,
         proposalId: proposalId || proposalInfo.id,
-        voterId: authStore.userInfo,
       };
 
       const createVoteResponse = await ProposalService.createVote(voteData);
