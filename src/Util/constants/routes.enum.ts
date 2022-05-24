@@ -30,7 +30,7 @@ export enum NAVIGATION_SCREENS {
   MY_COMMONS = 'MyCommons',
   NOTIFICATIONS = 'Notifications',
   COMMON_MEMBERS = 'CommonMembers',
-  FUNDING_PROPOSAL = 'FundingProposal',
+  FUNDING_ALLOCATION = 'FundingAllocation',
   BILLING = 'Billing',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
   VOTES_SCREEN = 'VotesScreen',
@@ -74,7 +74,7 @@ export type NavigationRoutes = {
   MyCommons: undefined;
   Notifications: undefined;
   CommonMembers: undefined;
-  FundingProposal: undefined;
+  FundingAllocation: undefined;
   Billing: undefined;
   MonthlyContribution: undefined;
   VotesScreen: undefined;

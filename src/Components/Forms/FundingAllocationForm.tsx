@@ -13,7 +13,7 @@ import MultiImageField from '../FormFields/MultiImageField';
 import MultiTitleValueField from '../FormFields/MultiTitleValueField';
 import TextInputField from '../FormFields/TextInputField';
 
-class FundingRequestForm extends React.Component {
+class FundingAllocationForm extends React.Component {
   static FIELD_TITLE = 'title';
   static FIELD_AMOUNT_REQUESTED = 'amount_requested';
   static FIELD_DESCRIPTION = 'description';
@@ -21,7 +21,7 @@ class FundingRequestForm extends React.Component {
   static FIELD_IMAGES = 'images';
   static FIELD_FILES = '\files';
 
-  onFormClose = (e) => {
+  onFormClose = () => {
     const {onFormClose} = this.props;
     if (onFormClose) {
       onFormClose();
@@ -30,7 +30,7 @@ class FundingRequestForm extends React.Component {
 
   render() {
     const {
-      fundingRequestFormStore,
+      fundingAllocationFormStore,
       common,
       navigation,
       handleAddBankAccount,
@@ -39,9 +39,10 @@ class FundingRequestForm extends React.Component {
 
     logger.log('common.balance ->', common.balance);
     const balance = formatNumber(common.balance / 100);
-    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
-      FundingRequestForm.FIELD_AMOUNT_REQUESTED
-    ];
+    const amountRequested =
+      fundingAllocationFormStore.getChangedFormFieldsJson()[
+        FundingAllocationForm.FIELD_AMOUNT_REQUESTED
+      ];
 
     return (
       <View
@@ -62,8 +63,8 @@ class FundingRequestForm extends React.Component {
           autoCorrect={false}
           infoLabel="Required"
           validation={{
-            name: FundingRequestForm.FIELD_TITLE,
-            formStore: this.props.fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_TITLE,
+            formStore: fundingAllocationFormStore,
             validateRule: 'required|string',
           }}
         />
@@ -84,8 +85,8 @@ class FundingRequestForm extends React.Component {
           autoCorrect={false}
           keyboardType="numeric"
           validation={{
-            name: FundingRequestForm.FIELD_AMOUNT_REQUESTED,
-            formStore: this.props.fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_AMOUNT_REQUESTED,
+            formStore: fundingAllocationFormStore,
             validateRule: `required|integer|maxAmount:${
               common.balance / 100
             }|min:0`,
@@ -107,8 +108,8 @@ class FundingRequestForm extends React.Component {
           multiline={true}
           numberOfLines={5}
           validation={{
-            name: FundingRequestForm.FIELD_DESCRIPTION,
-            formStore: this.props.fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_DESCRIPTION,
+            formStore: fundingAllocationFormStore,
             validateRule: 'required|string',
           }}
         />
@@ -131,8 +132,8 @@ class FundingRequestForm extends React.Component {
           title="Title"
           maxLength={30}
           validation={{
-            name: FundingRequestForm.FIELD_LINKS,
-            formStore: fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_LINKS,
+            formStore: fundingAllocationFormStore,
           }}
         />
         <Text
@@ -157,8 +158,8 @@ class FundingRequestForm extends React.Component {
           allowsEditing={true}
           title={'Add File'}
           validation={{
-            name: FundingRequestForm.FIELD_FILES,
-            formStore: fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_FILES,
+            formStore: fundingAllocationFormStore,
             validateRule: 'string',
           }}
           navigation={navigation}
@@ -175,8 +176,8 @@ class FundingRequestForm extends React.Component {
           allowsEditing={true}
           title={'Add Image'}
           validation={{
-            name: FundingRequestForm.FIELD_IMAGES,
-            formStore: fundingRequestFormStore,
+            name: FundingAllocationForm.FIELD_IMAGES,
+            formStore: fundingAllocationFormStore,
             validateRule: 'string',
           }}
         />
@@ -185,8 +186,8 @@ class FundingRequestForm extends React.Component {
   }
 }
 
-FundingRequestForm.propTypes = {
-  fundingRequestFormStore: shape({
+FundingAllocationForm.propTypes = {
+  fundingAllocationFormStore: shape({
     isFormValid: func,
   }),
   common: object,
@@ -198,4 +199,4 @@ FundingRequestForm.propTypes = {
   rootStore: object,
 };
 
-export default inject('rootStore')(observer(FundingRequestForm));
+export default inject('rootStore')(observer(FundingAllocationForm));

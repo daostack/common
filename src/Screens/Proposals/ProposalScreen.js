@@ -121,17 +121,14 @@ const ProposalScreen = ({
   ] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [debtErrorModalVisible, setDebtErrorModalVisible] = useState(false);
-  const [
-    debtInsufficientModalVisible,
-    setDebtInsufficientModalVisible,
-  ] = useState(false);
+  const [debtInsufficientModalVisible, setDebtInsufficientModalVisible] =
+    useState(false);
   const [modalConversionVisible, setModalConversionVisible] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [action, setAction] = useState('Report');
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [modalSuccessVisible, setModalSuccessVisible] = useState(
     fromNotificationItem && eventType === EventTypeState.fundingRequestAccepted,
   );
@@ -157,13 +154,9 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(
-      proposalId,
-    );
+    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
-    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(
-      proposalId,
-    );
+    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(proposalId);
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
@@ -246,7 +239,7 @@ const ProposalScreen = ({
     !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
   useEffect(() => {
-    if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.MembershipAdmittance) {
       navigation.setParams({
         title: 'Request to join',
         subtitle: proposalCommon?.name,
@@ -486,7 +479,7 @@ const ProposalScreen = ({
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
-    ...(proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && {
+    ...(proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation && {
       ...layout.flexStart,
     }),
   };
@@ -745,7 +738,7 @@ const ProposalScreen = ({
   );
 
   const ProposalCardHeaderProps = useMemo(() => {
-    if (proposalInfo?.type === PROPOSAL_TYPE.FundingRequest) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation) {
       return {
         onPress: () => openDebtInsufficientModal(),
       };
@@ -876,7 +869,7 @@ const ProposalScreen = ({
                   : {}
               }>
               <View style={headerContainerStyle}>
-                {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
+                {proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
                     {proposedUser && (
                       <UserAvatar
@@ -977,7 +970,7 @@ const ProposalScreen = ({
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalInfo.type === PROPOSAL_TYPE.Join &&
+                      {proposalInfo.type === PROPOSAL_TYPE.MembershipAdmittance &&
                         proposalCommon?.metadata?.contributionType ===
                           'monthly' &&
                         ' per month'}

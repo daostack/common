@@ -37,7 +37,7 @@ import {
   ContributionStep,
   BillingDetailsStep,
   PaymentDetailsStep,
-  FundingProposal,
+  FundingAllocation,
   Discussions,
   DiscussionPost,
   ProposalScreen,
@@ -706,8 +706,8 @@ const App = () => {
               headerTitleAlign: 'center',
               headerRight: () => <IntercomShowButton />,
             })}
-            name="FundingProposal"
-            component={FundingProposal}
+            name="FundingAllocation"
+            component={FundingAllocation}
           />
 
           <Stack.Screen

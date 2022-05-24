@@ -38,7 +38,7 @@ export {default as MyCommons} from './UserProfile/MyCommons';
 // Proposals
 export {default as Discussions} from './Discussions/Discussion';
 export {default as DiscussionPost} from './Discussions/DiscussionPost';
-export {default as FundingProposal} from './Proposals/FundingProposal';
+export {default as FundingAllocation} from './Proposals/FundingAllocation';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
 export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
 export {default as VotesScreen} from './Proposals/Votes/VotesScreen';

@@ -275,7 +275,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: PROPOSAL_TYPE.FundingAllocation,
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, ENTITY_TYPES.proposals)
@@ -300,7 +300,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.History,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: PROPOSAL_TYPE.FundingAllocation,
         }}
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -896,7 +896,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                   <BottomRightButton
                     iconName="create-proposal"
                     onPress={() =>
-                      navigation.navigate('FundingProposal', {
+                      navigation.navigate('FundingAllocation', {
                         commonId: currCommon.id,
                         common: currCommon,
                         screenTitle: currCommon.name,
