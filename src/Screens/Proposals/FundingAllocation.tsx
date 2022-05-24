@@ -10,13 +10,13 @@ import {
   Modal,
 } from 'react-native';
 import {text, layout, colors} from '~/Theme';
-import FundingRequestForm from '~/Components/Forms/FundingRequestForm';
+import FundingAllocationForm from '~/Components/Forms/FundingAllocationForm';
 import RequestStepActionButton from '../Commons/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import {string, object, shape} from 'prop-types';
-import FundingRequestFormStore from '~/Stores/FormStores/FundingRequestFormStore';
+import FundingAllocationFormStore from '~/Stores/FormStores/fundingAllocationFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';
@@ -26,7 +26,7 @@ import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
 import {escapeUrl} from '~/Util';
 
-const FundingProposal = ({
+const FundingAllocation = ({
   navigation,
   route: {
     params: {commonId, common},
@@ -36,7 +36,9 @@ const FundingProposal = ({
   const uiStore = rootStore.uiStore;
   const bankAccountStore = rootStore.bankAccountStore;
 
-  const [fundingRequestFormStore] = useState(new FundingRequestFormStore());
+  const [fundingAllocationFormStore] = useState(
+    new FundingAllocationFormStore(),
+  );
   const [useOfFundsVisible, setUseOfFundsVisible] = useState(false);
   const [debtModalVisible, setDebtModalVisible] = useState(false);
   const [bankAccountState, setBankAccountState] = useState({
@@ -56,16 +58,16 @@ const FundingProposal = ({
     navigation.setOptions({headerShown: true});
     setUseOfFundsVisible(false);
     Keyboard.dismiss();
-    if (fundingRequestFormStore.isFormValid()) {
+    if (fundingAllocationFormStore.isFormValid()) {
       try {
-        const formData = fundingRequestFormStore.getChangedFormFieldsJson();
+        const formData = fundingAllocationFormStore.getChangedFormFieldsJson();
         const data = {
-          title: formData[FundingRequestForm.FIELD_TITLE],
-          description: formData[FundingRequestForm.FIELD_DESCRIPTION],
-          amount: formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED] * 100,
-          links: escapeUrl(formData[FundingRequestForm.FIELD_LINKS]),
-          images: formData[FundingRequestForm.FIELD_IMAGES],
-          files: formData[FundingRequestForm.FIELD_FILES],
+          title: formData[FundingAllocationForm.FIELD_TITLE],
+          description: formData[FundingAllocationForm.FIELD_DESCRIPTION],
+          amount: formData[FundingAllocationForm.FIELD_AMOUNT_REQUESTED] * 100,
+          links: escapeUrl(formData[FundingAllocationForm.FIELD_LINKS]),
+          images: formData[FundingAllocationForm.FIELD_IMAGES],
+          files: formData[FundingAllocationForm.FIELD_FILES],
           commonId,
         };
 
@@ -76,12 +78,11 @@ const FundingProposal = ({
           },
         });
 
-        const createFundingProposalResponse = await ProposalService.createFundingProposal(
-          data,
-        );
+        const createFundingAllocationResponse =
+          await ProposalService.createFundingAllocation(data);
 
-        if (createFundingProposalResponse.status === 200) {
-          const proposalId = createFundingProposalResponse.data.id;
+        if (createFundingAllocationResponse.status === 200) {
+          const proposalId = createFundingAllocationResponse.data.id;
 
           navigation.pop();
 
@@ -100,7 +101,7 @@ const FundingProposal = ({
           navigation.pop();
           showErrorPopUp(
             uiStore.bottomSheetStore,
-            createFundingProposalResponse,
+            createFundingAllocationResponse,
           );
         }
       } catch (error) {
@@ -119,9 +120,10 @@ const FundingProposal = ({
   };
 
   const onCreateProposalButtonPressed = async () => {
-    const amountRequested = fundingRequestFormStore.getChangedFormFieldsJson()[
-      FundingRequestForm.FIELD_AMOUNT_REQUESTED
-    ];
+    const amountRequested =
+      fundingAllocationFormStore.getChangedFormFieldsJson()[
+        FundingAllocationForm.FIELD_AMOUNT_REQUESTED
+      ];
 
     let bankError = bankAccountState.hasError; //This is needed because the state wasn't update before the next if was chekcing his new value, and this was causing issues
 
@@ -139,16 +141,16 @@ const FundingProposal = ({
       bankError = false;
     }
 
-    if (fundingRequestFormStore.isFormValid() && !bankError) {
+    if (fundingAllocationFormStore.isFormValid() && !bankError) {
       Keyboard.dismiss();
 
       navigation.setOptions({
         headerShown: false,
       });
 
-      const formData = fundingRequestFormStore.getChangedFormFieldsJson();
+      const formData = fundingAllocationFormStore.getChangedFormFieldsJson();
 
-      if (Number(formData[FundingRequestForm.FIELD_AMOUNT_REQUESTED])) {
+      if (Number(formData[FundingAllocationForm.FIELD_AMOUNT_REQUESTED])) {
         setUseOfFundsVisible(true);
       } else {
         await createProposal();
@@ -201,9 +203,9 @@ const FundingProposal = ({
             }
           </Text>
           <View style={styles.divider} />
-          <FundingRequestForm
+          <FundingAllocationForm
             common={common}
-            fundingRequestFormStore={fundingRequestFormStore}
+            fundingRequestFormStore={fundingAllocationFormStore}
             navigation={navigation}
             hasBankAccountError={bankAccountState.hasError}
             handleAddBankAccount={handleAddBankAccount}
@@ -212,7 +214,7 @@ const FundingProposal = ({
         </ScrollView>
         <RequestStepActionButton
           title="Create Proposal"
-          formStore={fundingRequestFormStore}
+          formStore={fundingAllocationFormStore}
           onPress={onCreateProposalButtonPressed}
         />
       </SafeAreaView>
@@ -229,7 +231,7 @@ const FundingProposal = ({
   );
 };
 
-FundingProposal.propTypes = {
+FundingAllocation.propTypes = {
   navigation: object,
   route: shape({
     params: shape({
@@ -264,4 +266,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(FundingProposal);
+export default inject('rootStore')(FundingAllocation);

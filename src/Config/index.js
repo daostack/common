@@ -122,8 +122,8 @@ export const appId = Platform.OS === 'android' ? androidAppId : iosAppId;
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
-  Join: 'join',
-  FundingRequest: 'fundingRequest',
+  MembershipAdmittance: 'membershipAdmittance',
+  FundingAllocation: 'fundingAllocation',
 };
 
 export const PROPOSAL_STAGE = {

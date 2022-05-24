@@ -10,7 +10,7 @@ import {UserModel} from './Models/UserModel';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from './RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {ProposalType} from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
 import {persist} from 'mobx-persist';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 
@@ -131,7 +131,7 @@ class AuthStore {
 
   isDaoMember = (members: ICommonMember[]) =>
     this.userInfo ? isDaoMemberByUserId(members, this.userInfo.uid) : false;
-  isProposer = (proposal: IProposalEntity) =>
+  isProposer = (proposal: ProposalType) =>
     this.userInfo ? this.userInfo.uid === proposal.proposerId : false;
 
   isLoginInProgressExists = (uid: any) =>

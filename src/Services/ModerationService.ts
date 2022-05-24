@@ -6,7 +6,7 @@ import {moderationUrl} from '~/Config';
 import {auth} from '~/Firebase';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {IDiscussionMessageEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionMessageEntity';
-import {IProposalEntity} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {ProposalType} from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
 import logger from '~/Services/Logger';
 import {DYNAMIC_LINK_URI_PREFIX} from '~/Util/constants/dynamicLinks';
 import Toast from '~/Util/Toast.js';
@@ -32,7 +32,7 @@ class ModerationService {
     itemId: string,
     type: keyof typeof ENTITY_TYPES,
     commonId: string,
-  ): Promise<IDiscussionEntity | IDiscussionMessageEntity | IProposalEntity> {
+  ): Promise<IDiscussionEntity | IDiscussionMessageEntity | ProposalType> {
     try {
       return await this.axiosClient.post(
         this.endpoints.hide,

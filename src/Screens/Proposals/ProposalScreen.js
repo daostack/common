@@ -241,7 +241,7 @@ const ProposalScreen = ({
     !proposalInfo.votes.some((vote) => vote.voterId === userInfo.uid);
 
   useEffect(() => {
-    if (proposalInfo?.type === PROPOSAL_TYPE.Join) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.MembershipAdmittance) {
       navigation.setParams({
         title: 'Request to join',
         subtitle: proposalCommon?.name,
@@ -481,7 +481,7 @@ const ProposalScreen = ({
   const headerContainerStyle = {
     ...layout.content,
     ...{paddingBottom: 0},
-    ...(proposalInfo?.type === PROPOSAL_TYPE.FundingRequest && {
+    ...(proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation && {
       ...layout.flexStart,
     }),
   };
@@ -736,7 +736,7 @@ const ProposalScreen = ({
   );
 
   const ProposalCardHeaderProps = useMemo(() => {
-    if (proposalInfo?.type === PROPOSAL_TYPE.FundingRequest) {
+    if (proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation) {
       return {
         onPress: () => openDebtInsufficientModal(),
       };
@@ -867,7 +867,7 @@ const ProposalScreen = ({
                   : {}
               }>
               <View style={headerContainerStyle}>
-                {proposalInfo?.type === PROPOSAL_TYPE.FundingRequest ? (
+                {proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation ? (
                   <View style={{...layout.content, width: '100%', padding: 0}}>
                     {proposedUser && (
                       <UserAvatar
@@ -968,7 +968,7 @@ const ProposalScreen = ({
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalInfo.type === PROPOSAL_TYPE.Join &&
+                      {proposalInfo.type === PROPOSAL_TYPE.MembershipAdmittance &&
                         proposalCommon?.metadata?.contributionType ===
                           'monthly' &&
                         ' per month'}

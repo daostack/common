@@ -10,10 +10,10 @@ import React from 'react';
 import {text, layout, colors} from '~/Theme';
 import {func} from 'prop-types';
 
-const CommonOperationalStateNotif = ({onCreateFundingProposal}) => {
-  const createFundingProposal = (e) => {
-    if (onCreateFundingProposal) {
-      onCreateFundingProposal();
+const CommonOperationalStateNotif = ({onCreateFundingAllocation}) => {
+  const createFundingAllocation = (e) => {
+    if (onCreateFundingAllocation) {
+      onCreateFundingAllocation();
     }
   };
 
@@ -36,7 +36,7 @@ const CommonOperationalStateNotif = ({onCreateFundingProposal}) => {
         </Text>
         <TouchableOpacity
           style={{...layout.btnPrimary, ...layout.marginTopXL}}
-          onPress={createFundingProposal}>
+          onPress={createFundingAllocation}>
           <Text style={text.buttoncenterwhite}>Create funding proposal</Text>
         </TouchableOpacity>
       </View>
@@ -45,7 +45,7 @@ const CommonOperationalStateNotif = ({onCreateFundingProposal}) => {
 };
 
 CommonOperationalStateNotif.propTypes = {
-  onCreateFundingProposal: func,
+  onCreateFundingAllocation: func,
 };
 
 const styles = StyleSheet.create({
