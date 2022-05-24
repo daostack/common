@@ -61,7 +61,6 @@ class ModerationService {
       ? await auth().currentUser.getIdToken(true)
       : null;
 
-
     await this.axiosClient.post(
       this.endpoints.report,
       {
