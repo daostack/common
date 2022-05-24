@@ -12,6 +12,7 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {
   CreateVotePayload,
+  UpdateVotePayload,
   IVoteEntity,
 } from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 import {
@@ -73,6 +74,7 @@ class ProposalService {
     createJoin: string;
     createFunding: string;
     createVote: string;
+    updateVote: string;
   };
 
   constructor() {
@@ -85,6 +87,7 @@ class ProposalService {
       createJoin: '/create/join',
       createFunding: '/create/funding',
       createVote: '/create/vote',
+      updateVote: '/update/vote',
     };
   }
 
@@ -331,6 +334,19 @@ class ProposalService {
       });
     } catch (err) {
       logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  };
+
+  updateVote = async (formData: UpdateVotePayload): Promise<IVoteEntity> => {
+    try {
+      return await this.axiosClient.post(this.endpoints.updateVote, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (err) {
+      logger.log('UPDATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   };

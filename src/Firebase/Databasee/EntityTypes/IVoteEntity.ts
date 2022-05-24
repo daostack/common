@@ -28,4 +28,10 @@ export type VoteOutcome = 'approved' | 'rejected' | 'abstained';
 export interface CreateVotePayload {
   outcome: VoteOutcome;
   proposalId: string;
+  voterId: string;
+}
+
+export interface UpdateVotePayload {
+  id: string;
+  outcome: VoteOutcome;
 }
