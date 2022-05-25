@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "useDefineForClassFields": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

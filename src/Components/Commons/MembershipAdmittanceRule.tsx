@@ -9,7 +9,7 @@ const props = {
   description: string,
   url: string,
 };
-const RequestToJoinRule: React.FC<InferProps<typeof props>> = ({
+const MembershipAdmittanceRule: React.FC<InferProps<typeof props>> = ({
   index,
   title,
   description,
@@ -30,7 +30,7 @@ const RequestToJoinRule: React.FC<InferProps<typeof props>> = ({
   </View>
 );
 
-RequestToJoinRule.propTypes = props;
+MembershipAdmittanceRule.propTypes = props;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RequestToJoinRule;
+export default MembershipAdmittanceRule;

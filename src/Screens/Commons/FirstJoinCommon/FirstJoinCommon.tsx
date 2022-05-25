@@ -15,7 +15,7 @@ import {
   IntroduceYourselfFormStore,
   PaymentFormStore,
   PersonalContributionFormStore,
-} from '~/Stores/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/MembershipAdmittance';
 import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';

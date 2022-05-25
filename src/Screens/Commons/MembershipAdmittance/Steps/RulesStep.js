@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
-import RequestToJoinRule from '~/Components/Commons/RequestToJoinRule';
+import MembershipAdmittanceRule from '~/Components/Commons/MembershipAdmittanceRule';
 import {colors} from '~/Theme';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
@@ -76,7 +76,7 @@ const RulesStep = ({
           }}>
           {currCommon?.rules?.length > 0 &&
             currCommon.rules.map((rule, index) => (
-              <RequestToJoinRule
+              <MembershipAdmittanceRule
                 key={index}
                 index={index + 1}
                 title={rule.title}

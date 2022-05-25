@@ -1,6 +1,6 @@
 import {StackActionType} from '@react-navigation/native';
 import {Common} from '~/Stores/Models/Common';
-import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/MembershipAdmittance';
 
 interface NavigationProps {
   dispatch: (arg: StackActionType) => void;

@@ -7,11 +7,11 @@ export {default as CreateCommonReview} from './Commons/CreateCommon/CreateCommon
 export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplanation';
 export {default as CommonAgenda} from './Commons/CommonProfile/CommonAgenda';
 export {default as CommonMembers} from './Commons/CommonProfile/CommonMembers/CommonMembers';
-export {default as RulesStep} from './Commons/RequestToJoin/Steps/RulesStep';
-export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/IntroductionStep';
-export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
-export {default as BillingDetailsStep} from './Commons/RequestToJoin/Steps/BillingDetailsStep';
-export {default as PaymentDetailsStep} from './Commons/RequestToJoin/Steps/PaymentDetailsStep';
+export {default as RulesStep} from './Commons/MembershipAdmittance/Steps/RulesStep';
+export {default as IntroductionStep} from './Commons/MembershipAdmittance/Steps/IntroductionStep';
+export {default as ContributionStep} from './Commons/MembershipAdmittance/Steps/ContributionStep';
+export {default as BillingDetailsStep} from './Commons/MembershipAdmittance/Steps/BillingDetailsStep';
+export {default as PaymentDetailsStep} from './Commons/MembershipAdmittance/Steps/PaymentDetailsStep';
 export {default as PersonalContributionStep} from './Commons/PersonalContribution/PersonalContributionStep';
 export {default as PersonalPaymentDetailsStep} from './Commons/PersonalContribution/PersonalPaymentDetailsStep';
 export {default as ChoosePaymentMethodStep} from './Commons/PersonalContribution/ChoosePaymentMethodStep';

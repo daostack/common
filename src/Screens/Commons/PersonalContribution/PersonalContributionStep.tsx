@@ -3,11 +3,11 @@ import {observer} from 'mobx-react';
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
-import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
 import {PersonalContributionTitle} from './PersonalContributionTitle';
-import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
+import RequestStepHeaderTitle from '~/Screens/Commons/MembershipAdmittance/RequestStepHeaderTitle';
 import CommonService from '~/Services/CommonService';
 import logger from '~/Services/Logger';
 import {colors, text} from '~/Theme';
@@ -110,7 +110,7 @@ const PersonalContributionStep = () => {
   ): Promise<void> => {
     try {
       personalContributionFormStore.fieldChanged(
-        RequestToJoinForm.FIELD_AMOUNT,
+        MembershipAdmittanceForm.FIELD_AMOUNT,
         {
           value: amount,
           index,

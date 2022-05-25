@@ -16,7 +16,7 @@ import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
 import {string, object, shape} from 'prop-types';
-import FundingAllocationFormStore from '~/Stores/FormStores/fundingAllocationFormStore';
+import FundingAllocationFormStore from '~/Stores/FormStores/FundingAllocationFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
 import ProposalService from '~/Services/ProposalService';

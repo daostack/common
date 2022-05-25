@@ -14,7 +14,7 @@ import {font} from '../../../../Theme';
 import {testCard} from '~/Config';
 import {inject} from 'mobx-react';
 import {VALIDATION_RULES} from '~/Stores/FormStores/ValidationRules/billingDetailsRules';
-import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import {formatNumber} from '~/Util/FormatUtil';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {authStorePropTypes, rootStorePropTypes} from '~/Types/propTypes';
@@ -69,13 +69,8 @@ const FORM_RULES = {
 };
 
 const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
-  const {
-    skipFirstStep,
-    currCommon,
-    currDaoId,
-    refreshFeed,
-    formStores,
-  } = route.params;
+  const {skipFirstStep, currCommon, currDaoId, refreshFeed, formStores} =
+    route.params;
   const billingDetailsFormStore = formStores.billingDetailsFormStore;
   const personalContributionFormStore =
     formStores.personalContributionFormStore;
@@ -188,8 +183,9 @@ const BillingDetailsStep = ({navigation, route, authStore, rootStore}) => {
   };
 
   const contributionAmount = formatNumber(
-    personalContributionFormStore.getFormField(RequestToJoinForm.FIELD_AMOUNT)
-      ?.value?.value,
+    personalContributionFormStore.getFormField(
+      MembershipAdmittanceForm.FIELD_AMOUNT,
+    )?.value?.value,
   );
 
   const subtitle = (style) => (

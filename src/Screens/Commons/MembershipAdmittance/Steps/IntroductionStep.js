@@ -4,7 +4,7 @@ import {observer} from 'mobx-react';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
-import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
@@ -80,7 +80,7 @@ const IntroductionStep = ({
           multiline={true}
           numberOfLines={6}
           validation={{
-            name: RequestToJoinForm.FIELD_INTRO,
+            name: MembershipAdmittanceForm.FIELD_INTRO,
             formStore: introduceYourselfFormStore,
             validateRule: 'required|string',
           }}
@@ -92,14 +92,14 @@ const IntroductionStep = ({
           link
           value={
             introduceYourselfFormStore.getFormField(
-              RequestToJoinForm.FIELD_LINKS,
+              MembershipAdmittanceForm.FIELD_LINKS,
             )?.value
           }
           allowsEditing={true}
           title="Title"
           maxLength={30}
           validation={{
-            name: RequestToJoinForm.FIELD_LINKS,
+            name: MembershipAdmittanceForm.FIELD_LINKS,
             formStore: introduceYourselfFormStore,
           }}
         />
