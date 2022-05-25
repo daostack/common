@@ -154,9 +154,11 @@ const ProposalScreen = ({
   let currTabViewScroll = 0;
 
   useEffect(() => {
-    const unsubscribeFromProposalDiscussionMessages = discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
+    const unsubscribeFromProposalDiscussionMessages =
+      discussionMessageStore.subscribeToProposalDiscussionMessages(proposalId);
 
-    let unsubscribeFromProposalById = proposalStore.subscribeToProposalById(proposalId);
+    let unsubscribeFromProposalById =
+      proposalStore.subscribeToProposalById(proposalId);
 
     return () => {
       unsubscribeFromProposalDiscussionMessages &&
@@ -658,12 +660,8 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
-  const {
-    approvedCount,
-    abstainedCount,
-    rejectedCount,
-    allVoteCount,
-  } = proposalStore.getVotesCounts(proposalInfo?.votes);
+  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
+    proposalStore.getVotesCounts(proposalInfo?.votes);
 
   const isDisabledVoteButton = useMemo(
     () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,

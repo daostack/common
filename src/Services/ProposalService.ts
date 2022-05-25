@@ -9,7 +9,7 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
 import {MembershipAdmittance} from '~/Firebase/Databasee/EntityTypes/memberAdmittance';
 import {
-  CreateVotePayload,
+  ChangeVotePayload,
   IVoteEntity,
 } from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 import {
@@ -72,6 +72,7 @@ class ProposalService {
     createFundingAllocation: string;
     createVote: string;
     create: string;
+    updateVote: string;
   };
 
   constructor() {
@@ -85,6 +86,7 @@ class ProposalService {
       createFundingAllocation: '/create/funding', //delete anyway
       createVote: '/create/vote',
       create: '/create',
+      updateVote: '/update/vote',
     };
   }
 
@@ -316,7 +318,7 @@ class ProposalService {
     }
   };
 
-  createVote = async (formData: CreateVotePayload): Promise<IVoteEntity> => {
+  createVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
       return await this.axiosClient.post(this.endpoints.createVote, formData, {
         headers: {
@@ -325,6 +327,19 @@ class ProposalService {
       });
     } catch (err) {
       logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  };
+
+  updateVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
+    try {
+      return await this.axiosClient.post(this.endpoints.updateVote, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (err) {
+      logger.log('UPDATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   };
