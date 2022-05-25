@@ -1,5 +1,5 @@
 import {CommonCreatedBody} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
-import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/MembershipAdmittance';
 import {RootStore} from '~/Types/store';
 
 export type CommonMembersRouteProps = {

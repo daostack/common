@@ -1,4 +1,4 @@
-class RequestToJoinForm {
+class MembershipAdmittanceForm {
   static FIELD_IMAGE = 'image';
   static FIELD_INTRO = 'intro';
   static FIELD_LINKS = 'links';
@@ -9,4 +9,4 @@ class RequestToJoinForm {
   static FIELD_CVV = 'cvv';
 }
 
-export default RequestToJoinForm;
+export default MembershipAdmittanceForm;

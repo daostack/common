@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
-import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/MembershipAdmittance';
 import {useStore} from '~/Util/hooks/useStore';
 import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './components/PaymentsHistoryInfo';

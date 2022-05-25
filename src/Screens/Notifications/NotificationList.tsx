@@ -23,8 +23,8 @@ import Logger from '~/Services/Logger';
 import FundingAllocation from '~/Components/Notifications/FundingAllocation';
 import MessageCreated from '~/Components/Notifications/MessageCreated';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
-import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
-import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
+import MembershipAdmittanceCreated from '~/Components/Notifications/MembershipAdmittanceCreated';
+import MembershipAdmittanceRejected from '~/Components/Notifications/MembershipAdmittanceRejected';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
@@ -71,10 +71,10 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <RequestToJoinCreated item={item} navigation={navigation} />;
+        return <MembershipAdmittanceCreated item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinRejected:
-        return <RequestToJoinRejected item={item} navigation={navigation} />;
+        return <MembershipAdmittanceRejected item={item} navigation={navigation} />;
 
       case EventTypeState.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;

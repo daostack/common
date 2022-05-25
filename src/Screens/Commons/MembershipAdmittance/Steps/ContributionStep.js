@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
-import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
+import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
@@ -45,10 +45,13 @@ const ContributionStep = ({
   };
 
   const onAmountSelected = (amount, index) => {
-    personalContributionFormStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {
-      value: amount,
-      index,
-    });
+    personalContributionFormStore.fieldChanged(
+      MembershipAdmittanceForm.FIELD_AMOUNT,
+      {
+        value: amount,
+        index,
+      },
+    );
 
     if (amount > 0) {
       navigateToRequestStep4();
@@ -77,11 +80,8 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-      {
-        ...data,
-      },
-    );
+    const createRequestToJoinResponse =
+      await ProposalService.createRequestToJoin({...data});
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;

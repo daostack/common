@@ -12,15 +12,14 @@ const props = {
   rootStore: rootStorePropTypes.isRequired,
 };
 
-const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
+const MembershipAdmittanceCreated: React.FC<InferProps<typeof props>> = ({
   item,
   navigation,
   rootStore,
 }) => {
   let notificationData = {missingData: true} as NotificationItemData;
-  const proposalNotificationData = rootStore.notificationStore.getProposalNotificationData(
-    item.eventObjectId,
-  );
+  const proposalNotificationData =
+    rootStore.notificationStore.getProposalNotificationData(item.eventObjectId);
 
   if (proposalNotificationData) {
     const {proposal, common} = proposalNotificationData;
@@ -33,7 +32,7 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
       createdAt: item.createdAt,
       missingData: false,
       description:
-        "Don't give up, there are plenty of other Commons you can join.",
+        ' Your Common has new pending members, view their requests and vote',
       ownerAvatar: common.image,
       common,
       proposal,
@@ -54,6 +53,6 @@ const RequestToJoinRejected: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-RequestToJoinRejected.propTypes = props;
+MembershipAdmittanceCreated.propTypes = props;
 
-export default inject('rootStore')(observer(RequestToJoinRejected));
+export default inject('rootStore')(observer(MembershipAdmittanceCreated));

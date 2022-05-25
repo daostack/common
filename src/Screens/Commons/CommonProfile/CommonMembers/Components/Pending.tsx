@@ -26,11 +26,13 @@ export const Pending = ({
       hasPermission={hasPermission}
       proposalFilter={{
         stage: PROPOSAL_STAGE.Active,
-        type: PROPOSAL_TYPE.Join,
+        type: PROPOSAL_TYPE.MembershipAdmittance,
       }}
-      openCommonOptions={(requestToJoin) => openCommonOptions(requestToJoin)}
-      showHiddenNote={(hiddenRequestToJoin) =>
-        showHiddenNote(hiddenRequestToJoin)
+      openCommonOptions={(membershipAdmittance) =>
+        openCommonOptions(membershipAdmittance)
+      }
+      showHiddenNote={(hiddenMembershipAdmittance) =>
+        showHiddenNote(hiddenMembershipAdmittance)
       }
       isMember={isMember}
     />

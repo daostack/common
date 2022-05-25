@@ -54,7 +54,7 @@ import {
   PersonalContributionFormStore,
   BillingDetailsFormStore,
   PaymentFormStore,
-} from '~/Stores/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/MembershipAdmittance';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
@@ -132,13 +132,14 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     params.commonId || params.currCommon?.id,
   );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [showReqToJoin, setShowRequestToJoin] = useState(false);
+  const [showMembershipAdmittance, setShowMembershipAdmittance] =
+    useState(false);
   const [showPending, setShowPending] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
 
-  const upperRequestToJoinBtnRef = useRef(null);
+  const upperMembershipAdmittanceBtnRef = useRef(null);
 
   // Sticky Tab Bar
   const stickyTabBarRef = useRef(null);
@@ -200,10 +201,10 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                 setShowPending(true);
 
                 animateNextStateRender();
-                setShowRequestToJoin(false);
+                setShowMembershipAdmittance(false);
               } else {
                 animateNextStateRender();
-                setShowRequestToJoin(true);
+                setShowMembershipAdmittance(true);
               }
             }
           }
@@ -418,10 +419,10 @@ const CommonProfile = ({route: {params}, rootStore}) => {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
       hasPermission,
-      openCommonOptions: (requestToJoin) =>
-        openCommonOptions(requestToJoin, TITLES.membershipRequest),
-      showHiddenNote: (hiddenRequestToJoin) =>
-        showHiddenNote(hiddenRequestToJoin, TITLES.membershipRequest),
+      openCommonOptions: (membershipAdmittance) =>
+        openCommonOptions(membershipAdmittance, TITLES.membershipRequest),
+      showHiddenNote: (hiddenMembershipAdmittance) =>
+        showHiddenNote(hiddenMembershipAdmittance, TITLES.membershipRequest),
       isMember,
     });
   };
@@ -534,7 +535,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     });
   };
 
-  const requestToJoin = () => {
+  const membershipAdmittance = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
     const paymentFormStore = new PaymentFormStore();
     const personalContributionFormStore = new PersonalContributionFormStore();
@@ -745,9 +746,11 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     setOptionsModalVisible(true);
   };
 
-  const renderRequestToJoinBtn = () => (
-    <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
-      <Text style={styles.requestToJoin}>Request to join</Text>
+  const renderMembershipAdmittanceBtn = () => (
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={membershipAdmittance}>
+      <Text style={styles.membershipAdmittance}>Request to join</Text>
       <Text style={styles.contribution}>
         {CurrencySymbols.SHEKEL}
         {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
@@ -819,8 +822,8 @@ const CommonProfile = ({route: {params}, rootStore}) => {
           <CommonProfileFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            showReqToJoin={showReqToJoin}
-            renderRequestToJoinBtn={renderRequestToJoinBtn}
+            showReqToJoin={showMembershipAdmittance}
+            renderMembershipAdmittanceBtn={renderMembershipAdmittanceBtn}
             isMember={isMember}>
             <>
               {renderForeground()}
@@ -853,12 +856,12 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                 <Text>CREATE GOVERNANCE</Text>
               </TouchableOpacity>
 
-              {!isMember && showReqToJoin && (
+              {!isMember && showMembershipAdmittance && (
                 <View
                   style={styles.upperActionButtonContainer}
-                  ref={upperRequestToJoinBtnRef}
+                  ref={upperMembershipAdmittanceBtnRef}
                   collapsable={false}>
-                  {renderRequestToJoinBtn()}
+                  {renderMembershipAdmittanceBtn()}
                 </View>
               )}
 
@@ -989,7 +992,7 @@ const styles = StyleSheet.create({
   paleBackground: {
     backgroundColor: '#fcfcfc',
   },
-  requestToJoin: {
+  membershipAdmittance: {
     ...font.primary.bold,
     color: colors.white,
     ...font.fontSize(3),
