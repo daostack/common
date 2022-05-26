@@ -2,7 +2,7 @@ import {useNavigation, CommonActions} from '@react-navigation/native';
 import React, {ReactElement, useEffect, useState} from 'react';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {FirestoreUnsubscribeFn} from '~/Firebase/types';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {useStore} from '~/Util/hooks/useStore';
 import ModalProposalApproval from './ModalProposalApproval';
 import ModalProposalRejected from './ModalProposalRejected';

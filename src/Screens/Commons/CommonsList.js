@@ -159,27 +159,6 @@ const CommonsList = ({navigation, rootStore}) => {
     </View>
   );
 
-  const refreshFeed = () => {
-    // console.log('TODO: implement refreshFeed with commonStore');
-    // TODO
-    // filterCommons();
-  };
-
-  const navigateToCommon = useCallback(
-    (common) => () => {
-      const navigate = CommonActions.navigate({
-        name: 'CommonProfile',
-        params: {
-          currCommon: common,
-          refreshFeed,
-        },
-      });
-
-      navigation.dispatch(navigate);
-    },
-    [],
-  );
-
   const renderCommonCard = useCallback(
     (data) => (
       <CommonBox
@@ -187,7 +166,6 @@ const CommonsList = ({navigation, rootStore}) => {
         width="100%"
         key={data.item.id}
         navigation={navigation}
-        onPress={navigateToCommon(data.item)}
       />
     ),
     [],

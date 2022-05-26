@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {inject, observer} from 'mobx-react';

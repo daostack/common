@@ -7,7 +7,7 @@ import {colors, font, layout} from '~/Theme';
 import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 const MonthlyContributionCharges = () => {
   const {paymentStore} = useStore('rootStore');

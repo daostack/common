@@ -2,7 +2,7 @@ import React from 'react';
 import * as Navigation from '@react-navigation/native';
 import ContributionHistory from './ContributionHistory';
 import {render, fireEvent} from '@testing-library/react-native';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {CurrencySymbols} from '~/Util/locale';
 
 jest.mock('../../../Util/hooks/useStore', () => ({
