@@ -30,14 +30,14 @@ const DiscussionMessageReported: React.FC<InferProps<typeof props>> = ({
       : {discussion: discussionObject};
 
   let notificationData = {missingData: true} as NotificationItemData;
-  const messageReportedData = rootStore.discussionMessageStore.getDiscussionMessageById(
-    item.eventObjectId,
-  );
+  const messageReportedData =
+    rootStore.discussionMessageStore.getDiscussionMessageById(
+      item.eventObjectId,
+    );
 
   if (messageReportedData) {
-    const objectData = rootStore.notificationStore.getParentDiscussion(
-      messageReportedData,
-    );
+    const objectData =
+      rootStore.notificationStore.getParentDiscussion(messageReportedData);
 
     if (objectData) {
       const common = rootStore.commonStore.getCommonById(objectData.commonId);
