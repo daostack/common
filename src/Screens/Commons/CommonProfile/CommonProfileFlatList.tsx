@@ -28,8 +28,8 @@ interface FlatListProps {
   currCommon: Common;
   openCommonOptionsModal: () => void;
   children: React.ReactNode;
-  showReqToJoin: boolean;
-  renderRequestToJoinBtn: () => void;
+  showMembershipAdmittance: boolean;
+  renderMembershipAdmittanceBtn: () => any;
   isMember: boolean;
 }
 
@@ -38,8 +38,8 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
     currCommon,
     children,
     openCommonOptionsModal,
-    showReqToJoin,
-    renderRequestToJoinBtn,
+    showMembershipAdmittance,
+    renderMembershipAdmittanceBtn,
     isMember,
   } = props;
   const yIndex = useSharedValue(0);
@@ -121,9 +121,9 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
           </>
         }
       />
-      {showReqToJoin && !isMember && (
+      {showMembershipAdmittance && !isMember && (
         <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
-          {renderRequestToJoinBtn()}
+          {renderMembershipAdmittanceBtn()}
         </Animated.View>
       )}
     </>

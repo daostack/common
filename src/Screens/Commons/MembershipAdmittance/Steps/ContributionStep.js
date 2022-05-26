@@ -22,7 +22,7 @@ import {v4} from 'uuid';
 const ContributionStep = ({
   navigation,
   route: {
-    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+    params: {formStores, skipFirstStep, currCommon, commonId, refreshFeed},
   },
   uiStore,
   authStore,
@@ -62,7 +62,7 @@ const ContributionStep = ({
       const data = {
         description: formData.intro,
         funding: 0,
-        commonId: currDaoId,
+        commonId,
       };
       if (formData.links) {
         data.links = formData.links;
@@ -120,7 +120,7 @@ const ContributionStep = ({
         name: 'PaymentDetailsStep',
         params: {
           formStores,
-          commonId: currDaoId,
+          commonId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
@@ -144,7 +144,7 @@ const ContributionStep = ({
         const data = {
           description: formData.intro,
           funding: 0,
-          commonId: currDaoId,
+          commonId,
         };
 
         if (formData.links) {
@@ -246,7 +246,7 @@ ContributionStep.propTypes = {
   route: shape({
     params: shape({
       skipFirstStep: bool,
-      currDaoId: string,
+      commonId: string,
       refreshFeed: func,
     }),
   }),

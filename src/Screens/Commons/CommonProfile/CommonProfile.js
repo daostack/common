@@ -64,7 +64,6 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {ModalCommonOptions} from '../components/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {ModalLeaveConfirmation} from '../components/ModalLeaveConfirmation';
-import {CurrencySymbols} from '~/Util/locale';
 import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
 import {CommonProfileFlatList} from './CommonProfileFlatList';
@@ -553,7 +552,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
             billingDetailsFormStore,
           },
           currCommon: currCommon,
-          currDaoId: currCommon.id,
+          commonId: currCommon.id,
           skipFirstStep: false,
           refreshFeed,
         },
@@ -751,12 +750,6 @@ const CommonProfile = ({route: {params}, rootStore}) => {
       style={styles.headerButton}
       onPress={membershipAdmittance}>
       <Text style={styles.membershipAdmittance}>Request to join</Text>
-      <Text style={styles.contribution}>
-        {CurrencySymbols.SHEKEL}
-        {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
-        {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
-        contribution
-      </Text>
     </TouchableOpacity>
   );
 
@@ -822,7 +815,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
           <CommonProfileFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            showReqToJoin={showMembershipAdmittance}
+            showMembershipAdmittance={showMembershipAdmittance}
             renderMembershipAdmittanceBtn={renderMembershipAdmittanceBtn}
             isMember={isMember}>
             <>
@@ -996,7 +989,6 @@ const styles = StyleSheet.create({
     ...font.primary.bold,
     color: colors.white,
     ...font.fontSize(3),
-    marginRight: 40,
   },
   viewAgendaBtn: {
     ...layout.content,
