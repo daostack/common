@@ -4,15 +4,21 @@ import {View, Image, StyleSheet, Text} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font} from '~/Theme';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
-import {useStore} from '~/Util/hooks/useStore';
 import {NewCommonProfile} from '../Screens/Commons/CommonProfile/NewCommonProfile';
 import {observer} from 'mobx-react';
+import {CommonProposals} from '~/Screens/Commons/CommonProfile/CommonProposals';
+import {CommonDiscussions} from '~/Screens/Commons/CommonProfile/CommonDiscussions';
+import {CommonNotifications} from '~/Screens/Commons/CommonProfile/CommonNotifications';
+import {IconWalletSelected} from '~/Assets/iconfont/IconWalletSelected';
+import {IconWallet} from '~/Assets/iconfont/IconWallet';
+import {useRoute} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
-const CommonTabNavigator = () => {
-  const rootStore = useStore('rootStore');
+export const CommonTabNavigator = observer((props) => {
+  const route = useRoute();
+  const currCommon =
+    route?.params?.params?.currCommon || route?.params?.currCommon;
 
   return (
     <Tab.Navigator
@@ -24,11 +30,19 @@ const CommonTabNavigator = () => {
         tabBarStyle: styles.tabBar,
         tabBarIcon: ({focused}) => {
           switch (route.name) {
-            case NAVIGATION_SCREENS.EXPLORE: {
+            case 'CommonProposals': {
               if (focused) {
-                return <Icon name="commons-selected" size={30} />;
+                return (
+                  <Icon
+                    name="proposal-selected"
+                    size={30}
+                    color={colors.mainBlue}
+                  />
+                );
               }
-              return <Icon name="commons" size={30} />;
+              return (
+                <Icon name="proposal" size={30} color={colors.greySubtitle} />
+              );
             }
             case 'CommonAgenda': {
               if (focused) {
@@ -38,16 +52,33 @@ const CommonTabNavigator = () => {
                 <Icon name="agenda" size={30} color={colors.greySubtitle} />
               );
             }
-            case NAVIGATION_SCREENS.NOTIFICATIONS: {
+            case 'CommonDiscussions': {
+              if (focused) {
+                return (
+                  <Icon
+                    name="discussion-selected"
+                    size={30}
+                    color={colors.mainBlue}
+                  />
+                );
+              }
+              return (
+                <Icon name="discussion" size={30} color={colors.greySubtitle} />
+              );
+            }
+            case 'CommonWallet': {
+              if (focused) {
+                return <IconWalletSelected size={30} color={colors.mainBlue} />;
+              }
+              return <IconWallet size={30} color={colors.greySubtitle} />;
+            }
+            case 'CommonNotifications': {
               const imageName = focused
                 ? require('~/Assets/notificationsSelected.png')
                 : require('~/Assets/notificationsUnselected.png');
               return (
                 <View style={styles.notificationContainer}>
                   <Image source={imageName} width={30} height={30} />
-                  {rootStore.notificationStore.hasNewNotifications && (
-                    <View style={styles.notReadDot} />
-                  )}
                 </View>
               );
             }
@@ -55,7 +86,7 @@ const CommonTabNavigator = () => {
         },
       })}>
       <Tab.Screen
-        name={'CommonAgenda'}
+        name="CommonAgenda"
         component={NewCommonProfile}
         options={{
           tabBarLabel: ({focused}) => (
@@ -70,9 +101,75 @@ const CommonTabNavigator = () => {
           tabBarLabelStyle: styles.label,
         }}
       />
+      <Tab.Screen
+        name="CommonProposals"
+        component={CommonProposals}
+        initialParams={{currCommon}}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text
+              style={[
+                styles.label,
+                focused ? styles.activeLabel : styles.inactiveLabel,
+              ]}>
+              Proposals
+            </Text>
+          ),
+          tabBarLabelStyle: styles.label,
+        }}
+      />
+      <Tab.Screen
+        name="CommonDiscussions"
+        component={CommonDiscussions}
+        initialParams={{currCommon}}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text
+              style={[
+                styles.label,
+                focused ? styles.activeLabel : styles.inactiveLabel,
+              ]}>
+              Discussions
+            </Text>
+          ),
+          tabBarLabelStyle: styles.label,
+        }}
+      />
+      <Tab.Screen
+        name="CommonWallet"
+        component={CommonNotifications}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text
+              style={[
+                styles.label,
+                focused ? styles.activeLabel : styles.inactiveLabel,
+              ]}>
+              Wallet
+            </Text>
+          ),
+          tabBarLabelStyle: styles.label,
+        }}
+      />
+      <Tab.Screen
+        name="CommonNotifications"
+        component={CommonNotifications}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text
+              style={[
+                styles.label,
+                focused ? styles.activeLabel : styles.inactiveLabel,
+              ]}>
+              Notifications
+            </Text>
+          ),
+          tabBarLabelStyle: styles.label,
+        }}
+      />
     </Tab.Navigator>
   );
-};
+});
 
 const styles = StyleSheet.create({
   notificationContainer: {
@@ -113,5 +210,3 @@ const styles = StyleSheet.create({
     lazy: false,
   },
 });
-
-export default observer(CommonTabNavigator);

@@ -26,6 +26,7 @@ import {useStore} from '~/Util/hooks/useStore';
 import Toast from '~/Util/Toast';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {CommonGallery} from '~/Screens/Commons/CommonProfile/CommonGallery';
+import {observer} from 'mobx-react';
 
 interface RouteParams {
   commonId: string;
@@ -34,7 +35,7 @@ interface RouteParams {
   createdProposalId: string;
 }
 
-export const NewCommonProfile = () => {
+export const NewCommonProfile = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
   const upperRequestToJoinBtnRef = useRef(null);
@@ -51,7 +52,7 @@ export const NewCommonProfile = () => {
 
   const params: RouteParams = route!.params!;
   const currCommon: Common = commonStore.getCommonById(
-    params!.commonId || params!.currCommon?.id,
+    params?.commonId || params?.currCommon?.id,
   )!;
   const commonId = currCommon?.id;
   const [hasPermission, setHasPermission] = useState(
@@ -228,7 +229,7 @@ export const NewCommonProfile = () => {
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

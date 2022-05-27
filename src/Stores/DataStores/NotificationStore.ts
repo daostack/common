@@ -41,11 +41,12 @@ export default class NotificationStore extends BaseStore<
     try {
       const notif = this.getDataArray
         ?.filter(() => true)
-        .sort(
-          (notification: Notification, prevNotification: Notification) =>
+        .sort((notification: Notification, prevNotification: Notification) => {
+          return (
             prevNotification.createdAt?.seconds -
-            notification.createdAt?.seconds,
-        );
+            notification.createdAt?.seconds
+          );
+        });
       return notif;
     } catch (error) {
       return [];

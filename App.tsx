@@ -95,7 +95,7 @@ import {
 } from '~/Util/constants/dynamicLinks';
 import {layout} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
-import CommonTabNavigator from '~/Navigation/CommonTabNavigator';
+import {CommonTabNavigator} from '~/Navigation/CommonTabNavigator';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);

@@ -42,13 +42,14 @@ export default class DiscussionStore extends BaseStore<
     }
   };
 
-  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
-    this.getDataArray
+  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined => {
+    return this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
+  };
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     DiscussionService.subscribeToCommonDiscussions(

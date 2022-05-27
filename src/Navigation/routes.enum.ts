@@ -76,7 +76,7 @@ export type NavigationRoutes = {
   CreateStep4: undefined;
   Discussions: undefined;
   FullScreenCreationLoader: undefined;
-  NewDiscussion: undefined;
+  NewDiscussion: {commonId: string};
   EditProfile: undefined;
   PDFViewer: undefined;
   Browser: {url: string};
@@ -85,7 +85,7 @@ export type NavigationRoutes = {
   MyCommons: undefined;
   Notifications: undefined;
   CommonMembers: undefined;
-  FundingProposal: undefined;
+  FundingProposal: {common: Common; commonId: string; screenTitle: string};
   Billing: undefined;
   MonthlyContribution: undefined;
   VotesScreen: undefined;
