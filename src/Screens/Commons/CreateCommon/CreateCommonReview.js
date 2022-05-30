@@ -16,7 +16,7 @@ import {
 
 import moment from 'moment';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
-import RequestStepActionButton from '../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {numberFormatter, showErrorPopUp} from '~/Util';
 
 import Modal from 'react-native-modal';

@@ -4,7 +4,7 @@ import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
-import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
@@ -22,7 +22,7 @@ import {v4} from 'uuid';
 const ContributionStep = ({
   navigation,
   route: {
-    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+    params: {formStores, skipFirstStep, currCommon, commonId, refreshFeed},
   },
   uiStore,
   authStore,
@@ -62,7 +62,7 @@ const ContributionStep = ({
       const data = {
         description: formData.intro,
         funding: 0,
-        commonId: currDaoId,
+        commonId,
       };
       if (formData.links) {
         data.links = formData.links;
@@ -120,7 +120,7 @@ const ContributionStep = ({
         name: 'PaymentDetailsStep',
         params: {
           formStores,
-          commonId: currDaoId,
+          commonId,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
@@ -144,7 +144,7 @@ const ContributionStep = ({
         const data = {
           description: formData.intro,
           funding: 0,
-          commonId: currDaoId,
+          commonId,
         };
 
         if (formData.links) {
@@ -246,7 +246,7 @@ ContributionStep.propTypes = {
   route: shape({
     params: shape({
       skipFirstStep: bool,
-      currDaoId: string,
+      commonId: string,
       refreshFeed: func,
     }),
   }),

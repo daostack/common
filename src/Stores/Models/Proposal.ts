@@ -21,12 +21,12 @@ export class Proposal implements BaseModel<ProposalType> {
     this.proposerId = newProposalInfo.proposerId;
     this.title = newProposalInfo.title;
     this.description = newProposalInfo.description;
-    this.images = [...newProposalInfo.images];
-    this.files = [...newProposalInfo.files];
+    this.images = newProposalInfo.images;
+    this.files = newProposalInfo.files;
     this.amount = newProposalInfo?.amount;
     this.id = ''; //newProposalInfo?.id;
-    //this.createdAt = newProposalInfo.createdAt;
-    //this.updatedAt = newProposalInfo.updatedAt;
+    this.createdAt = newProposalInfo?.createdAt;
+    this.updatedAt = newProposalInfo?.updatedAt;
     makeAutoObservable(this);
   }
 }

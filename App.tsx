@@ -33,7 +33,7 @@ import {
   CreateCommonRules,
   CreateCommonReview,
   RulesStep,
-  IntroductionStep,
+  MembershipAdmittance,
   ContributionStep,
   BillingDetailsStep,
   PaymentDetailsStep,
@@ -551,8 +551,8 @@ const App = () => {
             })}
           />
           <Stack.Screen
-            name="IntroductionStep"
-            component={IntroductionStep}
+            name="MembershipAdmittance"
+            component={MembershipAdmittance}
             options={() => ({
               headerShown: false,
             })}
@@ -641,6 +641,7 @@ const App = () => {
               headerBackTitleVisible: false,
               headerTitleAlign: 'center',
               headerLeft: null,
+              title: 'New Discussion',
               headerRight: () => (
                 <TouchableOpacity
                   style={styles.buttonRight}

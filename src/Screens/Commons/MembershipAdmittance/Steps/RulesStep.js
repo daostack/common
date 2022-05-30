@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipAdmittanceRule from '~/Components/Commons/MembershipAdmittanceRule';
 import {colors} from '~/Theme';
-import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
@@ -12,7 +12,7 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 const RulesStep = ({
   navigation,
   route: {
-    params: {formStores, currCommon, currDaoId, refreshFeed},
+    params: {formStores, currCommon, commonId, refreshFeed},
   },
 }) => {
   const [pass, setPass] = useState(false);
@@ -35,7 +35,7 @@ const RulesStep = ({
         name: 'ContributionStep',
         params: {
           formStores,
-          currDaoId: currDaoId,
+          commonId,
           currCommon: currCommon,
           refreshFeed,
         },
@@ -95,7 +95,7 @@ RulesStep.propTypes = {
   route: shape({
     params: shape({
       currCommon: object,
-      currDaoId: string,
+      commonId: string,
       skipFirstStep: bool,
       refreshFeed: func,
     }),

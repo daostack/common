@@ -22,13 +22,8 @@ export interface Values {
 }
 
 const EditInfo = (formik: {formikProps: FormikProps<Values>}): ReactElement => {
-  const {
-    touched,
-    errors,
-    values,
-    handleChange,
-    handleBlur,
-  } = formik.formikProps;
+  const {touched, errors, values, handleChange, handleBlur} =
+    formik.formikProps;
 
   return (
     <View style={styles.body}>

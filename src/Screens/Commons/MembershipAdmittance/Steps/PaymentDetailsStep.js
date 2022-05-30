@@ -90,12 +90,11 @@ const PaymentDetailsStep = ({
           },
         });
 
-        const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-          {
+        const createRequestToJoinResponse =
+          await ProposalService.createRequestToJoin({
             ...data,
             cardId: cardId,
-          },
-        );
+          });
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
 
@@ -160,7 +159,7 @@ PaymentDetailsStep.propTypes = {
   route: shape({
     params: shape({
       skipFirstStep: bool,
-      currDaoId: string,
+      commonId: string,
       refreshFeed: func,
     }),
   }),

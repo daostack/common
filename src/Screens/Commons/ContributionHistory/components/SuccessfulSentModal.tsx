@@ -53,25 +53,27 @@ export const SuccessfulSentModal = observer(
         style={styles.bottomSheetContainer}
         isVisible={isVisible}
         onClose={resetNavigation}>
-        <Pressable style={{width: '100%'}} onPress={resetNavigation}>
-          <View style={styles.plug} />
-        </Pressable>
-        <View style={styles.contentContainer}>
-          <FastImage
-            style={styles.image}
-            source={require('~/Assets/send.png')}
-          />
-          <Text style={styles.modalTitle}>
-            {isMonthly
-              ? `Your monthly Contribution ${'\n'} has been changed`
-              : 'Contribution was sent'}
-          </Text>
-          <TouchableOpacity
-            style={styles.modalRequestSentBtnPrimary}
-            onPress={resetNavigation}>
-            <Text style={text.buttonblack}>OK</Text>
-          </TouchableOpacity>
-        </View>
+        <>
+          <Pressable style={{width: '100%'}} onPress={resetNavigation}>
+            <View style={styles.plug} />
+          </Pressable>
+          <View style={styles.contentContainer}>
+            <FastImage
+              style={styles.image}
+              source={require('~/Assets/send.png')}
+            />
+            <Text style={styles.modalTitle}>
+              {isMonthly
+                ? `Your monthly Contribution ${'\n'} has been changed`
+                : 'Contribution was sent'}
+            </Text>
+            <TouchableOpacity
+              style={styles.modalRequestSentBtnPrimary}
+              onPress={resetNavigation}>
+              <Text style={text.buttonblack}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </>
       </BottomSheetModal>
     );
   },

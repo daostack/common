@@ -5,7 +5,7 @@ import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors} from '~/Theme';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
-import RequestStepActionButton from '../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {shape, func, object} from 'prop-types';
 import {BlurView} from '@react-native-community/blur';
 import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';

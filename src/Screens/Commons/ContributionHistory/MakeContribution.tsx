@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
 import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
-import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import RequestStepHeaderTitle from '~/Screens/Commons/MembershipAdmittance/RequestStepHeaderTitle';
 import CommonService from '~/Services/CommonService';
 import logger from '~/Services/Logger';

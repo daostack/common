@@ -5,7 +5,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
 import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {PersonalContributionTitle} from './PersonalContributionTitle';
 import RequestStepHeaderTitle from '~/Screens/Commons/MembershipAdmittance/RequestStepHeaderTitle';
 import CommonService from '~/Services/CommonService';

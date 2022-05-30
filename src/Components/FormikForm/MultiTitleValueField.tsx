@@ -49,13 +49,8 @@ const MultiTitleValueField = (props: Props) => {
     rule = false,
   } = props;
 
-  const {
-    touched,
-    errors,
-    values,
-    handleChange,
-    handleBlur,
-  } = formik.formikProps;
+  const {touched, errors, values, handleChange, handleBlur} =
+    formik.formikProps;
 
   const [count, setCount] = useState(1);
   const [addButton, setAddButton] = useState(false);

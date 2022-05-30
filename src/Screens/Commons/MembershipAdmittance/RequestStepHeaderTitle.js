@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font, sizeLineHeight, sizeM, sizeL, sizeS} from '~/Theme';
-import {string, oneOfType, func} from 'prop-types';
+import {string, oneOfType, func, object} from 'prop-types';
 
 const RequestStepHeaderTitle = ({title, subtitle, subtitleStyle}) => (
   <>
@@ -20,6 +20,7 @@ const RequestStepHeaderTitle = ({title, subtitle, subtitleStyle}) => (
 RequestStepHeaderTitle.propTypes = {
   title: string.isRequired,
   subtitle: oneOfType([string, func]),
+  subtitleStyle: object,
 };
 
 const styles = StyleSheet.create({
