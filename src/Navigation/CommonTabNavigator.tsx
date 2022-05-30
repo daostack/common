@@ -138,6 +138,7 @@ export const CommonTabNavigator = observer((props) => {
       <Tab.Screen
         name="CommonWallet"
         component={CommonNotifications}
+        initialParams={{currCommon}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text
@@ -154,6 +155,7 @@ export const CommonTabNavigator = observer((props) => {
       <Tab.Screen
         name="CommonNotifications"
         component={CommonNotifications}
+        initialParams={{currCommon}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text

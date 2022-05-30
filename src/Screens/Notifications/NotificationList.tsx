@@ -32,7 +32,8 @@ import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
 const props = {};
-const NotificationList: React.FC<InferProps<typeof props>> = ({}) => {
+const NotificationList: React.FC<InferProps<typeof props>> = (props) => {
+  const {notificationsArray} = props;
   const navigation = useNavigation();
   const notificationStore = useStore('notificationStore');
   useEffect(() => {
@@ -43,8 +44,9 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({}) => {
     }
   }, [notificationStore.hasNewNotifications]);
 
-  const notificationList: Array<Notification> =
-    notificationStore.loggedUserNotifications;
+  let notificationList: Array<Notification> = notificationsArray
+    ? notificationsArray
+    : notificationStore.loggedUserNotifications;
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
     switch (item.eventType) {

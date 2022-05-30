@@ -32,11 +32,13 @@ export default class DiscussionStore extends BaseStore<
             });
           }
         })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            methodName: 'getDiscussionById',
-          });
+        .catch((error) => {
+          if (!error.message.includes('is required parameter')) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+              methodName: 'getDiscussionById',
+            });
+          }
         });
       return undefined;
     }
