@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {text, layout, colors} from '~/Theme';
 import FundingAllocationForm from '~/Components/Forms/FundingAllocationForm';
-import RequestStepActionButton from '../Commons/RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';

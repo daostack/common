@@ -543,7 +543,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     let navigate;
     if (commonStore.myCommons.length > 0) {
       navigate = CommonActions.navigate({
-        name: 'IntroductionStep', // we always go to Introduction first
+        name: NAVIGATION_SCREENS.MEMBERSHIP_ADMITTANCE,
         params: {
           formStores: {
             paymentFormStore,
@@ -553,7 +553,6 @@ const CommonProfile = ({route: {params}, rootStore}) => {
           },
           currCommon: currCommon,
           commonId: currCommon.id,
-          skipFirstStep: false,
           refreshFeed,
         },
       });

@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipAdmittanceRule from '~/Components/Commons/MembershipAdmittanceRule';
 import {colors} from '~/Theme';
-import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';

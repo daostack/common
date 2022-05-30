@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 import {colors, font} from '~/Theme';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
-import RequestStepActionButton from '../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';

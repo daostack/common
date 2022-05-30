@@ -12,7 +12,7 @@ export enum NAVIGATION_SCREENS {
   PROPOSAL_SCREEN = 'ProposalScreen',
   ADD_INVOICES_PROPOSAL = 'AddInvoicesScreen',
   RULES_STEP = 'RulesStep',
-  INTRODUCTION_STEP = 'IntroductionStep',
+  MEMBERSHIP_ADMITTANCE = 'MembershipAdmittance',
   CONTRIBUTION_STEP = 'ContributionStep',
   BILLING_DETAILS_STEP = 'BillingDetailsStep',
   PAYMENT_DETAILS_STEP = 'PaymentDetailsStep',
@@ -56,7 +56,7 @@ export type NavigationRoutes = {
   ProposalScreen: undefined;
   AddInvoicesScreen: undefined;
   RulesStep: undefined;
-  IntroductionStep: undefined;
+  MembershipAdmittance: undefined;
   ContributionStep: undefined;
   BillingDetailsStep: undefined;
   PaymentDetailsStep: undefined;

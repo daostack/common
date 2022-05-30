@@ -5,7 +5,7 @@ import {bool, func, object, shape, string} from 'prop-types';
 
 import {CommonActions} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
-import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 
 import * as BillingDetailsConstants from '../../../../Components/Forms/BillingDetailsForm';
 import TextInputField from '~/Components/FormFields/TextInputField';

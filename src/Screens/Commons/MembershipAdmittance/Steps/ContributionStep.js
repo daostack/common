@@ -4,7 +4,7 @@ import {inject} from 'mobx-react';
 import AmountField from '~/Components/FormFields/AmountField';
 import {colors, text} from '~/Theme';
 import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
-import RequestStepActionButton from '../../RequestStepActionButton';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import MembershipRequest from '../MembershipRequest';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';

@@ -8,7 +8,6 @@ export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplana
 export {default as CommonAgenda} from './Commons/CommonProfile/CommonAgenda';
 export {default as CommonMembers} from './Commons/CommonProfile/CommonMembers/CommonMembers';
 export {default as RulesStep} from './Commons/MembershipAdmittance/Steps/RulesStep';
-export {default as IntroductionStep} from './Commons/MembershipAdmittance/Steps/IntroductionStep';
 export {default as ContributionStep} from './Commons/MembershipAdmittance/Steps/ContributionStep';
 export {default as BillingDetailsStep} from './Commons/MembershipAdmittance/Steps/BillingDetailsStep';
 export {default as PaymentDetailsStep} from './Commons/MembershipAdmittance/Steps/PaymentDetailsStep';
@@ -40,6 +39,7 @@ export {default as Discussions} from './Discussions/Discussion';
 export {default as DiscussionPost} from './Discussions/DiscussionPost';
 export {default as FundingAllocation} from './Proposals/FundingAllocation';
 export {default as ProposalScreen} from './Proposals/ProposalScreen';
+export {default as MembershipAdmittance} from './Proposals/MembershipAdmittance/MembershipAdmittance';
 export {default as AddInvoicesScreen} from './Proposals/AddInvoices/AddInvoicesScreen';
 export {default as VotesScreen} from './Proposals/Votes/VotesScreen';
 
