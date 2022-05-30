@@ -15,7 +15,7 @@ import {useRoute} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
-export const CommonTabNavigator = observer((props) => {
+export const CommonTabNavigator = observer(() => {
   const route = useRoute();
   const currCommon =
     route?.params?.params?.currCommon || route?.params?.currCommon;

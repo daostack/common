@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {CommonBoxCounterBar} from '~/Components/Commons/CommonBox/CommonBoxCounterBar';
-import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
+import {CommonStageSummary} from '~/Components/Commons/CommonStageSummary';
 import {CommonDescription} from '~/Screens/Commons/CommonProfile/CommonDescription';
 import {CommonTopTitles} from '~/Screens/Commons/CommonProfile/CommonHeader/CommonTopTitles';
 import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/CommonModals/MemberConfirmModal';

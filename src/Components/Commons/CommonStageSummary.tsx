@@ -1,47 +1,50 @@
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {colors, font, layout, text} from '~/Theme';
+import {colors, layout, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from './CommonNumberBox';
 import {formatMoney} from '~/Util/FormatUtil';
 import {Common} from '~/Stores/Models/Common';
+import {observer} from 'mobx-react';
 
 interface Props {
   isCommonCard: boolean;
   common: Common;
 }
 
-const CommonStageSummary = ({isCommonCard, common}: Props): ReactElement => {
-  const members = common?.members?.length;
-  const balance = common?.balance;
-  const raised = common?.raised;
+export const CommonStageSummary = observer(
+  ({isCommonCard, common}: Props): ReactElement => {
+    const members = common?.members?.length;
+    const balance = common?.balance;
+    const raised = common?.raised;
 
-  return (
-    <View style={styles.commonProgressContainer}>
-      <View style={styles.commonNumbers}>
-        <CommonNumberBox
-          numberComponent={
-            <Text style={styles.headerTitle}>
-              {CurrencySymbols.SHEKEL}
-              {formatMoney(isCommonCard ? raised / 100 : balance / 100)}
-            </Text>
-          }
-          title={isCommonCard ? 'Total raised' : 'Available funds'}
-        />
-        <CommonNumberBox
-          numberComponent={
-            <Text style={styles.headerTitle}>
-              {isCommonCard
-                ? members
-                : CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
-            </Text>
-          }
-          title={isCommonCard ? 'Members' : 'Total raised'}
-        />
+    return (
+      <View style={styles.commonProgressContainer}>
+        <View style={styles.commonNumbers}>
+          <CommonNumberBox
+            numberComponent={
+              <Text style={styles.headerTitle}>
+                {CurrencySymbols.SHEKEL}
+                {formatMoney(isCommonCard ? raised / 100 : balance / 100)}
+              </Text>
+            }
+            title={isCommonCard ? 'Total raised' : 'Available funds'}
+          />
+          <CommonNumberBox
+            numberComponent={
+              <Text style={styles.headerTitle}>
+                {isCommonCard
+                  ? members
+                  : CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
+              </Text>
+            }
+            title={isCommonCard ? 'Members' : 'Total raised'}
+          />
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   commonProgressContainer: {
@@ -75,5 +78,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-export default CommonStageSummary;

@@ -1,9 +1,10 @@
+import {observer} from 'mobx-react';
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font} from '~/Theme';
 
-export const CommonBoxCounterBar = (props) => {
+export const CommonBoxCounterBar = observer((props) => {
   const {common} = props;
 
   const proposalsCount = common.proposalCount;
@@ -29,7 +30,7 @@ export const CommonBoxCounterBar = (props) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   bottomBar: {
