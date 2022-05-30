@@ -135,23 +135,26 @@ export const CommonTabNavigator = observer((props) => {
           tabBarLabelStyle: styles.label,
         }}
       />
-      <Tab.Screen
-        name="CommonWallet"
-        component={CommonNotifications}
-        initialParams={{currCommon}}
-        options={{
-          tabBarLabel: ({focused}) => (
-            <Text
-              style={[
-                styles.label,
-                focused ? styles.activeLabel : styles.inactiveLabel,
-              ]}>
-              Wallet
-            </Text>
-          ),
-          tabBarLabelStyle: styles.label,
-        }}
-      />
+      {/*disabled till we merge with the common wallet screen */}
+      {false && (
+        <Tab.Screen
+          name="CommonWallet"
+          component={CommonNotifications}
+          initialParams={{currCommon}}
+          options={{
+            tabBarLabel: ({focused}) => (
+              <Text
+                style={[
+                  styles.label,
+                  focused ? styles.activeLabel : styles.inactiveLabel,
+                ]}>
+                Wallet
+              </Text>
+            ),
+            tabBarLabelStyle: styles.label,
+          }}
+        />
+      )}
       <Tab.Screen
         name="CommonNotifications"
         component={CommonNotifications}
