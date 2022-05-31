@@ -70,9 +70,8 @@ class ProposalService {
   private endpoints: {
     createJoin: string;
     createFundingAllocation: string;
-    createVote: string;
     create: string;
-    updateVote: string;
+    vote: string;
   };
 
   constructor() {
@@ -84,9 +83,8 @@ class ProposalService {
     this.endpoints = {
       createJoin: '/create/join', // also this
       createFundingAllocation: '/create/funding', //delete anyway
-      createVote: '/create/vote',
       create: '/create',
-      updateVote: '/update/vote',
+      vote: '/vote',
     };
   }
 
@@ -264,8 +262,9 @@ class ProposalService {
           usersPendingProposal:
             (userInfoUid &&
               pendingProposals
-                .find((doc: IFirebaseDoc<ProposalType>) =>
-                  doc.data().proposerId === userInfoUid
+                .find(
+                  (doc: IFirebaseDoc<ProposalType>) =>
+                    doc.data().proposerId === userInfoUid,
                 )
                 ?.data()) ||
             false,
@@ -311,7 +310,6 @@ class ProposalService {
 
   create = async (payload: ProposalType) => {
     try {
-
     } catch (err) {
       logger.log('CREATE PROPOSAL ERROR -> ', getErrorObject(err));
       throw err;
@@ -320,7 +318,7 @@ class ProposalService {
 
   createVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
-      return await this.axiosClient.post(this.endpoints.createVote, formData, {
+      return await this.axiosClient.post(this.endpoints.vote, formData, {
         headers: {
           Authorization: await auth().currentUser.getIdToken(true),
         },
@@ -333,7 +331,7 @@ class ProposalService {
 
   updateVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
-      return await this.axiosClient.post(this.endpoints.updateVote, formData, {
+      return await this.axiosClient.patch(this.endpoints.vote, formData, {
         headers: {
           Authorization: await auth().currentUser.getIdToken(true),
         },

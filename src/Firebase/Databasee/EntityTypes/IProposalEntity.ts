@@ -100,6 +100,10 @@ export interface IProposalVote {
    */
   voterId: string;
 
+  commonId: string;
+
+  proposalId: string;
+
   /**
    * The outcome of the vote
    */
