@@ -1,7 +1,7 @@
 import {makeAutoObservable} from 'mobx';
 import {IBankAccountEntity} from '~/Firebase/Databasee/EntityTypes/IBankAccountEntity';
 import {firebase} from '~/Firebase';
-import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
+import {DocInfo} from '~/Firebase/Databasee/EntityTypes/DocInfo';
 
 export class BankAccount implements IBankAccountEntity {
   id: string;
@@ -12,7 +12,7 @@ export class BankAccount implements IBankAccountEntity {
   bankCode: number;
   branchNumber: number;
   accountNumber: number;
-  identificationDocs: IPaymeDocument[];
+  identificationDocs: DocInfo[];
   city: string;
   country: string;
   streetAddress: string;

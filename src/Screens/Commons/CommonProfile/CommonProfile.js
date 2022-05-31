@@ -844,7 +844,13 @@ const CommonProfile = ({route: {params}, rootStore}) => {
 
               {renderMembersRow()}
 
-              <TouchableOpacity style={layout.governanceTemp}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('CreateGovernance', {
+                    commonId,
+                  });
+                }}
+                style={layout.governanceTemp}>
                 <Text>CREATE GOVERNANCE</Text>
               </TouchableOpacity>
 

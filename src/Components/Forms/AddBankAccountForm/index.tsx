@@ -13,7 +13,7 @@ import {CountryDropdownField} from '~/Components/FormikForm/CountryDropdownField
 import DatePickerInput from '~/Components/FormikForm/DatePickerInput';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
-import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
+import {DocInfo} from '~/Firebase/Databasee/EntityTypes/DocInfo';
 import BankAccountService from '~/Services/BankAccountService';
 import {
   BANK_CODES,
@@ -65,7 +65,7 @@ export const AddBankAccountForm = ({
       const identificationDocs = [
         values.photoID,
         values.bankConfirmation,
-      ] as IPaymeDocument[];
+      ] as DocInfo[];
       await BankAccountService.addBankAccountDetails(
         omit(
           {

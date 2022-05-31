@@ -61,6 +61,7 @@ import {
   MakeContribution,
   ContributionPaymentDetails,
   UpdatePaymentDetails,
+  CreateGovernance,
 } from './src/Screens';
 import CommonHome from './src/Components/Navigation/CommonHome';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -833,6 +834,7 @@ const App = () => {
             name="ReceiveFunds"
             component={ReceiveFunds}
           />
+          <Stack.Screen name="CreateGovernance" component={CreateGovernance} />
         </Stack.Navigator>
         {notificationRouting && (
           <NotificationContainer
