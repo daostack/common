@@ -12,6 +12,24 @@ export interface VoteTracker {
   };
 }
 
+export interface CalculatedVotes {
+  circles: VoteTracker;
+
+  weightedApproved: number;
+
+  weightedAbstained: number;
+
+  weightedRejected: number;
+
+  total: number;
+
+  abstained: number;
+
+  rejected: number;
+
+  approved: number;
+}
+
 export interface BaseProposal extends IBaseEntity {
   global: {
     duration: number; // time in hours
@@ -25,17 +43,7 @@ export interface BaseProposal extends IBaseEntity {
 
   limitations: Record<string, unknown>;
 
-  votes: {
-    circles: VoteTracker;
-
-    totalWeightedApproved: number;
-
-    totalWeightedAbstained: number;
-
-    totalWeightedRejected: number;
-
-    totalVotes: number;
-  };
+  votes: CalculatedVotes;
 
   data: {expiresOn: firebase.firestore.Timestamp} & Record<string, unknown>;
 

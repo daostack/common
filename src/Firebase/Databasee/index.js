@@ -16,6 +16,7 @@ export const DB_COLLECTIONS = {
   userInfo: 'userInfo',
   daos: 'daos',
   circles: 'circles',
+  votes: 'votes',
 };
 
 export const DAO_REGISTERED = 'registered';

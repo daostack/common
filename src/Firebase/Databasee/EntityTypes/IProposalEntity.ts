@@ -1,6 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {ContributionType, ICommonLink} from './ICommonEntity';
-import {VoteOutcome} from './IVoteEntity';
+import {IVoteEntity, VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {firebase} from '~/Firebase';
@@ -112,7 +112,7 @@ export interface IProposalVote {
   updatedAt: firebase.firestore.Timestamp;
 }
 
-export interface VoteWithUserInfo extends IProposalVote {
+export interface VoteWithUserInfo extends IVoteEntity {
   user: UserModel;
 }
 

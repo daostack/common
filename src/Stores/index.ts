@@ -20,4 +20,5 @@ export default {
   uiStore: rootStore.uiStore,
   cardStore: rootStore.cardStore,
   paymentStore: rootStore.paymentStore,
+  voteStore: rootStore.voteStore,
 };

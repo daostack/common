@@ -17,10 +17,9 @@ interface Props {
 }
 
 export const VotesList = observer(({proposalId, voteType}: Props) => {
-  const {proposalStore, userStore} = useStore('rootStore');
+  const {userStore, voteStore} = useStore('rootStore');
 
-  const proposalInfo = proposalStore.getProposalById(proposalId);
-  const votes = proposalInfo?.votes;
+  const votes = voteStore.getProposalVotes(proposalId);
   const votesUsers = userStore.getUsersVotesByType(votes, voteType);
 
   const navigation = useNavigation();
@@ -33,7 +32,7 @@ export const VotesList = observer(({proposalId, voteType}: Props) => {
   };
 
   const renderVoteCard = useCallback(
-    ({item, index}: {index: null; item: VoteWithUserInfo}) => (
+    ({item, index}: {index: number; item: VoteWithUserInfo}) => (
       <View style={{...styles.cardContainer}}>
         <TouchableOpacity
           onPress={() => showUserProfile(item.user)}
@@ -51,7 +50,7 @@ export const VotesList = observer(({proposalId, voteType}: Props) => {
           )}
         </View>
         <Icon
-          name={VOTE_ICON_BY_STATUSES[item.voteOutcome]}
+          name={VOTE_ICON_BY_STATUSES[item.outcome]}
           size={32}
           style={layout.marginRightXS}
         />

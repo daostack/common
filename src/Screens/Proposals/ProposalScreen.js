@@ -87,7 +87,6 @@ const ProposalScreen = ({
   navigation,
   route: {
     params: {
-      commonId,
       proposalId,
       tabIndex = 0,
       hasPermission,
@@ -660,9 +659,6 @@ const ProposalScreen = ({
     zIndex: 1,
   };
 
-  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
-    proposalStore.getVotesCounts(proposalInfo?.votes);
-
   const isDisabledVoteButton = useMemo(
     () => proposalInfo?.state !== PROPOSAL_STAGE.countdown,
     [proposalInfo?.state],
@@ -683,8 +679,8 @@ const ProposalScreen = ({
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.APPROVED)}
               voteType={VOTE_STATUSES.APPROVED}
-              votesFor={approvedCount}
-              votesCount={allVoteCount}
+              weightedVotesFor={proposalInfo?.votes.weightedApproved}
+              votesCount={proposalInfo?.votes.total}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
               disabled={isDisabledVoteButton}
@@ -692,8 +688,8 @@ const ProposalScreen = ({
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.ABSTAINED)}
               voteType={VOTE_STATUSES.ABSTAINED}
-              votesFor={abstainedCount}
-              votesCount={allVoteCount}
+              weightedVotesFor={proposalInfo?.votes.weightedAbstained}
+              votesCount={proposalInfo?.votes.total}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
               disabled={isDisabledVoteButton}
@@ -701,8 +697,8 @@ const ProposalScreen = ({
             <VoteButton
               onPress={(e) => openApprovalSheet(VOTE_STATUSES.REJECTED)}
               voteType={VOTE_STATUSES.REJECTED}
-              votesFor={rejectedCount}
-              votesCount={allVoteCount}
+              weightedVotesFor={proposalInfo?.votes.weightedRejected}
+              votesCount={proposalInfo?.votes.total}
               voteOutcome={currentUserVote?.voteOutcome}
               userInfo={userInfo}
               disabled={isDisabledVoteButton}
@@ -718,21 +714,15 @@ const ProposalScreen = ({
               });
             }}>
             <Text style={styles.voteCountButtonText}>
-              {allVoteCount}/{proposalCommon.members?.length || 1} votes
+              {proposalInfo?.votes.total}/{proposalCommon.members?.length || 1}{' '}
+              votes
             </Text>
             <Icon name="right-arrow" size={16} />
           </TouchableOpacity>
         </CopilotView>
       </CopilotStep>
     ),
-    [
-      userInfo,
-      approvedCount,
-      rejectedCount,
-      abstainedCount,
-      allVoteCount,
-      currentUserVote,
-    ],
+    [userInfo, proposalInfo?.votes, currentUserVote],
   );
 
   const ProposalCardHeaderProps = useMemo(() => {
@@ -968,7 +958,8 @@ const ProposalScreen = ({
                     </Text>
                     <Text
                       style={{...text.smallBlackText, ...layout.marginRightS}}>
-                      {proposalInfo.type === PROPOSAL_TYPE.MembershipAdmittance &&
+                      {proposalInfo.type ===
+                        PROPOSAL_TYPE.MembershipAdmittance &&
                         proposalCommon?.metadata?.contributionType ===
                           'monthly' &&
                         ' per month'}
