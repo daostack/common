@@ -11,6 +11,7 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {inject, observer} from 'mobx-react';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
+import WalletScreen from '~/Screens/Wallet/WalletScreen';
 
 const CommonHome = ({rootStore}) => (
   <Tab.Navigator
@@ -61,10 +62,13 @@ const CommonHome = ({rootStore}) => (
     <Tab.Screen name={NAVIGATION_SCREENS.EXPLORE} component={CommonsList} />
     <Tab.Screen name={NAVIGATION_SCREENS.PROFILE} component={UserProfile} />
     {rootStore.authStore.signedInUser && (
-      <Tab.Screen
-        name={NAVIGATION_SCREENS.NOTIFICATIONS}
-        component={NotificationList}
-      />
+      <>
+        <Tab.Screen name={NAVIGATION_SCREENS.WALLET} component={WalletScreen} />
+        <Tab.Screen
+          name={NAVIGATION_SCREENS.NOTIFICATIONS}
+          component={NotificationList}
+        />
+      </>
     )}
   </Tab.Navigator>
 );
