@@ -1,12 +1,12 @@
 import {IBaseEntity} from './IBaseEntity';
-import {IPaymeDocument} from './IPaymeDocument';
+import {DocInfo} from './DocInfo';
 
 export interface BankAccountDetails {
   bankName: string;
   bankCode: number;
   branchNumber: number;
   accountNumber: number;
-  identificationDocs: IPaymeDocument[];
+  identificationDocs: DocInfo[];
   city: string;
   country: string;
   streetAddress: string;

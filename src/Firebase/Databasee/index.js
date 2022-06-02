@@ -15,6 +15,8 @@ export const DB_COLLECTIONS = {
   // Keep it here until all the migration to mobx store is finished.
   userInfo: 'userInfo',
   daos: 'daos',
+  circles: 'circles',
+  votes: 'votes',
 };
 
 export const DAO_REGISTERED = 'registered';

@@ -28,5 +28,25 @@ export enum PROPOSALS {
 export enum PROPOSAL_STATE {
   PASSED = 'passed',
   FAILED = 'failed',
-  COUNTDOWN = 'countdown'
+  COUNTDOWN = 'countdown',
 }
+
+export const ALLOWED_PROPOSALS_OPTIONS = [
+  {
+    value: PROPOSALS.MEMBER_ADMITTANCE,
+    label: 'Member Admittance',
+  },
+  {
+    value: PROPOSALS.FUNDS_ALLOCATION,
+    label: 'Funds Allocation',
+  },
+  {
+    value: PROPOSALS.FUNDS_REQUEST,
+    label: 'Funds Request',
+  },
+  {
+    value: PROPOSALS.UPDATE_FUNDS_REQUEST,
+    label: 'Update Funds Request',
+  },
+  ,
+];

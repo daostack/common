@@ -7,12 +7,10 @@ import ProposalService, {
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
-import {IProposalVote} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {ProposalType} from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {showBackendError} from '~/Util';
-import {VOTE_STATUSES} from '~/Util/constants/votes';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
@@ -161,41 +159,6 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalType> {
       });
       return [];
     }
-  };
-
-  getVotesCounts = (
-    votes: IProposalVote[] = [],
-  ): {
-    approvedCount: number;
-    abstainedCount: number;
-    rejectedCount: number;
-    allVoteCount: number;
-  } => {
-    const votesCounts = {
-      approvedCount: 0,
-      abstainedCount: 0,
-      rejectedCount: 0,
-    };
-    votes.forEach((vote: IProposalVote) => {
-      switch (vote.voteOutcome) {
-        case VOTE_STATUSES.APPROVED:
-          votesCounts.approvedCount++;
-          break;
-        case VOTE_STATUSES.ABSTAINED:
-          votesCounts.abstainedCount++;
-          break;
-        case VOTE_STATUSES.REJECTED:
-          votesCounts.rejectedCount++;
-          break;
-      }
-    });
-    return {
-      ...votesCounts,
-      allVoteCount:
-        votesCounts.abstainedCount +
-        votesCounts.approvedCount +
-        votesCounts.rejectedCount,
-    };
   };
 
   //Actions

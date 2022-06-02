@@ -11,7 +11,7 @@ import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {string, object, shape, func, InferProps} from 'prop-types';
 //import {calcShouldSkipRules} from '~/Util/rules';
 import ProposalService from '~/Services/ProposalService';
-import {PROPOSALS} from '../enums/PROPOSALS';
+import {PROPOSALS} from '~/Shared/enums/proposals';
 import {useStore} from '~/Util/hooks/useStore';
 import {useNavigation} from '@react-navigation/native';
 import MembershipRequest from '~/Components/Proposals/MembershipRequest';
