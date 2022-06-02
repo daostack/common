@@ -6,6 +6,10 @@ export interface IVoteEntity extends IBaseEntity {
    */
   voterId: string;
 
+  commonId: string;
+
+  proposalId: string;
+
   /**
    * The outcome of this voter of this proposal
    */

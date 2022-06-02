@@ -21,7 +21,7 @@ interface Props {
   voteType: VOTE_STATUSES;
   voteOutcome: VOTE_STATUSES;
   votesCount: number;
-  votesFor: number;
+  weightedVotesFor: number;
   userInfo: UserModel;
   onPress: (e: GestureResponderEvent) => void;
   disabled: boolean;
@@ -34,17 +34,17 @@ export const VoteButton = observer(
     voteType,
     voteOutcome,
     votesCount,
-    votesFor,
+    weightedVotesFor,
     userInfo,
     onPress,
     disabled,
   }: Props): ReactElement => {
     const percentage = useMemo(() => {
-      if (votesFor === 0) {
+      if (weightedVotesFor === 0 || votesCount === 0) {
         return 0;
       }
-      return (votesFor / votesCount) * 100;
-    }, [votesCount, votesFor]);
+      return Math.round(((100 * weightedVotesFor) / votesCount) * 10) / 10;
+    }, [votesCount, weightedVotesFor]);
 
     return (
       <View>
