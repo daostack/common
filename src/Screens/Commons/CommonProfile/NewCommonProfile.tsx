@@ -40,9 +40,9 @@ export const NewCommonProfile = observer(() => {
   const route = useRoute();
   const upperRequestToJoinBtnRef = useRef(null);
 
-  const rootStore = useStore('rootStore');
   const commonStore = useStore('commonStore');
   const authStore = useStore('authStore');
+  const uiStore = useStore('uiStore');
 
   const [deleteScreenOn, setDeleteScreenOn] = useState(false);
   const [leaveScreenOn, setLeaveScreenOn] = useState(false);
@@ -50,7 +50,7 @@ export const NewCommonProfile = observer(() => {
   const [isMember, setIsMember] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
 
-  const params: RouteParams = route!.params!;
+  const params: RouteParams = route!.params;
   const currCommon: Common = commonStore.getCommonById(
     params?.commonId || params?.currCommon?.id,
   )!;
@@ -58,7 +58,7 @@ export const NewCommonProfile = observer(() => {
   const [hasPermission, setHasPermission] = useState(
     authStore.getPermission(commonId, authStore.userInfo.uid),
   );
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const bottomSheetStore = uiStore.bottomSheetStore;
   const hasImages = false;
 
   const openCommonOptionsModal = () => {
@@ -155,14 +155,6 @@ export const NewCommonProfile = observer(() => {
     }
   };
 
-  const viewProposal = () => {
-    navigation.navigate('ProposalScreen', {
-      proposalId: params.createdProposalId,
-    });
-
-    setShowRequestSentModal(false);
-  };
-
   return (
     <View style={styles.container}>
       <CommonProfileFlatList
@@ -179,7 +171,7 @@ export const NewCommonProfile = observer(() => {
             <CommonBoxCounterBar common={currCommon} />
           </View>
           <View style={styles.summaryContainer}>
-            <CommonStageSummary isCommonCard={false} common={currCommon} />
+            <CommonStageSummary common={currCommon} />
           </View>
           {!isMember && (
             <View
@@ -225,7 +217,7 @@ export const NewCommonProfile = observer(() => {
       <MemberConfirmModal
         showRequestSentModal={showRequestSentModal}
         closeModal={() => setShowRequestSentModal(false)}
-        viewProposal={viewProposal}
+        createdProposalId={params.createdProposalId}
       />
     </View>
   );

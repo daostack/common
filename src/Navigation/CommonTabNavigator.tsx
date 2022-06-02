@@ -88,6 +88,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonAgenda"
         component={NewCommonProfile}
+        initialParams={{currCommon}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text

@@ -1,7 +1,6 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import {InferProps} from 'prop-types';
 import React, {useCallback, useEffect} from 'react';
 import {
   FlatList,
@@ -31,8 +30,7 @@ import {Notification} from '~/Stores/Models/Notification';
 import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
-const props = {};
-const NotificationList: React.FC<InferProps<typeof props>> = (props) => {
+const NotificationList = (props) => {
   const {notificationsArray} = props;
   const navigation = useNavigation();
   const notificationStore = useStore('notificationStore');
@@ -132,8 +130,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = (props) => {
     </>
   );
 };
-
-NotificationList.propTypes = props;
 
 const styles = StyleSheet.create({
   scrollView: {

@@ -29,7 +29,7 @@ export const CommonTopTitles = ({
   const byline = common?.metadata.byline;
   const updatedAt = common?.updatedAt;
   const activeDate = dateFormat(updatedAt);
-  // to do private common
+  // to do - private common
   const isCommonPrivate = false;
   const pendingCount = proposalStore.getCommonProposals(common.id, {
     stage: PROPOSAL_STAGE.Active,

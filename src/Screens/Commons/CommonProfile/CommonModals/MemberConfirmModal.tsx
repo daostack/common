@@ -3,18 +3,28 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, font, layout, text} from '~/Theme';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
+import {useNavigation} from '@react-navigation/native';
 
 interface MemberConfirmModalProps {
   showRequestSentModal: boolean;
   closeModal: () => void;
-  viewProposal: () => void;
+  createdProposalId: string;
 }
 
 export const MemberConfirmModal = ({
   showRequestSentModal,
   closeModal,
-  viewProposal,
+  createdProposalId,
 }: MemberConfirmModalProps) => {
+  const navigation = useNavigation();
+
+  const viewProposal = () => {
+    navigation.navigate('ProposalScreen', {
+      proposalId: createdProposalId,
+    });
+    closeModal();
+  };
+
   return (
     <>
       <Modal

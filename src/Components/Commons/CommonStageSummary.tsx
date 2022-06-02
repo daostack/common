@@ -8,43 +8,37 @@ import {Common} from '~/Stores/Models/Common';
 import {observer} from 'mobx-react';
 
 interface Props {
-  isCommonCard: boolean;
   common: Common;
 }
 
-export const CommonStageSummary = observer(
-  ({isCommonCard, common}: Props): ReactElement => {
-    const members = common?.members?.length;
-    const balance = common?.balance;
-    const raised = common?.raised;
+export const CommonStageSummary = observer(({common}: Props): ReactElement => {
+  const balance = common?.balance;
+  const raised = common?.raised;
 
-    return (
-      <View style={styles.commonProgressContainer}>
-        <View style={styles.commonNumbers}>
-          <CommonNumberBox
-            numberComponent={
-              <Text style={styles.headerTitle}>
-                {CurrencySymbols.SHEKEL}
-                {formatMoney(isCommonCard ? raised / 100 : balance / 100)}
-              </Text>
-            }
-            title={isCommonCard ? 'Total raised' : 'Available funds'}
-          />
-          <CommonNumberBox
-            numberComponent={
-              <Text style={styles.headerTitle}>
-                {isCommonCard
-                  ? members
-                  : CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
-              </Text>
-            }
-            title={isCommonCard ? 'Members' : 'Total raised'}
-          />
-        </View>
+  return (
+    <View style={styles.commonProgressContainer}>
+      <View style={styles.commonNumbers}>
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL}
+              {formatMoney(balance / 100)}
+            </Text>
+          }
+          title={'Available funds'}
+        />
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
+            </Text>
+          }
+          title={'Total raised'}
+        />
       </View>
-    );
-  },
-);
+    </View>
+  );
+});
 
 const styles = StyleSheet.create({
   commonProgressContainer: {
