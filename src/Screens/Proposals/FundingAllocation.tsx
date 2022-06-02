@@ -15,7 +15,7 @@ import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {CommonActions} from '@react-navigation/native';
 import Toast from '~/Util/Toast';
 import font from '~/Theme/font';
-import {string, object, shape} from 'prop-types';
+import {string, object, shape, InferProps} from 'prop-types';
 import FundingAllocationFormStore from '~/Stores/FormStores/FundingAllocationFormStore';
 import {showErrorPopUp} from '~/Util';
 import {inject} from 'mobx-react';
@@ -24,9 +24,21 @@ import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
+import {PROPOSALS} from '../enums/PROPOSALS';
 import {escapeUrl} from '~/Util';
 
-const FundingAllocation = ({
+const props = {
+  navigation: object,
+  route: shape({
+    params: shape({
+      commonId: string,
+      common: object,
+    }),
+  }),
+  rootStore: object,
+};
+
+const FundingAllocation: React.FC<InferProps<typeof props>> = ({
   navigation,
   route: {
     params: {commonId, common},
@@ -35,6 +47,7 @@ const FundingAllocation = ({
 }) => {
   const uiStore = rootStore.uiStore;
   const bankAccountStore = rootStore.bankAccountStore;
+  const authStore = rootStore.authStore;
 
   const [fundingAllocationFormStore] = useState(
     new FundingAllocationFormStore(),
@@ -62,13 +75,14 @@ const FundingAllocation = ({
       try {
         const formData = fundingAllocationFormStore.getChangedFormFieldsJson();
         const data = {
+          commonId,
+          proposerId: authStore?.userInfo?.uid,
           title: formData[FundingAllocationForm.FIELD_TITLE],
           description: formData[FundingAllocationForm.FIELD_DESCRIPTION],
-          amount: formData[FundingAllocationForm.FIELD_AMOUNT_REQUESTED] * 100,
-          links: escapeUrl(formData[FundingAllocationForm.FIELD_LINKS]),
           images: formData[FundingAllocationForm.FIELD_IMAGES],
           files: formData[FundingAllocationForm.FIELD_FILES],
-          commonId,
+          links: escapeUrl(formData[FundingAllocationForm.FIELD_LINKS]),
+          amount: formData[FundingAllocationForm.FIELD_AMOUNT_REQUESTED] * 100,
         };
 
         navigation.navigate({
@@ -78,8 +92,10 @@ const FundingAllocation = ({
           },
         });
 
-        const createFundingAllocationResponse =
-          await ProposalService.createFundingAllocation(data);
+        const createFundingAllocationResponse = await ProposalService.create({
+          type: PROPOSALS.FUNDS_ALLOCATION,
+          ...data,
+        });
 
         if (createFundingAllocationResponse.status === 200) {
           const proposalId = createFundingAllocationResponse.data.id;
@@ -205,7 +221,7 @@ const FundingAllocation = ({
           <View style={styles.divider} />
           <FundingAllocationForm
             common={common}
-            fundingRequestFormStore={fundingAllocationFormStore}
+            fundingAllocationFormStore={fundingAllocationFormStore}
             navigation={navigation}
             hasBankAccountError={bankAccountState.hasError}
             handleAddBankAccount={handleAddBankAccount}
@@ -229,17 +245,6 @@ const FundingAllocation = ({
       )}
     </React.Fragment>
   );
-};
-
-FundingAllocation.propTypes = {
-  navigation: object,
-  route: shape({
-    params: shape({
-      commonId: string,
-      common: object,
-    }),
-  }),
-  rootStore: object,
 };
 
 const styles = StyleSheet.create({

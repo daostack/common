@@ -9,7 +9,7 @@ import {colors, text} from '~/Theme';
 import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
 import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import {string, object, shape, func, InferProps} from 'prop-types';
-import {calcShouldSkipRules} from '~/Util/rules';
+//import {calcShouldSkipRules} from '~/Util/rules';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSALS} from '../enums/PROPOSALS';
 import {useStore} from '~/Util/hooks/useStore';
@@ -29,7 +29,7 @@ const props = {
 
 const MembershipAdmittance: React.FC<InferProps<typeof props>> = ({
   route: {
-    params: {formStores, currCommon, commonId, refreshFeed},
+    params: {formStores, commonId},
   },
 }) => {
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
