@@ -8,7 +8,7 @@ import {layout} from '~/Theme';
 interface Props {
   commonId: string;
   hasPermission: string;
-  openCommonOptions: (item: string, itemType?: string) => void;
+  openCommonOptions: (item: string) => void;
   showHiddenNote: (item: string, itemType?: string) => void;
   isMember: boolean;
 }

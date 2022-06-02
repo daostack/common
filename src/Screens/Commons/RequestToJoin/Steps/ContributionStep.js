@@ -59,7 +59,7 @@ const ContributionStep = ({
       const data = {
         description: formData.intro,
         funding: 0,
-        commonId: currDaoId,
+        commonId: currCommon.id,
       };
       if (formData.links) {
         data.links = formData.links;

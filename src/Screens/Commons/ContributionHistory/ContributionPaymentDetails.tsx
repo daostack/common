@@ -6,7 +6,7 @@ import {CardItem} from '~/Components/Payment/CardItem';
 import {colors, text, font} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {ContributionPaymentDetailsRouteProps} from '~/Types/navigation';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {useStore} from '~/Util/hooks/useStore';
 
 const ContributionPaymentDetails = () => {

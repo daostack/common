@@ -18,7 +18,7 @@ import {
   AgendaFormStore,
   ReviewFormStore,
 } from '~/Stores/FormStores/CreateCommon';
-import {NAVIGATION_SCREENS} from '../../../Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '../../../Navigation/routes.enum';
 
 const COMMON_EXPLANATION_SLIDERS_AMOUNT = 3;
 

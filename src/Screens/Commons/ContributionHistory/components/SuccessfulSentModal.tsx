@@ -13,7 +13,7 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {Common} from '~/Stores/Models/Common';
 import {colors, font, layout, text} from '~/Theme';
 import {sizeM} from '~/Theme/layout';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 interface Props {
   isVisible: boolean;
