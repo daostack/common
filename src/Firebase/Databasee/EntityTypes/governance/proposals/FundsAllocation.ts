@@ -5,28 +5,32 @@ import {DocInfo} from '../../DocInfo';
 import {firebase} from '~/Firebase';
 import {BasicArgsProposal} from './BaseProposal';
 
+export interface FundsAllocationLegal {
+  payoutDocs: DocInfo[];
+
+  payoutDocsUserComment: string | null;
+
+  totalInvoicesAmount: number | null;
+
+  payoutDocsRejectionReason: string | null;
+}
+
+export interface FundsAllocationTracker {
+  status: FUNDING_ALLOCATION_STATUS;
+
+  invoicesNotUploadedNotificationsCounter: number;
+
+  trusteeApprovedAt: firebase.firestore.Timestamp | null;
+
+  withdrawnAt: firebase.firestore.Timestamp | null;
+}
+
 export interface FundsAllocation extends BaseProposal {
   data: {
     expiresOn: firebase.firestore.Timestamp;
     args: FundsAllocationArgs;
-    legal: {
-      payoutDocs: DocInfo[];
-
-      payoutDocsUserComment: string | null;
-
-      totalInvoicesAmount: number | null;
-
-      payoutDocsRejectionReason: string | null;
-    };
-    tracker: {
-      status: FUNDING_ALLOCATION_STATUS;
-
-      invoicesNotUploadedNotificationsCounter: number;
-
-      trusteeApprovedAt: firebase.firestore.Timestamp | null;
-
-      withdrawnAt: firebase.firestore.Timestamp | null;
-    };
+    legal: FundsAllocationLegal;
+    tracker: FundsAllocationTracker;
   };
   type: PROPOSALS.FUNDS_ALLOCATION;
 }

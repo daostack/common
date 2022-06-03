@@ -7,7 +7,7 @@ import ProposalService, {
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
-import {ProposalType} from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
+import {ProposalType} from '~/Firebase/Databasee/EntityTypes/proposals/Proposal';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {showBackendError} from '~/Util';
