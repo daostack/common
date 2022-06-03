@@ -191,7 +191,7 @@ class TextInputFieldWithIcon extends React.Component {
     let styleTextfield = styles.textfield;
 
     const {formStore, name} = this.props.validation;
-    if (formStore.getFormField(name).error) {
+    if (formStore.getFormField(name)?.error) {
       styleTextfield = {...styles.textfield, ...styles.textfieldError};
     }
     if (this.state?.onFocus) {
@@ -239,7 +239,7 @@ class TextInputFieldWithIcon extends React.Component {
             ? currValue?.value?.toString()
             : currValue?.toString();
 
-        currValue = currValue.replace(',', '');
+        currValue = currValue?.replace(',', '');
         // if number, fix it to price format x,xxx (for currValue > 999)
         return +currValue ? formatNumber(currValue) : currValue;
       }

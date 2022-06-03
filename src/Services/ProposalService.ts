@@ -274,40 +274,6 @@ class ProposalService {
     );
   };
 
-  /*createFundingProposal = async (
-    formData: CreateFundingRequestProposalPayload,
-  ): Promise<IFundingRequestProposal> => {
-    try {
-      return await this.axiosClient.post(
-        this.endpoints.createFunding,
-        formData,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
-    } catch (err) {
-      logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
-      throw err;
-    }
-  };*/
-
-  /*createRequestToJoin = async (
-    formData: JoinRequestPayload,
-  ): Promise<AxiosResponse<IJoinRequestProposal>> => {
-    try {
-      return await this.axiosClient.post(this.endpoints.createJoin, formData, {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      });
-    } catch (err) {
-      logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
-      throw err;
-    }
-  };*/
-
   create = async (payload: ProposalType) => {
     try {
     } catch (err) {
