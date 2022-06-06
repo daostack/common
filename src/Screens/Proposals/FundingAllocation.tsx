@@ -24,7 +24,7 @@ import UseOfFunds from '../../Components/Commons/UseOfFunds';
 import {BlurView} from '@react-native-community/blur';
 import DebtWarningNote from './components/DebtWarningNote';
 import ModalDebtWarning from './components/ModalDebtWarning';
-import {PROPOSALS} from '../enums/PROPOSALS';
+import {PROPOSALS} from '~/Shared/enums/proposals';
 import {escapeUrl} from '~/Util';
 
 const props = {
