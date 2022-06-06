@@ -7,7 +7,7 @@ import {colors, font, text} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
 import {Divider} from '~/Components/Divider';
 import {AddPaymentMethod} from './AddPaymentMethod';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {useNavigation, CommonActions} from '@react-navigation/native';
 import {getExpirationDate, getCardNetwork} from './helper';
 

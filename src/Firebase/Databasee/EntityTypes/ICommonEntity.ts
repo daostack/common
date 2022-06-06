@@ -86,7 +86,7 @@ export interface ICommonEntity extends IBaseEntity {
   /**
    * byline
    */
-  byline: string;
+  byline: string | undefined;
 }
 
 export interface ICommonRule {
@@ -141,7 +141,7 @@ export interface ICommonMetadata {
    */
   contributionType: ContributionType;
 
-  zeroContribution: boolean;
+  zeroContribution?: boolean;
 }
 
 export type ContributionType = 'one-time' | 'monthly';

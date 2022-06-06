@@ -17,7 +17,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  CommonProfile,
   Onboarding,
   UserProfile,
   HUDTest,
@@ -63,7 +62,7 @@ import {
   ContributionPaymentDetails,
   UpdatePaymentDetails,
 } from './src/Screens';
-import CommonHome from './src/Components/Navigation/CommonHome';
+import HomeTabNavigator from './src/Navigation/HomeTabNavigator';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {observer, inject} from 'mobx-react';
 import Icon from './src/Assets/iconfont/Icon';
@@ -84,7 +83,7 @@ import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import Intercom from 'react-native-intercom';
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
@@ -96,6 +95,7 @@ import {
 } from '~/Util/constants/dynamicLinks';
 import {layout} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
+import {CommonTabNavigator} from '~/Navigation/CommonTabNavigator';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -395,7 +395,7 @@ const App = () => {
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName={onboarded ? 'CommonHome' : 'Onboarding'}
+          initialRouteName={onboarded ? 'HomeTabNavigator' : 'Onboarding'}
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
@@ -407,15 +407,14 @@ const App = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="CommonHome"
-            component={CommonHome}
+            name="HomeTabNavigator"
+            component={HomeTabNavigator}
             options={{headerShown: false}}
-            authStore={authStore}
           />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
           <Stack.Screen
             name="CommonProfile"
-            component={CommonProfile}
+            component={CommonTabNavigator}
             options={{headerShown: false}}
           />
           <Stack.Screen

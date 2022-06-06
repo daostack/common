@@ -1,46 +1,39 @@
-import React, {useEffect, useCallback} from 'react';
-
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {useNavigation} from '@react-navigation/native';
+import {observer} from 'mobx-react';
+import React, {useCallback, useEffect} from 'react';
 import {
+  FlatList,
+  Platform,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   View,
-  Platform,
-  FlatList,
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {layout, font, sizeS, colors} from '~/Theme';
-import {func, InferProps, shape} from 'prop-types';
 import Loader from '~/Components/Loader';
-import {inject, observer} from 'mobx-react';
-import {notificationStorePropTypes} from '~/Types/propTypes';
-import {Notification} from '~/Stores/Models/Notification';
-import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
-import Logger from '~/Services/Logger';
-import FundingRequest from '~/Components/Notifications/FundingRequest';
-import MessageCreated from '~/Components/Notifications/MessageCreated';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
-import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
-import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
+import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
-import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
+import FundingRequest from '~/Components/Notifications/FundingRequest';
+import MessageCreated from '~/Components/Notifications/MessageCreated';
+import ProposalReported from '~/Components/Notifications/ProposalReported';
+import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
+import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import Logger from '~/Services/Logger';
+import {Notification} from '~/Stores/Models/Notification';
+import {colors, font, layout, sizeS} from '~/Theme';
+import {useStore} from '~/Util/hooks/useStore';
 
-const props = {
-  navigation: shape({
-    addListener: func.isRequired,
-  }).isRequired,
-  notificationStore: notificationStorePropTypes.isRequired,
-};
-const NotificationList: React.FC<InferProps<typeof props>> = ({
-  navigation,
-  notificationStore,
-}) => {
+const NotificationList = (props) => {
+  const {notificationsArray} = props;
+  const navigation = useNavigation();
+  const notificationStore = useStore('notificationStore');
   useEffect(() => {
     if (!notificationStore.hasNewNotifications) {
       Platform.OS === 'ios'
@@ -49,8 +42,9 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
     }
   }, [notificationStore.hasNewNotifications]);
 
-  const notificationList: Array<Notification> =
-    notificationStore.loggedUserNotifications;
+  let notificationList: Array<Notification> = notificationsArray
+    ? notificationsArray
+    : notificationStore.loggedUserNotifications;
 
   const renderNotificationItem = ({item}: {item: Notification}) => {
     switch (item.eventType) {
@@ -137,8 +131,6 @@ const NotificationList: React.FC<InferProps<typeof props>> = ({
   );
 };
 
-NotificationList.propTypes = props;
-
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
@@ -159,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('notificationStore')(observer(NotificationList));
+export default observer(NotificationList);

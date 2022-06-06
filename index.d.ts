@@ -1,4 +1,4 @@
-import {NavigationRoutes} from '~/Util/constants/routes.enum';
+import {NavigationRoutes} from '~/Navigation/routes.enum';
 
 // need that to enable types for navigation routes
 declare global {

@@ -75,6 +75,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     const [viewerPermission, setViewerPermission] = React.useState('');
     const navigation = useNavigation();
     const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
+
     let list: Proposal[] = [];
     if (commonInfo) {
       list = rootStore.proposalStore.getCommonProposals(
@@ -218,6 +219,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
             listKey={(item, index) => 'Proposal' + index.toString()}
             data={list.slice()}
             keyExtractor={keyExtractor}
+            showsVerticalScrollIndicator={false}
             initialNumToRender={1}
             maxToRenderPerBatch={5}
             renderItem={({item, index}) => renderProposalCard(item, index)}

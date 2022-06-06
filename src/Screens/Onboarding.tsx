@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import logger from '../Services/Logger';
 import {object} from 'prop-types';
-import {NAVIGATION_SCREENS} from '../Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '../Navigation/routes.enum';
 
 const ONBOARDING_SLIDERS_AMOUNT = 3;
 
@@ -32,8 +32,7 @@ const Onboarding = (): ReactElement => {
           index: 1,
           routes: [
             {
-              name: NAVIGATION_SCREENS.COMMON_HOME,
-              params: {user: 'jane'},
+              name: NAVIGATION_SCREENS.EXPLORE,
             },
           ],
         }),

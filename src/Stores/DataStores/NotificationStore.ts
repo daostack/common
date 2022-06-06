@@ -41,11 +41,12 @@ export default class NotificationStore extends BaseStore<
     try {
       const notif = this.getDataArray
         ?.filter(() => true)
-        .sort(
-          (notification: Notification, prevNotification: Notification) =>
+        .sort((notification: Notification, prevNotification: Notification) => {
+          return (
             prevNotification.createdAt?.seconds -
-            notification.createdAt?.seconds,
-        );
+            notification.createdAt?.seconds
+          );
+        });
       return notif;
     } catch (error) {
       return [];
@@ -169,6 +170,41 @@ export default class NotificationStore extends BaseStore<
       } as IProposalNotificationData;
     } else {
       return null;
+    }
+  }
+
+  getCommonNotifications(commonId: string): IProposalNotificationData | null {
+    try {
+      const notif = this.getDataArray
+        ?.filter((notification: Notification) => {
+          const eventObjectId = notification.eventObjectId;
+
+          let common = this.rootStore.commonStore.getCommonById(eventObjectId);
+          let proposal =
+            this.rootStore.proposalStore.getProposalById(eventObjectId);
+          let discussion =
+            this.rootStore.discussionStore.getDiscussionById(eventObjectId);
+
+          const shouldPass =
+            common?.id === commonId ||
+            proposal?.commonId === commonId ||
+            discussion?.commonId === commonId;
+
+          if (shouldPass) {
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .sort((notification: Notification, prevNotification: Notification) => {
+          return (
+            prevNotification.createdAt?.seconds -
+            notification.createdAt?.seconds
+          );
+        });
+      return notif;
+    } catch (error) {
+      return [];
     }
   }
 

@@ -30,7 +30,7 @@ export class Common implements ICommonEntity {
   proposalCount: number;
   messageCount: number;
   discussionCount: number;
-  byline: string;
+  byline: string | undefined;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;

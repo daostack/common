@@ -2,6 +2,7 @@ import {ReactElement} from 'react';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import CommonStore from '~/Stores/DataStores/CommonStore';
 import ProposalStore from '~/Stores/DataStores/ProposalStore';
+import NotificationStore from '~/Stores/DataStores/NotificationStore';
 
 export type BottomSheetStore = {
   showBottomSheet: (template: any, value: any) => void;
@@ -40,6 +41,7 @@ export type AuthStore = {
   setIsLoading: (loading: boolean) => void;
   setSignedInUser: (newUserInfo: UserInfo) => void;
   isDaoMember: (members: ICommonMember[]) => boolean;
+  signedInUser: boolean;
 };
 
 export type RootStore = {
@@ -47,6 +49,7 @@ export type RootStore = {
   authStore: AuthStore;
   commonStore: CommonStore;
   proposalStore: ProposalStore;
+  notificationStore: NotificationStore;
 };
 // TODO: Add all Store types
 export type AppRootStore = {rootStore: RootStore};

@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import NotificationBadge from './NotificationBadge';
 import {CommonActions} from '@react-navigation/native';
 import {InferProps, object, shape, string, bool, func} from 'prop-types';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {notificationStorePropTypes} from '~/Types/propTypes';
 import {inject, observer} from 'mobx-react';
@@ -55,21 +55,20 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
         fromNotificationItem: true,
       });
     } else if (notificationData.common) {
-      navigate = CommonActions.navigate({
-        name: NAVIGATION_SCREENS.COMMON_PROFILE,
+      navigation.navigate('CommonProfile', {
+        screen: 'CommonAgenda',
         params: {
           currCommon: notificationData.common,
           fromNotificationItem: true,
         },
       });
-      navigation.dispatch(navigate);
     } else if (item.eventType === EventTypeState.welcomeNotification) {
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
           routes: [
             {
-              name: NAVIGATION_SCREENS.COMMON_HOME,
+              name: NAVIGATION_SCREENS.COMMON_PROFILE,
             },
           ],
         }),
