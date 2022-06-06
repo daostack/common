@@ -106,11 +106,6 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
           </>
         }
       />
-      {false && (
-        <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
-          <RequestToJoinBtn requestToJoin={() => {}} />
-        </Animated.View>
-      )}
     </>
   );
 };

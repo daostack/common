@@ -14,7 +14,7 @@ import {colors, font, layout, sizeL, sizeS, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import CommonStageSummary from '~/Components/Commons/CommonStageSummary';
+import CommonStageSummary from '~/Components/Commons/CommonFundsBox';
 import Modal from 'react-native-modal';
 import SentTemplate from '~/Components/ModalTemplates/SentTemplate';
 import ProposalApprovalTag from '~/Components/Proposals/ProposalApprovalTag';

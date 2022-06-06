@@ -1,9 +1,13 @@
-import React, {FC} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {colors} from '~/Theme';
 
-const SectionDivider: FC = () => (
-  <View style={styles.sectionDividerContent}>
+interface SectionDividerProps {
+  padding: number;
+}
+
+const SectionDivider = ({padding}: SectionDividerProps) => (
+  <View style={{paddingHorizontal: padding ? padding : 20}}>
     <View style={styles.sectionDivider} />
   </View>
 );

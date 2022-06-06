@@ -1,23 +1,36 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {colors, font, text} from '~/Theme';
+import {colors, font} from '~/Theme';
 import {observer} from 'mobx-react';
 import {CurrencySymbols} from '~/Util/locale';
-import {ITEM_ID} from '~/Components/Forms/ModerationForm';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
 import FastImage from 'react-native-fast-image';
+import {useStore} from '~/Util/hooks/useStore';
+import moment from 'moment';
 
 interface Props {
-  userName?: string;
+  userId: string;
   description?: string;
-  date: string;
+  date: {
+    seconds: number;
+    miliseconds: number;
+  };
   image: string;
   id: number;
-  amount: number;
+  amount: {
+    amount: number;
+    currency: string;
+  };
 }
 
-const WalletItemCard = (props: Props) => {
-  const {userName, description, date, image, amount} = props;
+export const PayInCard = observer((props: Props) => {
+  const {userId, description, date, amount} = props;
+  const actualAmount = amount?.amount;
+  const userStore = useStore('userStore');
+  const user = userStore.getUserById(userId);
+  const image = user?.photoURL;
+  const userName = user?.firstName;
+  const dateForm = moment(new Date(date?.seconds * 1000)).format('D MMM, YYYY');
 
   return (
     <View style={styles.cardView}>
@@ -25,11 +38,13 @@ const WalletItemCard = (props: Props) => {
         <Text
           style={[
             styles.amount,
-            {color: amount > 0 ? colors.lightishGreen : colors.error},
-          ]}>{`${CurrencySymbols.SHEKEL}${amount}`}</Text>
-        <Text style={styles.date}>{date}</Text>
+            {color: actualAmount > 0 ? colors.lightishGreen : colors.error},
+          ]}>{`${actualAmount > 0 ? '+' : '-'} ${CurrencySymbols.SHEKEL}${
+          actualAmount / 100
+        }`}</Text>
+        <Text style={styles.date}>{dateForm}</Text>
       </View>
-      <SectionDivider />
+      <SectionDivider padding={15} />
       {userName ? (
         <View style={styles.username}>
           <FastImage
@@ -45,9 +60,7 @@ const WalletItemCard = (props: Props) => {
       )}
     </View>
   );
-};
-
-export default observer(WalletItemCard);
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -58,27 +71,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    paddingBottom: 8,
   },
   username: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingTop: 8,
+    paddingBottom: 15,
   },
   usernameText: {
-    color: colors.greySubtitle,
-    fontSize: 14,
+    color: 'rgba(0, 26, 54, 0.3)',
+    fontSize: 12,
     ...font.primary.regular,
   },
   image: {
-    height: 30,
-    width: 30,
-    marginLeft: 10,
-    marginRight: 15,
+    backgroundColor: colors.grey3,
+    height: 24,
+    width: 24,
+    marginRight: 8,
+    borderRadius: 15,
   },
   date: {
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: 12,
+    ...font.primary.regular,
+    fontWeight: '400',
+    color: colors.black,
   },
   containerBackground: {
     paddingTop: 50,
@@ -86,8 +107,8 @@ const styles = StyleSheet.create({
   },
   cardView: {
     backgroundColor: colors.white,
-    marginHorizontal: 25,
-    marginVertical: 10,
+    marginHorizontal: 24,
+    marginVertical: 4,
     shadowColor: 'rgba(0, 0, 0, 0.22)',
     shadowOffset: {
       width: 0,
@@ -104,7 +125,9 @@ const styles = StyleSheet.create({
   description: {
     ...font.primary.regular,
     fontSize: 15,
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingTop: 8,
+    paddingBottom: 15,
     fontWeight: 'bold',
   },
   balance: {
@@ -118,7 +141,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     ...font.primary.bold,
     fontSize: 22,
-    marginLeft: 10,
   },
   listContainer: {
     backgroundColor: colors.grey5,
