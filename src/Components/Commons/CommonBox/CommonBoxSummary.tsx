@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {font, text} from '~/Theme';
+import {colors, font, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from '../CommonNumberBox';
 import {formatMoney} from '~/Util/FormatUtil';
@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
   },
   headerTitle: {
     ...font.primary.bold,

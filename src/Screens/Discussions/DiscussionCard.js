@@ -8,28 +8,29 @@ import {
 } from 'react-native';
 import {string, shape, object, func} from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {colors, sizeM, font, text} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import moment from 'moment';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationMenu from '../../Components/Moderation/ModerationMenu';
 import DiscussionCardHeader from '../../Components/Discussion/DiscussionCardHeader';
 import {FLAGS} from '../../Components/Moderation/constants';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {useStore} from '~/Util/hooks/useStore';
 
 const {width} = Dimensions.get('window');
 
 const DiscussionCard = ({
   data,
   commonId,
-  navigation,
   openCommonOptions,
   hiddenDiscussionNote,
-  rootStore,
   viewerPermission,
 }) => {
+  const navigation = useNavigation();
+  const rootStore = useStore('rootStore');
   const userStore = rootStore.userStore;
   const authStore = rootStore.authStore;
   const discussionMessageStore = rootStore.discussionMessageStore;
@@ -116,7 +117,6 @@ const DiscussionCard = ({
                 )}
                 <View style={styles.primaryNameContainer}>
                   <Text style={styles.primaryName}>{user.displayName}</Text>
-                  {/* <Text style={{color: colors.grey3}}>0.1% REP</Text> */}
                   <Text style={styles.date}>
                     {moment(data.createTime.toDate()).fromNow()}
                   </Text>
@@ -156,7 +156,6 @@ const DiscussionCard = ({
                     <Icon name="discussion" size={20} />
                     <Text style={styles.msgCount}>{data.messageCount}</Text>
                   </View>
-                  {/* <TouchableOpacity onPress={() => navigateToDiscussion()}> */}
                   <TouchableOpacity
                     style={styles.navigateToDiscussion}
                     onPress={() => navigateToDiscussion()}>
@@ -169,7 +168,6 @@ const DiscussionCard = ({
                       color={colors.mainBlue}
                     />
                   </TouchableOpacity>
-                  {/* </TouchableOpacity> */}
                 </View>
               )}
             </View>
@@ -335,4 +333,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore', 'userStore')(observer(DiscussionCard));
+export default observer(DiscussionCard);

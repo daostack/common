@@ -70,7 +70,7 @@ const PaymentDetailsStep = ({
       const data = {
         description: formData.intro,
         funding: formData.amount * 100,
-        commonId,
+        commonId: currCommon.id,
       };
 
       if (formData.links) {
@@ -98,20 +98,18 @@ const PaymentDetailsStep = ({
         if (createRequestToJoinResponse.status === 200) {
           const proposalId = createRequestToJoinResponse.data.id;
 
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
+          if (typeof refreshFeed === 'function') {
+            refreshFeed();
+          }
+
+          navigation.navigate('CommonProfile', {
+            screen: 'CommonAgenda',
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
               commonId,
             },
           });
-
-          if (typeof refreshFeed === 'function') {
-            refreshFeed();
-          }
-
-          navigation.dispatch(navigate);
         } else {
           Toast.hide();
           showErrorPopUp(bottomSheetStore, createRequestToJoinResponse);

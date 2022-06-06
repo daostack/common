@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommonStageSummary CommonStageSummary should render correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignContent": "center",
+      "alignItems": "center",
+      "flexDirection": "column",
+      "justifyContent": "center",
+      "padding": 20,
+      "paddingVertical": 0,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flexDirection": "row",
+        "paddingHorizontal": 10,
+        "paddingTop": 18,
+        "width": "100%",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flex": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "#76839b",
+            "fontFamily": "NunitoSans-Regular",
+            "fontSize": 12,
+            "fontWeight": "normal",
+            "letterSpacing": 0.4,
+            "textAlign": "center",
+          }
+        }
+      >
+        Available funds
+      </Text>
+      <View
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#001a36",
+              "fontSize": 14,
+              "fontWeight": "700",
+              "lineHeight": 19,
+              "paddingVertical": 4.4,
+            }
+          }
+        >
+          ₪
+          641
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "flex": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "#76839b",
+            "fontFamily": "NunitoSans-Regular",
+            "fontSize": 12,
+            "fontWeight": "normal",
+            "letterSpacing": 0.4,
+            "textAlign": "center",
+          }
+        }
+      >
+        Total raised
+      </Text>
+      <View
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "#001a36",
+              "fontSize": 14,
+              "fontWeight": "700",
+              "lineHeight": 19,
+              "paddingVertical": 4.4,
+            }
+          }
+        >
+          ₪905.40
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
