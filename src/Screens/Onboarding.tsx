@@ -32,7 +32,7 @@ const Onboarding = (): ReactElement => {
           index: 1,
           routes: [
             {
-              name: NAVIGATION_SCREENS.EXPLORE,
+              name: NAVIGATION_SCREENS.HOME_TAB_NAVIGATOR,
             },
           ],
         }),
