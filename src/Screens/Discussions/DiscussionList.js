@@ -1,22 +1,22 @@
 import React, {useCallback} from 'react';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import {FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import DiscussionCard from './DiscussionCard';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, object, bool, func} from 'prop-types';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {string, bool, func} from 'prop-types';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {useStore} from '~/Util/hooks/useStore';
 
 const DiscussionList = ({
   commonId,
-  navigation,
-  rootStore,
   openCommonOptions,
   showHiddenNote,
   isMember,
 }) => {
-  const list = rootStore.discussionStore.getCommonDiscussions(commonId);
+  const rootStore = useStore('rootStore');
+  const discussionStore = useStore('discussionStore');
+  const list = discussionStore.getCommonDiscussions(commonId);
   const viewerPermission = rootStore.authStore.getPermission(
     commonId,
     auth()?.currentUser?.uid,
@@ -39,7 +39,6 @@ const DiscussionList = ({
               key={item.id}
               data={item}
               commonId={commonId}
-              navigation={navigation}
               openCommonOptions={() => openCommonOptions(item)}
               hiddenDiscussionNote={() =>
                 showHiddenNote({hiddenItem: item, isModerator})
@@ -61,11 +60,9 @@ const DiscussionList = ({
 
 DiscussionList.propTypes = {
   commonId: string.isRequired,
-  navigation: object.isRequired,
   openCommonOptions: func,
   showHiddenNote: func,
-  rootStore: rootStorePropTypes,
   isMember: bool,
 };
 
-export default inject('rootStore')(observer(DiscussionList));
+export default observer(DiscussionList);

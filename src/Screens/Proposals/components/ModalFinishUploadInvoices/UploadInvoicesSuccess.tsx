@@ -4,7 +4,7 @@ import {CommonActions} from '@react-navigation/native';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font, layout, text} from '~/Theme';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 type Props = {
   onPressClose: () => void;

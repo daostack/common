@@ -16,9 +16,9 @@ import {
   PaymentFormStore,
   PersonalContributionFormStore,
 } from '~/Stores/FormStores/RequestToJoin';
-import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 
 const props = {
   navigation: shape({
@@ -37,11 +37,11 @@ const props = {
 const {height, width} = Dimensions.get('window');
 
 const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
-  navigation,
   route: {
-    params: {currCommon, currDaoId, refreshFeed},
+    params: {currCommon},
   },
 }) => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const handleContinue = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -49,22 +49,16 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
 
-    const navigateIntroductionStep = CommonActions.navigate({
-      name: 'IntroductionStep', // we always go to Introduction first
-      params: {
-        formStores: {
-          paymentFormStore,
-          introduceYourselfFormStore,
-          personalContributionFormStore,
-          billingDetailsFormStore,
-        },
-        currCommon: currCommon,
-        currDaoId: currDaoId,
-        skipFirstStep: false,
-        refreshFeed,
+    navigation.navigate('IntroductionStep', {
+      formStores: {
+        paymentFormStore,
+        introduceYourselfFormStore,
+        personalContributionFormStore,
+        billingDetailsFormStore,
       },
+      currCommon,
+      skipFirstStep: false,
     });
-    navigation.dispatch(navigateIntroductionStep);
   };
 
   return (

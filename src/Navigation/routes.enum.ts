@@ -1,8 +1,9 @@
+import FormStore from '~/Stores/FormStores/FormStore';
+import {Common} from '~/Stores/Models/Common';
 import {UserModel} from '~/Stores/Models/UserModel';
 
 export enum NAVIGATION_SCREENS {
   ONBOARDING = 'Onboarding',
-  COMMON_HOME = 'CommonHome',
   COMMON_PROFILE = 'CommonProfile',
   COMMON_AGENDA = 'CommonAgenda',
   EXPLORE = 'Explore',
@@ -41,21 +42,32 @@ export enum NAVIGATION_SCREENS {
   MAKE_CONTRIBUTION = 'MakeContribution',
   CONTRIBUTION_PAYMENT_DETAILS = 'ContributionPaymentDetails',
   UPDATE_PAYMENT_DETAILS = 'UpdatePaymentDetails',
+  HOME_TAB_NAVIGATOR = 'HomeTabNavigator',
 }
 
 export type NavigationRoutes = {
   Onboarding: undefined;
-  CommonHome: undefined;
-  CommonProfile: undefined;
+  HomeTabNavigator: undefined;
+  CommonProfile: {screen: string; params: {currCommon: Common}};
+  CommonAgenda: undefined;
   Explore: undefined;
   Profile: {userId: string; userInfo: UserModel};
-  EditCommon: undefined;
-  CommonAgenda: {commonId: string; canEdit: boolean; onEdit: () => void};
+  EditCommon: {currCommon: Common; type: string};
+  // CommonAgenda: {commonId: string; canEdit: boolean; onEdit: () => void};
   CommonExplanation: undefined;
-  ProposalScreen: undefined;
+  ProposalScreen: {proposalId: string};
   AddInvoicesScreen: undefined;
   RulesStep: undefined;
-  IntroductionStep: undefined;
+  IntroductionStep: {
+    currCommon: Common;
+    skipFirstStep: boolean;
+    formStores: {
+      paymentFormStore: FormStore;
+      introduceYourselfFormStore: FormStore;
+      personalContributionFormStore: FormStore;
+      billingDetailsFormStore: FormStore;
+    };
+  };
   ContributionStep: undefined;
   BillingDetailsStep: undefined;
   PaymentDetailsStep: undefined;
@@ -65,23 +77,24 @@ export type NavigationRoutes = {
   CreateStep4: undefined;
   Discussions: undefined;
   FullScreenCreationLoader: undefined;
-  NewDiscussion: undefined;
+  NewDiscussion: {commonId: string};
   EditProfile: undefined;
   PDFViewer: undefined;
-  Browser: undefined;
+  Browser: {url: string};
   MyWallet: undefined;
   MyProposals: undefined;
   MyCommons: undefined;
   Notifications: undefined;
   CommonMembers: undefined;
-  FundingProposal: undefined;
+  FundingProposal: {common: Common; commonId: string; screenTitle: string};
   Billing: undefined;
   MonthlyContribution: undefined;
   VotesScreen: undefined;
   ChoosePaymentMethodStep: undefined;
   MonthlyContributionCharges: undefined;
-  ContributionHistory: undefined;
+  ContributionHistory: {common: Common};
   MakeContribution: undefined;
   ContributionPaymentDetails: undefined;
   UpdatePaymentDetails: undefined;
+  FirstJoinCommon: {currCommon: Common};
 };

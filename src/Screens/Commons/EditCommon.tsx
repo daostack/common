@@ -31,7 +31,7 @@ import {
   Values as EditRulesValues,
   validationSchema as editRulesValidation,
 } from '~/Components/EditCommon/EditRules';
-import {editType} from './CommonProfile/CommonAgenda';
+import {editType} from './CommonProfile/CommonOldAgenda';
 import Loader from '~/Components/Loader';
 
 type EditFormValues = EditInfoValues | EditRulesValues;

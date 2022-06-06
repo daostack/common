@@ -1,57 +1,44 @@
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {font, layout, text} from '~/Theme';
+import {colors, layout, text} from '~/Theme';
 import {CurrencySymbols} from '~/Util/locale';
 import {CommonNumberBox} from './CommonNumberBox';
 import {formatMoney} from '~/Util/FormatUtil';
+import {Common} from '~/Stores/Models/Common';
+import {observer} from 'mobx-react';
 
 interface Props {
-  isCommonCard: boolean;
-  time: number;
-  activeProposals: number;
-  goal: number;
-  members: number;
-  raised: number;
-  balance: number;
-  reservedBalance: number;
+  common: Common;
 }
 
-const CommonStageSummary = ({
-  /* TODO: Currently not used */
-  // time,
-  // activeProposals,
-  // goal
-  isCommonCard,
-  members,
-  raised,
-  balance,
-  reservedBalance,
-}: Props): ReactElement => (
-  <View style={styles.commonProgressContainer}>
-    <View style={styles.commonNumbers}>
-      <CommonNumberBox
-        numberComponent={
-          <Text style={styles.headerTitle}>
-            {CurrencySymbols.SHEKEL}
-            {formatMoney(isCommonCard ? raised / 100 : balance / 100)}
-          </Text>
-        }
-        title={isCommonCard ? 'Raised' : 'Available funds'}
-        inProcessFunds={isCommonCard ? null : reservedBalance}
-      />
-      <CommonNumberBox
-        numberComponent={
-          <Text style={styles.headerTitle}>
-            {isCommonCard
-              ? members
-              : CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
-          </Text>
-        }
-        title={isCommonCard ? 'Members' : 'Raised'}
-      />
+export const CommonStageSummary = observer(({common}: Props): ReactElement => {
+  const balance = common?.balance;
+  const raised = common?.raised;
+
+  return (
+    <View style={styles.commonProgressContainer}>
+      <View style={styles.commonNumbers}>
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL}
+              {formatMoney(balance / 100)}
+            </Text>
+          }
+          title={'Available funds'}
+        />
+        <CommonNumberBox
+          numberComponent={
+            <Text style={styles.headerTitle}>
+              {CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
+            </Text>
+          }
+          title={'Total raised'}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
+});
 
 const styles = StyleSheet.create({
   commonProgressContainer: {
@@ -59,18 +46,17 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   commonNumbers: {
-    padding: 10,
+    paddingHorizontal: 10,
     ...layout.flexRow,
     width: '100%',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 18,
   },
   headerTitle: {
-    ...text.h3Black,
-    ...font.primary.bold,
-    ...font.lineHeight(2),
-    ...font.fontSize(4),
-    paddingTop: 5,
+    color: colors.black,
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 19,
+    paddingVertical: 4.4,
   },
   headerTitleLight: {
     ...text.h3Black,
@@ -86,5 +72,3 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-export default React.memo(CommonStageSummary);

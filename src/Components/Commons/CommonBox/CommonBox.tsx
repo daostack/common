@@ -1,12 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {observer} from 'mobx-react';
 import React from 'react';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {CommonBoxCounterBar} from '~/Components/Commons/CommonBox/CommonBoxCounterBar';
+import {Common} from '~/Stores/Models/Common';
+import {colors} from '~/Theme';
 import CommonBoxImage from './CommonBoxImage';
 import CommonBoxSummary from './CommonBoxSummary';
-import {colors, font} from '~/Theme';
-import Icon from '~/Assets/iconfont/Icon';
-import {Common} from '~/Stores/Models/Common';
-import {observer} from 'mobx-react';
 
 interface CommonBoxProps {
   common: Common;
@@ -17,28 +17,21 @@ interface CommonBoxProps {
 
 const CommonBox = ({
   common,
-  onPress,
   width = '100%',
   headerHeightLayouted,
 }: CommonBoxProps) => {
   const navigation = useNavigation();
 
-  const proposalsCount = common.proposalCount;
-  const discussionsCount = common.discussionCount;
-  const messageCount = common.messageCount;
+  const onBoxPress = () => {
+    navigation.navigate('CommonProfile', {
+      screen: 'CommonAgenda',
+      params: {currCommon: common},
+    });
+  };
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        onPress();
-        const navigate = CommonActions.navigate({
-          name: 'CommonProfile',
-          params: {
-            currCommon: common,
-          },
-        });
-        navigation.dispatch(navigate);
-      }}
+      onPress={onBoxPress}
       style={[styles.commonBox, {width}]}
       onLayout={(event) => {
         if (headerHeightLayouted) {
@@ -58,32 +51,12 @@ const CommonBox = ({
         balance={common.balance}
       />
 
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomBarItem}>
-          <Icon name={'proposal'} size={25} />
-          <Text style={styles.bottomBarText}>{proposalsCount}</Text>
-        </View>
-        <View style={styles.bottomBarItem}>
-          <Icon name={'discussion'} size={25} />
-          <Text style={styles.bottomBarText}>{discussionsCount}</Text>
-        </View>
-        <View style={styles.bottomBarItem}>
-          <Image
-            style={styles.messageImage}
-            source={require('~/Assets/message.png')}
-          />
-          <Text style={styles.bottomBarText}>{messageCount}</Text>
-        </View>
-      </View>
+      <CommonBoxCounterBar common={common} />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  messageImage: {
-    height: 16,
-    width: 16,
-  },
   commonBox: {
     marginBottom: 20,
     borderRadius: 26,
@@ -107,16 +80,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.grey4,
     paddingHorizontal: 10,
-  },
-  bottomBarItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  bottomBarText: {
-    ...font.primary.bold,
-    color: colors.greySubtitle,
-    marginLeft: 15,
-    fontSize: 16,
   },
 });
 

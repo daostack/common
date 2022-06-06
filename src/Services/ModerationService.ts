@@ -57,14 +57,15 @@ class ModerationService {
     type: keyof typeof ENTITY_TYPES,
     moderationData: Record<string, string>,
   ): Promise<void> {
-    let token;
-    if (token && auth().currentUser) {
-      token = await auth().currentUser.getIdToken(true);
-    }
+    let token = auth().currentUser
+      ? await auth().currentUser.getIdToken(true)
+      : null;
+
     await this.axiosClient.post(
       this.endpoints.report,
       {
         moderationData,
+        ...(auth().currentUser?.uid && {userId: auth().currentUser?.uid}),
         type,
       },
       {

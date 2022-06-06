@@ -121,6 +121,8 @@ import IconAbstained from './IconAbstained';
 import IconNewCard from './IconNewCard';
 import {AnimateProps} from 'react-native-reanimated';
 import IconCopy from './IconCopy';
+import IconmenuHorizontalAnim from '~/Assets/iconfont/IconmenuHorizontalAnim';
+import { Iconlock } from './Iconlock';
 
 export type IconNames =
   | 'lifebuoy-32'
@@ -207,6 +209,8 @@ export type IconNames =
   | 'share-32'
   | 'share-animated'
   | 'menu-horizontal'
+  | 'menu-horizontal-anim'
+  | 'lock'
   | 'alert'
   | 'account-place-holder2'
   | 'funds'
@@ -297,6 +301,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconhistorySelected {...rest} />;
     case 'proposal-selected':
       return <IconproposalSelected {...rest} />;
+    case 'lock':
+      return <Iconlock {...rest} />;
     case 'user-approved':
       return <IconuserApproved {...rest} />;
     case 'contribution-161':
@@ -421,6 +427,8 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconshareAnimated {...rest} />;
     case 'menu-horizontal':
       return <IconmenuHorizontal {...rest} />;
+    case 'menu-horizontal-anim':
+      return <IconmenuHorizontalAnim {...rest} />;
     case 'alert':
       return <Iconalert {...rest} />;
     case 'account-place-holder2':

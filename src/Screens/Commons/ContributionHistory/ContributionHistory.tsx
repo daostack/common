@@ -15,7 +15,7 @@ import {ContributionList, MonthlyContributionItem} from '~/Components/Payment';
 import {PaymentsHistoryInfo} from './components/PaymentsHistoryInfo';
 import {colors, font, layout} from '~/Theme';
 import {baseMargin} from '~/Theme/layout';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 const ContributionHistory = () => {
   const paymentStore = useStore('paymentStore');

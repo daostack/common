@@ -12,6 +12,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
 import {CommonHeaderBar} from './CommonHeader/CommonHeaderBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {RequestToJoinBtn} from '~/Screens/Commons/CommonProfile/components/RequestToJoinBtn';
 import {
   HEADER_BUTTON_HEIGHT,
   HEADER_HEIGHT,
@@ -28,20 +29,11 @@ interface FlatListProps {
   currCommon: Common;
   openCommonOptionsModal: () => void;
   children: React.ReactNode;
-  showReqToJoin: boolean;
-  renderRequestToJoinBtn: () => void;
   isMember: boolean;
 }
 
 export const CommonProfileFlatList = (props: FlatListProps) => {
-  const {
-    currCommon,
-    children,
-    openCommonOptionsModal,
-    showReqToJoin,
-    renderRequestToJoinBtn,
-    isMember,
-  } = props;
+  const {currCommon, children, openCommonOptionsModal, isMember} = props;
   const yIndex = useSharedValue(0);
   const insets = useSafeAreaInsets();
 
@@ -84,20 +76,6 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
     ),
   }));
 
-  const renderBackground = useCallback(
-    () => (
-      <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
-        <FastImage
-          source={{
-            uri: currCommon.image,
-          }}
-          style={styles.image}
-        />
-      </Animated.View>
-    ),
-    [currCommon.image, width, yIndex, animatedStyle],
-  );
-
   const keyExtractor = useCallback((item, index) => index.toString(), []);
 
   return (
@@ -116,14 +94,21 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
         keyExtractor={keyExtractor}
         ListHeaderComponent={
           <>
-            {renderBackground()}
+            <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
+              <FastImage
+                source={{
+                  uri: currCommon.image,
+                }}
+                style={styles.image}
+              />
+            </Animated.View>
             {children}
           </>
         }
       />
-      {showReqToJoin && !isMember && (
+      {false && (
         <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
-          {renderRequestToJoinBtn()}
+          <RequestToJoinBtn requestToJoin={() => {}} />
         </Animated.View>
       )}
     </>

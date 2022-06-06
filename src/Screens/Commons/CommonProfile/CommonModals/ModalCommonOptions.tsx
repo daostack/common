@@ -13,11 +13,9 @@ import {Common} from '~/Stores/Models/Common';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 interface Props {
-  moderatorOptions: null;
   onAction: (action: string) => void;
-  hasPermission: boolean;
   commonMembersCount: number;
-  isFounderOrModerator: boolean;
+  isFounderOrModerator: string;
   currCommon: Common;
   closeModal: () => void;
   isMember: boolean;
