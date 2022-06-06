@@ -43,6 +43,7 @@ export enum NAVIGATION_SCREENS {
   MAKE_CONTRIBUTION = 'MakeContribution',
   CONTRIBUTION_PAYMENT_DETAILS = 'ContributionPaymentDetails',
   UPDATE_PAYMENT_DETAILS = 'UpdatePaymentDetails',
+  HOME_TAB_NAVIGATOR = 'HomeTabNavigator',
 }
 
 export type NavigationRoutes = {
