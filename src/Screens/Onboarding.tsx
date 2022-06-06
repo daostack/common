@@ -32,8 +32,7 @@ const Onboarding = (): ReactElement => {
           index: 1,
           routes: [
             {
-              name: NAVIGATION_SCREENS.COMMON_HOME,
-              params: {user: 'jane'},
+              name: NAVIGATION_SCREENS.EXPLORE,
             },
           ],
         }),
