@@ -16,7 +16,7 @@ import moment from 'moment';
 import {shape, string, object, bool, func} from 'prop-types';
 import Hyperlink from 'react-native-hyperlink';
 import {rootStorePropTypes} from '~/Types/propTypes';
-import {NAVIGATION_SCREENS} from '../../Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '../../Navigation/routes.enum';
 import {HyperText} from '~/Components/Text/HyperText';
 import {reporterName} from '../../Components/Moderation/helper';
 import {FLAGS} from '../../Components/Moderation/constants';

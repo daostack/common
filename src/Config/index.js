@@ -126,6 +126,11 @@ export const PROPOSAL_TYPE = {
   FundingAllocation: 'fundingAllocation',
 };
 
+export const PROPOSAL_STATE = {
+  Passed: 'passed',
+  Pending: 'pending',
+};
+
 export const PROPOSAL_STAGE = {
   Active: 'active',
   History: 'history',

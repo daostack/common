@@ -105,8 +105,8 @@ export const CommonHeaderBar = (props: HeaderProps) => {
           onPress={() => openCommonOptions()}>
           <Animated.View style={[styles.blur, animatedBlurStyle]}>
             <Icon
-              name="menu-animated"
-              size={32}
+              name="menu-horizontal-anim"
+              size={26}
               animatedIconStyle={animatedIconStyle}
             />
           </Animated.View>
@@ -130,7 +130,10 @@ const styles = StyleSheet.create({
     height: 105,
   },
   blur: {
-    padding: 5,
+    height: 42,
+    width: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 15,
   },
   optionsBlur: {

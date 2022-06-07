@@ -20,6 +20,7 @@ import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
 import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 
 const props = {
   navigation: shape({
@@ -38,11 +39,11 @@ const props = {
 const {height, width} = Dimensions.get('window');
 
 const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
-  navigation,
   route: {
-    params: {currCommon, currDaoId, refreshFeed},
+    params: {currCommon},
   },
 }) => {
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const handleContinue = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
@@ -63,6 +64,8 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
         currDaoId: currDaoId,
         refreshFeed,
       },
+      currCommon,
+      skipFirstStep: false,
     });
     navigation.dispatch(navigateMembershipAdmittance);
   };

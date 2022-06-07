@@ -1,11 +1,11 @@
 //Commons
 export {default as CommonsList} from './Commons/CommonsList';
-export {default as CommonProfile} from './Commons/CommonProfile/CommonProfile';
+export * from './Commons/CommonProfile/NewCommonProfile';
 export {default as CreateCommonGeneralInfo} from './Commons/CreateCommon/CreateCommonGeneralInfo';
 export {default as CreateCommonRules} from './Commons/CreateCommon/CreateCommonRules';
 export {default as CreateCommonReview} from './Commons/CreateCommon/CreateCommonReview';
 export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplanation';
-export {default as CommonAgenda} from './Commons/CommonProfile/CommonAgenda';
+export {default as CommonAgenda} from './Commons/CommonProfile/CommonOldAgenda';
 export {default as CommonMembers} from './Commons/CommonProfile/CommonMembers/CommonMembers';
 export {default as RulesStep} from './Commons/MembershipAdmittance/Steps/RulesStep';
 export {default as ContributionStep} from './Commons/MembershipAdmittance/Steps/ContributionStep';

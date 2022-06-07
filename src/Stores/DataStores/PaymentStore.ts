@@ -97,6 +97,15 @@ export default class PaymentStore {
     this.subscriptions.clear();
   }
 
+  subscribeToCommonPayments = (commonId: string): FirestoreUnsubscribeFn =>
+    PaymentsService.subscribeToCommonPayments(
+      commonId,
+      updateStoreData<IPaymentEntityBase, Payment>(
+        this.payments,
+        this.getPaymentEntityModel,
+      ),
+    );
+
   subscribeToUserPayments = (userId: string): FirestoreUnsubscribeFn =>
     PaymentsService.subscribeToUserPayments(
       userId,

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import {TabView} from 'react-native-tab-view';
-import {observer, inject} from 'mobx-react';
+import {observer} from 'mobx-react';
 
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import CommonMembersList from '../CommonMembersList';
@@ -27,13 +27,15 @@ import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import Toast from '~/Util/Toast';
 import {ACTIONS, ENTITY_TYPES, TITLES} from '~/Components/Moderation/constants';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {useStore} from '~/Util/hooks/useStore';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 const getTabName = (objectName: string, count: number): string =>
   `${objectName} (${count ? count : 0})`;
 
-const CommonMembers = ({rootStore}: CommonMembersProps) => {
+const CommonMembers = () => {
+  const rootStore = useStore('rootStore');
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
   const router = useRoute<CommonMembersRouteProps>();
@@ -197,8 +199,6 @@ const CommonMembers = ({rootStore}: CommonMembersProps) => {
   );
 };
 
-export default inject('rootStore')(
-  observer((props: Omit<CommonMembersProps, STORE_KEYS>) => (
-    <CommonMembers {...(props as CommonMembersProps)} />
-  )),
-);
+export default observer((props: Omit<CommonMembersProps, STORE_KEYS>) => (
+  <CommonMembers {...(props as CommonMembersProps)} />
+));

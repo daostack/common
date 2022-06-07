@@ -84,20 +84,6 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
     ),
   }));
 
-  const renderBackground = useCallback(
-    () => (
-      <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
-        <FastImage
-          source={{
-            uri: currCommon.image,
-          }}
-          style={styles.image}
-        />
-      </Animated.View>
-    ),
-    [currCommon.image, width, yIndex, animatedStyle],
-  );
-
   const keyExtractor = useCallback((item, index) => index.toString(), []);
 
   return (
@@ -116,7 +102,14 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
         keyExtractor={keyExtractor}
         ListHeaderComponent={
           <>
-            {renderBackground()}
+            <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
+              <FastImage
+                source={{
+                  uri: currCommon.image,
+                }}
+                style={styles.image}
+              />
+            </Animated.View>
             {children}
           </>
         }
