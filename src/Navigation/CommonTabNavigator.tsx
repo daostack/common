@@ -12,6 +12,7 @@ import {CommonNotifications} from '~/Screens/Commons/CommonProfile/CommonNotific
 import {IconWalletSelected} from '~/Assets/iconfont/IconWalletSelected';
 import {IconWallet} from '~/Assets/iconfont/IconWallet';
 import {useRoute} from '@react-navigation/native';
+import {CommonWallet} from '~/Screens/Commons/CommonProfile/Wallet/CommonWallet';
 
 const Tab = createBottomTabNavigator();
 
@@ -136,26 +137,23 @@ export const CommonTabNavigator = observer(() => {
           tabBarLabelStyle: styles.label,
         }}
       />
-      {/*disabled till we merge with the common wallet screen */}
-      {false && (
-        <Tab.Screen
-          name="CommonWallet"
-          component={CommonNotifications}
-          initialParams={{currCommon}}
-          options={{
-            tabBarLabel: ({focused}) => (
-              <Text
-                style={[
-                  styles.label,
-                  focused ? styles.activeLabel : styles.inactiveLabel,
-                ]}>
-                Wallet
-              </Text>
-            ),
-            tabBarLabelStyle: styles.label,
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="CommonWallet"
+        component={CommonWallet}
+        initialParams={{currCommon}}
+        options={{
+          tabBarLabel: ({focused}) => (
+            <Text
+              style={[
+                styles.label,
+                focused ? styles.activeLabel : styles.inactiveLabel,
+              ]}>
+              Wallet
+            </Text>
+          ),
+          tabBarLabelStyle: styles.label,
+        }}
+      />
       <Tab.Screen
         name="CommonNotifications"
         component={CommonNotifications}

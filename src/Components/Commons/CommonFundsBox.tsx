@@ -11,7 +11,7 @@ interface Props {
   common: Common;
 }
 
-export const CommonStageSummary = observer(({common}: Props): ReactElement => {
+export const CommonFundsBox = observer(({common}: Props): ReactElement => {
   const balance = common?.balance;
   const raised = common?.raised;
 

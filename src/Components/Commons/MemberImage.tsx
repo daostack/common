@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   memberImage: {
+    backgroundColor: colors.grey3,
     width: 50,
     height: 50,
     borderRadius: 25,
