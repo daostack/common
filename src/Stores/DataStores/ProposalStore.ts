@@ -232,6 +232,9 @@ export default class ProposalStore extends BaseStore<
     if (proposalFilter.type && proposal.type !== proposalFilter.type) {
       return false;
     }
+    if (proposalFilter.state && proposal.state !== proposalFilter.state) {
+      return false;
+    }
     // Check IProposalFilter.stage filter
     if (proposalFilter.stage) {
       if (

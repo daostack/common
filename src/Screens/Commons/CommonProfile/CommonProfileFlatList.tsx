@@ -12,7 +12,6 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
 import {CommonHeaderBar} from './CommonHeader/CommonHeaderBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {RequestToJoinBtn} from '~/Screens/Commons/CommonProfile/components/RequestToJoinBtn';
 import {
   HEADER_BUTTON_HEIGHT,
   HEADER_HEIGHT,
@@ -106,11 +105,6 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
           </>
         }
       />
-      {false && (
-        <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
-          <RequestToJoinBtn requestToJoin={() => {}} />
-        </Animated.View>
-      )}
     </>
   );
 };

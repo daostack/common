@@ -31,6 +31,7 @@ export enum NAVIGATION_SCREENS {
   MY_PROPOSALS = 'MyProposals',
   MY_COMMONS = 'MyCommons',
   NOTIFICATIONS = 'Notifications',
+  WALLET = 'Wallet',
   COMMON_MEMBERS = 'CommonMembers',
   FUNDING_PROPOSAL = 'FundingProposal',
   BILLING = 'Billing',
