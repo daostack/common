@@ -10,7 +10,7 @@ import {shape, func, object} from 'prop-types';
 import {BlurView} from '@react-native-community/blur';
 import UseAcknowledgment from '../../../Components/Proposals/UseAcknowledgment';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 const CreateCommonGeneralInfo = ({
   navigation,

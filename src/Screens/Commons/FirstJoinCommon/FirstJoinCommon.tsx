@@ -16,7 +16,7 @@ import {
   PaymentFormStore,
   PersonalContributionFormStore,
 } from '~/Stores/FormStores/MembershipAdmittance';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';

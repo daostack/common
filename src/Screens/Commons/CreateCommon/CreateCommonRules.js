@@ -7,7 +7,7 @@ import RequestStepActionButton from '~/Components/RequestStepActionButton';
 import CreateStepHeaderTitle from './CreateStepHeaderTitle';
 import {object, func, shape} from 'prop-types';
 import StepDotLayout from '~/Components/Layouts/StepDotLayout';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 const CreateCommonRules = ({
   navigation,

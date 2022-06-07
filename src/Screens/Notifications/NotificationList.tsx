@@ -18,7 +18,6 @@ import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingAllocation from '~/Components/Notifications/FundingAllocation';
 import MessageCreated from '~/Components/Notifications/MessageCreated';
-import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
 import MembershipAdmittanceCreated from '~/Components/Notifications/MembershipAdmittanceCreated';
 import MembershipAdmittanceRejected from '~/Components/Notifications/MembershipAdmittanceRejected';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
@@ -27,7 +26,6 @@ import DiscussionMessageReported from '~/Components/Notifications/DiscussionMess
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import Logger from '~/Services/Logger';
 import {Notification} from '~/Stores/Models/Notification';
 import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';

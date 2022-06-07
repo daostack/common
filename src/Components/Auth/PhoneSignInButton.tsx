@@ -5,7 +5,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {useNavigation} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import {func, InferProps} from 'prop-types';
-import {NAVIGATION_SCREENS} from '~/Util/constants/routes.enum';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 
 const props = {
   onSignIn: func,
