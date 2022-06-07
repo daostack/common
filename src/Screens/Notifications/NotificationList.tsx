@@ -109,12 +109,13 @@ const NotificationList = (props) => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.sectionContainer}>
           <Text style={styles.title}>Notifications</Text>
         </View>
-
+        {notificationList.length === 0 && (
+          <Text style={styles.noNotifText}>No notifications yet</Text>
+        )}
         {notificationList ? (
           <FlatList
             keyExtractor={keyExtractor}
@@ -148,6 +149,10 @@ const styles = StyleSheet.create({
     ...layout.content,
     marginVertical: sizeS,
     alignItems: 'flex-start',
+  },
+  noNotifText: {
+    ...font.primary.regular,
+    textAlign: 'center',
   },
 });
 

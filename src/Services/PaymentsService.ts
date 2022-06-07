@@ -61,6 +61,17 @@ class PaymentService {
       callback(snapshot);
     });
 
+  subscribeToCommonPayments = (
+    commonId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn => {
+    return PaymentsCollection.where('commonId', '==', commonId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
+  };
+
   subscribeToUserPayments = (
     userId: string,
     callback: any,
