@@ -129,17 +129,15 @@ export const CommonWallet = observer(() => {
             return (
               <>
                 {item?.fundingRequest?.funded &&
-                item?.fundingRequest?.amount !== 0 ? (
-                  <PayOutCard
-                    key={item.id}
-                    funded={item?.fundingRequest?.funded}
-                    amount={item?.fundingRequest?.amount}
-                    date={item.createdAt}
-                    description={item.description?.description}
-                  />
-                ) : (
-                  <Text style={styles.noDataText}>No transactions yet</Text>
-                )}
+                  item?.fundingRequest?.amount !== 0 && (
+                    <PayOutCard
+                      key={item.id}
+                      funded={item?.fundingRequest?.funded}
+                      amount={item?.fundingRequest?.amount}
+                      date={item.createdAt}
+                      description={item.description?.description}
+                    />
+                  )}
               </>
             );
           }
