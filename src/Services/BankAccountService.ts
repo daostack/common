@@ -47,7 +47,7 @@ class BankAccountService {
 
   async addBankAccountDetails(body: BankAccountDetails): Promise<void> {
     try {
-      await this.axiosClient.post(this.endpoints.addBankAccount, body, {
+      return await this.axiosClient.post(this.endpoints.addBankAccount, body, {
         headers: {
           Authorization: await auth().currentUser.getIdToken(true),
         },
