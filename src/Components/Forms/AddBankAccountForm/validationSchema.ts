@@ -23,9 +23,10 @@ function validateDateFormat(msg: string): any {
 addMethod<DateSchema>(date, 'validateDateFormat', validateDateFormat);
 
 export const validationSchema = object({
-  socialId: number()
+  socialId: string()
     .label('ID Number')
     .typeError('ID Number must contain only numbers')
+    .min(10)
     .required(),
   socialIdIssueDate: date()
     .validateDateFormat('Invalid date')
@@ -44,12 +45,12 @@ export const validationSchema = object({
     .typeError('Branch Number must contain only numbers')
     .label('Branch Number')
     .required(),
-  phoneNumber: number()
+  phoneNumber: string()
     .typeError('Phone Number must contain only numbers')
     .label('Phone Number')
+    .min(10)
     .required(),
-  // TODO: Add when API will allow sent email with body
-  // email: string().email().label('Email').required(),
+  email: string().email().label('Email').required(),
   accountNumber: number()
     .typeError('Bank Account Number must contain only numbers')
     .label('Bank Account Number')

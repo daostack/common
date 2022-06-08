@@ -19,7 +19,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/Util/Toast';
 import FastImage from 'react-native-fast-image';
 import {colors, layout, font} from '~/Theme';
-import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
+import {PAYME_TYPE_CODES, MIME_TYPE} from '~/Util/constants/payme';
+import {getPhotoTypeFormat} from '~/Util/FormatUtil';
 
 const {width, height} = Dimensions.get('window');
 
@@ -28,7 +29,7 @@ const ICON_HIT_SLOP = {top: 15, bottom: 15, left: 15, right: 15};
 type LegalDocsProps = {
   name?: string;
   legalType: PAYME_TYPE_CODES;
-  mimeType?: string;
+  mimeType?: MIME_TYPE;
   uri?: string;
   downloadURL?: string;
 };
@@ -76,10 +77,11 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
         logger.log('ImagePicker Error: ', response.errorMessage);
       } else {
         const image = response?.assets[0];
+
         setLocalImage({
           legalType: PAYME_TYPE_CODES['Social Id'],
           uri: image?.uri,
-          mimeType: image?.type,
+          mimeType: getPhotoTypeFormat(image?.type),
         });
         setModalVisible(true);
       }
