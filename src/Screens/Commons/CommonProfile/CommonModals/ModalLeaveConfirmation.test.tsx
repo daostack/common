@@ -8,7 +8,7 @@ jest.mock('react-native-safe-area-context', () => ({
 }));
 jest.mock('@react-navigation/native');
 
-jest.mock('../../../Util/hooks/useStore', () => ({
+jest.mock('~/Util/hooks/useStore', () => ({
   useStore: jest.fn().mockReturnValue({
     leaveCommon: jest.fn(),
   }),
