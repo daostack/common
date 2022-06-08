@@ -92,7 +92,8 @@ const CreateStep4 = ({
       );
 
       if (createCommonResponse.status === 200) {
-        const personalContributionFormStore = new PersonalContributionFormStore();
+        const personalContributionFormStore =
+          new PersonalContributionFormStore();
 
         navigation.navigate({
           name: 'PersonalContributionStep',

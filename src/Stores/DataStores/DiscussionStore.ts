@@ -32,23 +32,26 @@ export default class DiscussionStore extends BaseStore<
             });
           }
         })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            methodName: 'getDiscussionById',
-          });
+        .catch((error) => {
+          if (!error.message.includes('is required parameter')) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+              methodName: 'getDiscussionById',
+            });
+          }
         });
       return undefined;
     }
   };
 
-  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined =>
-    this.getDataArray
+  getCommonDiscussions = (commonId: string): Array<Discussion> | undefined => {
+    return this.getDataArray
       ?.filter((discussion: Discussion) => discussion.commonId === commonId)
       .sort(
         (discussion: Discussion, prevDiscussion: Discussion) =>
           prevDiscussion.lastMessage.seconds - discussion.lastMessage.seconds,
       );
+  };
   //Actions
   subscribeToCommonDiscussions = (commonId: string): FirestoreUnsubscribeFn =>
     DiscussionService.subscribeToCommonDiscussions(

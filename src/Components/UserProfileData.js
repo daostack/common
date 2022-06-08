@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {layout, font, colors, text, sizeL, sizeXXL} from '~/Theme';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import ImageField from '~/Components/FormFields/ImageField';
 import CountBox from '~/Components/CountBox';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
@@ -24,9 +24,8 @@ import {
 import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
 
 const UserProfileData = ({userId, currUserInfo, navigation}) => {
-  const {userStore, proposalStore, commonStore, authStore} = useStore(
-    'rootStore',
-  );
+  const {userStore, proposalStore, commonStore, authStore} =
+    useStore('rootStore');
   const userInfo = authStore.userInfo;
 
   const providedUserId = userId || currUserInfo.uid;

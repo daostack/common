@@ -67,6 +67,26 @@ export interface ICommonEntity extends IBaseEntity {
    * Updated at
    */
   updatedAt: firebase.firestore.Timestamp;
+
+  /**
+   * proposalCount
+   */
+  proposalCount: number;
+
+  /**
+   * messageCount
+   */
+  messageCount: number;
+
+  /**
+   * discussionCount
+   */
+  discussionCount: number;
+
+  /**
+   * byline
+   */
+  byline: string | undefined;
 }
 
 export interface ICommonRule {
@@ -121,7 +141,7 @@ export interface ICommonMetadata {
    */
   contributionType: ContributionType;
 
-  zeroContribution: boolean;
+  zeroContribution?: boolean;
 }
 
 export type ContributionType = 'one-time' | 'monthly';

@@ -22,6 +22,7 @@ export default {
   redLight: '#fdedee',
   redLightish: '#ffefec',
   white: '#ffffff',
+  white2: '#eeeeee',
   lightishGreen: '#6ee569',
   lightGreen: '#f1fdf0',
   paleGrey: '#fafaff',

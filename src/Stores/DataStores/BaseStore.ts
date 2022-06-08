@@ -22,7 +22,7 @@ import {IBaseEntity} from '~/Firebase/Databasee/EntityTypes/IBaseEntity';
 
 export default abstract class BaseStore<
   IEntityModel,
-  IEntity extends IBaseEntity
+  IEntity extends IBaseEntity,
 > {
   @persist('map')
   @observable

@@ -41,11 +41,12 @@ export default class NotificationStore extends BaseStore<
     try {
       const notif = this.getDataArray
         ?.filter(() => true)
-        .sort(
-          (notification: Notification, prevNotification: Notification) =>
+        .sort((notification: Notification, prevNotification: Notification) => {
+          return (
             prevNotification.createdAt?.seconds -
-            notification.createdAt?.seconds,
-        );
+            notification.createdAt?.seconds
+          );
+        });
       return notif;
     } catch (error) {
       return [];
@@ -136,9 +137,8 @@ export default class NotificationStore extends BaseStore<
     let notificationItemState = defaultNotificationItemState;
 
     if (this.rootStore.notificationStore.exists(entity.id)) {
-      const notificationFromStore = this.rootStore.notificationStore.getNotificationById(
-        entity.id,
-      );
+      const notificationFromStore =
+        this.rootStore.notificationStore.getNotificationById(entity.id);
       // It's possible to have undefined notificationItemState for existing Notification in the store,
       // because of old notifications, before the implementation of the feature with the dot indicator.
       // So, we are setting a default state to such of prorposals for safety.
@@ -170,6 +170,41 @@ export default class NotificationStore extends BaseStore<
       } as IProposalNotificationData;
     } else {
       return null;
+    }
+  }
+
+  getCommonNotifications(commonId: string): IProposalNotificationData | null {
+    try {
+      const notif = this.getDataArray
+        ?.filter((notification: Notification) => {
+          const eventObjectId = notification.eventObjectId;
+
+          let common = this.rootStore.commonStore.getCommonById(eventObjectId);
+          let proposal =
+            this.rootStore.proposalStore.getProposalById(eventObjectId);
+          let discussion =
+            this.rootStore.discussionStore.getDiscussionById(eventObjectId);
+
+          const shouldPass =
+            common?.id === commonId ||
+            proposal?.commonId === commonId ||
+            discussion?.commonId === commonId;
+
+          if (shouldPass) {
+            return true;
+          } else {
+            return false;
+          }
+        })
+        .sort((notification: Notification, prevNotification: Notification) => {
+          return (
+            prevNotification.createdAt?.seconds -
+            notification.createdAt?.seconds
+          );
+        });
+      return notif;
+    } catch (error) {
+      return [];
     }
   }
 

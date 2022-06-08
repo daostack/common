@@ -15,7 +15,12 @@ import TextInputField from '~/Components/FormikForm/TextInputField';
 import {AddBankConfirmation, AddPhotoID} from '~/Components/Proposals';
 import {IPaymeDocument} from '~/Firebase/Databasee/EntityTypes/IPaymeDocument';
 import BankAccountService from '~/Services/BankAccountService';
-import {BANK_NAMES_OPTIONS, GENDER_OPTIONS} from '~/Util/constants/dropdown';
+import {
+  BANK_CODES,
+  BANK_NAMES_OPTIONS,
+  GENDER_OPTIONS,
+} from '~/Util/constants/dropdown';
+import {useStore} from '~/Util/hooks/useStore';
 import {NativeSelectField} from '~/Components/FormikForm/NativeSelectField';
 import Toast from '~/Util/Toast';
 import {styles} from './styles';
@@ -52,6 +57,7 @@ export const AddBankAccountForm = ({
   isAddingNew = false,
 }: Props): ReactElement => {
   const insets = useSafeAreaInsets();
+  const authStore = useStore('authStore');
 
   const [isLoading, setLoading] = useState(false);
 
@@ -66,13 +72,15 @@ export const AddBankAccountForm = ({
         omit(
           {
             ...values,
+            firstName: authStore?.userInfo?.firstName,
+            lastName: authStore?.userInfo?.lastName,
             bankCode: Number(values.bankCode),
             branchNumber: Number(values.branchNumber),
             accountNumber: Number(values.accountNumber),
             streetNumber: Number(values.streetNumber),
             identificationDocs,
           },
-          ['photoID', 'bankConfirmation', 'email'],
+          ['photoID', 'bankConfirmation'],
         ),
       );
       onSubmit();
@@ -204,6 +212,9 @@ export const AddBankAccountForm = ({
               errorMessage={errors && touched.bankName && errors.bankName}
               onChange={(bankValue) => {
                 setFieldValue('bankName', bankValue);
+                handleChange('bankCode')(
+                  BANK_CODES[bankValue as keyof typeof BANK_CODES].toString(),
+                );
               }}
             />
             <View style={styles.rowFieldsView}>
@@ -276,6 +287,17 @@ export const AddBankAccountForm = ({
               onChange={(countryValue) => {
                 setFieldValue('country', countryValue);
               }}
+            />
+            <TextInputField
+              errorMessage={errors && touched.email && errors.email}
+              viewStyle={styles.textfieldView}
+              label="Email"
+              //infoLabel="Required"
+              placeholderText={authStore.userInfo?.email}
+              onBlur={handleBlur('email')}
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={handleChange('email')}
             />
             {isAddingNew && (
               <View style={styles.fileSelectorBlock}>

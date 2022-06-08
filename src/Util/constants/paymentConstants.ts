@@ -15,3 +15,16 @@ export enum PAYMENT_STATUSES {
   CONFIRMED = 'confirmed',
   FAILED = 'failed',
 }
+
+export enum CONTRIBUTION_TYPES {
+  ONE_TIME = 'one-time',
+  SUBSCRIPTION = 'subscription',
+}
+
+export enum SUBSCRIPTION_STATUSES {
+  PENDING = 'Pending',
+  ACTIVE = 'Active',
+  CANCELED_BY_USER = 'CanceledByUser',
+  CANCELED_BY_PAYMENT_FAILURE = 'CanceledByPaymentFailure',
+  PAYMENT_FAILED = 'PaymentFailed',
+}

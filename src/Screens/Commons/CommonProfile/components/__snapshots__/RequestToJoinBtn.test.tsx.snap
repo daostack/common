@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RequestToJoinBtn RequestToJoinBtn should render correctly 1`] = `
+<View
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  nativeID="animatedComponent"
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#7786ff",
+      "borderRadius": 32,
+      "elevation": 4,
+      "flexDirection": "row",
+      "height": 48,
+      "justifyContent": "space-around",
+      "opacity": 1,
+      "shadowColor": "rgba(79, 92, 105, 0.1)",
+      "shadowOffset": Object {
+        "height": -2,
+        "width": 0,
+      },
+      "shadowOpacity": 1,
+      "shadowRadius": 4,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "color": "#ffffff",
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 18,
+        "fontWeight": "normal",
+        "letterSpacing": 0.1,
+      }
+    }
+  >
+    Request to join
+  </Text>
+</View>
+`;

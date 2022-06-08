@@ -7,7 +7,9 @@ export const reporterName = (
   user: {firstName: string; lastName: string; uid: string},
   currentUID: string,
 ) =>
-  user?.uid === currentUID
+  !user?.uid
+    ? 'anonymous'
+    : user?.uid === currentUID
     ? 'you'
     : `${user?.firstName || ''} ${user?.lastName || ''}`;
 
@@ -23,4 +25,27 @@ export const getType = (type: string) => {
     default:
       return type;
   }
+};
+
+export const dateFormat = (updatedAt: firebase.firestore.Timestamp) => {
+  const dateTime = moment(new Date(updatedAt?.seconds * 1000));
+  const now = moment(new Date());
+
+  const diffMinutes = now.diff(dateTime, 'minutes');
+  const diffHours = now.diff(dateTime, 'hours');
+  const diffDays = now.diff(dateTime, 'days');
+  const diffMonths = now.diff(dateTime, 'months');
+
+  let resultedDiff = diffMonths + 'mo';
+  if (diffMonths === 0) {
+    resultedDiff = diffDays + 'd';
+  }
+  if (diffDays === 0) {
+    resultedDiff = diffHours + 'h';
+  }
+  if (diffHours === 0) {
+    resultedDiff = diffMinutes + 'min';
+  }
+
+  return resultedDiff;
 };

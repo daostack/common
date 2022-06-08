@@ -81,9 +81,8 @@ const Discussion = ({
   const [inputHeight, setInputHeight] = useState(50);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(
-    false,
-  );
+  const [showModerationSuccessModal, setShowModerationSuccessModal] =
+    useState(false);
   const [action, setAction] = useState(ACTIONS.report);
   const actualInputHeight = inputHeight + 50 + insets.bottom;
 
@@ -95,9 +94,10 @@ const Discussion = ({
 
   useFocusEffect(
     useCallback(() => {
-      const unsubscribeFromDiscussionMessages = rootStore.discussionMessageStore.subscribeToDiscussionMessages(
-        discussionId,
-      );
+      const unsubscribeFromDiscussionMessages =
+        rootStore.discussionMessageStore.subscribeToDiscussionMessages(
+          discussionId,
+        );
       return () => {
         unsubscribeFromDiscussionMessages &&
           unsubscribeFromDiscussionMessages();
@@ -330,6 +330,7 @@ const Discussion = ({
       {
         onAction: (actionType) => onModerate(actionType, message.id),
         hasPermission,
+        hasShare: true,
         moderatorOptions: {
           item: message,
         },

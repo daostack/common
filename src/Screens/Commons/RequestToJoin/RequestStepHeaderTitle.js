@@ -1,16 +1,18 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
 import {colors, font, sizeLineHeight, sizeM, sizeL, sizeS} from '~/Theme';
-import {string, oneOfType, func} from 'prop-types';
+import {string, oneOfType, func, object} from 'prop-types';
 
-const RequestStepHeaderTitle = ({title, subtitle}) => (
+const RequestStepHeaderTitle = ({title, subtitle, subtitleStyle}) => (
   <>
     <Text style={styles.generalInfoTitle}>{title}</Text>
 
     {typeof subtitle === 'function' ? (
       subtitle(styles.generalInfoSubtitle)
     ) : (
-      <Text style={styles.generalInfoSubtitle}>{subtitle}</Text>
+      <Text style={[styles.generalInfoSubtitle, subtitleStyle]}>
+        {subtitle}
+      </Text>
     )}
   </>
 );
@@ -18,6 +20,7 @@ const RequestStepHeaderTitle = ({title, subtitle}) => (
 RequestStepHeaderTitle.propTypes = {
   title: string.isRequired,
   subtitle: oneOfType([string, func]),
+  subtitleStyle: object,
 };
 
 const styles = StyleSheet.create({

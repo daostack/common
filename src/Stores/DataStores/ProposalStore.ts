@@ -102,11 +102,13 @@ export default class ProposalStore extends BaseStore<
             });
           }
         })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            methodName: 'getProposalById',
-          });
+        .catch((error) => {
+          if (!error.message.includes('is required parameter')) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+              methodName: 'getProposalById',
+            });
+          }
         });
       return undefined;
     }
@@ -228,6 +230,9 @@ export default class ProposalStore extends BaseStore<
   _applyFilter = (proposal: Proposal, proposalFilter: IProposalFilter) => {
     // Check IProposalFilter.type filter
     if (proposalFilter.type && proposal.type !== proposalFilter.type) {
+      return false;
+    }
+    if (proposalFilter.state && proposal.state !== proposalFilter.state) {
       return false;
     }
     // Check IProposalFilter.stage filter

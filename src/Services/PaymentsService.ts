@@ -2,6 +2,7 @@ import axios, {AxiosInstance} from 'axios';
 import {db} from '../Firebase';
 import {auth} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {FirestoreUnsubscribeFn} from '~/Firebase/types';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 import StorageService from './StorageService';
@@ -12,6 +13,7 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
 import {payMeUrl} from '~/Config';
 import {PaymentsCollection} from '~/Firebase/Databasee/Collections/PaymentsCollection';
+import {SubscriptionsCollection} from '~/Firebase/Databasee/Collections/SubscriptionsCollection';
 
 class PaymentService {
   private axiosClient: AxiosInstance;
@@ -58,6 +60,39 @@ class PaymentService {
     PaymentsCollection.doc(paymentId).onSnapshot((snapshot: any) => {
       callback(snapshot);
     });
+
+  subscribeToCommonPayments = (
+    commonId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn => {
+    return PaymentsCollection.where('commonId', '==', commonId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
+  };
+
+  subscribeToUserPayments = (
+    userId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn => {
+    return PaymentsCollection.where('userId', '==', userId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
+  };
+
+  subscribeToUserSubscriptions = (
+    userId: string,
+    callback: any,
+  ): FirestoreUnsubscribeFn => {
+    return SubscriptionsCollection.where('userId', '==', userId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
+  };
 
   uploadInvoices = async (
     proposalID: string,

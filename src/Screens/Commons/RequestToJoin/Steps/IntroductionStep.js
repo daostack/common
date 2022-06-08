@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {observer} from 'mobx-react-lite';
+import {observer} from 'mobx-react';
 import TextInputField from '~/Components/FormFields/TextInputField';
 import MultiTitleValueField from '~/Components/FormFields/MultiTitleValueField';
 import {colors, text} from '~/Theme';
 import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
 import RequestStepActionButton from '../../RequestStepActionButton';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import RequestStepHeaderTitle from '../RequestStepHeaderTitle';
 import MembershipRequest from '../MembershipRequest';
 import {string, object, bool, shape, func} from 'prop-types';
@@ -14,11 +14,11 @@ import StepDotLayout from '~/Components/Layouts/StepDotLayout';
 import {calcShouldSkipRules} from '~/Util/rules';
 
 const IntroductionStep = ({
-  navigation,
   route: {
-    params: {formStores, skipFirstStep, currCommon, currDaoId, refreshFeed},
+    params: {formStores, skipFirstStep, currCommon, refreshFeed},
   },
 }) => {
+  const navigation = useNavigation();
   const introduceYourselfFormStore = formStores.introduceYourselfFormStore;
 
   const push = () => {
@@ -28,7 +28,7 @@ const IntroductionStep = ({
         name: hasRules ? 'RulesStep' : 'ContributionStep',
         params: {
           formStores,
-          currDaoId: currDaoId,
+          currDaoId: currCommon.id,
           currCommon: currCommon,
           skipFirstStep: skipFirstStep,
           refreshFeed,
@@ -57,8 +57,6 @@ const IntroductionStep = ({
       <View
         style={{
           flex: 1,
-          // alignItems: 'center',
-          // padding: 24,
           backgroundColor: 'white',
         }}>
         <RequestStepHeaderTitle

@@ -1,5 +1,10 @@
-export const DYNAMIC_LINK_URI_PREFIX = 'https://app.common.io';
-export const DYNAMIC_LINK_URI_WITH_SLASH = 'https://app.common.io/';
+import Config from 'react-native-config';
+
+export const DYNAMIC_LINK_URI_PREFIX =
+  Config.ENV === 'staging'
+    ? 'https://staging.common.io'
+    : 'https://app.common.io';
+export const DYNAMIC_LINK_URI_WITH_SLASH = `${DYNAMIC_LINK_URI_PREFIX}/`;
 
 export enum DYNAMIC_LINKS_TYPES {
   COMMON = 'common',

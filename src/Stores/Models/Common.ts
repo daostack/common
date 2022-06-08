@@ -27,6 +27,10 @@ export class Common implements ICommonEntity {
   metadata: ICommonMetadata;
   register: CommonRegister;
   active: boolean;
+  proposalCount: number;
+  messageCount: number;
+  discussionCount: number;
+  byline: string | undefined;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;
@@ -43,6 +47,10 @@ export class Common implements ICommonEntity {
     this.register = newCommonInfo.register;
     this.active = newCommonInfo.active;
     this.updatedAt = newCommonInfo.updatedAt;
+    this.proposalCount = newCommonInfo.proposalCount;
+    this.messageCount = newCommonInfo.messageCount;
+    this.discussionCount = newCommonInfo.discussionCount;
+    this.byline = newCommonInfo.byline;
     makeAutoObservable(this);
   }
 

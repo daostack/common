@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {text, layout, colors, font} from '~/Theme';
+import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {inject, observer} from 'mobx-react';
-import {object, func, string} from 'prop-types';
+import {observer} from 'mobx-react';
+import {object, func, string, bool} from 'prop-types';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
   onAction,
   hasPermission,
+  hasShare = false,
 }) => {
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
@@ -36,7 +37,6 @@ const CommonProfileOptions = ({
 
   const renderEditActions = () => (
     <>
-      {<Text style={{...styles.text, ...font.fontSize(4)}}>Options</Text>}
       <TouchableOpacity
         style={styles.optionBtn}
         onPress={() => onAction('info')}>
@@ -75,10 +75,11 @@ const CommonProfileOptions = ({
       <TouchableOpacity
         style={styles.optionBtn}
         onPress={() => onAction('Copy link')}>
-        <Icon name="link" style={layout.marginRightS} color={colors.black} />
-        <Text style={{...text.buttonblack, lineHeight: 20}}>Copy Link</Text>
+        <Icon name="copy" style={layout.marginRightL} color={colors.black} />
+        <Text style={{...text.buttonblack, lineHeight: 20, marginLeft: 10}}>
+          Copy Link
+        </Text>
       </TouchableOpacity>
-      <View style={styles.lineHorizontal} />
     </>
   );
 
@@ -86,6 +87,7 @@ const CommonProfileOptions = ({
     <>
       {hasPermission && (
         <>
+          <View style={styles.lineHorizontal} />
           <Text style={styles.text}>Moderator tools</Text>
           <TouchableOpacity
             style={styles.optionBtn}
@@ -122,10 +124,11 @@ const CommonProfileOptions = ({
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
+        <Text style={styles.text}>Options</Text>
         {isOptions && renderEditActions()}
         {item && (
           <>
-            {isOptions && renderCommonShare()}
+            {hasShare && renderCommonShare()}
             {renderModeratorTools()}
           </>
         )}
@@ -139,6 +142,7 @@ CommonProfileOptions.propTypes = {
   moderatorOptions: object,
   onAction: func,
   hasPermission: string,
+  hasShare: bool,
 };
 
 const styles = StyleSheet.create({
@@ -180,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default inject('rootStore')(observer(CommonProfileOptions));
+export default observer(CommonProfileOptions);

@@ -59,7 +59,7 @@ const ContributionStep = ({
       const data = {
         description: formData.intro,
         funding: 0,
-        commonId: currDaoId,
+        commonId: currCommon.id,
       };
       if (formData.links) {
         data.links = formData.links;
@@ -77,11 +77,10 @@ const ContributionStep = ({
   };
 
   const createRequest = async (data) => {
-    const createRequestToJoinResponse = await ProposalService.createRequestToJoin(
-      {
+    const createRequestToJoinResponse =
+      await ProposalService.createRequestToJoin({
         ...data,
-      },
-    );
+      });
 
     if (createRequestToJoinResponse.status === 200) {
       const proposalId = createRequestToJoinResponse.data.id;

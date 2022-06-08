@@ -80,3 +80,6 @@ export const formatExpirationDate = (date?: string): string => {
   const year = date.substring(2, 4);
   return `${month}/20${year}`;
 };
+
+export const getPhotoTypeFormat = (type: string) =>
+  type === 'image/jpg' ? 'image/jpeg' : type;

@@ -90,11 +90,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
             });
           }
         })
-        .catch(() => {
-          showBackendError({
-            bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
-            methodName: 'getCommonById',
-          });
+        .catch((error) => {
+          if (!error.message.includes('is required parameter')) {
+            showBackendError({
+              bottomSheetStore: this.rootStore.uiStore.bottomSheetStore,
+              methodName: 'getCommonById',
+            });
+          }
         });
       return undefined;
     }
@@ -135,6 +137,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   deleteCommon = async (commonId: string) => {
     try {
       return await CommonService.deleteCommon(commonId);
+    } catch (err) {
+      throw err;
+    }
+  };
+  leaveCommon = async (commonId: string) => {
+    try {
+      return await CommonService.leaveCommon(commonId);
     } catch (err) {
       throw err;
     }
