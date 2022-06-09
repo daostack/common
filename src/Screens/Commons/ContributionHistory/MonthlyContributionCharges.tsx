@@ -4,7 +4,7 @@ import React, {useEffect} from 'react';
 import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {ContributionChargesList} from '~/Components/Payment';
 import {colors, font, layout} from '~/Theme';
-import {PersonalContributionFormStore} from '~/Stores/FormStores/RequestToJoin';
+import {PersonalContributionFormStore} from '~/Stores/FormStores/MembershipAdmittance';
 import {ContributionHistoryRouteProps} from '~/Types/navigation';
 import {useStore} from '~/Util/hooks/useStore';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';

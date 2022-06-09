@@ -24,7 +24,7 @@ const ProposalReported: React.FC<InferProps<typeof props>> = ({
   const proposal = rootStore.proposalStore.getProposalById(item.eventObjectId);
   if (proposal) {
     const proposer = rootStore.userStore.getUserById(proposal.proposerId);
-    const isJoin = proposal.type === PROPOSAL_TYPE.Join;
+    const isJoin = proposal.type === PROPOSAL_TYPE.MembershipAdmittance;
 
     if (isJoin) {
       eventType = EventTypeState.membershipRequestReported;

@@ -102,6 +102,7 @@ export const permissionsUrl = () => functionEndpoint('permissions');
 export const moderationUrl = () => functionEndpoint('moderation');
 export const payMeUrl = () => functionEndpoint('payments');
 export const usersUrl = () => functionEndpoint('users');
+export const governanceUrl = () => functionEndpoint('governance');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;
@@ -121,8 +122,8 @@ export const appId = Platform.OS === 'android' ? androidAppId : iosAppId;
 
 // Arc.js related string constants
 export const PROPOSAL_TYPE = {
-  Join: 'join',
-  FundingRequest: 'fundingRequest',
+  MembershipAdmittance: 'membershipAdmittance',
+  FundingAllocation: 'fundingAllocation',
 };
 
 export const PROPOSAL_STATE = {

@@ -16,6 +16,7 @@ import {
   VoteWithUserInfo,
 } from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {VOTE_STATUSES} from '~/Util/constants/votes';
+import {IVoteEntity} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 
 export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   constructor(rootStore: RootStore) {
@@ -71,15 +72,15 @@ export default class UserStore extends BaseStore<UserModel, IUserEntity> {
   };
 
   getUsersVotesByType = (
-    votes: Array<IProposalVote> = [],
+    votes: Array<IVoteEntity> = [],
     voteType: VOTE_STATUSES | 'all',
   ): Array<VoteWithUserInfo> => {
     try {
       let filteredVotes = [...votes];
       if (voteType !== 'all') {
-        filteredVotes = votes.filter((vote) => vote.voteOutcome === voteType);
+        filteredVotes = votes.filter((vote) => vote.outcome === voteType);
       }
-      return filteredVotes.map((vote: IProposalVote) => {
+      return filteredVotes.map((vote: IVoteEntity) => {
         const user = this.getUserById(vote.voterId) as UserModel;
         return {...vote, user};
       });

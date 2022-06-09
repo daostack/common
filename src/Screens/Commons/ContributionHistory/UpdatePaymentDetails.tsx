@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {WebView} from 'react-native-webview';
-import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
+import RequestStepHeaderTitle from '~/Screens/Commons/MembershipAdmittance/RequestStepHeaderTitle';
 import {v4} from 'uuid';
 import {Divider} from '~/Components/Divider';
 import Loader from '~/Components/Loader';

@@ -77,7 +77,8 @@ export const ProposalCard = observer((props: CardProps) => {
     proposalStore.getVotesCounts(proposalInfo?.votes);
 
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
+  const isFundingRequest =
+    proposalInfo?.type === PROPOSAL_TYPE.FundingAllocation;
   const isVisible =
     proposalInfo?.moderation?.flag !== FLAGS.hidden ||
     !proposalInfo?.moderation;

@@ -13,14 +13,13 @@ export enum NAVIGATION_SCREENS {
   PROPOSAL_SCREEN = 'ProposalScreen',
   ADD_INVOICES_PROPOSAL = 'AddInvoicesScreen',
   RULES_STEP = 'RulesStep',
-  INTRODUCTION_STEP = 'IntroductionStep',
+  MEMBERSHIP_ADMITTANCE = 'MembershipAdmittance',
   CONTRIBUTION_STEP = 'ContributionStep',
   BILLING_DETAILS_STEP = 'BillingDetailsStep',
   PAYMENT_DETAILS_STEP = 'PaymentDetailsStep',
-  CREATE_STEP_1 = 'CreateStep1',
-  CREATE_STEP_2 = 'CreateStep2',
-  CREATE_STEP_3 = 'CreateStep3',
-  CREATE_STEP_4 = 'CreateStep4',
+  CREATE_COMMON_GENERAL_INFO = 'CreateCommonGeneralInfo',
+  CREATE_COMMON_RULES = 'CreateCommonRules',
+  CREATE_COMMON_REVIEW = 'CreateCommonReview',
   DISCUSSIONS = 'Discussions',
   FULL_SCREEN_CREATION_LOADER = 'FullScreenCreationLoader',
   NEW_DISCUSSION = 'NewDiscussion',
@@ -33,11 +32,13 @@ export enum NAVIGATION_SCREENS {
   NOTIFICATIONS = 'Notifications',
   WALLET = 'Wallet',
   COMMON_MEMBERS = 'CommonMembers',
-  FUNDING_PROPOSAL = 'FundingProposal',
+  FUNDING_ALLOCATION = 'FundingAllocation',
   BILLING = 'Billing',
   MONTHLY_CONTRIBUTION = 'MonthlyContribution',
   VOTES_SCREEN = 'VotesScreen',
   CHOOSE_PAYMENT_METHOD_STEP = 'ChoosePaymentMethodStep',
+  PHONE_NUMBER_STEP_1 = 'PhoneNumber',
+  VERIFY_PHONE_STEP_2 = 'VerifyPhone',
   MONTHLY_CONTRIBUTION_CHARGES = 'MonthlyContributionCharges',
   CONTRIBUTION_HISTORY = 'ContributionHistory',
   MAKE_CONTRIBUTION = 'MakeContribution',
@@ -59,23 +60,13 @@ export type NavigationRoutes = {
   ProposalScreen: {proposalId: string};
   AddInvoicesScreen: undefined;
   RulesStep: undefined;
-  IntroductionStep: {
-    currCommon: Common;
-    skipFirstStep: boolean;
-    formStores: {
-      paymentFormStore: FormStore;
-      introduceYourselfFormStore: FormStore;
-      personalContributionFormStore: FormStore;
-      billingDetailsFormStore: FormStore;
-    };
-  };
+  MembershipAdmittance: undefined;
   ContributionStep: undefined;
   BillingDetailsStep: undefined;
   PaymentDetailsStep: undefined;
-  CreateStep1: undefined;
-  CreateStep2: undefined;
-  CreateStep3: undefined;
-  CreateStep4: undefined;
+  CreateCommonGeneralInfo: undefined;
+  CreateCommonRules: undefined;
+  CreateCommonReview: undefined;
   Discussions: undefined;
   FullScreenCreationLoader: undefined;
   NewDiscussion: {commonId: string};
@@ -87,7 +78,7 @@ export type NavigationRoutes = {
   MyCommons: undefined;
   Notifications: undefined;
   CommonMembers: undefined;
-  FundingProposal: {common: Common; commonId: string; screenTitle: string};
+  FundingAllocation: undefined;
   Billing: undefined;
   MonthlyContribution: undefined;
   VotesScreen: undefined;

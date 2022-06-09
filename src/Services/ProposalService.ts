@@ -4,14 +4,12 @@ import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
 import {IDiscussionEntity} from '~/Firebase/Databasee/EntityTypes/IDiscussionEntity';
 import {
-  CreateFundingRequestProposalPayload,
-  IFundingRequestProposal,
-  IJoinRequestProposal,
-  IProposalEntity,
-  JoinRequestPayload,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+  BasicArgsProposal,
+  ProposalType,
+} from '~/Firebase/Databasee/EntityTypes/basicArgsProposal';
+import {MembershipAdmittance} from '~/Firebase/Databasee/EntityTypes/memberAdmittance';
 import {
-  CreateVotePayload,
+  ChangeVotePayload,
   IVoteEntity,
 } from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 import {
@@ -21,7 +19,7 @@ import {
 } from '~/Firebase/types';
 import {
   IProposalTypeFilter,
-  isTypeFilterFundingRequest,
+  isTypeFilterFundingAllocation,
   isTypeFilterJoin,
 } from '~/Stores/DataStores/ProposalStore';
 import {getErrorObject} from '~/Util';
@@ -31,7 +29,7 @@ import {proposalsUrl, PROPOSAL_TYPE} from '~/Config';
 import logger from '~/Services/Logger';
 
 export type proposalListLoadCallbackFn = (
-  updatedProposalList: Array<IProposalEntity>,
+  updatedProposalList: Array<BasicArgsProposal>,
 ) => void;
 
 export const PROPOSAL_STAGE = {
@@ -62,7 +60,7 @@ interface ProposalFilter {
   userId?: string;
   showAll?: boolean;
   onlyRequestsToJoin?: boolean;
-  onlyFundingRequests?: boolean;
+  onlyFundingAllocations?: boolean;
   onlyActive?: boolean;
   onlyHistory?: boolean;
 }
@@ -71,8 +69,9 @@ class ProposalService {
   private axiosClient: AxiosInstance;
   private endpoints: {
     createJoin: string;
-    createFunding: string;
-    createVote: string;
+    createFundingAllocation: string;
+    create: string;
+    vote: string;
   };
 
   constructor() {
@@ -82,16 +81,17 @@ class ProposalService {
     });
 
     this.endpoints = {
-      createJoin: '/create/join',
-      createFunding: '/create/funding',
-      createVote: '/create/vote',
+      createJoin: '/create/join', // also this
+      createFundingAllocation: '/create/funding', //delete anyway
+      create: '/create',
+      vote: '/vote',
     };
   }
 
   // Private
   subscribeToProposalList = (
     listChangeCallback: (
-      updatedProposals: IFirebaseSnapshot<IProposalEntity>,
+      updatedProposals: IFirebaseSnapshot<BasicArgsProposal>,
     ) => void,
     filter: ProposalFilter,
   ): FirestoreUnsubscribeFn => {
@@ -115,18 +115,18 @@ class ProposalService {
       );
     }
 
-    if (filter.onlyFundingRequests) {
+    if (filter.onlyFundingAllocations) {
       proposalListQuery = proposalListQuery.where(
         'type',
         '==',
-        PROPOSAL_TYPE.FundingRequest,
+        PROPOSAL_TYPE.FundingAllocation,
       );
     }
     if (filter.onlyRequestsToJoin) {
       proposalListQuery = proposalListQuery.where(
         'type',
         '==',
-        PROPOSAL_TYPE.Join,
+        PROPOSAL_TYPE.MembershipAdmittance,
       );
     }
 
@@ -148,7 +148,7 @@ class ProposalService {
     //proposalListQuery = proposalListQuery.orderBy('createdAt', 'desc');
 
     return proposalListQuery.onSnapshot(
-      (snapshot: IFirebaseSnapshot<IProposalEntity>) => {
+      (snapshot: IFirebaseSnapshot<BasicArgsProposal>) => {
         listChangeCallback(snapshot);
       },
     );
@@ -156,7 +156,7 @@ class ProposalService {
 
   fetchProposalById = async (
     proposalId: string,
-  ): Promise<IFirebaseDoc<IProposalEntity>> => {
+  ): Promise<IFirebaseDoc<BasicArgsProposal>> => {
     if (!proposalId) {
       throw new Error(
         'Proposal Id (proposalId) is required parameter, but it was not provided',
@@ -173,38 +173,30 @@ class ProposalService {
       .collection(DB_COLLECTIONS.proposals)
       .where('proposerId', '==', uid);
 
-    if (isTypeFilterFundingRequest(proposalTypeFilter)) {
-      query = query.where('type', '==', PROPOSAL_TYPE.FundingRequest);
+    if (isTypeFilterFundingAllocation(proposalTypeFilter)) {
+      query = query.where('type', '==', PROPOSAL_TYPE.FundingAllocation);
     }
 
     if (isTypeFilterJoin(proposalTypeFilter)) {
-      query = query.where('type', '==', PROPOSAL_TYPE.Join);
+      query = query.where('type', '==', PROPOSAL_TYPE.MembershipAdmittance);
     }
 
-    return query
-      .get()
-      .then(
-        (
-          snapshots: IFirebaseSnapshot<
-            IJoinRequestProposal | IFundingRequestProposal
-          >,
-        ) => {
-          if (!snapshots) {
-            return {all: 0, active: 0, history: 0};
-          } else {
-            const stats = {
-              all: snapshots.docs.length,
-              active: snapshots.docs.filter((s) =>
-                PROPOSAL_STAGES_ACTIVE.includes(s.data().state),
-              ).length,
-              history: snapshots.docs.filter((s) =>
-                PROPOSAL_STAGES_HISTORY.includes(s.data().state),
-              ).length,
-            };
-            return stats;
-          }
-        },
-      );
+    return query.get().then((snapshots: IFirebaseSnapshot<ProposalType>) => {
+      if (!snapshots) {
+        return {all: 0, active: 0, history: 0};
+      } else {
+        const stats = {
+          all: snapshots.docs.length,
+          active: snapshots.docs.filter((s) =>
+            PROPOSAL_STAGES_ACTIVE.includes(s.data().state),
+          ).length,
+          history: snapshots.docs.filter((s) =>
+            PROPOSAL_STAGES_HISTORY.includes(s.data().state),
+          ).length,
+        };
+        return stats;
+      }
+    });
   };
 
   subscribeToProposalDiscussionsCount = async (
@@ -240,23 +232,20 @@ class ProposalService {
     userInfoUid: string,
     callback: (value: {
       pendingProposalCount: number;
-      usersPendingProposal:
-        | IFundingRequestProposal
-        | IJoinRequestProposal
-        | boolean;
+      usersPendingProposal: ProposalType | boolean;
     }) => void,
   ): Promise<FirestoreUnsubscribeFn> => {
     let proposals = db
       .collection(DB_COLLECTIONS.proposals)
       .where('commonId', '==', daoId)
-      .where('type', '==', PROPOSAL_TYPE.Join)
+      .where('type', '==', PROPOSAL_TYPE.MembershipAdmittance)
       .where('state', 'in', [...PROPOSAL_STAGES_ACTIVE, PROPOSAL_STAGE.passed]);
 
     // We can add the payment state to the statement above, but not all proposals have it, so that will
     // exclude them
 
     return proposals.onSnapshot(
-      (snapshot: IFirebaseSnapshot<IJoinRequestProposal>) => {
+      (snapshot: IFirebaseSnapshot<MembershipAdmittance>) => {
         const pendingProposals = snapshot.docs.filter(
           (x) =>
             // If the proposal is in any stage, but with pending payment
@@ -274,11 +263,8 @@ class ProposalService {
             (userInfoUid &&
               pendingProposals
                 .find(
-                  (
-                    doc: IFirebaseDoc<
-                      IJoinRequestProposal | IFundingRequestProposal
-                    >,
-                  ) => doc.data().proposerId === userInfoUid,
+                  (doc: IFirebaseDoc<ProposalType>) =>
+                    doc.data().proposerId === userInfoUid,
                 )
                 ?.data()) ||
             false,
@@ -288,49 +274,36 @@ class ProposalService {
     );
   };
 
-  createFundingProposal = async (
-    formData: CreateFundingRequestProposalPayload,
-  ): Promise<IFundingRequestProposal> => {
+  create = async (payload: ProposalType) => {
     try {
-      return await this.axiosClient.post(
-        this.endpoints.createFunding,
-        formData,
-        {
-          headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
-          },
-        },
-      );
     } catch (err) {
-      logger.log('CREATE FUNDING PROPOSAL ERROR -> ', getErrorObject(err));
+      logger.log('CREATE PROPOSAL ERROR -> ', getErrorObject(err));
       throw err;
     }
   };
 
-  createRequestToJoin = async (
-    formData: JoinRequestPayload,
-  ): Promise<AxiosResponse<IJoinRequestProposal>> => {
+  createVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
     try {
-      return await this.axiosClient.post(this.endpoints.createJoin, formData, {
-        headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
-        },
-      });
-    } catch (err) {
-      logger.log('CREATE REQUEST TO JOIN ERROR -> ', getErrorObject(err));
-      throw err;
-    }
-  };
-
-  createVote = async (formData: CreateVotePayload): Promise<IVoteEntity> => {
-    try {
-      return await this.axiosClient.post(this.endpoints.createVote, formData, {
+      return await this.axiosClient.post(this.endpoints.vote, formData, {
         headers: {
           Authorization: await auth().currentUser.getIdToken(true),
         },
       });
     } catch (err) {
       logger.log('CREATE VOTE ERROR -> ', getErrorObject(err));
+      throw err;
+    }
+  };
+
+  updateVote = async (formData: ChangeVotePayload): Promise<IVoteEntity> => {
+    try {
+      return await this.axiosClient.patch(this.endpoints.vote, formData, {
+        headers: {
+          Authorization: await auth().currentUser.getIdToken(true),
+        },
+      });
+    } catch (err) {
+      logger.log('UPDATE VOTE ERROR -> ', getErrorObject(err));
       throw err;
     }
   };

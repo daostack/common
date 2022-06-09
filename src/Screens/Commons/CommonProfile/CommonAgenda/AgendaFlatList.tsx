@@ -28,6 +28,8 @@ interface FlatListProps {
   currCommon: Common;
   openCommonOptionsModal: () => void;
   children: React.ReactNode;
+  showMembershipAdmittance: boolean;
+  renderMembershipAdmittanceBtn: () => any;
   isMember: boolean;
 }
 
@@ -105,6 +107,11 @@ export const AgendaFlatList = (props: FlatListProps) => {
           </>
         }
       />
+      {showMembershipAdmittance && !isMember && (
+        <Animated.View style={[styles.actionButtonContainer, animatedOpacity]}>
+          {renderMembershipAdmittanceBtn()}
+        </Animated.View>
+      )}
     </>
   );
 };

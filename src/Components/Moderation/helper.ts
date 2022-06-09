@@ -18,9 +18,9 @@ export const timeReported = (updatedAt: firebase.firestore.Timestamp) =>
 
 export const getType = (type: string) => {
   switch (type) {
-    case PROPOSAL_TYPE.Join:
+    case PROPOSAL_TYPE.MembershipAdmittance:
       return TITLES.membershipRequest;
-    case PROPOSAL_TYPE.FundingRequest:
+    case PROPOSAL_TYPE.FundingAllocation:
       return TITLES.proposalText;
     default:
       return type;

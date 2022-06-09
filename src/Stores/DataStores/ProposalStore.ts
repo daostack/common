@@ -7,32 +7,29 @@ import ProposalService, {
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Proposal} from '../Models/Proposal';
-import {
-  IProposalEntity,
-  IProposalVote,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {ProposalType} from '~/Firebase/Databasee/EntityTypes/proposals/Proposal';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {ACTIVE_PAYMENT_STATES} from '~/Util/constants';
 import {showBackendError} from '~/Util';
-import {VOTE_STATUSES} from '~/Util/constants/votes';
 
 export type IProposalStageFilter =
   | typeof PROPOSAL_STAGE.Active
   | typeof PROPOSAL_STAGE.History;
 
 export type IProposalTypeFilter =
-  | typeof PROPOSAL_TYPE.FundingRequest
-  | typeof PROPOSAL_TYPE.Join;
+  | typeof PROPOSAL_TYPE.FundingAllocation
+  | typeof PROPOSAL_TYPE.MembershipAdmittance;
 export interface IProposalFilter {
   type: IProposalTypeFilter;
   stage: IProposalStageFilter;
 }
 
 export const isTypeFilterJoin = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.Join;
+  typeFilter === PROPOSAL_TYPE.MembershipAdmittance;
 
-export const isTypeFilterFundingRequest = (typeFilter: IProposalTypeFilter) =>
-  typeFilter === PROPOSAL_TYPE.FundingRequest;
+export const isTypeFilterFundingAllocation = (
+  typeFilter: IProposalTypeFilter,
+) => typeFilter === PROPOSAL_TYPE.FundingAllocation;
 
 export const isStageFilterActive = (stageFilter: IProposalStageFilter) =>
   Array.isArray(stageFilter)
@@ -52,10 +49,7 @@ export const isProposalHistory = (proposal: Proposal) =>
   PROPOSAL_STAGES_HISTORY.some((stg) => stg === proposal.state) &&
   !ACTIVE_PAYMENT_STATES.some((x) => x === proposal.paymentState);
 
-export default class ProposalStore extends BaseStore<
-  Proposal,
-  IProposalEntity
-> {
+export default class ProposalStore extends BaseStore<Proposal, ProposalType> {
   constructor(rootStore: RootStore) {
     super(rootStore);
   }
@@ -65,7 +59,7 @@ export default class ProposalStore extends BaseStore<
       return [];
     }
     return this.getUserProposals(this.rootStore.authStore.userInfo?.uid, {
-      type: PROPOSAL_TYPE.FundingRequest,
+      type: PROPOSAL_TYPE.FundingAllocation,
       stage: PROPOSAL_STAGE.Active,
     });
   }
@@ -76,13 +70,13 @@ export default class ProposalStore extends BaseStore<
       return [];
     }
     return this.getUserProposals(this.rootStore.authStore.userInfo?.uid, {
-      type: PROPOSAL_TYPE.Join,
+      type: PROPOSAL_TYPE.MembershipAdmittance,
       stage: PROPOSAL_STAGE.Active,
     });
   }
 
   // Overriden methods
-  getEntityModel(entity: IProposalEntity): Proposal {
+  getEntityModel(entity: ProposalType): Proposal {
     return new Proposal(entity);
   }
 
@@ -92,7 +86,7 @@ export default class ProposalStore extends BaseStore<
       return this.getDataById(id);
     } catch (errr) {
       ProposalService.fetchProposalById(id)
-        .then((proposal: IFirebaseDoc<IProposalEntity>) => {
+        .then((proposal: IFirebaseDoc<ProposalType>) => {
           if (proposal.exists) {
             runInAction(() => {
               this.setData(
@@ -167,41 +161,6 @@ export default class ProposalStore extends BaseStore<
       });
       return [];
     }
-  };
-
-  getVotesCounts = (
-    votes: IProposalVote[] = [],
-  ): {
-    approvedCount: number;
-    abstainedCount: number;
-    rejectedCount: number;
-    allVoteCount: number;
-  } => {
-    const votesCounts = {
-      approvedCount: 0,
-      abstainedCount: 0,
-      rejectedCount: 0,
-    };
-    votes.forEach((vote: IProposalVote) => {
-      switch (vote.voteOutcome) {
-        case VOTE_STATUSES.APPROVED:
-          votesCounts.approvedCount++;
-          break;
-        case VOTE_STATUSES.ABSTAINED:
-          votesCounts.abstainedCount++;
-          break;
-        case VOTE_STATUSES.REJECTED:
-          votesCounts.rejectedCount++;
-          break;
-      }
-    });
-    return {
-      ...votesCounts,
-      allVoteCount:
-        votesCounts.abstainedCount +
-        votesCounts.approvedCount +
-        votesCounts.rejectedCount,
-    };
   };
 
   //Actions

@@ -43,17 +43,16 @@ const CommonMembers = () => {
 
   const {commonId, hasPermission, showHiddenNote, isMember} = router.params;
   const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
+  const [showModerationSuccessModal, setShowModerationSuccessModal] = useState(false);
   const [moderationFormStore] = useState(new ModerationFormStore());
   const [index, setIndex] = useState(0);
   const pendingCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.Active,
-    type: PROPOSAL_TYPE.Join,
+    type: PROPOSAL_TYPE.MembershipAdmittance,
   }).length;
   const historyCount = proposalStore.getCommonProposals(commonId, {
     stage: PROPOSAL_STAGE.History,
-    type: PROPOSAL_TYPE.Join,
+    type: PROPOSAL_TYPE.MembershipAdmittance,
   }).length;
   const membersCount = commonStore.getCommonById(commonId)?.members.length;
 

@@ -28,16 +28,15 @@ import {
   CommonAgenda,
   CommonMembers,
   CommonExplanation,
-  CreateStep1,
-  CreateStep2,
-  CreateStep3,
-  CreateStep4,
+  CreateCommonGeneralInfo,
+  CreateCommonRules,
+  CreateCommonReview,
   RulesStep,
-  IntroductionStep,
+  MembershipAdmittance,
   ContributionStep,
   BillingDetailsStep,
   PaymentDetailsStep,
-  FundingProposal,
+  FundingAllocation,
   Discussions,
   DiscussionPost,
   ProposalScreen,
@@ -61,6 +60,7 @@ import {
   MakeContribution,
   ContributionPaymentDetails,
   UpdatePaymentDetails,
+  CreateGovernance,
 } from './src/Screens';
 import HomeTabNavigator from './src/Navigation/HomeTabNavigator';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
@@ -551,8 +551,8 @@ const App = () => {
             })}
           />
           <Stack.Screen
-            name="IntroductionStep"
-            component={IntroductionStep}
+            name="MembershipAdmittance"
+            component={MembershipAdmittance}
             options={() => ({
               headerShown: false,
             })}
@@ -600,29 +600,22 @@ const App = () => {
             })}
           />
           <Stack.Screen
-            name="CreateStep1"
-            component={CreateStep1}
+            name="CreateCommonGeneralInfo"
+            component={CreateCommonGeneralInfo}
             options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
-            name="CreateStep2"
-            component={CreateStep2}
+            name="CreateCommonRules"
+            component={CreateCommonRules}
             options={() => ({
               headerShown: false,
             })}
           />
           <Stack.Screen
-            name="CreateStep3"
-            component={CreateStep3}
-            options={() => ({
-              headerShown: false,
-            })}
-          />
-          <Stack.Screen
-            name="CreateStep4"
-            component={CreateStep4}
+            name="CreateCommonReview"
+            component={CreateCommonReview}
             options={() => ({
               headerShown: false,
             })}
@@ -714,8 +707,8 @@ const App = () => {
               headerTitleAlign: 'center',
               headerRight: () => <IntercomShowButton />,
             })}
-            name="FundingProposal"
-            component={FundingProposal}
+            name="FundingAllocation"
+            component={FundingAllocation}
           />
 
           <Stack.Screen
@@ -840,6 +833,7 @@ const App = () => {
             name="ReceiveFunds"
             component={ReceiveFunds}
           />
+          <Stack.Screen name="CreateGovernance" component={CreateGovernance} />
         </Stack.Navigator>
         {notificationRouting && (
           <NotificationContainer

@@ -38,12 +38,12 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
 
   const requestsCount = proposalStore.getUserProposals(user.uid, {
     stage: PROPOSAL_STAGE.Active,
-    type: PROPOSAL_TYPE.Join,
+    type: PROPOSAL_TYPE.MembershipAdmittance,
   }).length;
 
   const proposalsCount = proposalStore.getUserProposals(user.uid, {
     stage: PROPOSAL_STAGE.Active,
-    type: PROPOSAL_TYPE.FundingRequest,
+    type: PROPOSAL_TYPE.FundingAllocation,
   }).length;
 
   const commonsCount = commonStore.getUserCommons(user.uid).length;
@@ -220,7 +220,7 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('MyProposals', {
-                  proposalTypeFilter: PROPOSAL_TYPE.FundingRequest,
+                  proposalTypeFilter: PROPOSAL_TYPE.FundingAllocation,
                 })
               }
               style={{flexDirection: 'row', ...layout.paddingHorizontalL}}>
@@ -245,7 +245,7 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
-            type: PROPOSAL_TYPE.FundingRequest,
+            type: PROPOSAL_TYPE.FundingAllocation,
           }}
           isMember
         />
@@ -266,7 +266,7 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('MyProposals', {
-                  proposalTypeFilter: PROPOSAL_TYPE.Join,
+                  proposalTypeFilter: PROPOSAL_TYPE.MembershipAdmittance,
                 })
               }
               style={{
@@ -294,7 +294,7 @@ const UserProfileData = ({userId, currUserInfo, navigation}) => {
           }}
           proposalFilter={{
             stage: PROPOSAL_STAGE.Active,
-            type: PROPOSAL_TYPE.Join,
+            type: PROPOSAL_TYPE.MembershipAdmittance,
           }}
         />
       </View>

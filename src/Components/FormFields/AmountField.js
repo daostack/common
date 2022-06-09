@@ -3,7 +3,7 @@ import React, {useState, useRef} from 'react';
 import {layout, colors, text} from '~/Theme';
 import JoinAmount from '../Commons/JoinAmount';
 import TextInputFieldWithIcon from './TextInputFieldWithIcon';
-import RequestToJoinForm from '../Forms/RequestToJoinForm';
+import MembershipAdmittanceForm from '../Forms/MembershipAdmittanceForm';
 import {string, func, object, bool} from 'prop-types';
 import {customAmountRules} from '~/Stores/FormStores/ValidationRules';
 import {CurrencySymbols} from '~/Util/locale';
@@ -20,7 +20,7 @@ const AmountField = ({
   zeroContribution,
 }) => {
   const currFieldValue = formStore.getFormField(
-    RequestToJoinForm.FIELD_AMOUNT,
+    MembershipAdmittanceForm.FIELD_AMOUNT,
   )?.value;
   const [isCustomSelected, setIsCustomSelected] = useState(0);
   const [selectedAmountId, setSelectedAmountId] = useState(
@@ -67,7 +67,7 @@ const AmountField = ({
   };
 
   const onCustomAmountChange = (amount) => {
-    formStore.fieldChanged(RequestToJoinForm.FIELD_AMOUNT, {
+    formStore.fieldChanged(MembershipAdmittanceForm.FIELD_AMOUNT, {
       value: amount,
       index: -1,
     });
@@ -107,7 +107,7 @@ const AmountField = ({
         maxLength={5}
         mask={true}
         validation={{
-          name: RequestToJoinForm.FIELD_AMOUNT,
+          name: MembershipAdmittanceForm.FIELD_AMOUNT,
           formStore: formStore,
           validateRule: [
             'required',

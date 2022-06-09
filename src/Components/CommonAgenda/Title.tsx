@@ -7,7 +7,7 @@ import {func, string, oneOfType, bool} from 'prop-types';
 type Props = {
   title: string;
   onPress?: () => void;
-  canEdit: string;
+  canEdit: string | boolean | undefined;
 };
 
 const Title: FC<Props> = ({title, onPress, canEdit}) => {

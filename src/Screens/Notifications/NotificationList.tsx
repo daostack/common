@@ -15,17 +15,17 @@ import PushNotification from 'react-native-push-notification';
 import Loader from '~/Components/Loader';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
 import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
+import Logger from '~/Services/Logger';
+import FundingAllocation from '~/Components/Notifications/FundingAllocation';
+import MessageCreated from '~/Components/Notifications/MessageCreated';
+import MembershipAdmittanceCreated from '~/Components/Notifications/MembershipAdmittanceCreated';
+import MembershipAdmittanceRejected from '~/Components/Notifications/MembershipAdmittanceRejected';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
+import ProposalReported from '~/Components/Notifications/ProposalReported';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
-import FundingRequest from '~/Components/Notifications/FundingRequest';
-import MessageCreated from '~/Components/Notifications/MessageCreated';
-import ProposalReported from '~/Components/Notifications/ProposalReported';
-import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
-import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import Logger from '~/Services/Logger';
 import {Notification} from '~/Stores/Models/Notification';
 import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
@@ -56,7 +56,7 @@ export const NotificationList = observer((props) => {
       case EventTypeState.fundingRequestAccepted:
       case EventTypeState.fundingRequestExecuted:
       case EventTypeState.fundingRequestRejected:
-        return <FundingRequest item={item} navigation={navigation} />;
+        return <FundingAllocation item={item} navigation={navigation} />;
 
       case EventTypeState.messageCreated:
         return <MessageCreated item={item} navigation={navigation} />;
@@ -65,10 +65,10 @@ export const NotificationList = observer((props) => {
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <RequestToJoinCreated item={item} navigation={navigation} />;
+        return <MembershipAdmittanceCreated item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinRejected:
-        return <RequestToJoinRejected item={item} navigation={navigation} />;
+        return <MembershipAdmittanceRejected item={item} navigation={navigation} />;
 
       case EventTypeState.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;

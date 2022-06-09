@@ -37,7 +37,7 @@ const ProposalData = ({proposalId, rootStore}) => {
     <>
       <View style={styles.container}>
         <Text style={text.h1BlackTitle}>
-          {proposalInfoState.type === PROPOSAL_TYPE.FundingRequest
+          {proposalInfoState.type === PROPOSAL_TYPE.FundingAllocation
             ? 'Proposal Pitch'
             : 'Intro'}
         </Text>

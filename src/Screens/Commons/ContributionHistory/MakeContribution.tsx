@@ -3,9 +3,9 @@ import {observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AmountField from '~/Components/FormFields/AmountField';
-import RequestToJoinForm from '~/Components/Forms/RequestToJoinForm';
-import RequestStepActionButton from '~/Screens/Commons/RequestStepActionButton';
-import RequestStepHeaderTitle from '~/Screens/Commons/RequestToJoin/RequestStepHeaderTitle';
+import MembershipAdmittanceForm from '~/Components/Forms/MembershipAdmittanceForm';
+import RequestStepActionButton from '~/Components/RequestStepActionButton';
+import RequestStepHeaderTitle from '~/Screens/Commons/MembershipAdmittance/RequestStepHeaderTitle';
 import CommonService from '~/Services/CommonService';
 import logger from '~/Services/Logger';
 import SubscriptionService from '~/Services/SubscriptionService';
@@ -58,7 +58,7 @@ const MakeContribution = () => {
   ): Promise<void> => {
     try {
       personalContributionFormStore.fieldChanged(
-        RequestToJoinForm.FIELD_AMOUNT,
+        MembershipAdmittanceForm.FIELD_AMOUNT,
         {
           value: amount,
           index,

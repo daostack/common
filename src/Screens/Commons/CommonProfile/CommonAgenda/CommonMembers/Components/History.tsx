@@ -15,7 +15,7 @@ export const History = ({commonId}: Props): ReactElement => (
       commonInfo={{id: commonId}}
       proposalFilter={{
         stage: PROPOSAL_STAGE.History,
-        type: PROPOSAL_TYPE.Join,
+        type: PROPOSAL_TYPE.MembershipAdmittance,
       }}
     />
   </View>

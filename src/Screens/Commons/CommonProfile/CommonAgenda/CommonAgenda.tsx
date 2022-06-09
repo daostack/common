@@ -1,4 +1,4 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
@@ -18,7 +18,7 @@ import {
   IntroduceYourselfFormStore,
   PaymentFormStore,
   PersonalContributionFormStore,
-} from '~/Stores/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/MembershipAdmittance';
 import {Common} from '~/Stores/Models/Common';
 import {colors, layout} from '~/Theme';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
@@ -124,22 +124,28 @@ export const CommonAgenda = observer(() => {
     setOptionsModalVisible(false);
   };
 
-  const requestToJoin = () => {
+  const membershipAdmittance = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
     const paymentFormStore = new PaymentFormStore();
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
+
+    let navigate;
     if (commonStore.myCommons.length > 0) {
-      navigation.navigate('IntroductionStep', {
-        formStores: {
-          paymentFormStore,
-          introduceYourselfFormStore,
-          personalContributionFormStore,
-          billingDetailsFormStore,
+      navigate = CommonActions.navigate({
+        name: NAVIGATION_SCREENS.MEMBERSHIP_ADMITTANCE,
+        params: {
+          formStores: {
+            paymentFormStore,
+            introduceYourselfFormStore,
+            personalContributionFormStore,
+            billingDetailsFormStore,
+          },
+          currCommon: currCommon,
+          commonId: currCommon.id,
         },
-        currCommon,
-        skipFirstStep: false,
       });
+      navigation.dispatch(navigate);
     } else {
       if (authStore?.userInfo) {
         navigation.navigate('FirstJoinCommon', {currCommon});
@@ -177,7 +183,7 @@ export const CommonAgenda = observer(() => {
             <View
               style={styles.upperActionButtonContainer}
               ref={upperRequestToJoinBtnRef}>
-              <RequestToJoinBtn requestToJoin={requestToJoin} />
+              <RequestToJoinBtn requestToJoin={membershipAdmittance} />
             </View>
           )}
           <AgendaDescription currCommon={currCommon} />

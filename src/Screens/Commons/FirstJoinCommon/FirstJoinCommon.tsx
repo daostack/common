@@ -15,7 +15,9 @@ import {
   IntroduceYourselfFormStore,
   PaymentFormStore,
   PersonalContributionFormStore,
-} from '~/Stores/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/MembershipAdmittance';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {CommonActions} from '@react-navigation/native';
 import {bool, func, InferProps, object, shape, string} from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -49,16 +51,23 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
     const personalContributionFormStore = new PersonalContributionFormStore();
     const billingDetailsFormStore = new BillingDetailsFormStore();
 
-    navigation.navigate('IntroductionStep', {
-      formStores: {
-        paymentFormStore,
-        introduceYourselfFormStore,
-        personalContributionFormStore,
-        billingDetailsFormStore,
+    const navigateMembershipAdmittance = CommonActions.navigate({
+      name: NAVIGATION_SCREENS.MEMBERSHIP_ADMITTANCE,
+      params: {
+        formStores: {
+          paymentFormStore,
+          introduceYourselfFormStore,
+          personalContributionFormStore,
+          billingDetailsFormStore,
+        },
+        currCommon: currCommon,
+        currDaoId: currDaoId,
+        refreshFeed,
       },
       currCommon,
       skipFirstStep: false,
     });
+    navigation.dispatch(navigateMembershipAdmittance);
   };
 
   return (

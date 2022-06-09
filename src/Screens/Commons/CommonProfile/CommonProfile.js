@@ -54,7 +54,7 @@ import {
   PersonalContributionFormStore,
   BillingDetailsFormStore,
   PaymentFormStore,
-} from '~/Stores/FormStores/RequestToJoin';
+} from '~/Stores/FormStores/MembershipAdmittance';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {truncateString} from '~/Util/stringUtil';
@@ -64,7 +64,6 @@ import BottomSheetModal from '~/Components/BottomSheetModal';
 import {ModalCommonOptions} from './modals/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {ModalLeaveConfirmation} from '../components/ModalLeaveConfirmation';
-import {CurrencySymbols} from '~/Util/locale';
 import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
 import {AgendaFlatList} from './CommonAgenda/AgendaFlatList';
@@ -132,13 +131,14 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     params.commonId || params.currCommon?.id,
   );
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
-  const [showReqToJoin, setShowRequestToJoin] = useState(false);
+  const [showMembershipAdmittance, setShowMembershipAdmittance] =
+    useState(false);
   const [showPending, setShowPending] = useState(false);
   const [pendingProposalsData, setPendingProposalsData] = useState(null);
   const [userPendingPropDiscCount, setUserPendingPropDiscCount] = useState(0);
   const commonId = currCommon?.id;
 
-  const upperRequestToJoinBtnRef = useRef(null);
+  const upperMembershipAdmittanceBtnRef = useRef(null);
 
   // Sticky Tab Bar
   const stickyTabBarRef = useRef(null);
@@ -200,10 +200,10 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                 setShowPending(true);
 
                 animateNextStateRender();
-                setShowRequestToJoin(false);
+                setShowMembershipAdmittance(false);
               } else {
                 animateNextStateRender();
-                setShowRequestToJoin(true);
+                setShowMembershipAdmittance(true);
               }
             }
           }
@@ -275,7 +275,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.Active,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: PROPOSAL_TYPE.FundingAllocation,
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, ENTITY_TYPES.proposals)
@@ -300,7 +300,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
         }}
         proposalFilter={{
           stage: PROPOSAL_STAGE.History,
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: PROPOSAL_TYPE.FundingAllocation,
         }}
         showHiddenNote={(hiddenProposal) =>
           showHiddenNote(hiddenProposal, TITLES.proposalText)
@@ -418,10 +418,10 @@ const CommonProfile = ({route: {params}, rootStore}) => {
       commonId: currCommon.id,
       screenTitle: currCommon.name,
       hasPermission,
-      openCommonOptions: (requestToJoin) =>
-        openCommonOptions(requestToJoin, TITLES.membershipRequest),
-      showHiddenNote: (hiddenRequestToJoin) =>
-        showHiddenNote(hiddenRequestToJoin, TITLES.membershipRequest),
+      openCommonOptions: (membershipAdmittance) =>
+        openCommonOptions(membershipAdmittance, TITLES.membershipRequest),
+      showHiddenNote: (hiddenMembershipAdmittance) =>
+        showHiddenNote(hiddenMembershipAdmittance, TITLES.membershipRequest),
       isMember,
     });
   };
@@ -534,7 +534,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     });
   };
 
-  const requestToJoin = () => {
+  const membershipAdmittance = () => {
     const introduceYourselfFormStore = new IntroduceYourselfFormStore();
     const paymentFormStore = new PaymentFormStore();
     const personalContributionFormStore = new PersonalContributionFormStore();
@@ -543,7 +543,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     let navigate;
     if (commonStore.myCommons.length > 0) {
       navigate = CommonActions.navigate({
-        name: 'IntroductionStep', // we always go to Introduction first
+        name: NAVIGATION_SCREENS.MEMBERSHIP_ADMITTANCE,
         params: {
           formStores: {
             paymentFormStore,
@@ -552,8 +552,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
             billingDetailsFormStore,
           },
           currCommon: currCommon,
-          currDaoId: currCommon.id,
-          skipFirstStep: false,
+          commonId: currCommon.id,
           refreshFeed,
         },
       });
@@ -745,15 +744,11 @@ const CommonProfile = ({route: {params}, rootStore}) => {
     setOptionsModalVisible(true);
   };
 
-  const renderRequestToJoinBtn = () => (
-    <TouchableOpacity style={styles.headerButton} onPress={requestToJoin}>
-      <Text style={styles.requestToJoin}>Request to join</Text>
-      <Text style={styles.contribution}>
-        {CurrencySymbols.SHEKEL}
-        {currCommon.minFeeToJoinFormatted && currCommon.minFeeToJoinFormatted()}
-        {currCommon.metadata.contributionType === 'monthly' && '/mo'} min.
-        contribution
-      </Text>
+  const renderMembershipAdmittanceBtn = () => (
+    <TouchableOpacity
+      style={styles.headerButton}
+      onPress={membershipAdmittance}>
+      <Text style={styles.membershipAdmittance}>Request to join</Text>
     </TouchableOpacity>
   );
 
@@ -819,8 +814,8 @@ const CommonProfile = ({route: {params}, rootStore}) => {
           <AgendaFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
-            showReqToJoin={showReqToJoin}
-            renderRequestToJoinBtn={renderRequestToJoinBtn}
+            showMembershipAdmittance={showMembershipAdmittance}
+            renderMembershipAdmittanceBtn={renderMembershipAdmittanceBtn}
             isMember={isMember}>
             <>
               {renderForeground()}
@@ -849,12 +844,22 @@ const CommonProfile = ({route: {params}, rootStore}) => {
 
               {renderMembersRow()}
 
-              {!isMember && showReqToJoin && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('CreateGovernance', {
+                    commonId,
+                  });
+                }}
+                style={layout.governanceTemp}>
+                <Text>CREATE GOVERNANCE</Text>
+              </TouchableOpacity>
+
+              {!isMember && showMembershipAdmittance && (
                 <View
                   style={styles.upperActionButtonContainer}
-                  ref={upperRequestToJoinBtnRef}
+                  ref={upperMembershipAdmittanceBtnRef}
                   collapsable={false}>
-                  {renderRequestToJoinBtn()}
+                  {renderMembershipAdmittanceBtn()}
                 </View>
               )}
 
@@ -892,7 +897,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                   <BottomRightButton
                     iconName="create-proposal"
                     onPress={() =>
-                      navigation.navigate('FundingProposal', {
+                      navigation.navigate('FundingAllocation', {
                         commonId: currCommon.id,
                         common: currCommon,
                         screenTitle: currCommon.name,
@@ -985,11 +990,10 @@ const styles = StyleSheet.create({
   paleBackground: {
     backgroundColor: '#fcfcfc',
   },
-  requestToJoin: {
+  membershipAdmittance: {
     ...font.primary.bold,
     color: colors.white,
     ...font.fontSize(3),
-    marginRight: 40,
   },
   viewAgendaBtn: {
     ...layout.content,

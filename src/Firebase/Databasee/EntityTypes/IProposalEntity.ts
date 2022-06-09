@@ -1,6 +1,6 @@
 import {IBaseEntity} from './IBaseEntity';
 import {ContributionType, ICommonLink} from './ICommonEntity';
-import {VoteOutcome} from './IVoteEntity';
+import {IVoteEntity, VoteOutcome} from './IVoteEntity';
 import {IModerationEntity} from './IModerationEntity';
 import {UserModel} from '~/Stores/Models/UserModel';
 import {firebase} from '~/Firebase';
@@ -100,6 +100,10 @@ export interface IProposalVote {
    */
   voterId: string;
 
+  commonId: string;
+
+  proposalId: string;
+
   /**
    * The outcome of the vote
    */
@@ -108,7 +112,7 @@ export interface IProposalVote {
   updatedAt: firebase.firestore.Timestamp;
 }
 
-export interface VoteWithUserInfo extends IProposalVote {
+export interface VoteWithUserInfo extends IVoteEntity {
   user: UserModel;
 }
 
@@ -124,8 +128,8 @@ export interface IBaseProposalDescription {
   links: IProposalLink[];
 }
 
-export interface IJoinReqDescription extends IBaseProposalDescription {}
-export interface IFundingRequestDescription {
+interface IJoinReqDescription extends IBaseProposalDescription {}
+interface IFundingRequestDescription {
   /**
    * The proposal in short
    */
@@ -174,7 +178,7 @@ export interface IProposalFile {
   value: string;
 }
 
-export interface IProposalFundingRequest {
+interface IProposalFundingRequest {
   /**
    * The amount (in US cents) that was requested
    */
@@ -191,7 +195,7 @@ export interface IProposalFundingRequest {
  * The extended version of the proposal including
  * the fields for funding requests
  */
-export interface IFundingRequestProposal extends IBaseProposalEntity {
+interface IFundingRequestProposal extends IBaseProposalEntity {
   type: 'fundingRequest';
 
   state: FundingRequestState;
@@ -287,7 +291,7 @@ export interface JoinRequestPayload {
  * The proposal base type. This is advanced typing that will change the
  * available fields based on the type field (witch can be either joinRequest or fundingRequest)
  */
-export type IProposalEntity = IJoinRequestProposal | IFundingRequestProposal;
+//export type IProposalEntity = IJoinRequestProposal | IFundingRequestProposal;
 
 export interface IUIProposalImage {
   title: string;
