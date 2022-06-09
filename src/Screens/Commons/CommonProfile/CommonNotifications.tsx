@@ -16,11 +16,11 @@ import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
-import FundingRequest from '~/Components/Notifications/FundingRequest';
+import FundingAllocation from '~/Components/Notifications/FundingAllocation';
 import MessageCreated from '~/Components/Notifications/MessageCreated';
 import ProposalReported from '~/Components/Notifications/ProposalReported';
-import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
-import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
+import MembershipAdmittanceCreated from '~/Components/Notifications/MembershipAdmittanceCreated';
+import MembershipAdmittanceRejected from '~/Components/Notifications/MembershipAdmittanceRejected';
 import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
 import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
@@ -61,7 +61,7 @@ export const CommonNotifications = () => {
       case EventTypeState.fundingRequestAccepted:
       case EventTypeState.fundingRequestExecuted:
       case EventTypeState.fundingRequestRejected:
-        return <FundingRequest item={item} navigation={navigation} />;
+        return <FundingAllocation item={item} navigation={navigation} />;
 
       case EventTypeState.messageCreated:
         return <MessageCreated item={item} navigation={navigation} />;
@@ -70,10 +70,10 @@ export const CommonNotifications = () => {
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <RequestToJoinCreated item={item} navigation={navigation} />;
+        return <MembershipAdmittanceCreated item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinRejected:
-        return <RequestToJoinRejected item={item} navigation={navigation} />;
+        return <MembershipAdmittanceRejected item={item} navigation={navigation} />;
 
       case EventTypeState.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;

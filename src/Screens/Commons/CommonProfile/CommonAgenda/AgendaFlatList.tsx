@@ -34,7 +34,14 @@ interface FlatListProps {
 }
 
 export const AgendaFlatList = (props: FlatListProps) => {
-  const {currCommon, children, openCommonOptionsModal, isMember} = props;
+  const {
+    currCommon,
+    children,
+    openCommonOptionsModal,
+    isMember,
+    showMembershipAdmittance,
+    renderMembershipAdmittanceBtn,
+  } = props;
   const yIndex = useSharedValue(0);
   const insets = useSafeAreaInsets();
 
