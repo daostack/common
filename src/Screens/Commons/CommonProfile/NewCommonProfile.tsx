@@ -56,7 +56,7 @@ export const NewCommonProfile = observer(() => {
   )!;
   const commonId = currCommon?.id;
   const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore.userInfo.uid),
+    authStore.getPermission(commonId, authStore?.userInfo?.uid),
   );
   const bottomSheetStore = uiStore.bottomSheetStore;
   const hasImages = false;
