@@ -1,6 +1,6 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
-import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/CommonModals/MemberConfirmModal';
+import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/modals/MemberConfirmModal';
 
 const mockedNavigate = jest.fn();
 

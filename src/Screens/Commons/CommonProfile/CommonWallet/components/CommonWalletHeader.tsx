@@ -1,12 +1,17 @@
-import React, {Children} from 'react';
+import React, {ReactElement} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Common} from '~/Stores/Models/Common';
 import {colors, font, text} from '~/Theme';
 import {formatMoney} from '~/Util/FormatUtil';
 import {CurrencySymbols} from '~/Util/locale';
-import {WalletTabs} from '~/Screens/Commons/CommonProfile/Wallet/components/CommonWalletTabs';
 
-export const CommonWalletHeader = (props) => {
+interface CommonWalletHeaderProps {
+  common: Common | undefined;
+  children: ReactElement;
+}
+
+export const CommonWalletHeader = (props: CommonWalletHeaderProps) => {
   const {common, children} = props;
   const insets = useSafeAreaInsets();
   return (
@@ -30,7 +35,6 @@ export const CommonWalletHeader = (props) => {
         </View>
       </View>
       {children}
-
     </>
   );
 };
@@ -39,7 +43,6 @@ const styles = StyleSheet.create({
   screenTitle: {
     marginBottom: 8,
   },
-
   containerBackground: {
     backgroundColor: colors.iceBlue,
   },

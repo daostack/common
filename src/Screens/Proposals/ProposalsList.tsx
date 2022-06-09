@@ -11,7 +11,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import ProposalCard from '~/Components/Proposals/ProposalCard';
+import {ProposalCard} from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
@@ -57,6 +57,7 @@ const props = {
   showHiddenNote: func,
   isMember: bool,
   flatListStyle: object,
+  showsVerticalScrollIndicator: bool,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -70,6 +71,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     showHiddenNote,
     isMember,
     flatListStyle,
+    listContainerStyle,
+    showsVerticalScrollIndicator = false,
   }) => {
     const rootStore = useStore('rootStore');
     const [viewerPermission, setViewerPermission] = React.useState('');
@@ -216,10 +219,11 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         {list && list.length > 0 ? (
           <FlatList
             style={flatListStyle}
+            contentContainerStyle={listContainerStyle}
             listKey={(item, index) => 'Proposal' + index.toString()}
             data={list.slice()}
             keyExtractor={keyExtractor}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
             initialNumToRender={1}
             maxToRenderPerBatch={5}
             renderItem={({item, index}) => renderProposalCard(item, index)}

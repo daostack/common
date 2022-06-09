@@ -6,19 +6,17 @@ import {
   Platform,
   View,
   Animated,
-  Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {text, layout, colors, font} from '~/Theme';
-import MemberCard from '../MemberCard';
+import {layout, colors, font} from '~/Theme';
+import {MemberCard} from '../MemberCard';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalService from '~/Services/ProposalService';
 import {PROPOSAL_TYPE} from '~/Config';
 import ProposalApprovalTag from './ProposalApprovalTag';
 import Toast from '~/Util/Toast';
 import logger from '../../Services/Logger';
-import {string, bool, object, func} from 'prop-types';
-import {FLAGS} from '../../Components/Moderation/constants';
+import {FLAGS} from '../Moderation/constants';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -28,35 +26,68 @@ import {
 import {useStore} from '~/Util/hooks/useStore';
 import ModerationMenu from '../Moderation/ModerationMenu';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {screenWidth} from '~/Util/dimensions';
+import {useNavigation} from '@react-navigation/native';
+import Icon from '~/Assets/iconfont/Icon';
+import {ProposalCardUserImage} from '~/Components/Proposals/components/ProposalCardUserImage';
 
-const {width} = Dimensions.get('window');
+interface CardProps {
+  proposalId: string;
+  data: {};
+  containerStyle: {};
+  membershipRequest: boolean;
+  isSwiper: boolean;
+  commonInfo: {};
+  hasPermission: boolean;
+  openCommonOptions: () => void;
+  hiddenProposalNote: () => void;
+  viewerPermission: string;
+  type: string;
+}
 
-const ProposalCard = ({
-  proposalId,
-  navigation,
-  containerStyle,
-  isSwiper,
-  commonInfo,
-  openCommonOptions,
-  hiddenProposalNote,
-  viewerPermission,
-  type,
-}) => {
+export const ProposalCard = observer((props: CardProps) => {
+  const {
+    proposalId,
+    containerStyle,
+    isSwiper,
+    commonInfo,
+    openCommonOptions,
+    hiddenProposalNote,
+    viewerPermission,
+    type,
+  } = props;
+  const navigation = useNavigation();
   const {userStore, proposalStore, commonStore, authStore} =
     useStore('rootStore');
 
+  const {userInfo} = authStore;
+
   const proposalInfo = proposalStore.getProposalById(proposalId);
+
+  let currentUserVote;
+  const filteredVotes = proposalInfo?.votes.filter(
+    (item) => item.voterId === userInfo?.uid,
+  );
+
+  if (filteredVotes?.length !== 0) {
+    currentUserVote = filteredVotes?.[0].voteOutcome;
+  }
+
+  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
+    proposalStore.getVotesCounts(proposalInfo?.votes);
+
   const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
   const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
-    proposalInfo.moderation?.flag !== FLAGS.hidden || !proposalInfo.moderation;
+    proposalInfo?.moderation?.flag !== FLAGS.hidden ||
+    !proposalInfo?.moderation;
   const hasPermission = authStore.getPermission(
-    proposalInfo.commonId,
+    proposalInfo?.commonId,
     authStore?.userInfo?.uid,
   );
   const showCard =
     isVisible || (!isVisible && hasPermission === PERMISSIONS.MODERATOR);
-  const isOwner = authStore.isCurrentlyLogged(proposalInfo.proposerId);
+  const isOwner = authStore.isCurrentlyLogged(proposalInfo?.proposerId);
 
   useEffect(() => {
     let unsubscribeProposalDiscussionsCount = null;
@@ -90,11 +121,11 @@ const ProposalCard = ({
     if (isSwiper && Platform.OS === 'ios') {
       return '100%';
     }
-    return width - 40;
+    return screenWidth - 40;
   };
 
   const onReviewProposal = async () => {
-    if (proposalInfo.isModerationHidden) {
+    if (proposalInfo?.isModerationHidden) {
       hiddenProposalNote();
     } else {
       let currCommonInfo = {...commonInfo};
@@ -105,19 +136,19 @@ const ProposalCard = ({
         );
       }
       navigation.navigate('ProposalScreen', {
-        proposalId: proposalInfo.id,
+        proposalId: proposalInfo?.id,
         hasPermission,
-        commonId: proposalInfo.commonId,
+        commonId: proposalInfo?.commonId,
       });
     }
   };
 
   const getReporter = () =>
-    proposalInfo.moderation?.reporter &&
-    userStore.getUserById(proposalInfo.moderation?.reporter);
+    proposalInfo?.moderation?.reporter &&
+    userStore.getUserById(proposalInfo?.moderation?.reporter);
 
   const showModerationMenu =
-    (!proposalInfo.isModerationHidden || hasPermission) &&
+    (!proposalInfo?.isModerationHidden || hasPermission) &&
     !isSwiper &&
     !isOwner;
 
@@ -127,12 +158,11 @@ const ProposalCard = ({
         styles.proposalCard,
         containerStyle,
         {
-          width: cardWidth(),
           borderRadius: showCard ? 20 : 5,
           borderWidth: showCard ? 1 : 0,
         },
       ]}>
-      <TouchableOpacity onPress={() => onReviewProposal()}>
+      <TouchableOpacity onPress={onReviewProposal}>
         <ProposalCardHeader
           state={proposalInfo?.state}
           paymentStatus={proposalInfo?.paymentState}
@@ -175,27 +205,46 @@ const ProposalCard = ({
               commonId={proposalInfo.commonId}
               isPending={false}
             />
-            <View style={{...layout.flexRow}}>
-              <ProposalApprovalTag
-                iconName="approved"
-                value={proposalInfo.votesFor || 0}
-                isMarked={true}
-              />
-              <ProposalApprovalTag
-                iconName="declined"
-                value={proposalInfo.votesAgainst || 0}
-                isMarked={false}
-              />
-              <ProposalApprovalTag
-                iconName="discussion"
-                value={proposalDiscussionCount}
-                isMarked={false}
-              />
+            <View style={styles.votes}>
+              <View style={{...layout.flexRow}}>
+                <ProposalApprovalTag
+                  iconName="approved"
+                  value={(approvedCount / allVoteCount) * 100 || 0}
+                />
+                <ProposalApprovalTag
+                  iconName="abstained"
+                  value={(abstainedCount / allVoteCount) * 100 || 0}
+                />
+                <ProposalApprovalTag
+                  iconName="declined"
+                  value={(rejectedCount / allVoteCount) * 100 || 0}
+                />
+              </View>
+              {currentUserVote && (
+                <ProposalCardUserImage currentUserVote={currentUserVote} />
+              )}
             </View>
+            <View style={styles.divider} />
             <View style={styles.proposalCardActionContainer}>
-              <Text style={styles.proposalActionBtnText}>
-                {proposalInfo.isJoinRequest ? 'View request' : 'View proposal'}
-              </Text>
+              <View style={styles.messageCountContainer}>
+                {/* disable till we get the number of messages for proposals */}
+                {false && (
+                  <>
+                    <Icon name="discussion" size={20} />
+                    <Text style={styles.msgCount}>0</Text>
+                  </>
+                )}
+              </View>
+              <TouchableOpacity
+                style={styles.viewButton}
+                onPress={onReviewProposal}>
+                <Text style={styles.joinTheDiscussion}>
+                  {proposalInfo.isJoinRequest
+                    ? 'View request'
+                    : 'View proposal'}
+                </Text>
+                <Icon name="right-arrow" size={20} color={colors.mainBlue} />
+              </TouchableOpacity>
             </View>
           </View>
         )}
@@ -234,34 +283,12 @@ const ProposalCard = ({
       </Placeholder>
     </Animated.View>
   );
-};
-
-ProposalCard.propTypes = {
-  proposalId: string,
-  data: object,
-  navigation: object,
-  containerStyle: object,
-  membershipRequest: bool,
-  isSwiper: bool,
-  commonInfo: object,
-  hasPermission: bool,
-  openCommonOptions: func,
-  hiddenProposalNote: func,
-  viewerPermission: string,
-  type: string,
-};
+});
 
 const styles = StyleSheet.create({
   proposalCardActionContainer: {
-    // ...layout.content,
-    ...layout.marginTopL,
-    // ...layout.marginBottomL,
-    paddingBottom: 0,
-    borderTopWidth: 1,
-    borderTopColor: colors.grey4,
-    alignContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
   },
   proposalActionBtnText: {
     ...font.primary.regular,
@@ -270,16 +297,11 @@ const styles = StyleSheet.create({
     marginVertical: 14,
   },
   containerView: {
-    paddingTop: 0,
-    paddingHorizontal: 7,
-    ...layout.flexStart,
-    //flexWrap: 'wrap',
+    padding: 16,
   },
   proposalCard: {
-    // marginHorizontal: 5,
-    ...layout.marginBottomL,
+    marginBottom: 24,
     backgroundColor: colors.white,
-    //borderRadius: 20,
 
     borderStyle: 'solid',
     borderColor: colors.grey4,
@@ -294,20 +316,51 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   title: {
-    ...text.h3Black,
+    ...font.primary.bold,
     textAlign: 'left',
     flexWrap: 'wrap',
     fontSize: 16,
     flex: 12,
+    color: colors.black,
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
     width: '100%',
   },
+  messageCountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  msgCount: {
+    ...font.primary.regular,
+    ...font.fontSize(2),
+    color: colors.grey3,
+    paddingHorizontal: 5,
+  },
+  viewButton: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  joinTheDiscussion: {
+    textAlign: 'right',
+    ...font.primary.bold,
+    fontSize: 16,
+    color: colors.mainBlue,
+  },
+  divider: {
+    backgroundColor: colors.grey4,
+    height: 1,
+    marginBottom: 15,
+    marginTop: 20,
+    marginHorizontal: -16,
+  },
+  votes: {
+    paddingLeft: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 });
-
-export default observer(ProposalCard);

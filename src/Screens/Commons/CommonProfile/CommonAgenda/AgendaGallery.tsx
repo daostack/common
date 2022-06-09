@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Image, ScrollView} from 'react-native';
 import {screenWidth} from '~/Util/dimensions';
 
-export const CommonGallery = () => {
+export const AgendaGallery = () => {
   const imageArray = [
     'https://api.contentstack.io/v2/assets/575e4d1c0342dfd738264a1f/download?uid=bltada7771f270d08f6',
   ];

@@ -12,8 +12,8 @@ import {TabView} from 'react-native-tab-view';
 import {observer} from 'mobx-react';
 
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import CommonMembersList from '../CommonMembersList';
-import CommonTabBar from '../../../CommonTabBar';
+import {CommonMembersList} from './CommonMembersList';
+import CommonTabBar from '../../../../CommonTabBar';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {STORE_KEYS} from '~/Util/constants/storeKeys';
 import {CommonMembersRouteProps, CommonMembersProps} from './types';

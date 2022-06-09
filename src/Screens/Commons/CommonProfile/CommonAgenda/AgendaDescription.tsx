@@ -5,11 +5,11 @@ import {colors, font} from '~/Theme';
 import {useNavigation} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
 
-interface CommonDescriptionProps {
+interface DescriptionProps {
   currCommon: Common;
 }
 
-export const CommonDescription = (props: CommonDescriptionProps) => {
+export const AgendaDescription = (props: DescriptionProps) => {
   const navigation = useNavigation();
   const {currCommon} = props;
   const [linksVisible, setLinksVisible] = useState(false);

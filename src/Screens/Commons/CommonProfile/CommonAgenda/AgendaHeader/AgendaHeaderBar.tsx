@@ -25,7 +25,7 @@ interface HeaderProps {
   yIndex: SharedValue<number>;
 }
 
-export const CommonHeaderBar = (props: HeaderProps) => {
+export const AgendaHeaderBar = (props: HeaderProps) => {
   const {yIndex, currCommon, openCommonOptions} = props;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();

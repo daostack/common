@@ -1,19 +1,21 @@
-import React, {useCallback} from 'react';
-import {observer} from 'mobx-react';
-import {FlatList} from 'react-native';
 import auth from '@react-native-firebase/auth';
-import DiscussionCard from './DiscussionCard';
+import {observer} from 'mobx-react';
+import React, {useCallback} from 'react';
+import {FlatList, StyleSheet} from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import {string, bool, func} from 'prop-types';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {useStore} from '~/Util/hooks/useStore';
+import {DiscussionCard} from './DiscussionCard';
 
-const DiscussionList = ({
-  commonId,
-  openCommonOptions,
-  showHiddenNote,
-  isMember,
-}) => {
+interface DiscussionListProps {
+  commonId: string;
+  openCommonOptions: () => void;
+  showHiddenNote: () => void;
+  isMember: boolean;
+}
+
+export const DiscussionList = observer((props: DiscussionListProps) => {
+  const {commonId, openCommonOptions, showHiddenNote, isMember} = props;
   const rootStore = useStore('rootStore');
   const discussionStore = useStore('discussionStore');
   const list = discussionStore.getCommonDiscussions(commonId);
@@ -34,6 +36,7 @@ const DiscussionList = ({
           listKey="DiscussionList"
           data={list}
           keyExtractor={keyExtractor}
+          contentContainerStyle={styles.flatListContainer}
           renderItem={({item}) => (
             <DiscussionCard
               key={item.id}
@@ -56,13 +59,10 @@ const DiscussionList = ({
       )}
     </>
   );
-};
+});
 
-DiscussionList.propTypes = {
-  commonId: string.isRequired,
-  openCommonOptions: func,
-  showHiddenNote: func,
-  isMember: bool,
-};
-
-export default observer(DiscussionList);
+const styles = StyleSheet.create({
+  flatListContainer: {
+    paddingTop: 24,
+  },
+});

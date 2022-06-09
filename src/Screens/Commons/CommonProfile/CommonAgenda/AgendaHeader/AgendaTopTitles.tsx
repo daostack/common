@@ -11,17 +11,17 @@ import {PROPOSAL_STAGE, PROPOSAL_TYPE} from '~/Config';
 import {screenWidth} from '~/Util/dimensions';
 import Icon from '~/Assets/iconfont/Icon';
 
-interface CommonTopTitlesProps {
+interface TopTitlesProps {
   common: Common;
   hasPermission: string;
   isMember: boolean;
 }
 
-export const CommonTopTitles = ({
+export const AgendaTopTitles = ({
   common,
   hasPermission,
   isMember,
-}: CommonTopTitlesProps) => {
+}: TopTitlesProps) => {
   const navigation = useNavigation();
   const proposalStore = useStore('proposalStore');
   const commonStore = useStore('commonStore');

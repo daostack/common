@@ -1,42 +1,36 @@
-import {StyleSheet, View, Text} from 'react-native';
-import React, {useMemo} from 'react';
-import {observer, inject} from 'mobx-react';
-import {layout, colors, text, font} from '~/Theme';
-import MemberImage from './Commons/MemberImage';
-import CountDown from 'react-native-countdown-component';
-import {monthShortNames} from '~/Util/DateUtil';
+import {observer} from 'mobx-react';
 import moment from 'moment';
-import {LAUNCHED_STATES, COUNTDOWN_STATES} from '~/Services/ProposalService';
-import {
-  string,
-  array,
-  number,
-  shape,
-  object,
-  oneOfType,
-  func,
-  bool,
-} from 'prop-types';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import CountDown from 'react-native-countdown-component';
+import {COUNTDOWN_STATES, LAUNCHED_STATES} from '~/Services/ProposalService';
+import {colors, font, text} from '~/Theme';
+import {monthShortNames} from '~/Util/DateUtil';
 import {CurrencySymbols} from '~/Util/locale';
+import MemberImage from './Commons/MemberImage';
 
-const MemberCard = ({
-  userInfo,
-  proposalInfo = null,
-  moderatorId,
-  commonId,
-  rootStore,
-}) => {
-  const viewerPermission = rootStore.authStore.getPermission(
-    commonId,
-    userInfo.uid,
-  );
+interface CardProps {
+  userInfo: {
+    uid: string;
+    createdAt: {};
+    displayName: string;
+    daos: [];
+  };
+  proposalInfo: {
+    type: string;
+    closingAt: number;
+    description: {
+      funding: number | string;
+    };
+    fundingRequest: {
+      amount: number;
+    };
+    state: string;
+  } | null;
+}
 
-  const isModerator = useMemo(
-    () => viewerPermission === PERMISSIONS.MODERATOR,
-    [moderatorId],
-  );
+export const MemberCard = observer((props: CardProps) => {
+  const {userInfo, proposalInfo = null} = props;
 
   const renderRightContainer = () => {
     if (proposalInfo) {
@@ -105,20 +99,12 @@ const MemberCard = ({
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexStart,
-          alignContent: 'flex-start',
-          flex: 1.9,
-          flexWrap: 'wrap',
-        }}>
-        {isModerator && <Text style={text.moderatorText}>Moderator</Text>}
+      <View style={{paddingLeft: 8}}>
         <Text style={styles.displayName}>
           {userInfo?.displayName || 'Unknown user'}
         </Text>
         {proposalInfo && (
-          <Text style={{...text.runninglightGray, width: '100%'}}>
+          <Text style={styles.date}>
             {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
           </Text>
         )}
@@ -126,68 +112,38 @@ const MemberCard = ({
       {renderRightContainer()}
     </View>
   );
-};
-
-MemberCard.propTypes = {
-  rootStore: rootStorePropTypes,
-  moderatorId: string,
-  memberSince: string,
-  commonsCount: number,
-  userInfo: shape({
-    createdAt: object,
-    displayName: string,
-    daos: array,
-  }),
-  proposalInfo: shape({
-    type: string,
-    closingAt: number,
-    description: shape({
-      funding: oneOfType([number, string]),
-    }),
-    fundingRequest: shape({
-      amount: number,
-    }),
-    state: string,
-  }),
-  commonId: string,
-  openCommonOptions: func,
-  showModerationMenu: bool,
-};
+});
 
 const styles = StyleSheet.create({
   cardContainer: {
-    ...layout.content,
-    ...layout.flexRow,
-    flex: 1,
-    justifyContent: 'space-between',
+    flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    padding: 0,
+    paddingVertical: 16,
   },
   noBottomBorder: {
     borderBottomWidth: 0,
   },
   displayName: {
     ...font.primary.regular,
-    ...font.fontSize(2),
-    flexWrap: 'wrap',
-    fontWeight: '500',
+    lineHeight: 19,
     fontSize: 16,
+    color: colors.black,
+    marginBottom: 3,
   },
   rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    position: 'absolute',
+    right: 0,
+    top: 16,
   },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-  },
+  priceContainer: {},
   timeContainer: {
     alignItems: 'flex-end',
     flexDirection: 'column',
     marginRight: 5,
   },
+  date: {
+    ...font.primary.regular,
+    color: colors.greySubtitle,
+  },
 });
-
-export default inject('rootStore')(observer(MemberCard));

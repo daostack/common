@@ -30,7 +30,7 @@ import {Notification} from '~/Stores/Models/Notification';
 import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
-const NotificationList = (props) => {
+export const NotificationList = observer((props) => {
   const {notificationsArray} = props;
   const navigation = useNavigation();
   const notificationStore = useStore('notificationStore');
@@ -130,7 +130,7 @@ const NotificationList = (props) => {
       </SafeAreaView>
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -155,5 +155,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default observer(NotificationList);

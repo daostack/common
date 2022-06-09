@@ -4,14 +4,14 @@ import {StyleSheet, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {CommonBoxCounterBar} from '~/Components/Commons/CommonBox/CommonBoxCounterBar';
 import {CommonFundsBox} from '~/Components/Commons/CommonFundsBox';
-import {CommonDescription} from '~/Screens/Commons/CommonProfile/CommonDescription';
-import {CommonTopTitles} from '~/Screens/Commons/CommonProfile/CommonHeader/CommonTopTitles';
-import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/CommonModals/MemberConfirmModal';
-import {CommonProfileFlatList} from '~/Screens/Commons/CommonProfile/CommonProfileFlatList';
+import {AgendaDescription} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaDescription';
+import {AgendaTopTitles} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaHeader/AgendaTopTitles';
+import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/modals/MemberConfirmModal';
+import {AgendaFlatList} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaFlatList';
 import {RequestToJoinBtn} from '~/Screens/Commons/CommonProfile/components/RequestToJoinBtn';
-import {ModalCommonOptions} from '~/Screens/Commons/CommonProfile/CommonModals/ModalCommonOptions';
-import {ModalDeleteConfirmation} from './CommonModals/ModalDeleteConfirmation';
-import {ModalLeaveConfirmation} from './CommonModals/ModalLeaveConfirmation';
+import {ModalCommonOptions} from '~/Screens/Commons/CommonProfile/modals/ModalCommonOptions';
+import {ModalDeleteConfirmation} from '../modals/ModalDeleteConfirmation';
+import {ModalLeaveConfirmation} from '../modals/ModalLeaveConfirmation';
 import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 import {
   BillingDetailsFormStore,
@@ -25,7 +25,7 @@ import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {useStore} from '~/Util/hooks/useStore';
 import Toast from '~/Util/Toast';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {CommonGallery} from '~/Screens/Commons/CommonProfile/CommonGallery';
+import {AgendaGallery} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaGallery';
 import {observer} from 'mobx-react';
 
 interface RouteParams {
@@ -35,7 +35,7 @@ interface RouteParams {
   createdProposalId: string;
 }
 
-export const NewCommonProfile = observer(() => {
+export const CommonAgenda = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
   const upperRequestToJoinBtnRef = useRef(null);
@@ -56,7 +56,7 @@ export const NewCommonProfile = observer(() => {
   )!;
   const commonId = currCommon?.id;
   const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore.userInfo.uid),
+    authStore?.getPermission(commonId, authStore?.userInfo?.uid),
   );
   const bottomSheetStore = uiStore.bottomSheetStore;
   const hasImages = false;
@@ -74,15 +74,15 @@ export const NewCommonProfile = observer(() => {
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
+    if (authStore?.userInfo && authStore?.isDaoMember(currCommon?.members)) {
       setIsMember(true);
     } else {
       setIsMember(false);
     }
     setHasPermission(
-      authStore.getPermission(commonId, authStore?.userInfo?.uid),
+      authStore?.getPermission(commonId, authStore?.userInfo?.uid),
     );
-  }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
+  }, [params.showRequestSentModal, authStore?.userInfo, currCommon?.members]);
 
   const onDelete = async () => {
     try {
@@ -141,7 +141,7 @@ export const NewCommonProfile = observer(() => {
         skipFirstStep: false,
       });
     } else {
-      if (authStore.userInfo) {
+      if (authStore?.userInfo) {
         navigation.navigate('FirstJoinCommon', {currCommon});
       } else {
         bottomSheetStore.showBottomSheet(
@@ -157,12 +157,12 @@ export const NewCommonProfile = observer(() => {
 
   return (
     <View style={styles.container}>
-      <CommonProfileFlatList
+      <AgendaFlatList
         openCommonOptionsModal={openCommonOptionsModal}
         currCommon={currCommon}
         isMember={isMember}>
         <>
-          <CommonTopTitles
+          <AgendaTopTitles
             common={currCommon}
             hasPermission={hasPermission}
             isMember={isMember}
@@ -180,10 +180,10 @@ export const NewCommonProfile = observer(() => {
               <RequestToJoinBtn requestToJoin={requestToJoin} />
             </View>
           )}
-          <CommonDescription currCommon={currCommon} />
-          {hasImages && <CommonGallery />}
+          <AgendaDescription currCommon={currCommon} />
+          {hasImages && <AgendaGallery />}
         </>
-      </CommonProfileFlatList>
+      </AgendaFlatList>
       <BottomSheetModal
         style={layout.optionsModal}
         isVisible={optionsModalVisible}

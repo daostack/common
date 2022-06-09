@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {View} from 'react-native';
 
-import ProposalsList from '../../../../Proposals/ProposalsList';
+import ProposalsList from '../../../../../Proposals/ProposalsList';
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import {layout} from '~/Theme';
 

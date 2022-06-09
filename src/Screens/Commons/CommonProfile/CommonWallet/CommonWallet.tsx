@@ -1,16 +1,16 @@
 import {useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PROPOSAL_STATE, PROPOSAL_TYPE} from '~/Config';
-import {CommonWalletHeader} from '~/Screens/Commons/CommonProfile/Wallet/components/CommonWalletHeader';
+import {CommonWalletHeader} from '~/Screens/Commons/CommonProfile/CommonWallet/components/CommonWalletHeader';
 import {
   CommonWalletTabs,
   WalletTabs,
-} from '~/Screens/Commons/CommonProfile/Wallet/components/CommonWalletTabs';
-import {PayInCard} from '~/Screens/Commons/CommonProfile/Wallet/components/PayInCard';
-import {PayOutCard} from '~/Screens/Commons/CommonProfile/Wallet/components/PayOutCard';
+} from '~/Screens/Commons/CommonProfile/CommonWallet/components/CommonWalletTabs';
+import {PayInCard} from '~/Screens/Commons/CommonProfile/CommonWallet/components/PayInCard';
+import {PayOutCard} from '~/Screens/Commons/CommonProfile/CommonWallet/components/PayOutCard';
 import {colors, font, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
@@ -33,6 +33,8 @@ export const CommonWallet = observer(() => {
     type: PROPOSAL_TYPE.FundingRequest,
   });
 
+  // proposal.data.tracker.status === "COMPLETED"
+
   const transactions = [...payouts, ...payments].sort(
     (payment, prevPayment) =>
       prevPayment?.updatedAt?.seconds - payment?.updatedAt?.seconds,
@@ -48,7 +50,7 @@ export const CommonWallet = observer(() => {
     } else if (activeTab === WalletTabs.payout) {
       setData(payouts);
     }
-  }, [activeTab]);
+  }, [activeTab, transactions?.length]);
 
   useEffect(() => {
     let unsubscribeFromCommonPayments = null;
@@ -69,9 +71,9 @@ export const CommonWallet = observer(() => {
 
   const keyExtractor = useCallback((data) => data.id, []);
 
-  const switchTab = (tabName: string) => {
+  const switchTab = useCallback((tabName: string = WalletTabs.all) => {
     setActiveTab(tabName);
-  };
+  }, []);
 
   const [showTopTabs, setShowTopTabs] = useState(false);
   const onScroll = (e) => {
@@ -100,17 +102,19 @@ export const CommonWallet = observer(() => {
         keyExtractor={keyExtractor}
         ListHeaderComponent={() => (
           <CommonWalletHeader common={common}>
-            <CommonWalletTabs activeTab={activeTab} switchTab={switchTab} />
-            <Text style={[styles.transactionsTitle, text.h2Black]}>
-              {activeTab === WalletTabs.all
-                ? 'All Transactions'
-                : activeTab === WalletTabs.payin
-                ? 'Pay-In Transactions'
-                : 'Pay-Out Transactions'}
-            </Text>
-            {data.length === 0 && (
-              <Text style={styles.noDataText}>No transactions yet</Text>
-            )}
+            <>
+              <CommonWalletTabs activeTab={activeTab} switchTab={switchTab} />
+              <Text style={[styles.transactionsTitle, text.h2Black]}>
+                {activeTab === WalletTabs.all
+                  ? 'All Transactions'
+                  : activeTab === WalletTabs.payin
+                  ? 'Pay-In Transactions'
+                  : 'Pay-Out Transactions'}
+              </Text>
+              {data?.length === 0 && (
+                <Text style={styles.noDataText}>No transactions yet</Text>
+              )}
+            </>
           </CommonWalletHeader>
         )}
         data={data}
@@ -128,12 +132,12 @@ export const CommonWallet = observer(() => {
           } else {
             return (
               <>
-                {item?.fundingRequest?.funded &&
-                  item?.fundingRequest?.amount !== 0 && (
+                {item?.fundingAllocation?.funded &&
+                  item?.fundingAllocation?.amount !== 0 && (
                     <PayOutCard
                       key={item.id}
-                      funded={item?.fundingRequest?.funded}
-                      amount={item?.fundingRequest?.amount}
+                      funded={item?.fundingAllocation?.funded}
+                      amount={item?.fundingAllocation?.amount}
                       date={item.createdAt}
                       description={item.description?.description}
                     />

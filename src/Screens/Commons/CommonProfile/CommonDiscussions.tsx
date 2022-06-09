@@ -1,19 +1,19 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {StyleSheet, View} from 'react-native';
 import {BottomRightButton} from '~/Components';
-import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import DiscussionList from '~/Screens/Discussions/DiscussionList';
-import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
-import {sizeL, text} from '~/Theme';
-import {useStore} from '~/Util/hooks/useStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import ModerationService from '~/Services/ModerationService';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
 import {reporterName, timeReported} from '~/Components/Moderation/helper';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
+import {DiscussionList} from '~/Screens/Discussions/DiscussionList';
+import ModerationService from '~/Services/ModerationService';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
+import {colors, font} from '~/Theme';
+import {useStore} from '~/Util/hooks/useStore';
 
 const moderationFormStore = new ModerationFormStore();
 
@@ -25,7 +25,6 @@ export const CommonDiscussions = observer(() => {
   const discussionStore = useStore('discussionStore');
   const proposalStore = useStore('proposalStore');
   const userStore = useStore('userStore');
-  const insets = useSafeAreaInsets();
   const {currCommon} = route.params;
 
   const [action, setAction] = useState(ACTIONS.report);
@@ -135,8 +134,8 @@ export const CommonDiscussions = observer(() => {
   };
 
   return (
-    <View style={[{...styles.paleBackground}, {paddingTop: insets.top}]}>
-      <Text style={text.h1BlackTitle}>Discussions</Text>
+    <View style={[{...styles.container}]}>
+      <CommonHeader common={currCommon} title="Discussions" />
       <DiscussionList
         commonId={currCommon.id}
         openCommonOptions={(discussion) =>
@@ -163,9 +162,21 @@ export const CommonDiscussions = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  paleBackground: {
+  container: {
     flex: 1,
     backgroundColor: '#fcfcfc',
-    paddingHorizontal: sizeL,
+  },
+  header: {
+    backgroundColor: colors.iceBlue,
+  },
+  screenTitle: {
+    marginBottom: 8,
+  },
+  subtitle: {
+    textAlign: 'center',
+    ...font.primary.regular,
+    fontSize: 16,
+    color: colors.mainBlue,
+    fontWeight: 'bold',
   },
 });

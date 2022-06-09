@@ -1,33 +1,28 @@
+import {bool, number, string} from 'prop-types';
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
-import {text, layout, colors} from '~/Theme';
-import Icon from '~/Assets/iconfont/Icon';
-import {string, bool, number} from 'prop-types';
+import {StyleSheet, Text, View} from 'react-native';
+import {colors, font, layout} from '~/Theme';
+import {IconVoteApproved} from '~/Assets/iconfont/IconVoteApproved';
+import {IconVoteDeclined} from '~/Assets/iconfont/IconVoteDeclined';
+import {IconVoteAbstained} from '~/Assets/iconfont/IconVoteAbstained';
 
 const ProposalApprovalTag = ({iconName, value, isMarked}) => {
-  // Default colors
-  let markColor = colors.grey3;
-  let mainColor = colors.grey3;
-
-  if (iconName === 'approved') {
-    markColor = colors.lightGreen;
-    mainColor = colors.lightishGreen;
-  } else if (iconName === 'declined') {
-    markColor = colors.against;
-    mainColor = colors.error;
-  }
-
   let containerStyle = isMarked
     ? {
         ...styles.container,
-        ...{borderColor: mainColor, backgroundColor: markColor},
       }
     : styles.container;
 
   return (
     <View style={containerStyle}>
-      <Icon name={iconName} size={10} style={styles.iconStyle} />
-      <Text style={{...styles.title, ...{color: mainColor}}}>{value}</Text>
+      {iconName === 'approved' ? (
+        <IconVoteApproved size={16} style={styles.iconStyle} />
+      ) : iconName === 'abstained' ? (
+        <IconVoteAbstained size={16} style={styles.iconStyle} />
+      ) : (
+        <IconVoteDeclined size={16} style={styles.iconStyle} />
+      )}
+      <Text style={styles.title}>{value}%</Text>
     </View>
   );
 };
@@ -40,15 +35,16 @@ ProposalApprovalTag.propTypes = {
 
 const styles = StyleSheet.create({
   title: {
-    ...text.smallBlackText,
-    ...text.bold,
-    lineHeight: 18,
+    ...font.primary.regular,
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.greySubtitle,
   },
   container: {
     ...layout.content,
     ...layout.flexRow,
     padding: 0,
-    paddingHorizontal: 10,
+    paddingRight: 24,
     borderColor: 'transparent',
     borderWidth: 1,
     borderRadius: 10,
@@ -57,6 +53,7 @@ const styles = StyleSheet.create({
   iconStyle: {
     ...layout.marginRightXS,
   },
+  notificationContainer: {},
 });
 
 export default ProposalApprovalTag;

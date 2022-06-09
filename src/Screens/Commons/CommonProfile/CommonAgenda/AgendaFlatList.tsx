@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
-import {CommonHeaderBar} from './CommonHeader/CommonHeaderBar';
+import {AgendaHeaderBar} from './AgendaHeader/AgendaHeaderBar';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
   HEADER_BUTTON_HEIGHT,
@@ -31,7 +31,7 @@ interface FlatListProps {
   isMember: boolean;
 }
 
-export const CommonProfileFlatList = (props: FlatListProps) => {
+export const AgendaFlatList = (props: FlatListProps) => {
   const {currCommon, children, openCommonOptionsModal, isMember} = props;
   const yIndex = useSharedValue(0);
   const insets = useSafeAreaInsets();
@@ -79,7 +79,7 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
 
   return (
     <>
-      <CommonHeaderBar
+      <AgendaHeaderBar
         currCommon={currCommon}
         openCommonOptions={openCommonOptionsModal}
         isMember={isMember}
