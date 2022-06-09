@@ -1,14 +1,14 @@
 import React from 'react';
 import {ModalLeaveConfirmation} from './ModalLeaveConfirmation';
 import {render, fireEvent} from '@testing-library/react-native';
-import {commonMock} from '__mocks__/commonMock';
+import {commonMock} from '../../../../../__mocks__/commonMock';
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({insets: null}),
 }));
 jest.mock('@react-navigation/native');
 
-jest.mock('~/Util/hooks/useStore', () => ({
+jest.mock('../../../../Util/hooks/useStore', () => ({
   useStore: jest.fn().mockReturnValue({
     leaveCommon: jest.fn(),
   }),
