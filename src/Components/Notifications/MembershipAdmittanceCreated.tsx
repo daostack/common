@@ -32,7 +32,7 @@ const MembershipAdmittanceCreated: React.FC<InferProps<typeof props>> = ({
       createdAt: item.createdAt,
       missingData: false,
       description:
-        ' Your Common has new pending members, view their requests and vote',
+        'Your Common has new pending members, view their requests and vote',
       ownerAvatar: common.image,
       common,
       proposal,

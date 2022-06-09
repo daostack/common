@@ -14,7 +14,7 @@ import {
 import PushNotification from 'react-native-push-notification';
 import Loader from '~/Components/Loader';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
-import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
+import {CommonWhitelisted} from '~/Components/Notifications/CommonWhitelisted';
 import Logger from '~/Services/Logger';
 import FundingAllocation from '~/Components/Notifications/FundingAllocation';
 import MessageCreated from '~/Components/Notifications/MessageCreated';
@@ -50,7 +50,7 @@ export const NotificationList = observer((props) => {
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
-        return <CommonWhitelisted item={item} navigation={navigation} />;
+        return <CommonWhitelisted item={item} />;
 
       case EventTypeState.fundingRequestCreated:
       case EventTypeState.fundingRequestAccepted:
