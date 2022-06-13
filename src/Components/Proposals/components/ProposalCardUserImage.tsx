@@ -5,6 +5,7 @@ import {IconVoteAbstained} from '~/Assets/iconfont/IconVoteAbstained';
 import {IconVoteApproved} from '~/Assets/iconfont/IconVoteApproved';
 import {IconVoteDeclined} from '~/Assets/iconfont/IconVoteDeclined';
 import {colors} from '~/Theme';
+import {VOTE_STATUSES} from '~/Util/constants/votes';
 import {useStore} from '~/Util/hooks/useStore';
 
 interface ImageProps {
@@ -23,9 +24,9 @@ export const ProposalCardUserImage = (props: ImageProps) => {
         }}
       />
 
-      {currentUserVote === 'approved' ? (
+      {currentUserVote === VOTE_STATUSES.APPROVED ? (
         <IconVoteApproved size={16} style={styles.iconStyle} />
-      ) : currentUserVote === 'abstained' ? (
+      ) : currentUserVote === VOTE_STATUSES.ABSTAINED ? (
         <IconVoteAbstained size={16} style={styles.iconStyle} />
       ) : (
         <IconVoteDeclined size={16} style={styles.iconStyle} />

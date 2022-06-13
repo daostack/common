@@ -146,6 +146,7 @@ export default class ProposalStore extends BaseStore<Proposal, ProposalType> {
         .filter((proposal: Proposal) => {
           const isSameCommon = proposal?.commonId === commonId;
           if (isSameCommon) {
+            console.log('proposal', proposal)
             return this._applyFilter(proposal, proposalFilter);
           }
           return false;

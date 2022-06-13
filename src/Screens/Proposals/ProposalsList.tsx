@@ -38,10 +38,9 @@ const {width, height} = Dimensions.get('window');
 const props = {
   // Required
   proposalFilter: shape({
-    type: string.isRequired,
-    stage: string.isRequired,
-  }).isRequired,
-
+    type: string,
+    stage: string,
+  }),
   // Optional
   commonInfo: shape({
     id: string,
@@ -127,7 +126,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         !showMax || index < showMax ? (
           <ProposalCard
             proposalId={item.id}
-            key={item.id}
+            key={item.id + index}
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
@@ -157,7 +156,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       ) : (
         <ProposalCard
           proposalId={item.id}
-          key={item.id}
+          key={item.id + index}
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
@@ -172,7 +171,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       );
     };
 
-    const keyExtractor = useCallback((data) => data.id, []);
+    const keyExtractor = useCallback((data, index) => data.id + index, []);
 
     return isSwiper ? (
       list ? (

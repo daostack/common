@@ -1,6 +1,7 @@
 import React, {ReactElement} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {IconPendingBalance} from '~/Assets/iconfont/IconPendingBalance';
 import {Common} from '~/Stores/Models/Common';
 import {colors, font, text} from '~/Theme';
 import {formatMoney} from '~/Util/FormatUtil';
@@ -26,12 +27,15 @@ export const CommonWalletHeader = (props: CommonWalletHeaderProps) => {
           <Text style={text.h2Black}>{`${CurrencySymbols.SHEKEL} ${formatMoney(
             common?.balance / 100,
           )}`}</Text>
-          <Text style={styles.price}>
-            Pending soon{' '}
-            <Text style={styles.priceText}>{` ${
-              CurrencySymbols.SHEKEL
-            } ${formatMoney(common?.reservedBalance / 100)}`}</Text>
-          </Text>
+          <View style={styles.subTitleContainer}>
+            <Text style={styles.price}>
+              Pending soon{' '}
+              <Text style={styles.priceText}>{` ${
+                CurrencySymbols.SHEKEL
+              } ${formatMoney(common?.reservedBalance / 100)}  `}</Text>
+            </Text>
+            <IconPendingBalance size={16} />
+          </View>
         </View>
       </View>
       {children}
@@ -83,10 +87,16 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     fontSize: 12,
     color: colors.greySubtitle,
-    marginTop: 13,
-    marginBottom: 8,
+    alignItems: 'center',
   },
   priceText: {
     ...font.primary.bold,
+  },
+  subTitleContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 13,
+    marginBottom: 8,
   },
 });

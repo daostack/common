@@ -137,7 +137,7 @@ export const CommonProposals = observer(() => {
           balance: currCommon.balance,
         }}
         proposalFilter={{
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: 'fundingRequest',
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, ENTITY_TYPES.proposals)
