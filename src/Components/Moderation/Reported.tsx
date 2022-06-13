@@ -39,7 +39,7 @@ export const Reported = ({
     <View
       style={[styles.reportContainer, showCard ? {paddingVertical: 4} : {}]}>
       <Text style={[styles.reportText, showCard ? {textAlign: 'center'} : {}]}>
-        {`The ${getType(moderation?.type).toLowerCase()} was ${
+        {`The ${getType(moderation?.type)?.toLowerCase()} was ${
           moderation?.flag
         }${reporterUserName}`}
       </Text>

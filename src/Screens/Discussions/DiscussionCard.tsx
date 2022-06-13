@@ -106,17 +106,20 @@ export const DiscussionCard = observer((props: DiscussionCardProps) => {
               )}
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {user.photoURL ? (
-                <FastImage style={styles.image} source={{uri: user.photoURL}} />
+              {user?.photoURL ? (
+                <FastImage
+                  style={styles.image}
+                  source={{uri: user?.photoURL}}
+                />
               ) : (
                 <View style={styles.displayNameContainer}>
                   <Text style={styles.displayName}>
-                    {user.displayName && user.displayName.substring(0, 1)}
+                    {user?.displayName && user?.displayName.substring(0, 1)}
                   </Text>
                 </View>
               )}
               <View style={styles.primaryNameContainer}>
-                <Text style={styles.primaryName}>{user.displayName}</Text>
+                <Text style={styles.primaryName}>{user?.displayName}</Text>
                 <Text style={styles.date}>
                   {moment(data.createTime.toDate()).fromNow()}
                 </Text>

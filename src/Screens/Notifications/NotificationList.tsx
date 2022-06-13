@@ -50,7 +50,7 @@ export const NotificationList = observer((props) => {
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
-        return <CommonWhitelisted item={item} navigation={navigation} />;
+        return <CommonWhitelisted item={item} />;
 
       case EventTypeState.fundingRequestCreated:
       case EventTypeState.fundingRequestAccepted:

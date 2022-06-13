@@ -1,24 +1,19 @@
 import React from 'react';
-import {InferProps, object} from 'prop-types';
 import {NotificationItemData} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
-import {inject, observer} from 'mobx-react';
+import {observer} from 'mobx-react';
 import NotificationItem from './NotificationItem';
-import {notificationItemPropTypes} from './propType';
-import {rootStorePropTypes} from '~/Types/propTypes';
+import {ItemProps} from './propType';
 import Logger from '~/Services/Logger';
+import {useNavigation} from '@react-navigation/native';
+import {useStore} from '~/Util/hooks/useStore';
 
-const props = {
-  item: notificationItemPropTypes.isRequired,
-  navigation: object.isRequired,
-  rootStore: rootStorePropTypes.isRequired,
-};
-
-const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
-  item,
-  navigation,
-  rootStore,
-}) => {
+interface CommonWhitelistedProps {
+  item: ItemProps;
+}
+export const CommonWhitelisted = observer(({item}: CommonWhitelistedProps) => {
   let notificationData = {missingData: true} as NotificationItemData;
+  const navigation = useNavigation();
+  const rootStore = useStore('rootStore');
 
   // NOTE: if the commonData is still not loaded into the store, we will have an exception here
   try {
@@ -51,8 +46,4 @@ const CommonWhitelisted: React.FC<InferProps<typeof props>> = ({
       navigation={navigation}
     />
   );
-};
-
-CommonWhitelisted.propTypes = props;
-
-export default inject('rootStore')(observer(CommonWhitelisted));
+});
