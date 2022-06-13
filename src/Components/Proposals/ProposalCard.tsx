@@ -24,7 +24,7 @@ import {useStore} from '~/Util/hooks/useStore';
 import {MemberCard} from '../MemberCard';
 import {FLAGS} from '../Moderation/constants';
 import ModerationMenu from '../Moderation/ModerationMenu';
-import ProposalApprovalTag from './ProposalApprovalTag';
+import {ProposalApprovalTag} from './ProposalApprovalTag';
 import ProposalCardHeader from './ProposalCardHeader';
 
 interface CardProps {
@@ -69,10 +69,10 @@ export const ProposalCard = observer((props: CardProps) => {
     currentUserVote = filteredVotes?.[0].voteOutcome;
   }
 
-  const approvedCount = proposalInfo?.votes?.approved;
-  const abstainedCount = proposalInfo?.votes?.abstained;
-  const rejectedCount = proposalInfo?.votes?.rejected;
-  const totalCount = proposalInfo?.votes?.total;
+  const totalCount = proposalInfo?.votes?.length || 0;
+  const approvedCount = proposalInfo?.votesFor || 0;
+  const rejectedCount = proposalInfo?.votesAgainst || 0;
+  const abstainedCount = totalCount - approvedCount - rejectedCount;
 
   const isVisible =
     proposalInfo?.moderation?.flag !== FLAGS.hidden ||

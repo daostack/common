@@ -1,9 +1,8 @@
 import React, {ReactElement} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
-import {layout} from '~/Theme';
 
 interface Props {
   commonId: string;
@@ -20,7 +19,7 @@ export const Pending = ({
   showHiddenNote,
   isMember,
 }: Props): ReactElement => (
-  <View style={layout.content}>
+  <View>
     <ProposalsList
       commonInfo={{id: commonId}}
       hasPermission={hasPermission}
@@ -33,6 +32,17 @@ export const Pending = ({
         showHiddenNote(hiddenRequestToJoin)
       }
       isMember={isMember}
+      flatListStyle={styles.proposalsList}
+      listContainerStyle={styles.listContainer}
     />
   </View>
 );
+
+const styles = StyleSheet.create({
+  proposalsList: {
+    paddingHorizontal: 24,
+  },
+  listContainer: {
+    paddingTop: 24,
+  },
+});

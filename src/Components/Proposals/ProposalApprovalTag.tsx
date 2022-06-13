@@ -9,18 +9,11 @@ import {VOTE_STATUSES} from '~/Util/constants/votes';
 interface TagProps {
   iconName: string;
   value: number;
-  isMarked: boolean;
 }
 
-const ProposalApprovalTag = ({iconName, value, isMarked}: TagProps) => {
-  let containerStyle = isMarked
-    ? {
-        ...styles.container,
-      }
-    : styles.container;
-
+export const ProposalApprovalTag = ({iconName, value}: TagProps) => {
   return (
-    <View style={containerStyle}>
+    <View style={styles.container}>
       {iconName === VOTE_STATUSES.APPROVED ? (
         <IconVoteApproved size={16} style={styles.iconStyle} />
       ) : iconName === VOTE_STATUSES.ABSTAINED ? (
@@ -54,5 +47,3 @@ const styles = StyleSheet.create({
     ...layout.marginRightXS,
   },
 });
-
-export default ProposalApprovalTag;
