@@ -1,12 +1,18 @@
-import {bool, number, string} from 'prop-types';
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {colors, font, layout} from '~/Theme';
 import {IconVoteApproved} from '~/Assets/iconfont/IconVoteApproved';
 import {IconVoteDeclined} from '~/Assets/iconfont/IconVoteDeclined';
 import {IconVoteAbstained} from '~/Assets/iconfont/IconVoteAbstained';
+import {VOTE_STATUSES} from '~/Util/constants/votes';
 
-const ProposalApprovalTag = ({iconName, value, isMarked}) => {
+interface TagProps {
+  iconName: string;
+  value: number;
+  isMarked: boolean;
+}
+
+const ProposalApprovalTag = ({iconName, value, isMarked}: TagProps) => {
   let containerStyle = isMarked
     ? {
         ...styles.container,
@@ -15,9 +21,9 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
 
   return (
     <View style={containerStyle}>
-      {iconName === 'approved' ? (
+      {iconName === VOTE_STATUSES.APPROVED ? (
         <IconVoteApproved size={16} style={styles.iconStyle} />
-      ) : iconName === 'abstained' ? (
+      ) : iconName === VOTE_STATUSES.ABSTAINED ? (
         <IconVoteAbstained size={16} style={styles.iconStyle} />
       ) : (
         <IconVoteDeclined size={16} style={styles.iconStyle} />
@@ -25,12 +31,6 @@ const ProposalApprovalTag = ({iconName, value, isMarked}) => {
       <Text style={styles.title}>{value}%</Text>
     </View>
   );
-};
-
-ProposalApprovalTag.propTypes = {
-  iconName: string,
-  value: number,
-  isMarked: bool,
 };
 
 const styles = StyleSheet.create({
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   iconStyle: {
     ...layout.marginRightXS,
   },
-  notificationContainer: {},
 });
 
 export default ProposalApprovalTag;

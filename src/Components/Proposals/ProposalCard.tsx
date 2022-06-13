@@ -57,7 +57,6 @@ export const ProposalCard = observer((props: CardProps) => {
     useStore('rootStore');
 
   const {userInfo} = authStore;
-  console.log('proposalId', proposalId);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 

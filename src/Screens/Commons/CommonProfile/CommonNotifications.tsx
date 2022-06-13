@@ -12,7 +12,7 @@ import {
 import PushNotification from 'react-native-push-notification';
 import Loader from '~/Components/Loader';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
-import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
+import {CommonWhitelisted} from '~/Components/Notifications/CommonWhitelisted';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';

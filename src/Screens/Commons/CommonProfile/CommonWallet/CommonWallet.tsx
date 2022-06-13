@@ -1,7 +1,7 @@
 import {useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PROPOSAL_STATE, PROPOSAL_TYPE} from '~/Config';
 import {CommonWalletHeader} from '~/Screens/Commons/CommonProfile/CommonWallet/components/CommonWalletHeader';
@@ -32,8 +32,6 @@ export const CommonWallet = observer(() => {
     state: PROPOSAL_STATE.Passed,
     type: PROPOSAL_TYPE.FundingRequest,
   });
-
-  // proposal.data.tracker.status === "COMPLETED"
 
   const transactions = [...payouts, ...payments].sort(
     (payment, prevPayment) =>
@@ -69,7 +67,7 @@ export const CommonWallet = observer(() => {
     };
   }, [currCommon]);
 
-  const keyExtractor = useCallback((data) => data.id, []);
+  const keyExtractor = useCallback((data, index) => data.id + index, []);
 
   const switchTab = useCallback((tabName: string = WalletTabs.all) => {
     setActiveTab(tabName);
@@ -83,6 +81,17 @@ export const CommonWallet = observer(() => {
       setShowTopTabs(false);
     }
   };
+
+  const TabTitle = useMemo(() => {
+    switch (activeTab) {
+      case WalletTabs.all:
+        return 'All Transactions';
+      case WalletTabs.payin:
+        return 'Pay-In Transactions';
+      case WalletTabs.payout:
+        return 'Pay-Out Transactions';
+    }
+  }, [activeTab]);
 
   return (
     <View style={styles.container}>
@@ -105,11 +114,7 @@ export const CommonWallet = observer(() => {
             <>
               <CommonWalletTabs activeTab={activeTab} switchTab={switchTab} />
               <Text style={[styles.transactionsTitle, text.h2Black]}>
-                {activeTab === WalletTabs.all
-                  ? 'All Transactions'
-                  : activeTab === WalletTabs.payin
-                  ? 'Pay-In Transactions'
-                  : 'Pay-Out Transactions'}
+                {TabTitle}
               </Text>
               {data?.length === 0 && (
                 <Text style={styles.noDataText}>No transactions yet</Text>
@@ -176,5 +181,8 @@ const styles = StyleSheet.create({
   noDataText: {
     textAlign: 'center',
     ...font.primary.regular,
+  },
+  addFundsContainer: {
+    backgroundColor: colors.iceBlue,
   },
 });
