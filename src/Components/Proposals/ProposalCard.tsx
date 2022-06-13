@@ -1,35 +1,31 @@
-import React, {useState, useEffect} from 'react';
-import {observer} from 'mobx-react';
-import {
-  Text,
-  StyleSheet,
-  Platform,
-  View,
-  Animated,
-  TouchableOpacity,
-} from 'react-native';
-import {layout, colors, font} from '~/Theme';
-import {MemberCard} from '../MemberCard';
-import ProposalCardHeader from './ProposalCardHeader';
-import ProposalService from '~/Services/ProposalService';
-import {PROPOSAL_TYPE} from '~/Config';
-import ProposalApprovalTag from './ProposalApprovalTag';
-import Toast from '~/Util/Toast';
-import logger from '../../Services/Logger';
-import {FLAGS} from '../Moderation/constants';
-import {
-  Placeholder,
-  PlaceholderMedia,
-  PlaceholderLine,
-  Fade,
-} from 'rn-placeholder';
-import {useStore} from '~/Util/hooks/useStore';
-import ModerationMenu from '../Moderation/ModerationMenu';
-import {PERMISSIONS} from '~/Util/constants/permissions.enum';
-import {screenWidth} from '~/Util/dimensions';
 import {useNavigation} from '@react-navigation/native';
+import {observer} from 'mobx-react';
+import React from 'react';
+import {
+  Animated,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  Fade,
+  Placeholder,
+  PlaceholderLine,
+  PlaceholderMedia,
+} from 'rn-placeholder';
 import Icon from '~/Assets/iconfont/Icon';
 import {ProposalCardUserImage} from '~/Components/Proposals/components/ProposalCardUserImage';
+import {colors, font, layout} from '~/Theme';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
+import {screenWidth} from '~/Util/dimensions';
+import {useStore} from '~/Util/hooks/useStore';
+import {MemberCard} from '../MemberCard';
+import {FLAGS} from '../Moderation/constants';
+import ModerationMenu from '../Moderation/ModerationMenu';
+import ProposalApprovalTag from './ProposalApprovalTag';
+import ProposalCardHeader from './ProposalCardHeader';
 
 interface CardProps {
   proposalId: string;
@@ -61,6 +57,7 @@ export const ProposalCard = observer((props: CardProps) => {
     useStore('rootStore');
 
   const {userInfo} = authStore;
+  console.log('proposalId', proposalId);
 
   const proposalInfo = proposalStore.getProposalById(proposalId);
 
@@ -73,11 +70,11 @@ export const ProposalCard = observer((props: CardProps) => {
     currentUserVote = filteredVotes?.[0].voteOutcome;
   }
 
-  const {approvedCount, abstainedCount, rejectedCount, allVoteCount} =
-    proposalStore.getVotesCounts(proposalInfo?.votes);
+  const approvedCount = proposalInfo?.votes?.approved;
+  const abstainedCount = proposalInfo?.votes?.abstained;
+  const rejectedCount = proposalInfo?.votes?.rejected;
+  const totalCount = proposalInfo?.votes?.total;
 
-  const [proposalDiscussionCount, setProposalDiscussionCount] = useState(0);
-  const isFundingRequest = proposalInfo?.type === PROPOSAL_TYPE.FundingRequest;
   const isVisible =
     proposalInfo?.moderation?.flag !== FLAGS.hidden ||
     !proposalInfo?.moderation;
@@ -88,34 +85,6 @@ export const ProposalCard = observer((props: CardProps) => {
   const showCard =
     isVisible || (!isVisible && hasPermission === PERMISSIONS.MODERATOR);
   const isOwner = authStore.isCurrentlyLogged(proposalInfo?.proposerId);
-
-  useEffect(() => {
-    let unsubscribeProposalDiscussionsCount = null;
-
-    const getProposalInfo = async (currProposalId) => {
-      try {
-        unsubscribeProposalDiscussionsCount =
-          await ProposalService.subscribeToProposalDiscussionsCount(
-            currProposalId,
-            (discussionsCount) => {
-              setProposalDiscussionCount(discussionsCount);
-            },
-          );
-      } catch (error) {
-        logger.log('error: ', error);
-        Toast.error(error?.toString());
-      }
-    };
-
-    if (proposalInfo) {
-      getProposalInfo(proposalInfo.id);
-    }
-
-    return () => {
-      unsubscribeProposalDiscussionsCount &&
-        unsubscribeProposalDiscussionsCount();
-    };
-  }, [proposalInfo]);
 
   const cardWidth = () => {
     if (isSwiper && Platform.OS === 'ios') {
@@ -183,13 +152,10 @@ export const ProposalCard = observer((props: CardProps) => {
         {showCard && (
           <View style={styles.containerView}>
             <View style={styles.titleContainer}>
-              {isFundingRequest ? (
-                <Text style={styles.title}>
-                  {proposalInfo?.description?.title || 'Unknown title'}
-                </Text>
-              ) : (
-                <View style={{flex: 12}} />
-              )}
+              <Text style={styles.title}>
+                {proposalInfo?.description?.title || 'Unknown title'}
+              </Text>
+
               {showModerationMenu && (
                 <View style={{flex: 1}}>
                   <ModerationMenu showOptions={openCommonOptions} />
@@ -199,7 +165,7 @@ export const ProposalCard = observer((props: CardProps) => {
             <MemberCard
               openCommonOptions={openCommonOptions}
               showModerationMenu={showModerationMenu}
-              showDate={proposalInfo.isJoinRequest}
+              showDate={proposalInfo?.isJoinRequest}
               userInfo={userStore.getUserById(proposalInfo.proposerId)}
               proposalInfo={proposalInfo}
               commonId={proposalInfo.commonId}
@@ -209,15 +175,15 @@ export const ProposalCard = observer((props: CardProps) => {
               <View style={{...layout.flexRow}}>
                 <ProposalApprovalTag
                   iconName="approved"
-                  value={(approvedCount / allVoteCount) * 100 || 0}
+                  value={(approvedCount / totalCount) * 100 || 0}
                 />
                 <ProposalApprovalTag
                   iconName="abstained"
-                  value={(abstainedCount / allVoteCount) * 100 || 0}
+                  value={(abstainedCount / totalCount) * 100 || 0}
                 />
                 <ProposalApprovalTag
                   iconName="declined"
-                  value={(rejectedCount / allVoteCount) * 100 || 0}
+                  value={(rejectedCount / totalCount) * 100 || 0}
                 />
               </View>
               {currentUserVote && (

@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -58,6 +58,7 @@ const props = {
   isMember: bool,
   flatListStyle: object,
   showsVerticalScrollIndicator: bool,
+  listContainerStyle: object,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -110,7 +111,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       [showHiddenNote],
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (commonInfo) {
         const permission = rootStore.authStore.getPermission(
           commonInfo?.id,
@@ -121,8 +122,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     }, [commonInfo]);
 
     let listRef = useRef([]);
-    const renderProposalCard = (item: Proposal, index: number) =>
-      isSwiper ? (
+    const renderProposalCard = (item: Proposal, index: number) => {
+      return isSwiper ? (
         !showMax || index < showMax ? (
           <ProposalCard
             proposalId={item.id}
@@ -169,6 +170,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           type={proposalFilter.type}
         />
       );
+    };
 
     const keyExtractor = useCallback((data) => data.id, []);
 

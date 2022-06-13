@@ -7,7 +7,6 @@ import Icon from '~/Assets/iconfont/Icon';
 import {NotificationList} from '~/Screens/Notifications/NotificationList';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {observer} from 'mobx-react';
-import {rootStorePropTypes} from '~/Types/propTypes';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
 import {useStore} from '~/Util/hooks/useStore';
 
@@ -106,10 +105,6 @@ const HomeTabNavigator = () => {
       )}
     </Tab.Navigator>
   );
-};
-
-HomeTabNavigator.propTypes = {
-  rootStore: rootStorePropTypes.isRequired,
 };
 
 const styles = StyleSheet.create({
