@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 import {AgendaTopTitles} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaHeader/AgendaTopTitles';
-import {commonMock} from '__mocks__/commonMock';
+import {commonMock} from '../../../../../../__mocks__/commonMock';
 
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({insets: null}),

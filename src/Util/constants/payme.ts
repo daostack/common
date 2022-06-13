@@ -25,3 +25,10 @@ export enum PAYME_TYPE_CODES {
   'Bookkeeping Certificate' = 28, //Relevant if you are onboarding sellers for Keep services
   'Invoice' = 29, // Not related to PayMe
 }
+
+export type MIME_TYPE =
+  | 'application/pdf'
+  | 'image/png'
+  | 'image/jpeg'
+  | 'image/gif'
+  | 'application/msword';

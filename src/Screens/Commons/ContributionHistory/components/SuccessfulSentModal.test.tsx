@@ -2,7 +2,7 @@ import React from 'react';
 import {SuccessfulSentModal} from './SuccessfulSentModal';
 import {render, fireEvent} from '@testing-library/react-native';
 import * as Navigation from '@react-navigation/native';
-import {commonMock} from '__mocks__/commonMock';
+import {commonMock} from '../../../../../__mocks__/commonMock';
 
 jest.mock('@react-navigation/native');
 
