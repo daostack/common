@@ -1087,7 +1087,7 @@ PODS:
     - React-Core
   - react-native-date-picker (4.2.1):
     - React-Core
-  - react-native-document-picker (4.1.0):
+  - react-native-document-picker (8.1.1):
     - React-Core
   - react-native-fbsdk-next (7.3.3):
     - React-Core
@@ -1684,7 +1684,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
   react-native-date-picker: 211dead8aeaecab3904a07b967f580e6ea3dee88
-  react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
+  react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
   react-native-fbsdk-next: 6d497a06fc5c33360f5794b4428a0236789a60e6
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99

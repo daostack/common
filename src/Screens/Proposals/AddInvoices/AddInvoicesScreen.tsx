@@ -149,7 +149,7 @@ const AddInvoicesScreen = (): ReactElement => {
     try {
       setIsLoading(true);
 
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.pdf],
       });
       if (isRetake) {
