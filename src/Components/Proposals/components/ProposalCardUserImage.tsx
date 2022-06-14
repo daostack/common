@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {IconVoteAbstained} from '~/Assets/iconfont/IconVoteAbstained';
@@ -15,6 +15,18 @@ interface ImageProps {
 export const ProposalCardUserImage = (props: ImageProps) => {
   const {currentUserVote} = props;
   const authStore = useStore('authStore');
+
+  const VoteIcon = useCallback(() => {
+    switch (currentUserVote) {
+      case VOTE_STATUSES.APPROVED:
+        return <IconVoteApproved size={16} style={styles.iconStyle} />;
+      case VOTE_STATUSES.ABSTAINED:
+        return <IconVoteAbstained size={16} style={styles.iconStyle} />;
+      case VOTE_STATUSES.REJECTED:
+        return <IconVoteDeclined size={16} style={styles.iconStyle} />;
+    }
+  }, [currentUserVote]);
+
   return (
     <View style={styles.container}>
       <FastImage
@@ -23,14 +35,7 @@ export const ProposalCardUserImage = (props: ImageProps) => {
           uri: authStore.userInfo?.photoURL,
         }}
       />
-
-      {currentUserVote === VOTE_STATUSES.APPROVED ? (
-        <IconVoteApproved size={16} style={styles.iconStyle} />
-      ) : currentUserVote === VOTE_STATUSES.ABSTAINED ? (
-        <IconVoteAbstained size={16} style={styles.iconStyle} />
-      ) : (
-        <IconVoteDeclined size={16} style={styles.iconStyle} />
-      )}
+      {VoteIcon()}
     </View>
   );
 };
