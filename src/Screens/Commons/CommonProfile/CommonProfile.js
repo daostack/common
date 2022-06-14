@@ -23,9 +23,9 @@ import ProposalsList from '../../Proposals/ProposalsList';
 import BottomRightButton from '~/Components/BottomRightButton';
 import DiscussionList from '../../Discussions/DiscussionList';
 import {inject, observer} from 'mobx-react';
-import CommonHeader from '~/Screens/Commons/CommonProfile/CommonHeader/CommonTopTitles';
+import CommonHeader from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaHeader/AgendaTopTitles';
 import {LAYOUT_ANIMATION_CONFIG} from '~/Util';
-import CommonMembersList from './CommonMembersList';
+import CommonMembersList from './CommonAgenda/CommonMembers/CommonMembersList';
 import ProposalService from '~/Services/ProposalService';
 import ModerationService from '~/Services/ModerationService';
 import CountDown from 'react-native-countdown-component';
@@ -61,13 +61,13 @@ import {truncateString} from '~/Util/stringUtil';
 import {ABOUT_TRUNCATE_LENGTH} from '~/Util/constants/strings';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import {ModalCommonOptions} from './CommonModals/ModalCommonOptions';
+import {ModalCommonOptions} from './modals/ModalCommonOptions';
 import {ModalDeleteConfirmation} from '../components/ModalDeleteConfirmation';
 import {ModalLeaveConfirmation} from '../components/ModalLeaveConfirmation';
 import {CurrencySymbols} from '~/Util/locale';
 import {HEADER_BUTTON_HEIGHT} from '~/Screens/Commons/components/commonConstants';
 
-import {CommonProfileFlatList} from './CommonProfileFlatList';
+import {AgendaFlatList} from './CommonAgenda/AgendaFlatList';
 
 const {width} = Dimensions.get('window');
 
@@ -816,7 +816,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
             />
           </TouchableOpacity>
 
-          <CommonProfileFlatList
+          <AgendaFlatList
             openCommonOptionsModal={openCommonOptionsModal}
             currCommon={currCommon}
             showReqToJoin={showReqToJoin}
@@ -873,7 +873,7 @@ const CommonProfile = ({route: {params}, rootStore}) => {
                 />
               </View>
             </>
-          </CommonProfileFlatList>
+          </AgendaFlatList>
 
           <SafeAreaView>
             {isMember ? (

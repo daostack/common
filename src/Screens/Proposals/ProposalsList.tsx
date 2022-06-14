@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import ViewTabNoData from '~/Components/ViewTabNoData';
-import ProposalCard from '~/Components/Proposals/ProposalCard';
+import {ProposalCard} from '~/Components/Proposals/ProposalCard';
 import {layout, colors, font, text, sizeM} from '~/Theme';
 import SwiperCard from '~/Components/SwiperCard';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
@@ -38,10 +38,9 @@ const {width, height} = Dimensions.get('window');
 const props = {
   // Required
   proposalFilter: shape({
-    type: string.isRequired,
-    stage: string.isRequired,
-  }).isRequired,
-
+    type: string,
+    stage: string,
+  }),
   // Optional
   commonInfo: shape({
     id: string,
@@ -57,6 +56,8 @@ const props = {
   showHiddenNote: func,
   isMember: bool,
   flatListStyle: object,
+  showsVerticalScrollIndicator: bool,
+  listContainerStyle: object,
 };
 
 const ProposalsList: React.FC<InferProps<typeof props>> = observer(
@@ -70,6 +71,8 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     showHiddenNote,
     isMember,
     flatListStyle,
+    listContainerStyle,
+    showsVerticalScrollIndicator = false,
   }) => {
     const rootStore = useStore('rootStore');
     const [viewerPermission, setViewerPermission] = React.useState('');
@@ -107,7 +110,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       [showHiddenNote],
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (commonInfo) {
         const permission = rootStore.authStore.getPermission(
           commonInfo?.id,
@@ -118,12 +121,12 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
     }, [commonInfo]);
 
     let listRef = useRef([]);
-    const renderProposalCard = (item: Proposal, index: number) =>
-      isSwiper ? (
+    const renderProposalCard = (item: Proposal, index: number) => {
+      return isSwiper ? (
         !showMax || index < showMax ? (
           <ProposalCard
             proposalId={item.id}
-            key={item.id}
+            key={item.id + index}
             isSwiper={true}
             commonInfo={commonInfo}
             navigation={navigation}
@@ -153,7 +156,7 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
       ) : (
         <ProposalCard
           proposalId={item.id}
-          key={item.id}
+          key={item.id + index}
           isSwiper={false}
           commonInfo={commonInfo}
           navigation={navigation}
@@ -166,8 +169,9 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
           type={proposalFilter.type}
         />
       );
+    };
 
-    const keyExtractor = useCallback((data) => data.id, []);
+    const keyExtractor = useCallback((data, index) => data.id + index, []);
 
     return isSwiper ? (
       list ? (
@@ -216,10 +220,11 @@ const ProposalsList: React.FC<InferProps<typeof props>> = observer(
         {list && list.length > 0 ? (
           <FlatList
             style={flatListStyle}
+            contentContainerStyle={listContainerStyle}
             listKey={(item, index) => 'Proposal' + index.toString()}
             data={list.slice()}
             keyExtractor={keyExtractor}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
             initialNumToRender={1}
             maxToRenderPerBatch={5}
             renderItem={({item, index}) => renderProposalCard(item, index)}
