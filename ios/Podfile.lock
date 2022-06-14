@@ -1223,35 +1223,35 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNFBAnalytics (14.9.3):
+  - RNFBAnalytics (14.11.0):
     - Firebase/Analytics (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFBApp (14.9.3):
+  - RNFBApp (14.11.0):
     - Firebase/CoreOnly (= 8.15.0)
     - React-Core
-  - RNFBAuth (14.9.3):
+  - RNFBAuth (14.11.0):
     - Firebase/Auth (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFBCrashlytics (14.9.3):
+  - RNFBCrashlytics (14.11.0):
     - Firebase/Crashlytics (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFBDynamicLinks (14.9.3):
+  - RNFBDynamicLinks (14.11.0):
     - Firebase/DynamicLinks (= 8.15.0)
     - GoogleUtilities/AppDelegateSwizzler
     - React-Core
     - RNFBApp
-  - RNFBFirestore (14.9.3):
+  - RNFBFirestore (14.11.0):
     - Firebase/Firestore (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFBMessaging (14.9.3):
+  - RNFBMessaging (14.11.0):
     - Firebase/Messaging (= 8.15.0)
     - React-Core
     - RNFBApp
-  - RNFBStorage (14.9.3):
+  - RNFBStorage (14.11.0):
     - Firebase/Storage (= 8.15.0)
     - React-Core
     - RNFBApp
@@ -1307,7 +1307,7 @@ PODS:
   - secp256k1.c (0.1.2)
   - SSZipArchive (2.2.3)
   - Starscream (4.0.4)
-  - web3swift (2.6.4):
+  - web3swift (2.6.5):
     - BigInt (= 5.2.0)
     - CryptoSwift (= 1.4.3)
     - PromiseKit (= 6.15.3)
@@ -1613,7 +1613,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   web3swift:
-    :commit: 53b3c3699660cbde8ab22673c819cbda62c739b7
+    :commit: e269630c161df72b18ab10511382feb91d65d965
     :git: https://github.com/matter-labs/web3swift
 
 SPEC CHECKSUMS:
@@ -1626,7 +1626,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CodePush: 352a7efabd0a7079a1138a5c6f677baedb0dedf9
   CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
-  DoubleConversion: cde416483dac037923206447da6e1454df403714
+  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBAEMKit: 955ca52eba8219c20f90774e8c6ff8bc7b3192a3
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
@@ -1646,7 +1646,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 5e5118a2383b3531e730d974680954c679ca0a13
   FirebaseStorage: 8019af461599b2c3bc61c6a5dbdfa3d2de66a4d9
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  glog: 5337263514dd6f09803962437687240c5dc39aa4
   GoogleAppMeasurement: 4c19f031220c72464d460c9daa1fb5d1acce958e
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
@@ -1720,14 +1720,14 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 120f8d08b19dd50c0308d30a07c1982e4618e9ad
   RNDeviceInfo: 9538a884f862fe4aa0d7cead9f34e292d41ba8f6
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
-  RNFBAnalytics: 4195196ff5e3602c1fdad7d9a6cc5a85dae38313
-  RNFBApp: bd6cbb7be496179433a9ac4453ab186c8eee2df2
-  RNFBAuth: da0a9d4407d864da406dd4d0705b9ff159cc4c49
-  RNFBCrashlytics: 9be6f3c406b8bc125da68538c6d1dd152aa03b54
-  RNFBDynamicLinks: aef386c0da8e34eab269509f9214a774aa7152ed
-  RNFBFirestore: 3a447a3836b71723e308e8c1fe6bcd77d2abe863
-  RNFBMessaging: 896bc5555278662cc3b508d2ec0d7dfd7901c8ef
-  RNFBStorage: 05c6b407f1da96bf685f137167992c8ebc17dbdb
+  RNFBAnalytics: 65ecb62d11c144d86529b5e07c2552bca1a585cb
+  RNFBApp: 576819e8ad1470e2a3fe4cc2e15174f4e6bb76e5
+  RNFBAuth: 527438e6bdfaf1091155df183cdb37533291ddc3
+  RNFBCrashlytics: ffd3fe0a0141c8769d9d129f33f380a8cebbc269
+  RNFBDynamicLinks: 9670555a7c8b8b9d9e2fa18647dba32d477f3dd8
+  RNFBFirestore: ee609f8c74a3c905737dcd2294176ac2ef7d6747
+  RNFBMessaging: 50cfb1d58ca303a79d2348d35c317028ebfd6336
+  RNFBStorage: f6a25d6e4d732d8daf00466259fb1faa56ce6939
   RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
   RNGoogleSignin: ccf71ee4b6cfd324fd788a41e457e2043838c0d9
   RNLocalize: 7c7aeda16c01db7a0918981c14875c0a53be9b79
@@ -1741,9 +1741,9 @@ SPEC CHECKSUMS:
   secp256k1.c: db47b726585d80f027423682eb369729e61b3b20
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  web3swift: 54eb4f659a57e9cb746169c6dc1a8ae8bc10dd95
+  web3swift: f712c5eef8801fb2dca4e4fdafc0af4471195f03
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
 
 PODFILE CHECKSUM: cb0dc1f35f693ae69a85864d3485efddb6427b0a
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

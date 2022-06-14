@@ -31,16 +31,16 @@ export const AgendaTopTitles = ({
   const activeDate = dateFormat(updatedAt);
   // to do - private common
   const isCommonPrivate = false;
-  const pendingCount = proposalStore.getCommonProposals(common.id, {
+  const pendingCount = proposalStore.getCommonProposals(common?.id, {
     stage: PROPOSAL_STAGE.Active,
     type: PROPOSAL_TYPE.Join,
   }).length;
-  const membersCount = commonStore.getCommonById(common.id)?.members.length;
+  const membersCount = commonStore.getCommonById(common?.id)?.members.length;
 
   const onMembersPress = () => {
     navigation.navigate('CommonMembers', {
-      commonId: common.id,
-      screenTitle: common.name,
+      commonId: common?.id,
+      screenTitle: common?.name,
       hasPermission,
       showHiddenNote: () => {},
       isMember,

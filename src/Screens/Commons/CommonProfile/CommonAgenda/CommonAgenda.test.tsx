@@ -9,8 +9,7 @@ jest.mock('@react-navigation/native');
 
 describe('RequestToJoinBtn', () => {
   test('CommonAgenda should render correctly', () => {
-    const {getByText, toJSON} = render(<CommonAgenda />);
-    expect(getByText('Members')).not.toBeNull();
+    const {toJSON} = render(<CommonAgenda />);
     expect(toJSON()).toMatchSnapshot();
   });
 });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CommonTopTitles CommonTopTitles should render correctly 1`] = `
+exports[`AgendaTopTitles AgendaTopTitles should render correctly 1`] = `
 <View
   style={
     Object {
@@ -30,7 +30,7 @@ exports[`CommonTopTitles CommonTopTitles should render correctly 1`] = `
     }
   >
     Active 
-    30d
+    1mo
      ago
   </Text>
   <Text

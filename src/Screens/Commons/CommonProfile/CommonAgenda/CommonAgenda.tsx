@@ -50,7 +50,7 @@ export const CommonAgenda = observer(() => {
   const [isMember, setIsMember] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
 
-  const params: RouteParams = route!.params;
+  const params: RouteParams = route!?.params;
   const currCommon: Common = commonStore.getCommonById(
     params?.commonId || params?.currCommon?.id,
   )!;
@@ -73,7 +73,7 @@ export const CommonAgenda = observer(() => {
   };
 
   useEffect(() => {
-    setShowRequestSentModal(params.showRequestSentModal);
+    setShowRequestSentModal(params?.showRequestSentModal);
     if (authStore?.userInfo && authStore?.isDaoMember(currCommon?.members)) {
       setIsMember(true);
     } else {
@@ -82,7 +82,7 @@ export const CommonAgenda = observer(() => {
     setHasPermission(
       authStore?.getPermission(commonId, authStore?.userInfo?.uid),
     );
-  }, [params.showRequestSentModal, authStore?.userInfo, currCommon?.members]);
+  }, [params?.showRequestSentModal, authStore?.userInfo, currCommon?.members]);
 
   const onDelete = async () => {
     try {
@@ -217,7 +217,7 @@ export const CommonAgenda = observer(() => {
       <MemberConfirmModal
         showRequestSentModal={showRequestSentModal}
         closeModal={() => setShowRequestSentModal(false)}
-        createdProposalId={params.createdProposalId}
+        createdProposalId={params?.createdProposalId}
       />
     </View>
   );

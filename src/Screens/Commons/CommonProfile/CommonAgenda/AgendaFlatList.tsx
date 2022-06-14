@@ -32,14 +32,7 @@ interface FlatListProps {
 }
 
 export const AgendaFlatList = (props: FlatListProps) => {
-  const {
-    currCommon,
-    children,
-    openCommonOptionsModal,
-    isMember,
-    showMembershipAdmittance,
-    renderMembershipAdmittanceBtn,
-  } = props;
+  const {currCommon, children, openCommonOptionsModal, isMember} = props;
   const yIndex = useSharedValue(0);
   const insets = useSafeAreaInsets();
 
@@ -103,7 +96,7 @@ export const AgendaFlatList = (props: FlatListProps) => {
             <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
               <FastImage
                 source={{
-                  uri: currCommon.image,
+                  uri: currCommon?.image,
                 }}
                 style={styles.image}
               />

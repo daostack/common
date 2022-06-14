@@ -96,7 +96,7 @@ export const AgendaHeaderBar = (props: HeaderProps) => {
       </Pressable>
 
       <Animated.View style={[styles.titleContainer, animatedTitle]}>
-        <Text style={[styles.title]}>{currCommon.name}</Text>
+        <Text style={[styles.title]}>{currCommon?.name}</Text>
       </Animated.View>
 
       <View style={[styles.rightContainer, {top: insets.top + 10}]}>

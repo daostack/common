@@ -14,7 +14,7 @@ export const AgendaDescription = (props: DescriptionProps) => {
   const {currCommon} = props;
   const [linksVisible, setLinksVisible] = useState(false);
 
-  const description = currCommon.metadata.description;
+  const description = currCommon?.metadata?.description;
   const onSeeMorePress = () => {
     setLinksVisible(!linksVisible);
   };
@@ -25,8 +25,8 @@ export const AgendaDescription = (props: DescriptionProps) => {
       <Text style={styles.description}>{description}</Text>
       <View style={styles.linksContainer}>
         {linksVisible &&
-          currCommon.links?.length !== 0 &&
-          currCommon.links?.map((x) => (
+          currCommon?.links?.length !== 0 &&
+          currCommon?.links?.map((x) => (
             <View key={`key_links_${x.title}`} style={styles.iconContainer}>
               <Icon name="link" size={16} style={styles.icon} />
               <Text
@@ -39,7 +39,7 @@ export const AgendaDescription = (props: DescriptionProps) => {
             </View>
           ))}
       </View>
-      {currCommon.links && currCommon.links?.length !== 0 && (
+      {currCommon?.links && currCommon?.links?.length !== 0 && (
         <TouchableOpacity onPress={onSeeMorePress} style={styles.seeMoreBtn}>
           <Text style={styles.seeMore}>
             {linksVisible ? 'Hide <' : 'See more >'}
