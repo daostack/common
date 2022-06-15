@@ -192,13 +192,14 @@ export const ProposalCard = observer((props: CardProps) => {
             <View style={styles.divider} />
             <View style={styles.proposalCardActionContainer}>
               <View style={styles.messageCountContainer}>
-                {/* disable till we get the number of messages for proposals */}
-                {false && (
-                  <>
-                    <Icon name="discussion" size={20} />
-                    <Text style={styles.msgCount}>0</Text>
-                  </>
-                )}
+                <>
+                  <Icon name="discussion" size={20} />
+                  <Text style={styles.msgCount}>
+                    {proposalInfo?.messageCount
+                      ? proposalInfo?.messageCount
+                      : 0}
+                  </Text>
+                </>
               </View>
               <TouchableOpacity
                 style={styles.viewButton}
