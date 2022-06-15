@@ -4,7 +4,7 @@ import {View, Image, StyleSheet, Text} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font} from '~/Theme';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
-import {NewCommonProfile} from '../Screens/Commons/CommonProfile/NewCommonProfile';
+import {CommonAgenda} from '../Screens/Commons/CommonProfile/CommonAgenda/CommonAgenda';
 import {observer} from 'mobx-react';
 import {CommonProposals} from '~/Screens/Commons/CommonProfile/CommonProposals';
 import {CommonDiscussions} from '~/Screens/Commons/CommonProfile/CommonDiscussions';
@@ -12,7 +12,7 @@ import {CommonNotifications} from '~/Screens/Commons/CommonProfile/CommonNotific
 import {IconWalletSelected} from '~/Assets/iconfont/IconWalletSelected';
 import {IconWallet} from '~/Assets/iconfont/IconWallet';
 import {useRoute} from '@react-navigation/native';
-import {CommonWallet} from '~/Screens/Commons/CommonProfile/Wallet/CommonWallet';
+import {CommonWallet} from '~/Screens/Commons/CommonProfile/CommonWallet/CommonWallet';
 
 const Tab = createBottomTabNavigator();
 
@@ -88,7 +88,7 @@ export const CommonTabNavigator = observer(() => {
       })}>
       <Tab.Screen
         name="CommonAgenda"
-        component={NewCommonProfile}
+        component={CommonAgenda}
         initialParams={{currCommon}}
         options={{
           tabBarLabel: ({focused}) => (

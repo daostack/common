@@ -2,10 +2,11 @@ import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {func, string, InferProps} from 'prop-types';
 import Icon from '~/Assets/iconfont/Icon';
+import {colors} from '~/Theme';
 
 const ModerationMenu: React.FC<InferProps<typeof moderationMenuProps>> = ({
   showOptions,
-  color = '',
+  color = colors.black,
 }) => (
   <TouchableOpacity onPress={showOptions} style={{padding: 5}}>
     <Icon name="menu1" size={20} color={color} />

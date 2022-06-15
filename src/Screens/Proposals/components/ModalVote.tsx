@@ -83,12 +83,12 @@ export const ModalVote = ({
               borderColor: VOTE_COLORS_BY_STATUSES[voteType],
             },
           ]}>
-          {VOTE_MODAL_INFO[voteType].title}
+          {VOTE_MODAL_INFO[voteType]?.title}
         </Text>
         {!votingProcessState.inProgress ? (
           <>
             <Text style={styles.subTitle}>
-              {VOTE_MODAL_INFO[voteType].subtitle}
+              {VOTE_MODAL_INFO[voteType]?.subtitle}
             </Text>
             <TouchableOpacity
               style={{
@@ -99,7 +99,7 @@ export const ModalVote = ({
               }}
               onPress={() => onVote(voteType)}>
               <Text style={styles.btnActionText}>
-                {VOTE_MODAL_INFO[voteType].btnMessage}
+                {VOTE_MODAL_INFO[voteType]?.btnMessage}
               </Text>
             </TouchableOpacity>
           </>

@@ -65,7 +65,7 @@ const BottomSheetContainer = ({uiStore, withoutHeader, navigation}) => {
       ...styles.contentContainer,
       ...{
         padding: 0,
-        height: uiStore.bottomSheetStore.topSnap + 100,
+        height: uiStore.bottomSheetStore.topSnap,
       },
     };
 
