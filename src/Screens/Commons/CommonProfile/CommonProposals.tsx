@@ -1,8 +1,7 @@
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {StyleSheet, View} from 'react-native';
 import {BottomRightButton} from '~/Components';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
 import {ACTIONS, ENTITY_TYPES, TITLES} from '~/Components/Moderation/constants';
@@ -11,10 +10,10 @@ import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActi
 import ModerationModal from '~/Components/Moderation/ModerationModal';
 import {PROPOSAL_TYPE} from '~/Config';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import ModerationService from '~/Services/ModerationService';
 import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
-import {sizeL, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 import Toast from '~/Util/Toast';
 
@@ -26,7 +25,6 @@ export const CommonProposals = observer(() => {
   const rootStore = useStore('rootStore');
   const authStore = useStore('authStore');
   const userStore = useStore('userStore');
-  const insets = useSafeAreaInsets();
 
   const {currCommon} = route.params;
   const commonId = currCommon.id;
@@ -130,8 +128,8 @@ export const CommonProposals = observer(() => {
     title === TITLES.proposals ? TITLES.proposalText : title;
 
   return (
-    <View style={[{...styles.paleBackground}, {paddingTop: insets.top}]}>
-      <Text style={text.h1BlackTitle}>Proposals</Text>
+    <View style={styles.container}>
+      <CommonHeader common={currCommon} title="Proposals" />
       <ProposalsList
         commonInfo={{
           name: currCommon.name,
@@ -139,7 +137,7 @@ export const CommonProposals = observer(() => {
           balance: currCommon.balance,
         }}
         proposalFilter={{
-          type: PROPOSAL_TYPE.FundingRequest,
+          type: 'fundingRequest',
         }}
         openCommonOptions={(proposal) =>
           openCommonOptions(proposal, ENTITY_TYPES.proposals)
@@ -148,6 +146,9 @@ export const CommonProposals = observer(() => {
           showHiddenNote(hiddenProposal, TITLES.proposalText)
         }
         isMember={isMember}
+        flatListStyle={styles.proposalsList}
+        listContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={true}
       />
       <ModerationModal
         title={moderationType}
@@ -183,9 +184,14 @@ export const CommonProposals = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  paleBackground: {
+  container: {
     backgroundColor: '#fcfcfc',
-    paddingHorizontal: sizeL,
     flex: 1,
+  },
+  proposalsList: {
+    paddingHorizontal: 24,
+  },
+  listContainer: {
+    paddingTop: 24,
   },
 });

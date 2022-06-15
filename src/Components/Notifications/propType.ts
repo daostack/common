@@ -30,3 +30,14 @@ export const notificationItemPropTypes = shape({
     opened: bool.isRequired,
   }).isRequired,
 });
+
+export interface ItemProps {
+  id: string;
+  eventType: string;
+  createdAt: {};
+  eventObjectId: string;
+  notificationItemState: {
+    seen: boolean;
+    opened: boolean;
+  };
+}

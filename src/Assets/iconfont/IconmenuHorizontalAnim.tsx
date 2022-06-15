@@ -14,7 +14,7 @@ interface Props extends GProps, ViewProps {
 
 export const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-export const IconmenuHorizontal: FunctionComponent<Props> = ({ size, color, animatedIconStyle, ...rest }) => {
+export const IconmenuHorizontal: FunctionComponent<Props> = ({ size, color, animatedIconStyle = {}, ...rest }) => {
   return (
     <Svg viewBox="0 0 24 6" width={size} height={size} {...rest}>
       <AnimatedPath
