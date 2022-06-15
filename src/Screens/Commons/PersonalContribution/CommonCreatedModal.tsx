@@ -32,16 +32,11 @@ export function CommonCreatedModal({
   commonInfo,
 }: Props): ReactElement {
   const navigation = useNavigation();
-
   const goToCommon = (): void => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        commonId: commonId.toLowerCase(),
-      },
-    });
     navigation?.popToTop();
-    navigation.dispatch(navigate);
+    navigation.navigate('CommonProfile', {
+      commonId: commonId.toLowerCase(),
+    });
   };
 
   const shareCommon = async (): Promise<void> => {
