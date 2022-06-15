@@ -49,7 +49,7 @@ export const CommonAgenda = observer(() => {
   const [isMember, setIsMember] = useState(false);
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
   const params: RouteParams = route!?.params;
-  const {currCommon} = route?.params;
+  const currCommon = route?.params?.currCommon;
 
   const commonId = currCommon?.id;
   const [hasPermission, setHasPermission] = useState(
