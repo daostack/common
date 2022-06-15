@@ -1,17 +1,19 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useEffect, useRef, useState} from 'react';
+import {observer} from 'mobx-react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {CommonBoxCounterBar} from '~/Components/Commons/CommonBox/CommonBoxCounterBar';
 import {CommonFundsBox} from '~/Components/Commons/CommonFundsBox';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {AgendaDescription} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaDescription';
-import {AgendaTopTitles} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaHeader/AgendaTopTitles';
-import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/modals/MemberConfirmModal';
 import {AgendaFlatList} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaFlatList';
-import {RequestToJoinBtn} from '~/Screens/Commons/CommonProfile/components/RequestToJoinBtn';
+import {AgendaGallery} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaGallery';
+import {AgendaTopTitles} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaHeader/AgendaTopTitles';
+import {AgendaRequestToJoin} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaRequestToJoin';
+import {MemberConfirmModal} from '~/Screens/Commons/CommonProfile/modals/MemberConfirmModal';
 import {ModalCommonOptions} from '~/Screens/Commons/CommonProfile/modals/ModalCommonOptions';
-import {ModalDeleteConfirmation} from '../modals/ModalDeleteConfirmation';
-import {ModalLeaveConfirmation} from '../modals/ModalLeaveConfirmation';
 import {COMMON_OPTION_TYPES} from '~/Screens/Commons/components/onModalTypes';
 import {
   BillingDetailsFormStore,
@@ -21,12 +23,10 @@ import {
 } from '~/Stores/FormStores/RequestToJoin';
 import {Common} from '~/Stores/Models/Common';
 import {colors, layout} from '~/Theme';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {useStore} from '~/Util/hooks/useStore';
 import Toast from '~/Util/Toast';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {AgendaGallery} from '~/Screens/Commons/CommonProfile/CommonAgenda/AgendaGallery';
-import {observer} from 'mobx-react';
+import {ModalDeleteConfirmation} from '../modals/ModalDeleteConfirmation';
+import {ModalLeaveConfirmation} from '../modals/ModalLeaveConfirmation';
 
 interface RouteParams {
   commonId: string;
@@ -38,7 +38,6 @@ interface RouteParams {
 export const CommonAgenda = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
-  const upperRequestToJoinBtnRef = useRef(null);
 
   const commonStore = useStore('commonStore');
   const authStore = useStore('authStore');
@@ -173,13 +172,11 @@ export const CommonAgenda = observer(() => {
           <View style={styles.summaryContainer}>
             <CommonFundsBox common={currCommon} />
           </View>
-          {!isMember && (
-            <View
-              style={styles.upperActionButtonContainer}
-              ref={upperRequestToJoinBtnRef}>
-              <RequestToJoinBtn requestToJoin={requestToJoin} />
-            </View>
-          )}
+          <AgendaRequestToJoin
+            isMember={isMember}
+            currCommon={currCommon}
+            requestToJoin={requestToJoin}
+          />
           <AgendaDescription currCommon={currCommon} />
           {hasImages && <AgendaGallery />}
         </>
@@ -227,10 +224,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-  },
-  upperActionButtonContainer: {
-    paddingHorizontal: 15,
-    marginTop: 18,
   },
   summaryContainer: {
     backgroundColor: colors.white,
