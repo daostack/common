@@ -26,7 +26,7 @@ export const validationSchema = object({
   socialId: string()
     .label('ID Number')
     .typeError('ID Number must contain only numbers')
-    .min(10)
+    .min(9)
     .required(),
   socialIdIssueDate: date()
     .validateDateFormat('Invalid date')
