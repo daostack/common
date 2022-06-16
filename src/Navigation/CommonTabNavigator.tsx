@@ -4,7 +4,7 @@ import {View, Image, StyleSheet, Text} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
 import {colors, font} from '~/Theme';
 import {TAB_BAR_HEIGHT} from '~/Util/bottomTabHeight';
-import {CommonAgenda} from '../Screens/Commons/CommonProfile/CommonAgenda/CommonAgenda';
+import {CommonAgenda} from '~/Screens/Commons/CommonProfile/CommonAgenda/CommonAgenda';
 import {observer} from 'mobx-react';
 import {CommonProposals} from '~/Screens/Commons/CommonProfile/CommonProposals';
 import {CommonDiscussions} from '~/Screens/Commons/CommonProfile/CommonDiscussions';
@@ -13,13 +13,19 @@ import {IconWalletSelected} from '~/Assets/iconfont/IconWalletSelected';
 import {IconWallet} from '~/Assets/iconfont/IconWallet';
 import {useRoute} from '@react-navigation/native';
 import {CommonWallet} from '~/Screens/Commons/CommonProfile/CommonWallet/CommonWallet';
+import {useStore} from '~/Util/hooks/useStore';
 
 const Tab = createBottomTabNavigator();
 
 export const CommonTabNavigator = observer(() => {
   const route = useRoute();
-  const currCommon =
+  const commonStore = useStore('commonStore');
+  let currCommon =
     route?.params?.params?.currCommon || route?.params?.currCommon;
+  const commonId = route?.params?.params?.commonId || route?.params?.commonId;
+  if (currCommon === undefined && commonId !== undefined) {
+    currCommon = commonStore.getCommonById(commonId)!;
+  }
 
   return (
     <Tab.Navigator

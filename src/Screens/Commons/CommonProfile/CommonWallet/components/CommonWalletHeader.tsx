@@ -1,7 +1,6 @@
 import React, {ReactElement} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {IconPendingBalance} from '~/Assets/iconfont/IconPendingBalance';
 import {Common} from '~/Stores/Models/Common';
 import {colors, font, text} from '~/Theme';
 import {formatMoney} from '~/Util/FormatUtil';
@@ -29,12 +28,11 @@ export const CommonWalletHeader = (props: CommonWalletHeaderProps) => {
           )}`}</Text>
           <View style={styles.subTitleContainer}>
             <Text style={styles.price}>
-              Pending soon{' '}
+              Pending{' '}
               <Text style={styles.priceText}>{` ${
                 CurrencySymbols.SHEKEL
               } ${formatMoney(common?.reservedBalance / 100)}  `}</Text>
             </Text>
-            <IconPendingBalance size={16} />
           </View>
         </View>
       </View>
