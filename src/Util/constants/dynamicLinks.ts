@@ -15,16 +15,16 @@ export enum DYNAMIC_LINKS_TYPES {
 }
 
 export enum DYNAMIC_LINKS_SCREENS {
-  discussion = 'Discussions',
-  proposal = 'ProposalScreen',
-  common = 'CommonProfile',
+  Discussions = 'Discussions',
+  ProposalScreen = 'ProposalScreen',
+  CommonProfile = 'CommonProfile',
   'invoices/submission' = 'AddInvoicesScreen',
 }
 
 export enum DYNAMIC_LINKS_SCREEN_PARAMS {
-  discussion = 'discussionId',
-  proposal = 'proposalId',
-  common = 'commonId',
+  Discussions = 'discussionId',
+  ProposalScreen = 'proposalId',
+  CommonProfile = 'commonId',
   user = 'userId',
   'invoices/submission' = 'proposalId',
 }
