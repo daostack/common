@@ -38,7 +38,7 @@ export const ModalCommonOptions = ({
         domainUriPrefix: DYNAMIC_LINK_URI_PREFIX,
         social: {
           title: currCommon.name,
-          descriptionText: currCommon.metadata.description,
+          descriptionText: currCommon.description,
           imageUrl: currCommon.image,
         },
       });

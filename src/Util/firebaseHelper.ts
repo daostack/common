@@ -58,6 +58,39 @@ export const updateStoreData =
     data.merge(updatesMap);
   };
 
+export const updateStoreDataFromSubCollection =
+  <IEntity, IEntityModel>(
+    data: ObservableMap<string, IEntity>,
+    getEntityModel: (entity: IEntity) => IEntityModel,
+  ) =>
+  async (
+    updatedSnapshot: IFirebaseSnapshot<IEntity> | IFirebaseDoc<IEntity>,
+  ): Promise<void> => {
+    if (!updatedSnapshot) {
+      // TBD: Decide what to do in that case. Probably show a Toast with a warning.
+      // That's happening sometimes when there is a problem with firebase like missing index, rules etc.
+      return;
+    }
+    const updatesMap = new Map<string, IEntityModel>();
+
+    // Shapshot handling in case of doc list result
+    if (typeof updatedSnapshot?.docChanges === 'function') {
+      for (const updatedUserDoc of (
+        updatedSnapshot as IFirebaseSnapshot<IEntity>
+      ).docChanges()) {
+        const parentDoc = await updatedUserDoc.doc?.ref.parent.parent?.get();
+        const updatedEntity = firestoreDocToEntity(parentDoc) as IEntity;
+        updatesMap.set(updatedEntity?.id, getEntityModel(updatedEntity));
+      }
+    } else {
+      const parentDoc = await updatedSnapshot.doc?.ref.parent.parent?.get();
+      const docData = prepareDocData(parentDoc.data(), parentDoc.id);
+      updatesMap.set(docData.id, getEntityModel(docData));
+    }
+
+    data.merge(updatesMap);
+  };
+
 export function firestoreDocToEntity<T>(firebaseDoc: IFirebaseDoc<T>): T {
   let docData: T = firebaseDoc.data() as T;
   return prepareDocData(docData, firebaseDoc.id);

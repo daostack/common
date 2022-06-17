@@ -10,6 +10,8 @@ import {
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {firebase} from '~/Firebase';
 import {formatMinFeeToJoin} from '~/Util/FormatUtil';
+import {COMMON_STATE} from '~/Shared/enums/commonState';
+import {COMMON_REGISTERED} from '~/Shared/enums/commonRegistered';
 
 export class Common implements ICommonEntity {
   id: string;
@@ -20,17 +22,18 @@ export class Common implements ICommonEntity {
   balance: number;
   reservedBalance: number;
   raised: number;
-  fundingGoalDeadline: number;
-  members: ICommonMember[];
-  rules: ICommonRule[];
   links: ICommonLink[];
-  metadata: ICommonMetadata;
-  register: CommonRegister;
-  active: boolean;
+  register: COMMON_REGISTERED;
   proposalCount: number;
   messageCount: number;
   discussionCount: number;
-  byline: string | undefined;
+  byline: string;
+  description: string;
+  founderId: string;
+  governanceId: string | null;
+  memberCount: number;
+  score: number;
+  state: COMMON_STATE;
 
   constructor(newCommonInfo: ICommonEntity) {
     this.id = newCommonInfo.id;
@@ -39,18 +42,20 @@ export class Common implements ICommonEntity {
     this.balance = newCommonInfo.balance;
     this.reservedBalance = newCommonInfo.reservedBalance || 0;
     this.raised = newCommonInfo.raised;
-    this.fundingGoalDeadline = newCommonInfo.fundingGoalDeadline;
-    this.members = newCommonInfo.members;
-    this.rules = newCommonInfo.rules;
     this.links = newCommonInfo.links;
-    this.metadata = newCommonInfo.metadata;
     this.register = newCommonInfo.register;
-    this.active = newCommonInfo.active;
     this.updatedAt = newCommonInfo.updatedAt;
     this.proposalCount = newCommonInfo.proposalCount;
     this.messageCount = newCommonInfo.messageCount;
     this.discussionCount = newCommonInfo.discussionCount;
     this.byline = newCommonInfo.byline;
+    this.description = newCommonInfo.description;
+    this.founderId = newCommonInfo.founderId;
+    this.governanceId = newCommonInfo.governanceId;
+    this.image = newCommonInfo.image;
+    this.memberCount = newCommonInfo.memberCount;
+    this.score = newCommonInfo.score;
+    this.state = newCommonInfo.state;
     makeAutoObservable(this);
   }
 
@@ -66,8 +71,8 @@ export class Common implements ICommonEntity {
   minFeeToJoinFormatted(numberValue = false): string {
     return formatMinFeeToJoin({
       numberValue,
-      zeroContribution: this.metadata.zeroContribution,
-      minFeeToJoin: this.metadata.minFeeToJoin,
+      zeroContribution: true,
+      minFeeToJoin: 0,
     });
   }
 }

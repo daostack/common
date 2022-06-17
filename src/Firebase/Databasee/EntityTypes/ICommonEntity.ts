@@ -1,17 +1,18 @@
 import {IBaseEntity} from './IBaseEntity';
 import {firebase} from '~/Firebase';
+import {COMMON_REGISTERED} from '~/Shared/enums/commonRegistered';
+import {COMMON_STATE} from '~/Shared/enums/commonState';
 
 export interface ICommonEntity extends IBaseEntity {
-  /**
-   * Common creator id
-   */
-  userId: string;
-
   /**
    * The name of the common showed in the app and
    * other places (email, notification etc.)
    */
   name: string;
+
+  byline: string;
+
+  description: string;
 
   /**
    * The URL of the image, used as header for
@@ -19,16 +20,65 @@ export interface ICommonEntity extends IBaseEntity {
    */
   image: string;
 
-  byline: string;
-
-  description: string;
-
   /**
    * List of links, that the common provided
    */
   links: ICommonLink[];
 
+  /**
+   * Will this common appear in the search results page
+   */
   searchable: boolean;
+
+  /**
+   * The currently available funds of
+   * the common in cents
+   */
+  balance: number;
+
+  /**
+   * Reserved amount that is due to leave the common
+   * until the process of payout is completed
+   */
+  reservedBalance: number;
+
+  /**
+   * The total amount of funds that the
+   * common has raised to date in cents
+   */
+  raised: number;
+
+  /**
+   * Number of proposals in common
+   */
+  proposalCount: number;
+
+  /**
+   * Number of discussions in common
+   */
+  discussionCount: number;
+
+  /**
+   * Number of messages in all the discussions of the common
+   */
+  messageCount: number;
+
+  memberCount: number;
+
+  /**
+   * The whitelisting status of the common
+   */
+  register: COMMON_REGISTERED;
+
+  readonly governanceId: string | null;
+
+  readonly founderId: string;
+
+  state: COMMON_STATE;
+  /**
+   * Score of common for prioritization purposes
+   */
+  score: number;
 }
 
 export interface ICommonRule {

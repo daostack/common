@@ -26,7 +26,7 @@ export const CommonTopTitles = ({
   const proposalStore = useStore('proposalStore');
   const commonStore = useStore('commonStore');
   const name = common?.name;
-  const byline = common?.metadata.byline;
+  const byline = common.byline;
   const updatedAt = common?.updatedAt;
   const activeDate = dateFormat(updatedAt);
   // to do - private common
@@ -35,7 +35,7 @@ export const CommonTopTitles = ({
     stage: PROPOSAL_STAGE.Active,
     type: PROPOSAL_TYPE.Join,
   }).length;
-  const membersCount = commonStore.getCommonById(common.id)?.members.length;
+  const membersCount = commonStore.getCommonById(common.id)?.memberCount;
 
   const onMembersPress = () => {
     navigation.navigate('CommonMembers', {

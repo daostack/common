@@ -1,4 +1,10 @@
-import {computed, makeObservable} from 'mobx';
+import {
+  computed,
+  makeObservable,
+  observable,
+  ObservableMap,
+  action,
+} from 'mobx';
 import BaseStore from './BaseStore';
 import CommonService from '~/Services/CommonService';
 import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
@@ -9,8 +15,15 @@ import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
 import {runInAction} from 'mobx';
+import {COMMON_STATE} from '~/Shared/enums/commonState';
+import {
+  updateStoreDataFromSubCollection,
+  getDataArray,
+} from '~/Util/firebaseHelper';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
+  private myCommonsData: ObservableMap<string, Common> = observable.map({});
+
   constructor(rootStore: RootStore) {
     super(rootStore);
     makeObservable(this);
@@ -19,12 +32,8 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   @computed
   get myCommons() {
     try {
-      return this.getDataArray
-        .filter(
-          (common: Common) =>
-            this.rootStore.authStore.isDaoMember(common?.members) &&
-            common?.active,
-        )
+      return getDataArray<Common>(this.myCommonsData)
+        .filter((common) => common.state === COMMON_STATE.ACTIVE)
         .sort(
           (common, prevCommon) =>
             prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
@@ -39,7 +48,7 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
     try {
       return this.rootStore.proposalStore.myActiveMembershipRequests
         .map((proposal: Proposal) => this.getCommonById(proposal.commonId))
-        .filter((common: Common) => common?.active)
+        .filter((common: Common) => common.state === COMMON_STATE.ACTIVE)
         .sort(
           (common, prevCommon) =>
             prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
@@ -53,13 +62,13 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   get featuredCommons() {
     try {
       return this.getDataArray
-        .filter(
-          (common: Common) =>
-            !this.myCommons.includes(common) &&
+        .filter((common: Common) => {
+          return (
+            !this.myCommonsData.has(common.id) &&
             !this.pendingCommons.includes(common) &&
-            common.register === DAO_REGISTERED &&
-            common?.active,
-        )
+            common.state === COMMON_STATE.ACTIVE
+          );
+        })
         .sort(
           (common, prevCommon) =>
             prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
@@ -120,6 +129,16 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   //Actions
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
     CommonService.subscribeToAllCommons(this.updateStoreData);
+
+  @action
+  subscribeToMyCommons = (userId: string): FirestoreUnsubscribeFn =>
+    CommonService.subscribeToMyCommons(
+      userId,
+      updateStoreDataFromSubCollection<ICommonEntity, Common>(
+        this.myCommonsData,
+        this.getEntityModel,
+      ),
+    );
 
   /**
    * This function is updating the common in the firebase with the new changes

@@ -41,12 +41,12 @@ const CommonBox = ({
       <CommonBoxImage
         cover={common.image}
         name={common.name}
-        description={common.metadata?.byline}
+        description={common.byline}
         updatedAt={common.updatedAt}
       />
 
       <CommonBoxSummary
-        members={common?.members?.length}
+        members={common.memberCount}
         raised={common.raised}
         balance={common.balance}
       />

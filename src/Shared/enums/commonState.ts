@@ -1,0 +1,5 @@
+export enum COMMON_STATE {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  DRAFT = 'DRAFT',
+}

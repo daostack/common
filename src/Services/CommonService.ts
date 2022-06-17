@@ -1,14 +1,21 @@
 import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
-import {CommonsCollection} from '~/Firebase/Databasee/Collections/CommonsCollection';
+import {
+  CommonsCollection,
+  CommonsMemberCollection,
+} from '~/Firebase/Databasee/Collections/CommonsCollection';
 import {
   ICommonEntity,
   CommonCreatedBody,
   CommonImmediateContributionBody,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {PaymentResponse} from '~/Firebase/Databasee/EntityTypes/IPaymentEntity';
-import {IFirebaseDoc, IFirebaseSnapshot} from '~/Firebase/types';
+import {
+  FirestoreUnsubscribeFn,
+  IFirebaseDoc,
+  IFirebaseSnapshot,
+} from '~/Firebase/types';
 
 export type commonListLoadCallbackFn = (
   updatedCommonList: IFirebaseSnapshot<ICommonEntity>,
@@ -46,6 +53,16 @@ class CommonService {
     CommonsCollection.onSnapshot((snapshot: any) => {
       callback(snapshot);
     });
+
+  subscribeToMyCommons = async (
+    userId: string,
+    callback: commonListLoadCallbackFn,
+  ): FirestoreUnsubscribeFn =>
+    CommonsMemberCollection.where('userId', '==', userId).onSnapshot(
+      (snapshot: any) => {
+        callback(snapshot);
+      },
+    );
 
   createCommon = async (
     formData: CommonCreatedBody,

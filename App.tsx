@@ -153,9 +153,13 @@ const App = () => {
   useEffect(() => {
     const unsubscribeUsers = userStore.subscribeToAllUsers();
     const unsubscribeCommons = commonStore.subscribeToAllCommons();
+    let unsubscribeMyCommons = null;
     let unsubscribeLoggedUserNotifications = null;
     let unsubscribeProposals = null;
     if (authStore.userInfo?.uid) {
+      unsubscribeMyCommons = commonStore.subscribeToMyCommons(
+        authStore.userInfo?.uid,
+      );
       unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
         authStore.userInfo?.uid,
       );
@@ -166,6 +170,7 @@ const App = () => {
       unsubscribeUsers && unsubscribeUsers();
       unsubscribeCommons && unsubscribeCommons();
       unsubscribeProposals && unsubscribeProposals();
+      unsubscribeMyCommons && unsubscribeMyCommons();
       unsubscribeLoggedUserNotifications?.forEach(
         (unsubscribeLoggedUserNotificationsBatch) =>
           unsubscribeLoggedUserNotificationsBatch &&

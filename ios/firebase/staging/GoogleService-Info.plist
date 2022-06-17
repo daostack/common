@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>78965953367-7a3nt6m8cbml8pn54rlhujq1gccm3hr9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.78965953367-7a3nt6m8cbml8pn54rlhujq1gccm3hr9</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>78965953367-iu5u4vuth9c97ip3schbha20vte3t7vc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBZU63lOg7S5eymAMO_U10Q2n89-B-tvvw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>78965953367</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.daostack.common.staging</string>
+	<key>PROJECT_ID</key>
+	<string>common-staging-50741</string>
+	<key>STORAGE_BUCKET</key>
+	<string>common-staging-50741.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:78965953367:ios:60a635040db618bd2f6412</string>
+	<key>DATABASE_URL</key>
+	<string>https://common-staging-50741.firebaseio.com</string>
+</dict>
+</plist>

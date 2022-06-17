@@ -336,12 +336,9 @@ const CommonProfile = ({route: {params}, rootStore}) => {
               style={{
                 ...text.regularText,
                 ...layout.marginTopS,
-                ...text.writingDirection(currCommon.metadata.description),
+                ...text.writingDirection(currCommon.description),
               }}>
-              {truncateString(
-                currCommon.metadata.description,
-                ABOUT_TRUNCATE_LENGTH,
-              )}
+              {truncateString(currCommon.description, ABOUT_TRUNCATE_LENGTH)}
             </Text>
           </View>
 

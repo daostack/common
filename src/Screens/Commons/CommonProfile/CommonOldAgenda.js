@@ -68,9 +68,9 @@ const CommonAgenda = ({
               textStyle={{
                 ...styles.description,
                 width: '100%',
-                ...text.writingDirection(common.metadata.description),
+                ...text.writingDirection(common.description),
               }}>
-              {common.metadata.description}
+              {common.description}
             </HyperText>
           </View>
 
