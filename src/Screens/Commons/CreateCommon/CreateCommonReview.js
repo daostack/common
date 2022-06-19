@@ -66,10 +66,6 @@ const CreateCommonReview = ({
     ...reviewFormStore.getChangedFormFieldsJson(),
   };
 
-  /*const minContribution = form[CreateCommonForm.ZERO_CONTRIBUTION]
-    ? '0'
-    : form[CreateCommonForm.MINIMUM];*/
-
   const goToCommon = () => {
     const navigate = CommonActions.navigate({
       name: 'CommonProfile',
@@ -85,23 +81,18 @@ const CreateCommonReview = ({
     try {
       const formDataInit = {...form};
 
-      //const contributionAmount = parseFloat(formDataInit.minimum, 10) * 100;
-
       const data = {
         ...formDataInit,
       };
       logger.log('calling createCommon(...)');
 
       const formattedData = {
-        name: 'GOVERNANCE_TEST', //data.name,
+        name: data.name,
         image: data.image,
         rules: data.rules,
         links: escapeUrl(data.links),
         byline: data.byline || '',
         description: data.description || '',
-        contributionType: 'one-time', //data.contributionType,
-        contributionAmount: 0, //data.contributionAmount,
-        zeroContribution: true, //data.zeroContribution,
       };
 
       navigation.navigate({

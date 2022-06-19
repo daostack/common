@@ -105,7 +105,7 @@ export const CommonProfileFlatList = (props: FlatListProps) => {
             <Animated.View style={[styles.backgroundContainer, animatedStyle]}>
               <FastImage
                 source={{
-                  uri: currCommon.image,
+                  uri: currCommon?.image,
                 }}
                 style={styles.image}
               />

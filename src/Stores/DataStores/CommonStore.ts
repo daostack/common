@@ -22,8 +22,24 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
       return this.getDataArray
         .filter(
           (common: Common) =>
-            this.rootStore.authStore.isDaoMember(common?.members) &&
-            common?.active,
+            common.founderId === this.rootStore.authStore.signedInUser,
+        )
+        .sort(
+          (common, prevCommon) =>
+            prevCommon?.updatedAt?.seconds - common?.updatedAt?.seconds,
+        );
+    } catch (error) {
+      return [];
+    }
+  }
+
+  @computed
+  get exploreCommons() {
+    try {
+      return this.getDataArray
+        .filter(
+          (common: Common) =>
+            common.founderId !== this.rootStore.authStore.signedInUser,
         )
         .sort(
           (common, prevCommon) =>

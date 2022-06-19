@@ -13,6 +13,7 @@ import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 
 export class Common implements ICommonEntity {
   id: string;
+  founderId: string;
   createdAt: firebase.firestore.Timestamp;
   updatedAt: firebase.firestore.Timestamp;
   name: string;
@@ -51,6 +52,7 @@ export class Common implements ICommonEntity {
     this.messageCount = newCommonInfo.messageCount;
     this.discussionCount = newCommonInfo.discussionCount;
     this.byline = newCommonInfo.byline;
+    this.founderId = newCommonInfo.founderId;
     makeAutoObservable(this);
   }
 

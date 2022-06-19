@@ -61,7 +61,7 @@ const CommonsList = ({navigation, rootStore}) => {
   };
   const featuredDaosGroup = {
     title: 'Featured',
-    data: commonStore.featuredCommons,
+    data: commonStore.exploreCommons,
   };
 
   const [refreshing, setRefreshing] = React.useState(false);

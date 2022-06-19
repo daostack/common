@@ -7,6 +7,8 @@ export interface ICommonEntity extends IBaseEntity {
    */
   userId: string;
 
+  founderId: string;
+
   /**
    * The name of the common showed in the app and
    * other places (email, notification etc.)
