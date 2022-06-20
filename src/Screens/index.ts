@@ -16,6 +16,7 @@ export {default as PersonalPaymentDetailsStep} from './Commons/PersonalContribut
 export {default as ChoosePaymentMethodStep} from './Commons/PersonalContribution/ChoosePaymentMethodStep';
 export {default as EditCommon} from './Commons/EditCommon';
 export {default as FirstJoinCommon} from './Commons/FirstJoinCommon/FirstJoinCommon';
+export {default as WhitePaper} from './Commons/CommonProfile/WhitePaper/WhitePaper';
 
 //Contribution History
 export {default as ContributionHistory} from './Commons/ContributionHistory/ContributionHistory';

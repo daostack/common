@@ -2,8 +2,13 @@ import React from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colors, font} from '~/Theme';
 
-export const SeeMore = ({onSeeMorePress, text}) => (
-  <TouchableOpacity onPress={onSeeMorePress()} style={styles.seeMoreBtn}>
+type SeeMoreProps = {
+  onSeeMorePress: () => any;
+  text: string;
+};
+
+export const SeeMore = ({onSeeMorePress, text}: SeeMoreProps) => (
+  <TouchableOpacity onPress={() => onSeeMorePress()} style={styles.seeMoreBtn}>
     <Text style={styles.seeMore}>{text}</Text>
   </TouchableOpacity>
 );

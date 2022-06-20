@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {Common} from '~/Stores/Models/Common';
 import {colors, font} from '~/Theme';
 import {useNavigation} from '@react-navigation/native';
@@ -22,6 +22,8 @@ export const CommonDescription = (props: CommonDescriptionProps) => {
         setLinksVisible(!linksVisible);
         break;
       case 'whitePaper':
+        navigation.navigate('WhitePaper', {currCommon});
+        break;
 
       // eslint-disable-next-line no-fallthrough
       default:
