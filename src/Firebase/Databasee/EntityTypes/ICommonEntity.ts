@@ -5,7 +5,6 @@ export interface ICommonEntity extends IBaseEntity {
   /**
    * Common creator id
    */
-  userId: string;
 
   founderId: string;
 
@@ -31,6 +30,12 @@ export interface ICommonEntity extends IBaseEntity {
   links: ICommonLink[];
 
   searchable: boolean;
+
+  balance: number;
+
+  reservedBalance: number;
+
+  raised: number;
 }
 
 export interface ICommonRule {

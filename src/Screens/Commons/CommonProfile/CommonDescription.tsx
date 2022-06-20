@@ -4,6 +4,7 @@ import {Common} from '~/Stores/Models/Common';
 import {colors, font} from '~/Theme';
 import {useNavigation} from '@react-navigation/native';
 import Icon from '~/Assets/iconfont/Icon';
+import {SeeMore} from './components/SeeMore';
 
 interface CommonDescriptionProps {
   currCommon: Common;
@@ -15,14 +16,33 @@ export const CommonDescription = (props: CommonDescriptionProps) => {
   const [linksVisible, setLinksVisible] = useState(false);
 
   const description = currCommon.description;
-  const onSeeMorePress = () => {
-    setLinksVisible(!linksVisible);
+  const onSeeMorePress = (type: string) => {
+    switch (type) {
+      case 'link':
+        setLinksVisible(!linksVisible);
+        break;
+      case 'whitePaper':
+
+      // eslint-disable-next-line no-fallthrough
+      default:
+        break;
+    }
   };
 
   return (
     <View style={styles.textContainer}>
       <Text style={styles.aboutTitle}>About</Text>
       <Text style={styles.description}>{description}</Text>
+
+      <Text style={styles.aboutTitle}>White Paper</Text>
+      <Text style={styles.description}>
+        Common's set of guides are managed by user type
+      </Text>
+      <SeeMore
+        onSeeMorePress={() => onSeeMorePress('whitePaper')}
+        text="See more >"
+      />
+
       <View style={styles.linksContainer}>
         {linksVisible &&
           currCommon.links?.length !== 0 &&
@@ -40,11 +60,10 @@ export const CommonDescription = (props: CommonDescriptionProps) => {
           ))}
       </View>
       {currCommon.links && currCommon.links?.length !== 0 && (
-        <TouchableOpacity onPress={onSeeMorePress} style={styles.seeMoreBtn}>
-          <Text style={styles.seeMore}>
-            {linksVisible ? 'Hide <' : 'See more >'}
-          </Text>
-        </TouchableOpacity>
+        <SeeMore
+          onSeeMorePress={() => onSeeMorePress('links')}
+          text={linksVisible ? 'Hide <' : 'See more >'}
+        />
       )}
     </View>
   );
@@ -68,16 +87,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontSize: 14,
     color: colors.black,
-  },
-  seeMore: {
-    ...font.primary.regular,
-    lineHeight: 20,
-    fontSize: 14,
-    textDecorationLine: 'underline',
-    color: colors.black,
-  },
-  seeMoreBtn: {
-    alignSelf: 'flex-end',
   },
   iconContainer: {
     marginTop: 16,
