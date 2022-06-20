@@ -10,6 +10,7 @@ import {text, layout, colors} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
 import {observer} from 'mobx-react';
 import {object, func, string, bool} from 'prop-types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const CommonProfileOptions = ({
   moderatorOptions = null,
@@ -17,6 +18,7 @@ const CommonProfileOptions = ({
   hasPermission,
   hasShare = false,
 }) => {
+  const insets = useSafeAreaInsets();
   const [actions, setActions] = useState(
     moderatorOptions.actions || ['Hide', 'Report'],
   );
@@ -118,9 +120,13 @@ const CommonProfileOptions = ({
 
   return (
     <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.scrollView}
+      style={[styles.scrollView]}
+      contentContainerStyle={[
+        styles.scrollContainer,
+        {paddingBottom: insets.bottom + 20},
+      ]}
       vertical={true}
+      showsVerticalScrollIndicator={false}
       nestedScrollEnabled={true}
       directionalLockEnabled={true}>
       <View style={styles.body}>
@@ -152,7 +158,9 @@ const styles = StyleSheet.create({
     borderColor: colors.blueGray1,
   },
   scrollView: {
-    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   sheetTextStyle: {
     ...text.greyText,

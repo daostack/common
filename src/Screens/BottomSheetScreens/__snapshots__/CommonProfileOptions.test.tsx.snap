@@ -2,13 +2,23 @@
 
 exports[`CommonProfileOptions CommonProfileOptions should render correctly 1`] = `
 <RCTScrollView
-  contentInsetAdjustmentBehavior="automatic"
+  contentContainerStyle={
+    Array [
+      Object {
+        "flexGrow": 1,
+      },
+      Object {
+        "paddingBottom": NaN,
+      },
+    ]
+  }
   directionalLockEnabled={true}
   nestedScrollEnabled={true}
+  showsVerticalScrollIndicator={false}
   style={
-    Object {
-      "flex": 1,
-    }
+    Array [
+      Object {},
+    ]
   }
   vertical={true}
 >

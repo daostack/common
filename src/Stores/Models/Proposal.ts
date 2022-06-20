@@ -35,6 +35,7 @@ export class Proposal implements BaseModel<IProposalEntity> {
   join: IProposalJoin | undefined | null = null;
   description: IFundingRequestDescription | IJoinReqDescription;
   moderation?: IModerationEntity | null = null;
+  messageCount?: number;
 
   get isJoinRequest() {
     return this.type === PROPOSAL_TYPE.Join;
@@ -95,6 +96,7 @@ export class Proposal implements BaseModel<IProposalEntity> {
     this.votesAgainst = newProposalInfo.votesAgainst;
     this.description = newProposalInfo.description;
     this.moderation = newProposalInfo.moderation;
+    this.messageCount = newProposalInfo.messageCount;
     if (this.type === PROPOSAL_TYPE.Join) {
       this.paymentState = (
         newProposalInfo as IJoinRequestProposal

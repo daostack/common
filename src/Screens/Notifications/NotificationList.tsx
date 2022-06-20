@@ -14,7 +14,7 @@ import {
 import PushNotification from 'react-native-push-notification';
 import Loader from '~/Components/Loader';
 import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
-import CommonWhitelisted from '~/Components/Notifications/CommonWhitelisted';
+import {CommonWhitelisted} from '~/Components/Notifications/CommonWhitelisted';
 import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
 import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
 import DiscussionReported from '~/Components/Notifications/DiscussionReported';
@@ -30,7 +30,7 @@ import {Notification} from '~/Stores/Models/Notification';
 import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
-const NotificationList = (props) => {
+export const NotificationList = observer((props) => {
   const {notificationsArray} = props;
   const navigation = useNavigation();
   const notificationStore = useStore('notificationStore');
@@ -50,7 +50,7 @@ const NotificationList = (props) => {
     switch (item.eventType) {
       case EventTypeState.commonWhitelisted:
       case EventTypeState.commonCreated:
-        return <CommonWhitelisted item={item} navigation={navigation} />;
+        return <CommonWhitelisted item={item} />;
 
       case EventTypeState.fundingRequestCreated:
       case EventTypeState.fundingRequestAccepted:
@@ -130,7 +130,7 @@ const NotificationList = (props) => {
       </SafeAreaView>
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -155,5 +155,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default observer(NotificationList);

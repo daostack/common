@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     padding: sizeXS,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    minHeight: 42,
   },
   hiddenCardHeader: {
     ...layout.flexRow,

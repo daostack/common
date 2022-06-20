@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const hexToRGBA = (hexCode: string, opacity = 1): string => {
+const hexToRGBA = (hexCode: string = '#000', opacity = 1): string => {
   let hex = hexCode.replace('#', '');
 
   if (hex.length === 3) {

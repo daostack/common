@@ -202,6 +202,8 @@ export interface IFundingRequestProposal extends IBaseProposalEntity {
   description: TypeFundingRequestDescription;
 
   fundingRequest: IProposalFundingRequest;
+
+  messageCount: number;
 }
 
 export interface CreateFundingRequestProposalPayload {
@@ -262,6 +264,8 @@ export interface IJoinRequestProposal extends IBaseProposalEntity {
   paymentState: ProposalPaymentState;
 
   join: IProposalJoin;
+
+  messageCount: number;
 }
 
 export interface InvoiceImage {
