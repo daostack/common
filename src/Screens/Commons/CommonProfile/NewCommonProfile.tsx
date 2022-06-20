@@ -74,7 +74,11 @@ export const NewCommonProfile = observer(() => {
 
   useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
+    if (
+      authStore.userInfo &&
+      (authStore.isDaoMember(currCommon?.members) ||
+        authStore.userInfo.uid === currCommon.founderId)
+    ) {
       setIsMember(true);
     } else {
       setIsMember(false);

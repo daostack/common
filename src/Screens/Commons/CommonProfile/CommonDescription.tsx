@@ -14,7 +14,7 @@ export const CommonDescription = (props: CommonDescriptionProps) => {
   const {currCommon} = props;
   const [linksVisible, setLinksVisible] = useState(false);
 
-  const description = currCommon.metadata.description;
+  const description = currCommon.description;
   const onSeeMorePress = () => {
     setLinksVisible(!linksVisible);
   };

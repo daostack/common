@@ -35,7 +35,7 @@ export const CommonTopTitles = ({
     stage: PROPOSAL_STAGE.Active,
     type: PROPOSAL_TYPE.Join,
   }).length;
-  const membersCount = commonStore.getCommonById(common.id)?.members.length;
+  const membersCount = 0;//commonStore.getCommonById(common.id)?.members.length;
 
   const onMembersPress = () => {
     navigation.navigate('CommonMembers', {
