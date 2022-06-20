@@ -37,7 +37,7 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
 
   async function pickFile(): Promise<void> {
     try {
-      const res = await DocumentPicker.pickSingle({
+      const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
 

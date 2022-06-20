@@ -63,7 +63,7 @@ class FileField extends React.Component {
 
   pickFile = async () => {
     try {
-      const res = await DocumentPicker.pickSingle({
+      const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
 
