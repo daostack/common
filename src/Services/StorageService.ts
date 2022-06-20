@@ -1,6 +1,6 @@
 import {storage} from '~/Firebase';
 import {Platform} from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 class StorageService {
   uploadImage = async (
@@ -24,11 +24,12 @@ class StorageService {
       return uri;
     }
 
-    const dirs = RNFetchBlob.fs.dirs;
-    const destPath = `${dirs.DocumentDir}/${name}`;
-    await RNFetchBlob.fs.writeFile(destPath, uri);
-    const fileUri = await RNFetchBlob.fs.stat(destPath);
-    return `file://${fileUri.path}`;
+    const destPath = ReactNativeBlobUtil.fs.dirs.CacheDir + `/${name}`;
+    await ReactNativeBlobUtil.MediaCollection.copyToInternal(
+      uri, // content uri of the entry in the media storage
+      destPath, // path to destination the entry should be copied to
+    );
+    return destPath;
   };
 
   uploadFile = async (
@@ -36,14 +37,10 @@ class StorageService {
     name: string,
     storagePath = 'public_file',
   ): Promise<string> => {
-    const path =
-      Platform.OS === 'ios'
-        ? `${storagePath}/${name}`
-        : await this.getPathForFirebaseStorage(fileUri, name);
+    const documentUri = await this.getPathForFirebaseStorage(fileUri, name);
 
-    const ref = storage.ref(path);
-    const putFilePath = Platform.OS === 'ios' ? fileUri : path;
-    await ref.putFile(putFilePath);
+    const ref = storage.ref(`${storagePath}/${name}`);
+    await ref.putFile(documentUri);
     return await ref.getDownloadURL();
   };
 

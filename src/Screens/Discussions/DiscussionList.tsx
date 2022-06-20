@@ -3,14 +3,15 @@ import {observer} from 'mobx-react';
 import React, {useCallback} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import ViewTabNoData from '~/Components/ViewTabNoData';
+import {Discussion} from '~/Stores/Models/Discussion';
 import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {useStore} from '~/Util/hooks/useStore';
 import {DiscussionCard} from './DiscussionCard';
 
 interface DiscussionListProps {
   commonId: string;
-  openCommonOptions: () => void;
-  showHiddenNote: () => void;
+  openCommonOptions: (item: Discussion) => void;
+  showHiddenNote: ({hiddenItem, isModerator}) => void;
   isMember: boolean;
 }
 
@@ -43,9 +44,9 @@ export const DiscussionList = observer((props: DiscussionListProps) => {
               data={item}
               commonId={commonId}
               openCommonOptions={() => openCommonOptions(item)}
-              hiddenDiscussionNote={() =>
-                showHiddenNote({hiddenItem: item, isModerator})
-              }
+              hiddenDiscussionNote={() => {
+                showHiddenNote({hiddenItem: item, isModerator});
+              }}
               isMember={isMember}
               viewerPermission={viewerPermission}
             />
