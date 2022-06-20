@@ -30,6 +30,20 @@ jest.mock('rn-fetch-blob', () => ({
     fetch: jest.fn(),
   }),
 }));
+jest.mock('react-native-blob-util', () => ({
+  fs: {
+    dirs: {
+      CacheDir: './',
+    },
+    unlink: jest.fn(),
+  },
+  MediaCollection: {
+    copyToInternal: jest.fn(),
+  },
+  config: () => ({
+    fetch: jest.fn(),
+  }),
+}));
 jest.mock('react-native-permissions', () =>
   require('react-native-permissions/mock'),
 );
