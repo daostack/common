@@ -5,7 +5,9 @@ import {StyleSheet, Text, View} from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import {COUNTDOWN_STATES, LAUNCHED_STATES} from '~/Services/ProposalService';
 import {colors, font, text} from '~/Theme';
+import {PERMISSIONS} from '~/Util/constants/permissions.enum';
 import {monthShortNames} from '~/Util/DateUtil';
+import {useStore} from '~/Util/hooks/useStore';
 import {CurrencySymbols} from '~/Util/locale';
 import MemberImage from './Commons/MemberImage';
 
@@ -16,6 +18,7 @@ interface CardProps {
     displayName: string;
     daos: [];
   };
+  commonId: string;
   proposalInfo: {
     type: string;
     closingAt: number;
@@ -30,7 +33,13 @@ interface CardProps {
 }
 
 export const MemberCard = observer((props: CardProps) => {
-  const {userInfo, proposalInfo = null} = props;
+  const {userInfo, proposalInfo = null, commonId} = props;
+  const rootStore = useStore('rootStore');
+  const viewerPermission = rootStore.authStore.getPermission(
+    commonId,
+    userInfo?.uid,
+  );
+  const isModerator = viewerPermission === PERMISSIONS.MODERATOR;
 
   const renderRightContainer = () => {
     if (proposalInfo) {
@@ -40,11 +49,11 @@ export const MemberCard = observer((props: CardProps) => {
       return (
         <View style={styles.rightContainer}>
           <View style={styles.timeContainer}>
-            {proposalInfo.funding > 0 && (
+            {proposalInfo?.funding > 0 && (
               <View style={styles.priceContainer}>
                 <Text style={text.h2Black}>
-                  {`${CurrencySymbols.SHEKEL}${proposalInfo.funding / 100}`}
-                  {proposalInfo.join?.fundingType === 'monthly' && '/mo'}
+                  {`${CurrencySymbols.SHEKEL}${proposalInfo?.funding / 100}`}
+                  {proposalInfo?.join?.fundingType === 'monthly' && '/mo'}
                 </Text>
               </View>
             )}
@@ -88,7 +97,7 @@ export const MemberCard = observer((props: CardProps) => {
 
       return (
         <View style={styles.rightContainer}>
-          <Text style={{...text.smallGreyText, marginTop: 2}}>
+          <Text style={{...styles.rightDate, marginTop: 2}}>
             {memberCreatedDateInfo}
           </Text>
         </View>
@@ -99,17 +108,20 @@ export const MemberCard = observer((props: CardProps) => {
   return (
     <View style={{...styles.cardContainer, ...styles.noBottomBorder}}>
       <MemberImage userInfo={userInfo} />
-      <View style={{paddingLeft: 8}}>
-        <Text style={styles.displayName}>
-          {userInfo?.displayName || 'Unknown user'}
-        </Text>
-        {proposalInfo && (
-          <Text style={styles.date}>
-            {moment.unix(proposalInfo.createdAt.seconds).fromNow()}
+      <View style={styles.textContainer}>
+        <View style={styles.cardTitlesContainer}>
+          {isModerator && <Text style={styles.moderator}>Moderator</Text>}
+          <Text style={styles.displayName}>
+            {userInfo?.displayName || 'Unknown user'}
           </Text>
-        )}
+          {proposalInfo && (
+            <Text style={styles.date}>
+              {moment.unix(proposalInfo?.createdAt?.seconds).fromNow()}
+            </Text>
+          )}
+        </View>
+        {renderRightContainer()}
       </View>
-      {renderRightContainer()}
     </View>
   );
 });
@@ -119,23 +131,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: colors.grey4,
-    paddingVertical: 16,
+    flex: 1,
+    paddingVertical: 22,
   },
+  textContainer: {
+    paddingLeft: 11,
+    width: '88%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardTitlesContainer: {},
   noBottomBorder: {
     borderBottomWidth: 0,
   },
-  displayName: {
+  moderator: {
     ...font.primary.regular,
-    lineHeight: 19,
-    fontSize: 16,
+    fontSize: 12,
+    color: colors.mainBlue,
+  },
+  displayName: {
+    ...font.primary.bold,
+    lineHeight: 20,
+    fontSize: 14,
     color: colors.black,
     marginBottom: 3,
   },
-  rightContainer: {
-    position: 'absolute',
-    right: 0,
-    top: 16,
-  },
+  rightContainer: {},
   priceContainer: {},
   timeContainer: {
     alignItems: 'flex-end',
@@ -145,5 +167,10 @@ const styles = StyleSheet.create({
   date: {
     ...font.primary.regular,
     color: colors.greySubtitle,
+  },
+  rightDate: {
+    ...font.primary.regular,
+    color: colors.greySubtitle,
+    fontSize: 12,
   },
 });
