@@ -11,6 +11,8 @@ import {FirestoreUnsubscribeFn, IFirebaseDoc} from '~/Firebase/types';
 import RootStore from '../RootStore';
 import {Common} from '../Models/Common';
 import {ICommonEntity} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
+import {CommonMemberModel} from '../Models/CommonMembers';
+import {CommonMember} from '~/Firebase/Databasee/EntityTypes/commons/CommoneMembers';
 import {DAO_REGISTERED} from '~/Firebase/Databasee';
 import {Proposal} from '../Models/Proposal';
 import {isDaoMemberByUserId, showBackendError} from '~/Util';
@@ -18,15 +20,23 @@ import {runInAction} from 'mobx';
 import {COMMON_STATE} from '~/Shared/enums/commonState';
 import {
   updateStoreDataFromSubCollection,
+  updateStoreData,
   getDataArray,
 } from '~/Util/firebaseHelper';
 
 export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   private myCommonsData: ObservableMap<string, Common> = observable.map({});
+  private commonMembers: ObservableMap<string, CommonMemberModel> =
+    observable.map({});
 
   constructor(rootStore: RootStore) {
     super(rootStore);
     makeObservable(this);
+  }
+
+  @computed
+  get getCommonMembers() {
+    return [...getDataArray<CommonMemberModel>(this.commonMembers)];
   }
 
   @computed
@@ -130,6 +140,10 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
   subscribeToAllCommons = (): FirestoreUnsubscribeFn =>
     CommonService.subscribeToAllCommons(this.updateStoreData);
 
+  getCommonMemberEntity(entity: CommonMember): CommonMemberModel {
+    return new CommonMemberModel(entity);
+  }
+
   @action
   subscribeToMyCommons = (userId: string): FirestoreUnsubscribeFn =>
     CommonService.subscribeToMyCommons(
@@ -139,6 +153,19 @@ export default class CommonStore extends BaseStore<Common, ICommonEntity> {
         this.getEntityModel,
       ),
     );
+
+  @action
+  subscribeToCommonMembers = (commonId: string): FirestoreUnsubscribeFn => {
+    this.commonMembers.clear();
+
+    return CommonService.subscribeToCommonMembers(
+      commonId,
+      updateStoreData<CommonMember, CommonMemberModel>(
+        this.commonMembers,
+        this.getCommonMemberEntity,
+      ),
+    );
+  };
 
   /**
    * This function is updating the common in the firebase with the new changes

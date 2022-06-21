@@ -1,6 +1,7 @@
 import axios, {AxiosInstance, AxiosResponse} from 'axios';
 import {commonsUrl} from '~/Config';
 import {auth} from '~/Firebase';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {
   CommonsCollection,
   CommonsMemberCollection,
@@ -63,6 +64,16 @@ class CommonService {
         callback(snapshot);
       },
     );
+
+  subscribeToCommonMembers = async (
+    commonId: string,
+    callback: commonListLoadCallbackFn,
+  ): FirestoreUnsubscribeFn =>
+    CommonsCollection.doc(commonId)
+      .collection(DB_COLLECTIONS.members)
+      .onSnapshot((snapshot) => {
+        callback(snapshot);
+      });
 
   createCommon = async (
     formData: CommonCreatedBody,

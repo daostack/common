@@ -51,10 +51,9 @@ export const NewCommonProfile = observer(() => {
   const [showRequestSentModal, setShowRequestSentModal] = useState(false);
 
   const params: RouteParams = route!.params;
-  const currCommon: Common = commonStore.getCommonById(
-    params?.commonId || params?.currCommon?.id,
-  )!;
-  const commonId = currCommon?.id;
+  const commonId = params?.commonId || params?.currCommon?.id;
+  const commonMembers = commonStore.getCommonMembers;
+  const currCommon: Common = commonStore.getCommonById(commonId)!;
   const [hasPermission, setHasPermission] = useState(
     authStore.getPermission(commonId, authStore.userInfo.uid),
   );
@@ -73,8 +72,20 @@ export const NewCommonProfile = observer(() => {
   };
 
   useEffect(() => {
+    let unsubscribeFromCommonMembers = null;
+    if (commonId) {
+      unsubscribeFromCommonMembers =
+        commonStore.subscribeToCommonMembers(commonId);
+    }
+
+    return () => {
+      unsubscribeFromCommonMembers && unsubscribeFromCommonMembers();
+    };
+  }, [commonId]);
+
+  useEffect(() => {
     setShowRequestSentModal(params.showRequestSentModal);
-    if (authStore.userInfo && authStore.isDaoMember(currCommon?.members)) {
+    if (authStore.userInfo && authStore.isDaoMember(commonMembers)) {
       setIsMember(true);
     } else {
       setIsMember(false);
@@ -82,7 +93,7 @@ export const NewCommonProfile = observer(() => {
     setHasPermission(
       authStore.getPermission(commonId, authStore?.userInfo?.uid),
     );
-  }, [params.showRequestSentModal, authStore.userInfo, currCommon?.members]);
+  }, [params.showRequestSentModal, authStore.userInfo, commonMembers]);
 
   const onDelete = async () => {
     try {
@@ -205,7 +216,7 @@ export const NewCommonProfile = observer(() => {
           {!deleteScreenOn && !leaveScreenOn ? (
             <ModalCommonOptions
               currCommon={currCommon}
-              commonMembersCount={currCommon?.members?.length}
+              commonMembersCount={currCommon.memberCount}
               isFounderOrModerator={hasPermission}
               onAction={onModalOptionsAction}
               closeModal={closeCommonOptionsModal}
