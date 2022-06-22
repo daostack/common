@@ -10,7 +10,7 @@ import {
 } from 'rn-placeholder';
 import MemberImage from '~/Components/Commons/MemberImage';
 import {MemberCard} from '~/Components/MemberCard';
-import {colors, layout, sizeS} from '~/Theme';
+import {colors, layout} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 
 interface MembersListProps {
@@ -128,7 +128,7 @@ export const CommonMembersList = observer(
 
 const styles = StyleSheet.create({
   item: {
-    paddingHorizontal: sizeS,
+    paddingHorizontal: 23,
     borderBottomColor: colors.grey4,
     borderBottomWidth: 1,
   },

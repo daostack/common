@@ -25,8 +25,7 @@ export const History = ({commonId}: Props): ReactElement => (
 const styles = StyleSheet.create({
   proposalsList: {
     paddingHorizontal: 24,
-  },
-  listContainer: {
     paddingTop: 24,
   },
+  listContainer: {},
 });

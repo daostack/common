@@ -39,6 +39,7 @@ export const PROPOSAL_STAGE = {
   passed: 'passed',
   failed: 'failed',
   passedInsufficientBalance: 'passedInsufficientBalance',
+  expiredInvociesNotUploaded: 'expiredInvociesNotUploaded',
 };
 
 export const PROPOSAL_STAGES_ACTIVE = [PROPOSAL_STAGE.countdown];
