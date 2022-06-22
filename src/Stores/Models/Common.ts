@@ -1,12 +1,8 @@
 import {makeAutoObservable, computed} from 'mobx';
 import {formatNumber} from '~/Util';
 import {
-  CommonRegister,
   ICommonEntity,
   ICommonLink,
-  ICommonMember,
-  ICommonMetadata,
-  ICommonRule,
 } from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {firebase} from '~/Firebase';
 import {formatMinFeeToJoin} from '~/Util/FormatUtil';

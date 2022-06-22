@@ -48,6 +48,20 @@ jest.mock('@react-native-firebase/firestore', () =>
         }),
       }),
     }),
+    collectionGroup: jest.fn().mockReturnValue({
+      doc: jest.fn().mockReturnValue({
+        collection: jest.fn().mockReturnValue({
+          doc: jest.fn().mockReturnValue({
+            collection: jest.fn().mockReturnValue({
+              doc: jest.fn().mockReturnValue({
+                set: jest.fn(),
+                get: jest.fn(),
+              }),
+            }),
+          }),
+        }),
+      }),
+    }),
   }),
 );
 jest.mock('@react-native-firebase/messaging', () => jest.fn());
@@ -65,6 +79,10 @@ jest.mock('react-native-fbsdk-next', () => ({
 
 jest.mock('react-native-config', () => ({
   ENV: 'staging',
+}));
+
+jest.mock('react-native-share', () => ({
+  default: jest.fn(),
 }));
 
 jest.mock('@react-native-community/google-signin', () => {

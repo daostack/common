@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CommonStageSummary CommonStageSummary should render correctly 1`] = `
+exports[`CommonFundsBox CommonFundsBox should render correctly 1`] = `
 <View
   style={
     Object {
