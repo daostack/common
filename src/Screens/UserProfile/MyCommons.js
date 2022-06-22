@@ -12,11 +12,12 @@ import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {inject, observer} from 'mobx-react';
 import CommonBox from '~/Components/Commons/CommonBox/CommonBox';
 import {layout, colors, text, font, sizeS} from '~/Theme';
-import {CommonActions} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {object} from 'prop-types';
 import {commonStorePropTypes} from '~/Types/propTypes';
 
-const MyCommons = ({navigation, commonStore}) => {
+const MyCommons = ({commonStore}) => {
+  const navigation = useNavigation();
   const onScreenScroll = (event) => {
     navigation.setOptions({
       title:
@@ -25,13 +26,9 @@ const MyCommons = ({navigation, commonStore}) => {
   };
 
   const navigateToCommon = (common) => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        currCommon: common,
-      },
+    navigation.navigate('CommonProfile', {
+      commonId: common.id,
     });
-    navigation.dispatch(navigate);
   };
 
   const renderCommonCard = useCallback(

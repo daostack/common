@@ -13,19 +13,13 @@ import {IconWalletSelected} from '~/Assets/iconfont/IconWalletSelected';
 import {IconWallet} from '~/Assets/iconfont/IconWallet';
 import {useRoute} from '@react-navigation/native';
 import {CommonWallet} from '~/Screens/Commons/CommonProfile/CommonWallet/CommonWallet';
-import {useStore} from '~/Util/hooks/useStore';
 
 const Tab = createBottomTabNavigator();
 
 export const CommonTabNavigator = observer(() => {
   const route = useRoute();
-  const commonStore = useStore('commonStore');
-  let currCommon =
-    route?.params?.params?.currCommon || route?.params?.currCommon;
+
   const commonId = route?.params?.params?.commonId || route?.params?.commonId;
-  if (currCommon === undefined && commonId !== undefined) {
-    currCommon = commonStore.getCommonById(commonId)!;
-  }
 
   return (
     <Tab.Navigator
@@ -95,7 +89,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonAgenda"
         component={CommonAgenda}
-        initialParams={{currCommon}}
+        initialParams={{commonId}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text
@@ -112,7 +106,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonProposals"
         component={CommonProposals}
-        initialParams={{currCommon}}
+        initialParams={{commonId}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text
@@ -129,7 +123,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonDiscussions"
         component={CommonDiscussions}
-        initialParams={{currCommon}}
+        initialParams={{commonId}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text
@@ -146,7 +140,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonWallet"
         component={CommonWallet}
-        initialParams={{currCommon}}
+        initialParams={{commonId}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text
@@ -163,7 +157,7 @@ export const CommonTabNavigator = observer(() => {
       <Tab.Screen
         name="CommonNotifications"
         component={CommonNotifications}
-        initialParams={{currCommon}}
+        initialParams={{commonId}}
         options={{
           tabBarLabel: ({focused}) => (
             <Text

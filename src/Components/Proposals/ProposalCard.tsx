@@ -25,7 +25,7 @@ import {MemberCard} from '../MemberCard';
 import {FLAGS} from '../Moderation/constants';
 import ModerationMenu from '../Moderation/ModerationMenu';
 import {ProposalApprovalTag} from './ProposalApprovalTag';
-import ProposalCardHeader from './ProposalCardHeader';
+import {ProposalCardHeader} from './ProposalCardHeader';
 
 interface CardProps {
   proposalId: string;

@@ -31,10 +31,14 @@ import {useStore} from '~/Util/hooks/useStore';
 
 export const CommonNotifications = () => {
   const navigation = useNavigation();
-  const notificationStore = useStore('notificationStore');
-
   const route = useRoute();
-  const {currCommon} = route.params;
+
+  const notificationStore = useStore('notificationStore');
+  const commonStore = useStore('commonStore');
+
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
+
   const notificationsArray = notificationStore.getCommonNotifications(
     currCommon.id,
   );

@@ -41,8 +41,7 @@ export const Pending = ({
 const styles = StyleSheet.create({
   proposalsList: {
     paddingHorizontal: 24,
-  },
-  listContainer: {
     paddingTop: 24,
   },
+  listContainer: {},
 });

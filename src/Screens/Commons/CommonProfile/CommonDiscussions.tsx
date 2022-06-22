@@ -20,12 +20,14 @@ const moderationFormStore = new ModerationFormStore();
 export const CommonDiscussions = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
-  const rootStore = useStore('rootStore');
   const authStore = useStore('authStore');
   const discussionStore = useStore('discussionStore');
   const proposalStore = useStore('proposalStore');
-  const userStore = useStore('userStore');
-  const {currCommon} = route.params;
+  const uiStore = useStore('uiStore');
+  const commonStore = useStore('commonStore');
+
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
 
   const [action, setAction] = useState(ACTIONS.report);
   const [showModerationModal, setShowModerationModal] = useState(false);
@@ -38,7 +40,7 @@ export const CommonDiscussions = observer(() => {
     authStore?.userInfo?.uid,
   );
 
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const bottomSheetStore = uiStore.bottomSheetStore;
 
   const isMember = authStore.isDaoMember(currCommon?.members);
   const membershipRequestType = (itemTitle) =>

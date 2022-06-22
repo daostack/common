@@ -4,14 +4,15 @@ import {CommonBox} from '~/Components';
 import SwiperCard from '~/Components/SwiperCard';
 import {layout, text, font, colors} from '~/Theme';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
-import {CommonActions} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {string, object, number} from 'prop-types';
 import {observer, inject} from 'mobx-react';
 import {commonStorePropTypes} from '~/Types/propTypes';
 
 const DEFAULT_HEADER_HEIGHT = 145;
 
-const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
+const CommonsSwiper = ({userId, showMax, commonStore}) => {
+  const navigation = useNavigation();
   const myDaos = commonStore.getUserCommons(userId);
   const [headerHeight, setHeaderHeight] = useState(DEFAULT_HEADER_HEIGHT);
 
@@ -20,13 +21,7 @@ const CommonsSwiper = ({navigation, userId, showMax, commonStore}) => {
   };
 
   const navigateToCommon = (common) => {
-    const navigate = CommonActions.navigate({
-      name: 'CommonProfile',
-      params: {
-        currCommon: common,
-      },
-    });
-    navigation.dispatch(navigate);
+    navigation.navigate('CommonProfile', {commonId: common.id});
   };
 
   const renderCommonCard = (item, index) =>
