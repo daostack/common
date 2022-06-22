@@ -122,6 +122,9 @@ import IconNewCard from './IconNewCard';
 import {AnimateProps} from 'react-native-reanimated';
 import IconCopy from './IconCopy';
 import IconmenuHorizontalAnim from '~/Assets/iconfont/IconmenuHorizontalAnim';
+import IconSenior from './IconSenior';
+import IconLeader from './IconLeader';
+import IconStandard from './IconStandard';
 import { Iconlock } from './Iconlock';
 
 export type IconNames =
@@ -242,7 +245,10 @@ export type IconNames =
   | 'phone'
   | 'abstained-24'
   | 'copy'
-  | 'newCard';
+  | 'newCard'
+  | 'senior'
+  | 'leader'
+  | 'standard';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -489,6 +495,12 @@ export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {
       return <IconCalendar {...rest} />;
     case 'newCard':
       return <IconNewCard {...rest} />;
+    case 'senior':
+      return <IconSenior {...rest} />;
+    case 'leader':
+      return <IconLeader {...rest} />;
+    case 'standard':
+      return <IconStandard {...rest} />;
   }
 
   return null;

@@ -26,6 +26,7 @@ import {
   MyProposals,
   MyCommons,
   CommonAgenda,
+  WhitePaper,
   CommonMembers,
   CommonExplanation,
   CreateCommonGeneralInfo,
@@ -79,6 +80,7 @@ import Toast from './src/Util/Toast';
 import {object} from 'prop-types';
 import logger from './src/Services/Logger';
 import {fontSize} from './src/Theme/font';
+import {text, font} from './src/Theme';
 import Loader from '~/Components/Loader';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
@@ -423,6 +425,33 @@ const App = () => {
             options={({route}) => ({
               title: route?.params?.screenTitle,
               headerBackTitleVisible: false,
+            })}
+          />
+          <Stack.Screen
+            name="WhitePaper"
+            component={WhitePaper}
+            options={({route, ...rest}) => ({
+              headerBackTitleVisible: false,
+              headerTitleAlign: 'center',
+              headerStyle: {
+                backgroundColor: colors.iceBlue,
+                height: 160,
+              },
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => rest?.navigation.pop()}>
+                  <Icon name="left-arrow" color={colors.black} size={32} />
+                </TouchableOpacity>
+              ),
+              headerTitle: () => (
+                <View style={{alignItems: 'center'}}>
+                  <Text style={styles.whitePaperTitle}>
+                    {`${route?.params?.currCommon?.name}'s White Paper`}
+                  </Text>
+                  <Text style={styles.whitePaperSubtitle}>
+                    Common's set of guides are managed by user type
+                  </Text>
+                </View>
+              ),
             })}
           />
           <Stack.Screen
@@ -881,6 +910,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  whitePaperTitle: {
+    ...text.h1BlackTitle,
+    fontSize: 16,
+  },
+  whitePaperSubtitle: {
+    textAlign: 'center',
+    ...font.primary.regular,
+    fontSize: 14,
+    color: colors.greySubtitle,
   },
 });
 
