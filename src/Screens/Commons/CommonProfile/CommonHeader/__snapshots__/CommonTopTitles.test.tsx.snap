@@ -67,7 +67,9 @@ exports[`CommonTopTitles CommonTopTitles should render correctly 1`] = `
         "zIndex": 99,
       }
     }
-  />
+  >
+    byline
+  </Text>
   <RNGestureHandlerButton
     collapsable={false}
     exclusive={true}
