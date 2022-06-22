@@ -33,12 +33,10 @@ export const WhitePaperTabs = ({
         />
       </View>
       <Text
-        style={[
-          styles.tabText,
-          activeTab === WhitePaperCircleTabs.standard
-            ? {color: colors.mainBlue}
-            : {},
-        ]}>
+        style={{
+          ...styles.tabText,
+          color: getColor(activeTab, WhitePaperCircleTabs.standard),
+        }}>
         {WhitePaperCircleTabs.standard}
       </Text>
       {activeTab === WhitePaperCircleTabs.standard && (
@@ -55,12 +53,10 @@ export const WhitePaperTabs = ({
         />
       </View>
       <Text
-        style={[
-          styles.tabText,
-          activeTab === WhitePaperCircleTabs.senior
-            ? {color: colors.mainBlue}
-            : {},
-        ]}>
+        style={{
+          ...styles.tabText,
+          color: getColor(activeTab, WhitePaperCircleTabs.senior),
+        }}>
         {WhitePaperCircleTabs.senior}
       </Text>
       {activeTab === WhitePaperCircleTabs.senior && <View style={styles.dot} />}
@@ -75,12 +71,10 @@ export const WhitePaperTabs = ({
         />
       </View>
       <Text
-        style={[
-          styles.tabText,
-          activeTab === WhitePaperCircleTabs.leader
-            ? {color: colors.mainBlue}
-            : {},
-        ]}>
+        style={{
+          ...styles.tabText,
+          color: getColor(activeTab, WhitePaperCircleTabs.leader),
+        }}>
         {WhitePaperCircleTabs.leader}
       </Text>
       {activeTab === WhitePaperCircleTabs.leader && <View style={styles.dot} />}
