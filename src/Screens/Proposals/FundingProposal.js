@@ -86,15 +86,14 @@ const FundingProposal = ({
 
           Toast.done('Your proposal was created!');
 
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
+          navigation.navigate('CommonProfile', {
+            screen: 'CommonAgenda',
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
               commonId,
             },
           });
-          navigation.dispatch(navigate);
         } else {
           navigation.pop();
           showErrorPopUp(

@@ -51,7 +51,7 @@ export type NavigationRoutes = {
   HomeTabNavigator: undefined;
   CommonProfile: {
     screen?: string;
-    params?: {currCommon: Common};
+    params?: {commonId: string};
     commonId?: string;
   };
   CommonAgenda: undefined;

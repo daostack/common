@@ -37,8 +37,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   notificationStore,
 }) => {
   const navigateToDetail = () => {
-    let navigate;
-
     notificationStore.setNotificationItemState(item.id, {
       opened: true,
     });
@@ -58,7 +56,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       navigation.navigate('CommonProfile', {
         screen: 'CommonAgenda',
         params: {
-          currCommon: notificationData.common,
+          commonId: notificationData.common?.id,
           fromNotificationItem: true,
         },
       });

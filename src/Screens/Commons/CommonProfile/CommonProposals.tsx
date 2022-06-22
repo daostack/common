@@ -8,7 +8,6 @@ import {ACTIONS, ENTITY_TYPES, TITLES} from '~/Components/Moderation/constants';
 import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
 import ModerationModal from '~/Components/Moderation/ModerationModal';
-import {PROPOSAL_TYPE} from '~/Config';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
@@ -22,14 +21,15 @@ const moderationFormStore = new ModerationFormStore();
 export const CommonProposals = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
-  const rootStore = useStore('rootStore');
   const authStore = useStore('authStore');
   const userStore = useStore('userStore');
+  const uiStore = useStore('uiStore');
+  const commonStore = useStore('commonStore');
 
-  const {currCommon} = route.params;
-  const commonId = currCommon.id;
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
   const isMember = authStore.isDaoMember(currCommon?.members);
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const bottomSheetStore = uiStore.bottomSheetStore;
 
   const [moderationType, setModerationType] = useState(TITLES.discussion);
   const [hasPermission, setHasPermission] = useState(

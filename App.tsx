@@ -25,7 +25,6 @@ import {
   EditProfile,
   MyProposals,
   MyCommons,
-  CommonAgenda,
   CommonMembers,
   CommonExplanation,
   CreateStep1,
@@ -416,14 +415,6 @@ const App = () => {
             name="CommonProfile"
             component={CommonTabNavigator}
             options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={NAVIGATION_SCREENS.COMMON_AGENDA}
-            component={CommonAgenda}
-            options={({route}) => ({
-              title: route?.params?.screenTitle,
-              headerBackTitleVisible: false,
-            })}
           />
           <Stack.Screen
             name="Profile"

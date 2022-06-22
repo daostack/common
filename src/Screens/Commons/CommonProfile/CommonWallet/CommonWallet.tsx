@@ -1,7 +1,7 @@
 import {useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {FlatList, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {PROPOSAL_STATE, PROPOSAL_TYPE} from '~/Config';
 import {CommonWalletHeader} from '~/Screens/Commons/CommonProfile/CommonWallet/components/CommonWalletHeader';
@@ -19,14 +19,16 @@ const WALLET_HEADER_HEIGHT = 264;
 export const CommonWallet = observer(() => {
   const route = useRoute();
   const insets = useSafeAreaInsets();
-  const {currCommon} = route.params;
+
   const paymentStore = useStore('paymentStore');
   const proposalStore = useStore('proposalStore');
   const commonStore = useStore('commonStore');
 
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
+
   const [activeTab, setActiveTab] = useState(WalletTabs.all);
 
-  const common = commonStore.getCommonById(currCommon.id);
   const payments = paymentStore.getCommonPayments(currCommon.id);
   const payouts = proposalStore.getCommonProposals(currCommon.id, {
     state: PROPOSAL_STATE.Passed,
@@ -110,7 +112,7 @@ export const CommonWallet = observer(() => {
         bounces={false}
         keyExtractor={keyExtractor}
         ListHeaderComponent={() => (
-          <CommonWalletHeader common={common}>
+          <CommonWalletHeader common={currCommon}>
             <>
               <CommonWalletTabs activeTab={activeTab} switchTab={switchTab} />
               <Text style={[styles.transactionsTitle, text.h2Black]}>

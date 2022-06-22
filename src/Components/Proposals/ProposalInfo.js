@@ -2,7 +2,7 @@ import React from 'react';
 import {observer, inject} from 'mobx-react';
 import {Text, StyleSheet, View} from 'react-native';
 import {text, layout, colors} from '~/Theme';
-import ProposalCardHeader from './ProposalCardHeader';
+import {ProposalCardHeader} from './ProposalCardHeader';
 import {shape, string, object, number} from 'prop-types';
 import {FLAGS} from '../Moderation/constants';
 import {CurrencySymbols} from '~/Util/locale';

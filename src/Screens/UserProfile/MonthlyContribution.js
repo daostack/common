@@ -45,11 +45,8 @@ const MonthlyContribution = ({navigation, route, uiStore}) => {
   };
 
   const onJoinClick = () => {
-    navigation.navigate({
-      name: 'CommonProfile',
-      params: {
-        commonId: route.params?.subscription?.metadata?.common?.id,
-      },
+    navigation.navigate('CommonProfile', {
+      commonId: route.params?.subscription?.metadata?.common?.id,
     });
   };
 
