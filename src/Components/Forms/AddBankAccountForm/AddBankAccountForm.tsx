@@ -116,8 +116,11 @@ export const AddBankAccountForm = ({
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            style={[styles.body, {marginBottom: insets.bottom}]}
-            contentContainerStyle={{alignItems: 'center'}}>
+            style={styles.body}
+            contentContainerStyle={{
+              alignItems: 'center',
+              paddingBottom: insets.bottom + 22,
+            }}>
             <Text style={styles.title}>Add Bank Account</Text>
             <Text style={styles.text}>
               The following details are required in order to wire a {'\n'}{' '}
@@ -128,7 +131,7 @@ export const AddBankAccountForm = ({
             <TextInputField
               errorMessage={errors && touched.socialId && errors.socialId}
               viewStyle={styles.textfieldView}
-              placeholderText="12345678"
+              placeholderText="123456789"
               autoCapitalize="none"
               label="ID Number"
               autoCorrect={false}
@@ -171,7 +174,7 @@ export const AddBankAccountForm = ({
             <TextInputField
               errorMessage={errors && touched.phoneNumber && errors.phoneNumber}
               viewStyle={styles.textfieldView}
-              placeholderText="12345678"
+              placeholderText="1234567890"
               autoCapitalize="none"
               label="Phone Number"
               autoCorrect={false}
@@ -305,6 +308,7 @@ export const AddBankAccountForm = ({
                   error={errors && touched.photoID && !!errors.photoID}
                   onSelect={(photoID) => {
                     if (photoID) {
+                      setFieldTouched('photoID', true, true);
                       setFieldValue('photoID', photoID);
                     } else {
                       setFieldTouched('photoID', true, true);
@@ -317,16 +321,18 @@ export const AddBankAccountForm = ({
                   error={
                     errors &&
                     touched.bankConfirmation &&
-                    !!errors.bankConfirmation
+                    (errors.bankConfirmation?.mimeType ||
+                      !!errors.bankConfirmation)
                   }
                   onSelect={(bankConfirmation) => {
                     if (bankConfirmation) {
+                      setFieldTouched('bankConfirmation', true, true);
                       setFieldValue('bankConfirmation', bankConfirmation);
                     } else {
-                      setFieldTouched('photoID', true, true);
+                      setFieldTouched('bankConfirmation', true, true);
                       setFieldValue('bankConfirmation', null);
                       setFieldError(
-                        'photoID',
+                        'bankConfirmation',
                         'Please select a Bank Confirmation',
                       );
                     }

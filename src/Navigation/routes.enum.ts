@@ -47,6 +47,7 @@ export enum NAVIGATION_SCREENS {
 }
 
 export type NavigationRoutes = {
+  WebViewScreen: undefined;
   Onboarding: undefined;
   HomeTabNavigator: undefined;
   CommonProfile: {

@@ -6,7 +6,7 @@ import Toast from '~/Util/Toast';
 import logger from '~/Services/Logger';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
-import {colors} from '~/Theme';
+import {colors, font} from '~/Theme';
 import {PAYME_TYPE_CODES} from '~/Util/constants/payme';
 
 type LegalDocsProps = {
@@ -19,7 +19,7 @@ type LegalDocsProps = {
 
 type Props = {
   onSelect: (value?: LegalDocsProps) => void;
-  error?: boolean;
+  error?: string;
 };
 
 export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
@@ -50,6 +50,7 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
 
       setFileUrl(downloadUrl);
       setFilename(StorageService.getFilename(downloadUrl, true));
+
       onSelect({
         name: res.name,
         legalType: PAYME_TYPE_CODES['Bank Account Ownership'],
@@ -73,35 +74,40 @@ export function AddBankConfirmation({onSelect, error}: Props): ReactElement {
   }
 
   return (
-    <Pressable
-      onPress={fileUrl ? openFile : pickFile}
-      style={[
-        styles.container,
-        error ? {backgroundColor: colors.orangeBackgroundLight} : {},
-      ]}>
-      <Icon name={fileUrl ? 'add-document-approved' : 'add-document'} />
-      {fileUrl ? (
-        <View style={[styles.titleContainer, styles.fileNameContainer]}>
-          <Text style={styles.title}>{filename}</Text>
-          <Pressable
-            hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
-            onPress={() => {
-              deleteFile(fileUrl);
-            }}>
-            <Icon name="delete" color={colors.black} />
-          </Pressable>
-        </View>
-      ) : (
-        <View style={styles.titleContainer}>
-          <Text style={[styles.text, styles.title]}>
-            Add bank account confirmation letter
-          </Text>
-          <Text style={[styles.text, styles.hint]}>
-            The form can be found on the bank's website
-          </Text>
-        </View>
+    <>
+      <Pressable
+        onPress={fileUrl ? openFile : pickFile}
+        style={[
+          styles.container,
+          error ? {backgroundColor: colors.orangeBackgroundLight} : {},
+        ]}>
+        <Icon name={fileUrl ? 'add-document-approved' : 'add-document'} />
+        {fileUrl ? (
+          <View style={[styles.titleContainer, styles.fileNameContainer]}>
+            <Text style={styles.title}>{filename}</Text>
+            <Pressable
+              hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
+              onPress={() => {
+                deleteFile(fileUrl);
+              }}>
+              <Icon name="delete" color={colors.black} />
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.titleContainer}>
+            <Text style={[styles.text, styles.title]}>
+              Add bank account confirmation letter
+            </Text>
+            <Text style={[styles.text, styles.hint]}>
+              The form can be found on the bank's website
+            </Text>
+          </View>
+        )}
+      </Pressable>
+      {error && typeof error === 'string' && (
+        <Text style={styles.errorMessage}>{error}</Text>
       )}
-    </Pressable>
+    </>
   );
 }
 
@@ -134,5 +140,10 @@ const styles = StyleSheet.create({
   },
   hint: {
     color: 'rgb(86,102,245)',
+  },
+  errorMessage: {
+    color: colors.error,
+    ...font.primary.regular,
+    ...font.fontSize(2),
   },
 });

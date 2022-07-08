@@ -96,6 +96,8 @@ import {
 import {layout} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
 import {CommonTabNavigator} from '~/Navigation/CommonTabNavigator';
+import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
+import {WebViewScreen} from '~/Screens/WebViewScreen/WebViewScreen';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -395,7 +397,7 @@ const App = () => {
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName={'UserProfile'}
+          initialRouteName={!onboarded ? 'WebViewScreen' : 'OnboardingForm'}
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
@@ -409,6 +411,16 @@ const App = () => {
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="OnboardingForm"
+            component={OnboardingForm}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="WebViewScreen"
+            component={WebViewScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />

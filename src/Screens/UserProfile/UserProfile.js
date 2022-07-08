@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -34,6 +33,7 @@ import logger from '../../Services/Logger';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {WebView} from 'react-native-webview';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -117,10 +117,10 @@ const UserProfile = ({authStore}) => {
   const currUserId = route.params?.userId || authStore.userInfo?.uid;
 
   const renderScreen = () => (
-    <React.Fragment>
+    <>
       <StatusBar barStyle="dark-content" />
 
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           vertical={true}
@@ -201,8 +201,8 @@ const UserProfile = ({authStore}) => {
             </>
           ) : null}
         </ScrollView>
-      </SafeAreaView>
-    </React.Fragment>
+      </View>
+    </>
   );
 
   const renderScreenLoader = () => (
@@ -256,7 +256,10 @@ const UserProfile = ({authStore}) => {
       </Placeholder>
     </ScrollView>
   );
-  return authStore.isLoading ? renderScreenLoader() : renderScreen();
+  // return authStore.isLoading ? renderScreenLoader() : renderScreen();
+  return (
+    <WebView source={{uri: 'https://common.io'}} style={{marginTop: 20}} />
+  );
 };
 
 UserProfile.propTypes = {
