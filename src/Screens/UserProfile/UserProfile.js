@@ -78,24 +78,21 @@ const UserProfile = ({authStore}) => {
   };
 
   const onUserSignedIn = (
-    isNewUser,
+    authInfo,
     isSignedWithApple = false,
     isPhoneLogin = false,
   ) => {
-    if (navigation && isNewUser) {
-      const navigate = CommonActions.navigate({
-        name: 'EditProfile',
-        params: {
-          isCompleteAccount: true,
-          isSignedWithApple,
-        },
-      });
-      navigation.dispatch(navigate);
-    }
-    if (navigation && !isNewUser && isPhoneLogin) {
-      authStore.setIsLoading(false);
-      navigation.pop(2);
-    }
+    // call firestore to check if user exists
+    navigation.navigate({
+      name: 'CommonWebview',
+      params: {
+        credentials: authInfo.credentials,
+      },
+    });
+    // if (navigation && !isNewUser && isPhoneLogin) {
+    //   authStore.setIsLoading(false);
+    //   navigation.pop(2);
+    // }
   };
 
   const onHUDTestPress = (event) => {
@@ -130,9 +127,10 @@ const UserProfile = ({authStore}) => {
           nestedScrollEnabled={true}
           directionalLockEnabled={true}>
           <View style={styles.body}>
-            {currUserId
-              ? renderUserProfileData(currUserId, route.params?.userInfo)
-              : renderUnsignedUserData()}
+            <CreateAccount
+              onSignedIn={onUserSignedIn}
+              width={Platform.OS === 'ios' ? '80%' : '60%'}
+            />
           </View>
           {!route.params?.userId ||
           route.params.userId === authStore.userInfo?.uid ? (

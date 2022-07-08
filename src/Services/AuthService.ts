@@ -42,7 +42,10 @@ class AuthService {
   }
 
   // Apple Auth flow
-  signInApple = async (): Promise<IUserEntity> => {
+  signInApple = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     const appleAuthRequestResponse = await this._applePerformRequest();
 
     // Ensure Apple returned a user identityToken
@@ -58,11 +61,17 @@ class AuthService {
     );
 
     // Sign the user in with the credential
-    return auth().signInWithCredential(appleCredential);
+    return {
+      userInfo: await auth().signInWithCredential(appleCredential),
+      credentials: appleCredential,
+    };
   };
 
   // Facebook signIn
-  signInFacebook = async (): Promise<IUserEntity | null> => {
+  signInFacebook = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     const result = await LoginManager.logInWithPermissions(['public_profile']);
     if (result.isCancelled) {
       throw result;
@@ -77,7 +86,10 @@ class AuthService {
     const facebookCredential = auth.FacebookAuthProvider.credential(
       data.accessToken,
     );
-    return auth().signInWithCredential(facebookCredential);
+    return {
+      userInfo: await auth().signInWithCredential(facebookCredential),
+      credentials: facebookCredential,
+    };
   };
 
   // phone number signIn
@@ -85,7 +97,10 @@ class AuthService {
     await auth().signInWithPhoneNumber(phoneNumber);
 
   // Google Auth flow
-  signIn = async (): Promise<IUserEntity> => {
+  signIn = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
@@ -94,15 +109,15 @@ class AuthService {
       idToken,
       accessToken,
     );
-    let signedInUser = null;
+    let userInfo = null;
     try {
-      signedInUser = await auth().signInWithCredential(googleCredential);
+      userInfo = await auth().signInWithCredential(googleCredential);
     } catch (error) {
       await this.clearGoogleSignInCache();
       await this.googleSignOut();
       throw error;
     }
-    return signedInUser;
+    return {userInfo, credentials: googleCredential};
   };
 
   clearGoogleSignInCache = async (): Promise<void> => {
