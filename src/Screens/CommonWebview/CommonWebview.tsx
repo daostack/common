@@ -4,23 +4,17 @@ import {get} from 'lodash';
 import {SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {styles} from './styles';
-import {firebase} from '~/Firebase';
 
 export default function CommonWebview() {
   const route = useRoute();
+  const {credentials, isNewUser} = route.params;
 
-  React.useEffect(() => {
-    const provider = firebase.auth.GoogleAuthProvider;
-    const authCredential = provider.credential('foo@bar.com', '123456');
-  }, []);
-
-  console.log('--route.params.credentials', route.params.credentials);
   const INJECTED_JAVASCRIPT = `(function() {
     // FOR DISABLING ZOOM
     const meta = document.createElement('meta'); meta.setAttribute('name', 'viewport');
     meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0');
     document.getElementsByTagName('head')[0].appendChild(meta);
-    window.postMessage(JSON.stringify({signInMethod: "${route.params.credentials?.providerId}", providerId: "${route.params.credentials?.providerId}", idToken: "${route.params.credentials?.token}", accessToken: "${route.params.credentials?.secret}", secret: "${route.params.credentials?.secret}"}), "*");
+    window.postMessage(JSON.stringify({signInMethod: "${credentials?.providerId}", providerId: "${credentials?.providerId}", idToken: "${credentials?.token}", accessToken: "${credentials?.secret}", secret: "${credentials?.secret}"}), "*");
     true;
   })();`;
 
@@ -30,28 +24,8 @@ export default function CommonWebview() {
         source={{uri: 'http://localhost:3000/?authCode=5a81Ec29e6'}}
         style={styles.webviewContainer}
         javaScriptEnabled
-        // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-        // onNavigationStateChange={(event) => {
-        //   if (event.url !== previousUrl) {
-        //     if (event.url.includes(BASE_URL)) {
-        //       setPreviousUrl(event.url);
-        //     } else {
-        //       Linking.canOpenURL(event.url)
-        //         .then(async (supported) => {
-        //           if (!supported) {
-        //             setUrl(previousUrl);
-        //           } else {
-        //             return Linking.openURL(event.url);
-        //           }
-        //         })
-        //         .catch(() => {
-        //           setUrl(previousUrl);
-        //         });
-        //     }
-        //   }
-        // }}
         originWhitelist={['*']}
-        injectedJavaScript={INJECTED_JAVASCRIPT}
+        injectedJavaScript={isNewUser ? INJECTED_JAVASCRIPT : ''}
         onMessage={async (event) => {
           const action = get(
             JSON.parse(get(event, 'nativeEvent.data')),

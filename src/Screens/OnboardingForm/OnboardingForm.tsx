@@ -31,7 +31,7 @@ export const OnboardingForm = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const onPress = () => {
-    navigation.navigate('WebViewScreen');
+    navigation.navigate('CommonWebview');
   };
 
   const [isLoading, setLoading] = useState(false);
@@ -50,7 +50,7 @@ export const OnboardingForm = () => {
         // phoneNumber: Number(values.phoneNumber),
       });
       Toast.success('Done');
-      navigation.navigate('WebViewScreen');
+      navigation.navigate('CommonWebview');
     } catch (err) {
       Toast.error('Something went wrong');
     } finally {

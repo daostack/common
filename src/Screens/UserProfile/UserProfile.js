@@ -1,43 +1,59 @@
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {inject, observer} from 'mobx-react';
+import {object, shape, string} from 'prop-types';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
+  Linking,
+  Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  ScrollView,
   View,
-  Linking,
-  Alert,
-  Platform,
 } from 'react-native';
-import {getVersion, getBuildNumber} from 'react-native-device-info';
-import React, {useEffect, useState} from 'react';
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import {layout, colors, text, sizeL, font} from '~/Theme';
-import {observer, inject} from 'mobx-react';
-import AccordionBtn from '~/Components/AccordionBtn';
-import CreateAccount from './CreateAccount';
-import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import UserProfileData from '~/Components/UserProfileData';
-import AuthService from '~/Services/AuthService';
-import Toast from '~/Util/Toast';
 import CodePush from 'react-native-code-push';
 import Config from 'react-native-config';
+import {getBuildNumber, getVersion} from 'react-native-device-info';
+import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
+import AccordionBtn from '~/Components/AccordionBtn';
 import {isProduction} from '~/Config';
-import {string, object, shape} from 'prop-types';
-import {
-  Placeholder,
-  PlaceholderMedia,
-  PlaceholderLine,
-  Fade,
-} from 'rn-placeholder';
-import logger from '../../Services/Logger';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import AuthService from '~/Services/AuthService';
+import {colors, font, layout, sizeL, text} from '~/Theme';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
-import {WebView} from 'react-native-webview';
+import Toast from '~/Util/Toast';
+import logger from '../../Services/Logger';
+import CreateAccount from './CreateAccount';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {db} from '~/Firebase';
+import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
   const route = useRoute();
+
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        //await AuthService.getInstance().signOut();
+        const credentials = await AsyncStorage.getItem('credentials');
+        if (credentials) {
+          navigation.navigate({
+            name: 'CommonWebview',
+            params: {
+              credentials: JSON.parse(credentials),
+            },
+          });
+        }
+      } catch (e) {
+        logger.log(e);
+      }
+    };
+
+    checkOnboardingStatus();
+  }, []);
 
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
@@ -77,46 +93,59 @@ const UserProfile = ({authStore}) => {
     }
   };
 
-  const onUserSignedIn = (
+  async function getUserData(userId) {
+    const userSnapshot = await db
+      .collection(DB_COLLECTIONS.users)
+      .where('uid', '==', userId)
+      .get();
+
+    if (userSnapshot.docs.length) {
+      const user = userSnapshot.docs[0].data();
+      return user;
+    }
+
+    return null;
+  }
+
+  const onUserSignedIn = async (
     authInfo,
     isSignedWithApple = false,
     isPhoneLogin = false,
   ) => {
     // call firestore to check if user exists
-    navigation.navigate({
-      name: 'CommonWebview',
-      params: {
-        credentials: authInfo.credentials,
-      },
-    });
-    // if (navigation && !isNewUser && isPhoneLogin) {
-    //   authStore.setIsLoading(false);
-    //   navigation.pop(2);
-    // }
+    const authCode = await AsyncStorage.getItem('authCode');
+    const user = await getUserData(authInfo.userInfo.user.uid);
+    console.log('--user', user);
+    if (user) {
+      await AsyncStorage.setItem(
+        'credentials',
+        JSON.stringify(authInfo.credentials),
+      );
+      navigation.navigate({
+        name: 'CommonWebview',
+        params: {
+          credentials: authInfo.credentials,
+          isNewUser: true,
+        },
+      });
+    } else if (authCode) {
+      navigation.navigate({
+        name: 'CommonWebview',
+        params: {
+          credentials: authInfo.credentials,
+          isNewUser: true,
+        },
+      });
+    } else {
+      navigation.navigate('OnboardingForm');
+    }
   };
 
   const onHUDTestPress = (event) => {
     navigation.navigate('HUDTest');
   };
 
-  const renderUnsignedUserData = () => (
-    <CreateAccount
-      onSignedIn={onUserSignedIn}
-      width={Platform.OS === 'ios' ? '80%' : '60%'}
-    />
-  );
-
-  const renderUserProfileData = (currUserId, userInfo) => (
-    <UserProfileData
-      navigation={navigation}
-      userId={currUserId}
-      currUserInfo={userInfo}
-    />
-  );
-
-  const currUserId = route.params?.userId || authStore.userInfo?.uid;
-
-  const renderScreen = () => (
+  return (
     <>
       <StatusBar barStyle="dark-content" />
 
@@ -203,62 +232,6 @@ const UserProfile = ({authStore}) => {
         </ScrollView>
       </View>
     </>
-  );
-
-  const renderScreenLoader = () => (
-    <ScrollView
-      style={{flex: 1}}
-      contentContainerStyle={{
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Placeholder Animation={Fade}>
-        <PlaceholderMedia
-          size={100}
-          isRound={true}
-          style={{alignSelf: 'center', marginTop: 80, marginBottom: 20}}
-        />
-        <PlaceholderLine width={30} style={{alignSelf: 'center'}} />
-        <PlaceholderLine width={50} style={{alignSelf: 'center'}} />
-        <PlaceholderMedia
-          style={{
-            alignSelf: 'center',
-            marginTop: 10,
-            marginBottom: 20,
-            height: 100,
-            width: '100%',
-          }}
-        />
-        <PlaceholderLine width={30} />
-        <PlaceholderLine width={50} />
-        <PlaceholderLine width={80} />
-        <PlaceholderMedia
-          style={{
-            alignSelf: 'center',
-            marginTop: 10,
-            marginBottom: 20,
-            height: 150,
-            width: '100%',
-          }}
-        />
-        <PlaceholderLine width={50} />
-        <PlaceholderLine width={80} />
-        <PlaceholderMedia
-          style={{
-            alignSelf: 'center',
-            marginTop: 10,
-            marginBottom: 20,
-            height: 150,
-            width: '100%',
-          }}
-        />
-      </Placeholder>
-    </ScrollView>
-  );
-  // return authStore.isLoading ? renderScreenLoader() : renderScreen();
-  return (
-    <WebView source={{uri: 'https://common.io'}} style={{marginTop: 20}} />
   );
 };
 

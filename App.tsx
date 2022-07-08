@@ -371,11 +371,6 @@ const App = () => {
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       try {
-        //await AuthService.getInstance().signOut();
-        const isOnboarded = await AsyncStorage.getItem('onboarded');
-        if (isOnboarded === 'true') {
-          setOnboarded(true);
-        }
         setLoading(false);
       } catch (e) {
         logger.log(e);
@@ -397,7 +392,7 @@ const App = () => {
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName={!onboarded ? 'WebViewScreen' : 'OnboardingForm'}
+          initialRouteName={'UserProfile'}
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
@@ -416,11 +411,6 @@ const App = () => {
           <Stack.Screen
             name="OnboardingForm"
             component={OnboardingForm}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="WebViewScreen"
-            component={WebViewScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen name="CreateAccount" component={CreateAccount} />
