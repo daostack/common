@@ -42,7 +42,6 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
       try {
         authStore.setIsLoading(true);
         const confirm = await AuthService.signInPhone(phoneNumber);
-        console.log('---confirm,', confirm);
         authStore.setIsLoading(false);
         navigation.navigate('VerifyPhone', {
           phoneNumber,
