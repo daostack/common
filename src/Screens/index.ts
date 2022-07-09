@@ -57,3 +57,5 @@ export {default as ReceiveFunds} from './ReceiveFunds/ReceiveFunds';
 
 export {default as PhoneNumberStep1} from './PhoneLogin/PhoneNumberStep1';
 export {default as VerificationStep2} from './PhoneLogin/VerificationStep2';
+
+export {default as CommonWebview} from './CommonWebview/CommonWebview';

@@ -111,6 +111,7 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
     authStore.setIsLoading(true);
     try {
       const userInfoResp = await confirm.confirm(value);
+      // TODO: here I can get credentials
       setUserInfo(userInfoResp);
     } catch (error) {
       authStore.setIsLoading(false);
