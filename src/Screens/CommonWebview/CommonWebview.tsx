@@ -1,6 +1,5 @@
 import {useRoute} from '@react-navigation/native';
 import React from 'react';
-import {get} from 'lodash';
 import {SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {styles} from './styles';
@@ -28,13 +27,6 @@ export default function CommonWebview() {
         originWhitelist={['*']}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         allowsFullscreenVideo={false}
-        onMessage={async (event) => {
-          const action = get(
-            JSON.parse(get(event, 'nativeEvent.data')),
-            'action',
-          );
-          console.log('--action,', action);
-        }}
       />
     </SafeAreaView>
   );
