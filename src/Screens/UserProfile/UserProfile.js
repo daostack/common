@@ -18,7 +18,6 @@ import {getBuildNumber, getVersion} from 'react-native-device-info';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import AccordionBtn from '~/Components/AccordionBtn';
 import {isProduction} from '~/Config';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import AuthService from '~/Services/AuthService';
 import {colors, font, layout, sizeL, text} from '~/Theme';
 import {authStorePropTypes} from '~/Types/propTypes';
@@ -29,31 +28,11 @@ import CreateAccount from './CreateAccount';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
+import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
   const route = useRoute();
-
-  useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      try {
-        //await AuthService.getInstance().signOut();
-        const credentials = await AsyncStorage.getItem('credentials');
-        if (credentials) {
-          navigation.navigate({
-            name: 'CommonWebview',
-            params: {
-              credentials: JSON.parse(credentials),
-            },
-          });
-        }
-      } catch (e) {
-        logger.log(e);
-      }
-    };
-
-    checkOnboardingStatus();
-  }, []);
 
   const [codePushVersion, setCodePushVersion] = useState('');
   useEffect(() => {
@@ -108,13 +87,13 @@ const UserProfile = ({authStore}) => {
   }
 
   const onUserSignedIn = async (authInfo) => {
-    const authCode = await AsyncStorage.getItem('authCode');
+    const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
     const user = await getUserData(authInfo.userInfo.user.uid);
     if (user || authCode) {
-      await AsyncStorage.setItem(
-        'credentials',
-        JSON.stringify(authInfo.credentials),
-      );
+      // await AsyncStorage.setItem(
+      //   ASYNC_STORAGE_KEYS.credentials,
+      //   JSON.stringify(authInfo.credentials),
+      // );
       navigation.navigate({
         name: 'CommonWebview',
         params: {
@@ -151,26 +130,6 @@ const UserProfile = ({authStore}) => {
             <>
               <View style={layout.marginTopL}>
                 {/* <AccordionBtn onPress={() => Linking.openURL('https://common.io/faq')} title="FAQ" /> */}
-
-                {authStore.userInfo && (
-                  <React.Fragment>
-                    <AccordionBtn
-                      title="Billing"
-                      onPress={() => {
-                        navigation.navigate(NAVIGATION_SCREENS.BILLING);
-                      }}
-                    />
-                  </React.Fragment>
-                )}
-
-                <AccordionBtn
-                  onPress={() => navigation.navigate('Onboarding')}
-                  title="About Common"
-                />
-                <AccordionBtn
-                  onPress={() => navigation.navigate('ReceiveFunds')}
-                  title="Receive funds"
-                />
                 <AccordionBtn
                   onPress={() => Linking.openURL(LINKS.CONTACT_US)}
                   title="Contact us"
@@ -187,14 +146,6 @@ const UserProfile = ({authStore}) => {
                   onPress={() => Linking.openURL(LINKS.TERMS)}
                   title="Terms of use"
                 />
-
-                {authStore.userInfo && (
-                  <AccordionBtn
-                    lightStyle={true}
-                    title="Log out"
-                    onPress={_logout}
-                  />
-                )}
               </View>
               {Config.ENV !== 'production' && (
                 <View

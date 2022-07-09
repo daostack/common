@@ -1,103 +1,59 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {rootStorePropTypes} from '~/Types/propTypes';
-import {
-  StyleSheet,
-  Platform,
-  View,
-  Linking,
-  DeviceEventEmitter,
-  Text,
-  I18nManager,
-  UIManager,
-  TouchableOpacity,
-} from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
-import {NavigationContainer, CommonActions} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {colors} from './src/Theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
+import crashlytics from '@react-native-firebase/crashlytics';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+import messaging from '@react-native-firebase/messaging';
+import {CommonActions, NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {inject, observer} from 'mobx-react';
+import {object} from 'prop-types';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  Onboarding,
-  UserProfile,
-  HUDTest,
-  MyWallet,
-  CreateAccount,
-  EditProfile,
-  MyProposals,
-  MyCommons,
-  CommonMembers,
-  CommonExplanation,
-  CreateStep1,
-  CreateStep2,
-  CreateStep3,
-  CreateStep4,
-  RulesStep,
-  IntroductionStep,
-  ContributionStep,
-  BillingDetailsStep,
-  PaymentDetailsStep,
-  FundingProposal,
-  Discussions,
-  DiscussionPost,
-  ProposalScreen,
-  PDFViewer,
-  Browser,
-  FullScreenCreationLoader,
-  Billing,
-  MonthlyContribution,
-  EditCommon,
-  ReceiveFunds,
-  AddInvoicesScreen,
-  PersonalContributionStep,
-  PersonalPaymentDetailsStep,
-  ChoosePaymentMethodStep,
-  PhoneNumberStep1,
-  VerificationStep2,
-  FirstJoinCommon,
-  VotesScreen,
-  ContributionHistory,
-  MonthlyContributionCharges,
-  MakeContribution,
-  ContributionPaymentDetails,
-  UpdatePaymentDetails,
-  CommonWebview,
-} from './src/Screens';
-import HomeTabNavigator from './src/Navigation/HomeTabNavigator';
-import NotificationContainer from './src/Components/Notifications/NotificationContainer';
-import {observer, inject} from 'mobx-react';
-import Icon from './src/Assets/iconfont/Icon';
+  DeviceEventEmitter,
+  I18nManager,
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  UIManager,
+  View,
+} from 'react-native';
+import DeepLinking from 'react-native-deep-linking';
+import Intercom from 'react-native-intercom';
 import KeyboardManager from 'react-native-keyboard-manager';
 import validUrl from 'valid-url';
-import BottomSheetContainer from './src/Components/BottomSheetContainer';
-import ToastView, {DURATION} from './src/Util/ToastView';
-import messaging from '@react-native-firebase/messaging';
-import NotificationService from './src/Services/NotificationService';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-import DeepLinking from 'react-native-deep-linking';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import Toast from './src/Util/Toast';
-import {object} from 'prop-types';
-import logger from './src/Services/Logger';
-import {fontSize} from './src/Theme/font';
-import Loader from '~/Components/Loader';
-import crashlytics from '@react-native-firebase/crashlytics';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
+import Loader from '~/Components/Loader';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
-import Intercom from 'react-native-intercom';
-import IntercomShowButton from '~/Components/IntercomChat/IntercomShowButton';
-import {getUrlPathWithEntityId} from '~/Util/stringUtil';
+import {rootStorePropTypes} from '~/Types/propTypes';
+import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
+import {AUTH_CODE} from '~/Util/constants/authCode';
 import {
-  DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINKS_SCREENS,
   DYNAMIC_LINKS_SCREEN_PARAMS,
+  DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINK_URI_WITH_SLASH,
 } from '~/Util/constants/dynamicLinks';
-import {layout} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
-import {CommonTabNavigator} from '~/Navigation/CommonTabNavigator';
-import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
-import {WebViewScreen} from '~/Screens/WebViewScreen/WebViewScreen';
+import {getUrlPathWithEntityId} from '~/Util/stringUtil';
+import Icon from './src/Assets/iconfont/Icon';
+import BottomSheetContainer from './src/Components/BottomSheetContainer';
+import NotificationContainer from './src/Components/Notifications/NotificationContainer';
+import {
+  CommonWebview,
+  CreateAccount,
+  Onboarding,
+  PhoneNumberStep1,
+  UserProfile,
+  VerificationStep2,
+} from './src/Screens';
+import logger from './src/Services/Logger';
+import NotificationService from './src/Services/NotificationService';
+import {colors} from './src/Theme';
+import Toast from './src/Util/Toast';
+import ToastView, {DURATION} from './src/Util/ToastView';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -124,7 +80,6 @@ const App = () => {
   const bankAccountStore = rootStore.bankAccountStore;
   const paymentStore = rootStore.paymentStore;
 
-  const [onboarded, setOnboarded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notificationRouting, setNotificationRouting] = useState(null);
   //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
@@ -214,37 +169,37 @@ const App = () => {
     };
   }, [authStore.userInfo?.uid]);
 
-  const notificationNavigation = async (remoteMessage) => {
-    appLoaderStore.showLoader();
-    logger.log('remoteMessage -> ', remoteMessage);
-    if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] =
-        remoteMessage.data.path?.split('/');
-      // whitelist;approve/reject requestToJoin
-      if (screenName === 'CommonProfile') {
-        routing(screenName, {commonId});
-      }
-      // new discussionMessage
-      else if (screenName === 'Discussions') {
-        routing(screenName, {
-          discussionId: objectId,
-          commonId,
-          fromNotificationItem: true,
-        });
-      }
-      // create/approve proposal
-      else {
-        routing(screenName, {
-          proposalId: objectId,
-          tabIndex: +tabIndex,
-          fromNotificationItem: true,
-          eventType: remoteMessage.data.type,
-          commonId,
-        });
-      }
-    }
-    appLoaderStore.hideLoader();
-  };
+  // const notificationNavigation = async (remoteMessage) => {
+  //   appLoaderStore.showLoader();
+  //   logger.log('remoteMessage -> ', remoteMessage);
+  //   if (remoteMessage) {
+  //     const [screenName, commonId, objectId, tabIndex = 0] =
+  //       remoteMessage.data.path?.split('/');
+  //     // whitelist;approve/reject requestToJoin
+  //     if (screenName === 'CommonProfile') {
+  //       routing(screenName, {commonId});
+  //     }
+  //     // new discussionMessage
+  //     else if (screenName === 'Discussions') {
+  //       routing(screenName, {
+  //         discussionId: objectId,
+  //         commonId,
+  //         fromNotificationItem: true,
+  //       });
+  //     }
+  //     // create/approve proposal
+  //     else {
+  //       routing(screenName, {
+  //         proposalId: objectId,
+  //         tabIndex: +tabIndex,
+  //         fromNotificationItem: true,
+  //         eventType: remoteMessage.data.type,
+  //         commonId,
+  //       });
+  //     }
+  //   }
+  //   appLoaderStore.hideLoader();
+  // };
 
   // notification navigation
   // useEffect(() => {
@@ -314,7 +269,7 @@ const App = () => {
       separator: '/',
     });
 
-    if (screenName === 'authCode' && entityId === '5a81Ec29e6') {
+    if (screenName === ASYNC_STORAGE_KEYS.authCode && entityId === AUTH_CODE) {
       AsyncStorage.setItem('authCode', entityId);
     } else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
       bottomSheetStore.showBottomSheet(
@@ -394,7 +349,7 @@ const App = () => {
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName={'UserProfile'}
+          initialRouteName="UserProfile"
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,

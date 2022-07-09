@@ -17,7 +17,6 @@ let commonTokenAddress;
 let androidAppId;
 let iosAppId;
 
-console.log('--Config.ENV', Config.ENV);
 switch (Config.ENV) {
   case 'production': {
     localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';

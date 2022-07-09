@@ -4,10 +4,11 @@ import {get} from 'lodash';
 import {SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {styles} from './styles';
+import {AUTH_CODE} from '~/Util/constants/authCode';
 
 export default function CommonWebview() {
   const route = useRoute();
-  const {credentials} = route.params;
+  const {credentials} = route.params as any;
 
   const INJECTED_JAVASCRIPT = `(function() {
     // FOR DISABLING ZOOM
@@ -21,11 +22,12 @@ export default function CommonWebview() {
   return (
     <SafeAreaView style={styles.container}>
       <WebView
-        source={{uri: 'http://localhost:3000/?authCode=5a81Ec29e6'}}
+        source={{uri: `https://web-staging.common.io/?authCode=${AUTH_CODE}`}}
         style={styles.webviewContainer}
         javaScriptEnabled
         originWhitelist={['*']}
         injectedJavaScript={INJECTED_JAVASCRIPT}
+        allowsFullscreenVideo={false}
         onMessage={async (event) => {
           const action = get(
             JSON.parse(get(event, 'nativeEvent.data')),
