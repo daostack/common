@@ -107,16 +107,10 @@ const UserProfile = ({authStore}) => {
     return null;
   }
 
-  const onUserSignedIn = async (
-    authInfo,
-    isSignedWithApple = false,
-    isPhoneLogin = false,
-  ) => {
-    // call firestore to check if user exists
+  const onUserSignedIn = async (authInfo) => {
     const authCode = await AsyncStorage.getItem('authCode');
     const user = await getUserData(authInfo.userInfo.user.uid);
-    console.log('--user', user);
-    if (user) {
+    if (user || authCode) {
       await AsyncStorage.setItem(
         'credentials',
         JSON.stringify(authInfo.credentials),
@@ -125,15 +119,6 @@ const UserProfile = ({authStore}) => {
         name: 'CommonWebview',
         params: {
           credentials: authInfo.credentials,
-          isNewUser: true,
-        },
-      });
-    } else if (authCode) {
-      navigation.navigate({
-        name: 'CommonWebview',
-        params: {
-          credentials: authInfo.credentials,
-          isNewUser: true,
         },
       });
     } else {

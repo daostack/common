@@ -19,6 +19,7 @@ export enum DYNAMIC_LINKS_SCREENS {
   ProposalScreen = 'ProposalScreen',
   CommonProfile = 'CommonProfile',
   'invoices/submission' = 'AddInvoicesScreen',
+  authCode = 'CommonWebview',
 }
 
 export enum DYNAMIC_LINKS_SCREEN_PARAMS {
@@ -27,4 +28,5 @@ export enum DYNAMIC_LINKS_SCREEN_PARAMS {
   CommonProfile = 'commonId',
   user = 'userId',
   'invoices/submission' = 'proposalId',
+  authCode = 'authCode',
 }

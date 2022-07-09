@@ -247,25 +247,25 @@ const App = () => {
   };
 
   // notification navigation
-  useEffect(() => {
-    // Assume a message-notification contains a "type" property in the data payload of the screen to open
-    messaging().onNotificationOpenedApp((remoteMessage) => {
-      logger.log(
-        'Notification caused app to open from background state:',
-        remoteMessage,
-      );
-      logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
-      notificationNavigation(remoteMessage);
-    });
+  // useEffect(() => {
+  //   // Assume a message-notification contains a "type" property in the data payload of the screen to open
+  //   messaging().onNotificationOpenedApp((remoteMessage) => {
+  //     logger.log(
+  //       'Notification caused app to open from background state:',
+  //       remoteMessage,
+  //     );
+  //     logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
+  //     notificationNavigation(remoteMessage);
+  //   });
 
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then((remoteMessage) => {
-        logger.log('getInitialNotification remoteMessage', remoteMessage);
-        notificationNavigation(remoteMessage);
-      });
-  }, []);
+  //   // Check whether an initial notification is available
+  //   messaging()
+  //     .getInitialNotification()
+  //     .then((remoteMessage) => {
+  //       logger.log('getInitialNotification remoteMessage', remoteMessage);
+  //       notificationNavigation(remoteMessage);
+  //     });
+  // }, []);
 
   // HUD
   useEffect(() => {
@@ -314,7 +314,9 @@ const App = () => {
       separator: '/',
     });
 
-    if (screenName === DYNAMIC_LINKS_TYPES.USER) {
+    if (screenName === 'authCode' && entityId === '5a81Ec29e6') {
+      AsyncStorage.setItem('authCode', entityId);
+    } else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: entityId},

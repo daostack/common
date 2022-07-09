@@ -7,7 +7,7 @@ import {styles} from './styles';
 
 export default function CommonWebview() {
   const route = useRoute();
-  const {credentials, isNewUser} = route.params;
+  const {credentials} = route.params;
 
   const INJECTED_JAVASCRIPT = `(function() {
     // FOR DISABLING ZOOM
@@ -25,7 +25,7 @@ export default function CommonWebview() {
         style={styles.webviewContainer}
         javaScriptEnabled
         originWhitelist={['*']}
-        injectedJavaScript={isNewUser ? INJECTED_JAVASCRIPT : ''}
+        injectedJavaScript={INJECTED_JAVASCRIPT}
         onMessage={async (event) => {
           const action = get(
             JSON.parse(get(event, 'nativeEvent.data')),
