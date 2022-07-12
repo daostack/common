@@ -7,7 +7,7 @@ import {CommonActions, NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   DeviceEventEmitter,
   I18nManager,
@@ -42,6 +42,7 @@ import Icon from './src/Assets/iconfont/Icon';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {
+  Browser,
   CommonWebview,
   CreateAccount,
   Onboarding,
@@ -263,7 +264,7 @@ const App = () => {
   }, []);
 
   // Deep & Dynamic Link
-  const handleOpenURL = ({url}) => {
+  const handleOpenURL = useCallback(({url}) => {
     const [screenName, entityId] = getUrlPathWithEntityId({
       str: url.replace(DYNAMIC_LINK_URI_WITH_SLASH, ''),
       separator: '/',
@@ -271,6 +272,7 @@ const App = () => {
 
     if (screenName === ASYNC_STORAGE_KEYS.authCode && entityId === AUTH_CODE) {
       AsyncStorage.setItem('authCode', entityId);
+      Toast.success('Your email is confirmed. You can login now.');
     } else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
@@ -280,18 +282,18 @@ const App = () => {
       routing(DYNAMIC_LINKS_SCREENS[screenName], {
         [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
       });
-    } else if (url) {
+    } /*else if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
         }
         if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-          logger.log(`Routing Browser -> ${url}`);
+          logger.log(`Routing CommonWebview -> ${url}`);
           routing('Browser', {url: url});
         }
       });
-    }
-  };
+    }*/
+  }, []);
 
   const routing = (screenName: string, params) => {
     const actions = CommonActions.navigate({
@@ -365,6 +367,7 @@ const App = () => {
             component={UserProfile}
             options={{headerShown: false}}
           />
+
           <Stack.Screen
             name="OnboardingForm"
             component={OnboardingForm}

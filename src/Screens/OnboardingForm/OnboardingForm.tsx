@@ -32,7 +32,6 @@ export const OnboardingForm = () => {
   const [isLoading, setLoading] = useState(false);
 
   async function formSave(values: typeof INITIAL_VALUES): Promise<void> {
-    console.log('values', values);
     try {
       setLoading(true);
       await OnBoardingService.sendEmail({
