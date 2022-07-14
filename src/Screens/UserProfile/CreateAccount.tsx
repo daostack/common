@@ -23,7 +23,7 @@ import {LINKS} from '~/Util/constants/links';
 
 interface CreateAccountProps {
   onSignedIn: (
-    isNewUser: boolean,
+    isNewUser: {userInfo: IUserEntity; credentials: any},
     isSignedWithApple: boolean,
     isPhoneLogin: boolean,
   ) => void;
@@ -36,16 +36,12 @@ const CreateAccount = (props: CreateAccountProps) => {
   const {onSignedIn, hidePlaceholder, goToNextScreen, width} = props;
   const authStore = useStore('authStore');
   const onSignIn = async (
-    userInfo: IUserEntity,
+    authInfo: {userInfo: IUserEntity; credentials: any},
     isSignedWithApple = false,
     isPhoneLogin = false,
   ) => {
     if (onSignedIn) {
-      await onSignedIn(
-        userInfo.additionalUserInfo.isNewUser,
-        isSignedWithApple,
-        isPhoneLogin,
-      );
+      await onSignedIn(authInfo, isSignedWithApple, isPhoneLogin);
     }
     if (goToNextScreen) {
       setTimeout(goToNextScreen, 0);
@@ -94,10 +90,10 @@ const CreateAccount = (props: CreateAccountProps) => {
         )}
 
         <GSignInButton onSignIn={onSignIn} />
-
+        {/*
         <FacebookSignInButton onSignIn={onSignIn} />
 
-        <PhoneSignInButton onSignIn={onSignIn} />
+        <PhoneSignInButton onSignIn={onSignIn} /> */}
       </View>
 
       {renderError()}

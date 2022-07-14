@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors, font, layout} from '~/Theme';
-import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
 import Toast from '~/Util/Toast';
 import {validationSchema} from './validationSchema';
@@ -29,15 +28,10 @@ const INITIAL_VALUES = {
 
 export const OnboardingForm = () => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const onPress = () => {
-    navigation.navigate('WebViewScreen');
-  };
 
   const [isLoading, setLoading] = useState(false);
 
   async function formSave(values: typeof INITIAL_VALUES): Promise<void> {
-    console.log('values', values);
     try {
       setLoading(true);
       await OnBoardingService.sendEmail({
@@ -49,8 +43,7 @@ export const OnboardingForm = () => {
         // residence: values.residence,
         // phoneNumber: Number(values.phoneNumber),
       });
-      Toast.success('Done');
-      navigation.navigate('WebViewScreen');
+      Toast.success('Request has been sent');
     } catch (err) {
       Toast.error('Something went wrong');
     } finally {
@@ -195,13 +188,6 @@ export const OnboardingForm = () => {
             </>
           )}
         </Formik>
-        {false && (
-          <View style={styles.buttonConatiner}>
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-              <Text style={styles.buttonText}>Continue</Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
     </>
   );
