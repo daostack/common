@@ -90,10 +90,10 @@ const CreateAccount = (props: CreateAccountProps) => {
         )}
 
         <GSignInButton onSignIn={onSignIn} />
-
+        {/*
         <FacebookSignInButton onSignIn={onSignIn} />
 
-        <PhoneSignInButton onSignIn={onSignIn} />
+        <PhoneSignInButton onSignIn={onSignIn} /> */}
       </View>
 
       {renderError()}

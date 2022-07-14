@@ -273,7 +273,8 @@ const App = () => {
     if (screenName === ASYNC_STORAGE_KEYS.authCode && entityId === AUTH_CODE) {
       AsyncStorage.setItem('authCode', entityId);
       Toast.success('Your email is confirmed. You can login now.');
-    } else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
+    }
+    /* else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
       bottomSheetStore.showBottomSheet(
         BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
         {userId: entityId},
@@ -282,7 +283,7 @@ const App = () => {
       routing(DYNAMIC_LINKS_SCREENS[screenName], {
         [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
       });
-    } /*else if (url) {
+    } else if (url) {
       Linking.canOpenURL(url).then((supported) => {
         if (!supported) {
           return;
@@ -295,13 +296,13 @@ const App = () => {
     }*/
   }, []);
 
-  const routing = (screenName: string, params) => {
-    const actions = CommonActions.navigate({
-      name: screenName,
-      params: params,
-    });
-    setNotificationRouting(actions);
-  };
+  // const routing = (screenName: string, params) => {
+  //   const actions = CommonActions.navigate({
+  //     name: screenName,
+  //     params: params,
+  //   });
+  //   setNotificationRouting(actions);
+  // };
 
   useEffect(() => {
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);

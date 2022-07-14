@@ -14,7 +14,7 @@ export default function CommonWebview() {
     const meta = document.createElement('meta'); meta.setAttribute('name', 'viewport');
     meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0');
     document.getElementsByTagName('head')[0].appendChild(meta);
-    window.postMessage(JSON.stringify({signInMethod: "${credentials?.providerId}", providerId: "${credentials?.providerId}", idToken: "${credentials?.token}", accessToken: "${credentials?.secret}", secret: "${credentials?.secret}"}), "*");
+    window.postMessage(JSON.stringify({signInMethod: "${credentials?.providerId}", providerId: "${credentials?.providerId}", idToken: "${credentials?.token}", accessToken: "${credentials?.secret}", secret: "${credentials?.secret}", rawNonce: "${credentials?.nonce}"}), "*");
     true;
   })();`;
 

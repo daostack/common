@@ -54,16 +54,15 @@ class AuthService {
     }
 
     // Create a Firebase credential from the response
-    const {identityToken, nonce} = appleAuthRequestResponse;
+    const {identityToken, nonce, authorizationCode, email} =
+      appleAuthRequestResponse;
     const appleCredential = auth.AppleAuthProvider.credential(
       identityToken,
       nonce,
     );
-
-    // Sign the user in with the credential
     return {
-      userInfo: await auth().signInWithCredential(appleCredential),
-      credentials: appleCredential,
+      userInfo: {email} as IUserEntity,
+      credentials: {...appleCredential, secret: authorizationCode, nonce},
     };
   };
 

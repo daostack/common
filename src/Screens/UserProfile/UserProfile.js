@@ -72,10 +72,10 @@ const UserProfile = ({authStore}) => {
     }
   };
 
-  async function getUserData(userId) {
+  async function getUserData(value, isSignedWithApple) {
     const userSnapshot = await db
       .collection(DB_COLLECTIONS.users)
-      .where('uid', '==', userId)
+      .where(isSignedWithApple ? 'email' : 'uid', '==', value)
       .get();
 
     if (userSnapshot.docs.length) {
@@ -86,14 +86,13 @@ const UserProfile = ({authStore}) => {
     return null;
   }
 
-  const onUserSignedIn = async (authInfo) => {
+  const onUserSignedIn = async (authInfo, isSignedWithApple) => {
     const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
-    const user = await getUserData(authInfo.userInfo.user.uid);
+    const user = await getUserData(
+      isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.user.uid,
+    );
     if (user || authCode) {
-      // await AsyncStorage.setItem(
-      //   ASYNC_STORAGE_KEYS.credentials,
-      //   JSON.stringify(authInfo.credentials),
-      // );
+      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode);
       navigation.navigate({
         name: 'CommonWebview',
         params: {
