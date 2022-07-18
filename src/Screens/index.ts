@@ -8,7 +8,7 @@ export {default as CreateStep3} from './Commons/CreateCommon/CreateStep3';
 export {default as CreateStep4} from './Commons/CreateCommon/CreateStep4';
 export {default as CommonExplanation} from './Commons/CreateCommon/CommonExplanation';
 export {default as CommonAgenda} from './Commons/CommonProfile/CommonOldAgenda';
-export {default as CommonMembers} from './Commons/CommonProfile/CommonAgenda/CommonMembers/CommonMembers';
+export {CommonMembers} from './Commons/CommonProfile/CommonAgenda/CommonMembers/CommonMembers';
 export {default as RulesStep} from './Commons/RequestToJoin/Steps/RulesStep';
 export {default as IntroductionStep} from './Commons/RequestToJoin/Steps/IntroductionStep';
 export {default as ContributionStep} from './Commons/RequestToJoin/Steps/ContributionStep';
@@ -57,3 +57,5 @@ export {default as ReceiveFunds} from './ReceiveFunds/ReceiveFunds';
 
 export {default as PhoneNumberStep1} from './PhoneLogin/PhoneNumberStep1';
 export {default as VerificationStep2} from './PhoneLogin/VerificationStep2';
+
+export {default as CommonWebview} from './CommonWebview/CommonWebview';

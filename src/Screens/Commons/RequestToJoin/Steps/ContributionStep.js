@@ -87,10 +87,10 @@ const ContributionStep = ({
 
       navigation.pop();
 
-      navigation.navigate({
-        name: 'CommonProfile',
+      navigation.navigate('CommonProfile', {
+        screen: 'CommonAgenda',
         params: {
-          currCommon: currCommon,
+          commonId: currCommon.id,
           showRequestSentModal: true,
           createdProposalId: proposalId,
         },

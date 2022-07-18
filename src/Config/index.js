@@ -17,6 +17,8 @@ let commonTokenAddress;
 let androidAppId;
 let iosAppId;
 
+let webviewEnvURL;
+
 switch (Config.ENV) {
   case 'production': {
     localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
@@ -29,6 +31,7 @@ switch (Config.ENV) {
 
     androidAppId = 'com.daostack.common';
     iosAppId = 'id1512785740';
+    webviewEnvURL = 'https://common.io';
     break;
   }
   case 'staging': {
@@ -44,6 +47,7 @@ switch (Config.ENV) {
 
     androidAppId = 'com.daostack.common.staging';
     iosAppId = '1527060751';
+    webviewEnvURL = 'https://web-staging.common.io';
     break;
   }
   case 'dev': {
@@ -59,6 +63,7 @@ switch (Config.ENV) {
 
     androidAppId = 'com.daostack.common.staging';
     iosAppId = '1527060751';
+    webviewEnvURL = 'https://web-dev.common.io';
     break;
   }
   default: {
@@ -102,6 +107,7 @@ export const permissionsUrl = () => functionEndpoint('permissions');
 export const moderationUrl = () => functionEndpoint('moderation');
 export const payMeUrl = () => functionEndpoint('payments');
 export const usersUrl = () => functionEndpoint('users');
+export const notificationsUrl = () => functionEndpoint('notifications');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');
 export const web3ProviderUrl = web3Provider;
@@ -134,3 +140,5 @@ export const PROPOSAL_STAGE = {
   Active: 'active',
   History: 'history',
 };
+
+export const webviewURL = webviewEnvURL;

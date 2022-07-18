@@ -147,26 +147,32 @@ class AuthStore {
       async (updatedUserDoc: IFirebaseDoc<IUserEntity>) => {
         const updatedUser = updatedUserDoc.data();
         const isNewUser = !updatedUser;
-        const provider = user.providerData[0].providerId;
-        if (isNewUser) {
-          const providerUserInfo = await AuthService.getCurrentLoggedUser(
-            user.providerData[0].providerId,
-          );
-          const userInfo = {
-            ...user?._user,
-            firstName: providerUserInfo?.user?.givenName,
-            lastName: providerUserInfo?.user?.familyName,
-            phoneNumber: user?.phoneNumber,
-            provider,
-          };
-
-          AuthService.createUser(userInfo);
-        } else {
+        if (!isNewUser) {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
           NotificationService.saveTokenToDatabase();
           this.removeLoginInProgress(updatedUser?.uid);
           this.setIsLoading(false);
         }
+        // if (isNewUser) {
+        //   //TODO Call this only if user opens app with token
+        //   const providerUserInfo = await AuthService.getCurrentLoggedUser(
+        //     user.providerData[0].providerId,
+        //   );
+        //   const userInfo = {
+        //     ...user?._user,
+        //     firstName: providerUserInfo?.user?.givenName,
+        //     lastName: providerUserInfo?.user?.familyName,
+        //     phoneNumber: user?.phoneNumber,
+        //     // provider,
+        //   };
+
+        //   AuthService.createUser(userInfo);
+        // } else {
+        //   updatedUser && this.setSignedInUser(new UserModel(updatedUser));
+        //   NotificationService.saveTokenToDatabase();
+        //   this.removeLoginInProgress(updatedUser?.uid);
+        //   this.setIsLoading(false);
+        // }
       },
     );
   }

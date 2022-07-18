@@ -1,40 +1,32 @@
-import React, {useState, ReactElement} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  Text,
-  ScrollView,
-  View,
-  Dimensions,
-} from 'react-native';
 import {useRoute} from '@react-navigation/native';
-import {TabView} from 'react-native-tab-view';
 import {observer} from 'mobx-react';
+import React, {ReactElement, useState} from 'react';
+import {Dimensions, FlatList, StatusBar, Text, View} from 'react-native';
+import {TabView} from 'react-native-tab-view';
 
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {CommonMembersList} from './CommonMembersList';
+import {ACTIONS, ENTITY_TYPES, TITLES} from '~/Components/Moderation/constants';
+import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
+import ModerationModal from '~/Components/Moderation/ModerationModal';
+import {PROPOSAL_STAGE, PROPOSAL_TYPE} from '~/Config';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import ModerationService from '~/Services/ModerationService';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
+import {useStore} from '~/Util/hooks/useStore';
+import Toast from '~/Util/Toast';
 import CommonTabBar from '../../../../CommonTabBar';
-import {PROPOSAL_TYPE, PROPOSAL_STAGE} from '~/Config';
-import {STORE_KEYS} from '~/Util/constants/storeKeys';
-import {CommonMembersRouteProps, CommonMembersProps} from './types';
+import {CommonMembersList} from './CommonMembersList';
 import {History} from './Components/History';
 import {Pending} from './Components/Pending';
 import {styles} from './styles';
-import ModerationActionSuccessModal from '~/Components/Moderation/ModerationActionSuccessModal';
-import ModerationModal from '~/Components/Moderation/ModerationModal';
-import ModerationService from '~/Services/ModerationService';
-import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
-import Toast from '~/Util/Toast';
-import {ACTIONS, ENTITY_TYPES, TITLES} from '~/Components/Moderation/constants';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {useStore} from '~/Util/hooks/useStore';
+import {CommonMembersRouteProps} from './types';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 const getTabName = (objectName: string, count: number): string =>
   `${objectName} (${count ? count : 0})`;
 
-const CommonMembers = () => {
+export const CommonMembers = observer(() => {
   const rootStore = useStore('rootStore');
   const proposalStore = rootStore.proposalStore;
   const commonStore = rootStore.commonStore;
@@ -175,31 +167,29 @@ const CommonMembers = () => {
         action={ACTIONS.report}
       />
 
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}
-          nestedScrollEnabled={true}
-          directionalLockEnabled={true}>
-          <View style={styles.sectionContainer}>
-            <Text style={styles.title}>Members</Text>
-          </View>
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.scrollView}
+        nestedScrollEnabled={true}
+        directionalLockEnabled={true}
+        ListHeaderComponent={
+          <>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.title}>Members</Text>
+            </View>
 
-          <View style={styles.sectionTabView}>
-            <TabView
-              navigationState={{index, routes}}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={initialLayout}
-              renderTabBar={CommonTabBar}
-            />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+            <View style={styles.sectionTabView}>
+              <TabView
+                navigationState={{index, routes}}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={CommonTabBar}
+              />
+            </View>
+          </>
+        }
+      />
     </>
   );
-};
-
-export default observer((props: Omit<CommonMembersProps, STORE_KEYS>) => (
-  <CommonMembers {...(props as CommonMembersProps)} />
-));
+});

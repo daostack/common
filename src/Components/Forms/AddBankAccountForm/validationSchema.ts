@@ -26,7 +26,7 @@ export const validationSchema = object({
   socialId: string()
     .label('ID Number')
     .typeError('ID Number must contain only numbers')
-    .min(9)
+    .length(9)
     .required(),
   socialIdIssueDate: date()
     .validateDateFormat('Invalid date')
@@ -48,7 +48,7 @@ export const validationSchema = object({
   phoneNumber: string()
     .typeError('Phone Number must contain only numbers')
     .label('Phone Number')
-    .min(10)
+    .length(10)
     .required(),
   email: string().email().label('Email').required(),
   accountNumber: number()
@@ -75,6 +75,16 @@ export const validationSchema = object({
   bankConfirmation: object()
     .shape({
       downloadURL: string().required(),
+      mimeType: string()
+        .required()
+        .label('Bank account confirmation letter')
+        .oneOf([
+          'application/pdf',
+          'image/png',
+          'image/jpeg',
+          'image/gif',
+          'application/msword',
+        ]),
     })
     .label('Bank Confirmation')
     .required(),

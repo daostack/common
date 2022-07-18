@@ -86,15 +86,14 @@ const FundingProposal = ({
 
           Toast.done('Your proposal was created!');
 
-          const navigate = CommonActions.navigate({
-            name: 'CommonProfile',
+          navigation.navigate('CommonProfile', {
+            screen: 'CommonAgenda',
             params: {
               showRequestSentModal: true,
               createdProposalId: proposalId,
               commonId,
             },
           });
-          navigation.dispatch(navigate);
         } else {
           navigation.pop();
           showErrorPopUp(
@@ -186,7 +185,7 @@ const FundingProposal = ({
         visible={debtModalVisible}>
         <ModalDebtWarning onPressClose={() => closeDebtModal()} />
       </Modal>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.safeAreaContainer}>
         <ScrollView
           style={{
             flex: 1,
@@ -241,6 +240,10 @@ FundingProposal.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
   blurView: {position: 'absolute', ...StyleSheet.absoluteFill},
   title: {
     ...text.h2Black,

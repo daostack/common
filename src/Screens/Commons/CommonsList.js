@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
-import {CommonActions, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {
   Placeholder,
   PlaceholderMedia,
