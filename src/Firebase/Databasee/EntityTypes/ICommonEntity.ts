@@ -1,5 +1,4 @@
 import {IBaseEntity} from './IBaseEntity';
-import {firebase} from '~/Firebase';
 
 export interface ICommonEntity extends IBaseEntity {
   /**

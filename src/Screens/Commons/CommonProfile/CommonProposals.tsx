@@ -34,6 +34,7 @@ export const CommonProposals = observer(() => {
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
 
   const [moderationType, setModerationType] = useState(TITLES.discussion);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasPermission, setHasPermission] = useState(
     authStore.getPermission(commonId, authStore?.userInfo?.uid),
   );
@@ -59,7 +60,7 @@ export const CommonProposals = observer(() => {
         onAction: item
           ? (actionType) =>
               onModerate(actionType, membershipRequestType(itemType), item.id)
-          : (type) => onEdit(type),
+          : (type) => onModerate(type),
         hasPermission,
         hasShare: true,
         moderatorOptions: {

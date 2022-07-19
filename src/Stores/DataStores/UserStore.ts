@@ -11,10 +11,7 @@ import RootStore from '../RootStore';
 import {ICommonMember} from '~/Firebase/Databasee/EntityTypes/ICommonEntity';
 import {showBackendError} from '~/Util';
 import {runInAction} from 'mobx';
-import {
-  IProposalVote,
-  VoteWithUserInfo,
-} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
+import {VoteWithUserInfo} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
 import {VOTE_STATUSES} from '~/Util/constants/votes';
 import {IVoteEntity} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 

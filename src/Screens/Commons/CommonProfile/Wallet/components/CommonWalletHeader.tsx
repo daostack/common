@@ -1,10 +1,9 @@
-import React, {Children} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors, font, text} from '~/Theme';
 import {formatMoney} from '~/Util/FormatUtil';
 import {CurrencySymbols} from '~/Util/locale';
-import {WalletTabs} from '~/Screens/Commons/CommonProfile/Wallet/components/CommonWalletTabs';
 
 export const CommonWalletHeader = (props) => {
   const {common, children} = props;
@@ -30,7 +29,6 @@ export const CommonWalletHeader = (props) => {
         </View>
       </View>
       {children}
-
     </>
   );
 };

@@ -40,7 +40,7 @@ const {height, width} = Dimensions.get('window');
 
 const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
   route: {
-    params: {currCommon},
+    params: {currCommon, currDaoId, refreshFeed},
   },
 }) => {
   const navigation = useNavigation();
@@ -60,8 +60,8 @@ const FirstJoinCommon: React.FC<InferProps<typeof props>> = ({
           personalContributionFormStore,
           billingDetailsFormStore,
         },
-        currCommon: currCommon,
-        currDaoId: currDaoId,
+        currCommon,
+        currDaoId,
         refreshFeed,
       },
       currCommon,

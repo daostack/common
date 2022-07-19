@@ -178,36 +178,6 @@ export interface IProposalFile {
   value: string;
 }
 
-interface IProposalFundingRequest {
-  /**
-   * The amount (in US cents) that was requested
-   */
-  amount: number;
-
-  /**
-   * Whether the funds have been send
-   * to the requested
-   */
-  funded: boolean;
-}
-
-/**
- * The extended version of the proposal including
- * the fields for funding requests
- */
-interface IFundingRequestProposal extends IBaseProposalEntity {
-  type: 'fundingRequest';
-
-  state: FundingRequestState;
-
-  /**
-   * Object with some description of the proposal
-   */
-  description: TypeFundingRequestDescription;
-
-  fundingRequest: IProposalFundingRequest;
-}
-
 export interface CreateFundingRequestProposalPayload {
   commonId: string;
   title: string;

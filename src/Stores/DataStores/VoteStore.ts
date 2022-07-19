@@ -5,10 +5,7 @@ import {
   getDataById,
   updateStoreData,
 } from '~/Util/firebaseHelper';
-import {
-  IVoteEntity,
-  VoteOutcome,
-} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
+import {IVoteEntity} from '~/Firebase/Databasee/EntityTypes/IVoteEntity';
 import {Vote} from '~/Stores/Models/Vote';
 import VoteService from '~/Services/VoteService';
 

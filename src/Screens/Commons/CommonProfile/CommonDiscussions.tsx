@@ -28,12 +28,12 @@ export const CommonDiscussions = observer(() => {
   const insets = useSafeAreaInsets();
   const {currCommon} = route.params;
 
-  const [action, setAction] = useState(ACTIONS.report);
+  /*const [action, setAction] = useState(ACTIONS.report);
   const [showModerationModal, setShowModerationModal] = useState(false);
   const [showModerationSuccessModal, setShowModerationSuccessModal] =
     useState(false);
   const [moderationType, setModerationType] = useState(TITLES.discussion);
-  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const [optionsModalVisible, setOptionsModalVisible] = useState(false);*/
   const hasPermission = authStore.getPermission(
     currCommon?.id,
     authStore?.userInfo?.uid,
@@ -70,7 +70,7 @@ export const CommonDiscussions = observer(() => {
         item.id,
       );
     }
-    setModerationType(itemType);
+    //setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
@@ -108,22 +108,22 @@ export const CommonDiscussions = observer(() => {
   };
 
   const onModerate = async (actionType, itemType = '', itemId = null) => {
-    setAction(actionType);
+    //setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.onModerate(
+    /*const resp = */ await ModerationService.onModerate(
       actionType,
       itemId,
-      commonId,
+      currCommon?.id,
       itemType.toLowerCase(),
     );
 
-    resp === ACTIONS.report
+    /*resp === ACTIONS.report
       ? setShowModerationModal(true)
-      : resp && setShowModerationSuccessModal(true);
+      : resp && setShowModerationSuccessModal(true);*/
   };
 
   const onEdit = (type) => {
-    setOptionsModalVisible(false);
+    //setOptionsModalVisible(false);
     navigateTo(type);
   };
 

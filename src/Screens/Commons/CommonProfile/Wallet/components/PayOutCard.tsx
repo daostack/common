@@ -4,8 +4,6 @@ import {colors, font} from '~/Theme';
 import {observer} from 'mobx-react';
 import {CurrencySymbols} from '~/Util/locale';
 import SectionDivider from '~/Components/CommonAgenda/SectionDivider';
-import FastImage from 'react-native-fast-image';
-import {useStore} from '~/Util/hooks/useStore';
 import moment from 'moment';
 
 interface Props {

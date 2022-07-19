@@ -38,7 +38,7 @@ const MembershipAdmittance: React.FC<InferProps<typeof props>> = ({
 
   const push = async () => {
     if (introduceYourselfFormStore.isFormValid()) {
-      const createMembershipAdmittance = await ProposalService.create({
+      await ProposalService.create({
         type: PROPOSALS.MEMBER_ADMITTANCE,
         args: {
           commonId,

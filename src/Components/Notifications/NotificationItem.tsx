@@ -37,7 +37,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   notificationStore,
 }) => {
   const navigateToDetail = () => {
-    let navigate;
 
     notificationStore.setNotificationItemState(item.id, {
       opened: true,

@@ -67,7 +67,7 @@ export const CommonWallet = observer(() => {
     };
   }, [currCommon]);
 
-  const keyExtractor = useCallback((data) => data.id, []);
+  const keyExtractor = useCallback((callbackData) => callbackData.id, []);
 
   const switchTab = (tabName: string) => {
     setActiveTab(tabName);

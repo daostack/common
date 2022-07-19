@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import axios, {AxiosInstance} from 'axios';
 import {auth, db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {ProposalsCollection} from '~/Firebase/Databasee/Collections/ProposalsCollection';
@@ -274,6 +274,7 @@ class ProposalService {
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   create = async (payload: ProposalType) => {
     try {
     } catch (err) {

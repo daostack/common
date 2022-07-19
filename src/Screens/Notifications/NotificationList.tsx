@@ -65,10 +65,14 @@ const NotificationList = (props) => {
         return <CommonMemberAdded item={item} navigation={navigation} />;
 
       case EventTypeState.requestToJoinCreated:
-        return <MembershipAdmittanceCreated item={item} navigation={navigation} />;
+        return (
+          <MembershipAdmittanceCreated item={item} navigation={navigation} />
+        );
 
       case EventTypeState.requestToJoinRejected:
-        return <MembershipAdmittanceRejected item={item} navigation={navigation} />;
+        return (
+          <MembershipAdmittanceRejected item={item} navigation={navigation} />
+        );
 
       case EventTypeState.discussionCreated:
         return <DiscussionCreated item={item} navigation={navigation} />;
