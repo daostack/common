@@ -1,10 +1,10 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BottomRightButton} from '~/Components';
-import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
+import {/*ACTIONS, */ TITLES} from '~/Components/Moderation/constants';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import DiscussionList from '~/Screens/Discussions/DiscussionList';
 import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
