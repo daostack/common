@@ -13,7 +13,7 @@
     "ios:dev": "yarn useDev && react-native run-ios --scheme \"common-dev\"",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint App.js src/ __tests__",
+    "lint": "eslint App.tsx src/ __tests__",
     "useLocal": "sed -i '' -e '/local/d' env/env.stg && echo 'local=true' >> env/env.stg",
     "useLocalDev": "sed -i '' -e '/local/d' env/env.dev && echo 'local=true' >> env/env.dev",
     "useCloud": "sed -i '' -e '/local/d' env/env.stg && echo 'local=false' >> env/env.stg",
