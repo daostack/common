@@ -19,7 +19,8 @@ const Tab = createBottomTabNavigator();
 export const CommonTabNavigator = observer(() => {
   const routeHook = useRoute();
 
-  const commonId = routeHook?.params?.params?.commonId || routeHook?.params?.commonId;
+  const commonId =
+    routeHook?.params?.params?.commonId || routeHook?.params?.commonId;
 
   return (
     <Tab.Navigator
