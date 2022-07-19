@@ -11,11 +11,6 @@ import Animated, {
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {Common} from '~/Stores/Models/Common';
 import {AgendaHeaderBar} from './AgendaHeader/AgendaHeaderBar';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {
-  HEADER_BUTTON_HEIGHT,
-  HEADER_HEIGHT,
-} from '~/Screens/Commons/components/commonConstants';
 
 const {width, height} = Dimensions.get('window');
 
@@ -34,7 +29,6 @@ interface FlatListProps {
 export const AgendaFlatList = (props: FlatListProps) => {
   const {currCommon, children, openCommonOptionsModal, isMember} = props;
   const yIndex = useSharedValue(0);
-  const insets = useSafeAreaInsets();
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (e) => {
@@ -63,7 +57,7 @@ export const AgendaFlatList = (props: FlatListProps) => {
     ],
   }));
 
-  const animatedOpacity = useAnimatedStyle(() => ({
+  /*const animatedOpacity = useAnimatedStyle(() => ({
     opacity: interpolate(
       yIndex.value,
       [
@@ -73,7 +67,7 @@ export const AgendaFlatList = (props: FlatListProps) => {
       [0, 1],
       Extrapolate.CLAMP,
     ),
-  }));
+  }));*/
 
   const keyExtractor = useCallback((item, index) => index.toString(), []);
 

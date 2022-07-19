@@ -3,7 +3,7 @@ import {inject, observer} from 'mobx-react';
 import {object, shape, string} from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
+  //Alert,
   Linking,
   Platform,
   ScrollView,
@@ -18,12 +18,12 @@ import {getBuildNumber, getVersion} from 'react-native-device-info';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import AccordionBtn from '~/Components/AccordionBtn';
 import {isProduction} from '~/Config';
-import AuthService from '~/Services/AuthService';
+//import AuthService from '~/Services/AuthService';
 import {colors, font, layout, sizeL, text} from '~/Theme';
 import {authStorePropTypes} from '~/Types/propTypes';
 import {LINKS} from '~/Util/constants/links';
-import Toast from '~/Util/Toast';
-import logger from '../../Services/Logger';
+//import Toast from '~/Util/Toast';
+//import logger from '../../Services/Logger';
 import CreateAccount from './CreateAccount';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {db} from '~/Firebase';
@@ -46,7 +46,7 @@ const UserProfile = ({authStore}) => {
     getStatus();
   }, []);
 
-  const _logout = async () => {
+  /*const _logout = async () => {
     try {
       Alert.alert('Oops', 'Do you want to sign out?', [
         {
@@ -70,7 +70,7 @@ const UserProfile = ({authStore}) => {
       Toast.error(error?.toString());
       logger.log('SignOut Error -> ', error);
     }
-  };
+  };*/
 
   async function getUserData(value, isSignedWithApple) {
     const userSnapshot = await db

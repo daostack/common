@@ -17,9 +17,9 @@ import {CommonWallet} from '~/Screens/Commons/CommonProfile/CommonWallet/CommonW
 const Tab = createBottomTabNavigator();
 
 export const CommonTabNavigator = observer(() => {
-  const route = useRoute();
+  const routeHook = useRoute();
 
-  const commonId = route?.params?.params?.commonId || route?.params?.commonId;
+  const commonId = routeHook?.params?.params?.commonId || routeHook?.params?.commonId;
 
   return (
     <Tab.Navigator

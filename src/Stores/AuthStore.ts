@@ -1,7 +1,7 @@
 import {observable, action, makeObservable} from 'mobx';
 import {isDaoMemberByUserId} from '~/Util';
 import logger from '~/Services/Logger';
-import AuthService from '~/Services/AuthService';
+//import AuthService from '~/Services/AuthService';
 import NotificationService from '~/Services/NotificationService';
 import {auth} from '~/Firebase';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';

@@ -14,6 +14,7 @@ import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import ModerationService from '~/Services/ModerationService';
 import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
 import {useStore} from '~/Util/hooks/useStore';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import Toast from '~/Util/Toast';
 
 const moderationFormStore = new ModerationFormStore();
@@ -32,8 +33,9 @@ export const CommonProposals = observer(() => {
   const bottomSheetStore = uiStore.bottomSheetStore;
 
   const [moderationType, setModerationType] = useState(TITLES.discussion);
-  const [hasPermission, setHasPermission] = useState(
-    authStore.getPermission(commonId, authStore?.userInfo?.uid),
+  const hasPermission = authStore.getPermission(
+    currCommon?.id,
+    authStore?.userInfo?.uid,
   );
   const [action, setAction] = useState(ACTIONS.report);
   const [showModerationModal, setShowModerationModal] = useState(false);
@@ -66,6 +68,18 @@ export const CommonProposals = observer(() => {
         },
       },
     );
+  };
+
+  const onEdit = (type) => {
+    //setOptionsModalVisible(false);
+    navigateTo(type);
+  };
+
+  const navigateTo = (type) => {
+    navigation.navigate(NAVIGATION_SCREENS.EDIT_COMMON, {
+      currCommon: currCommon,
+      type: type,
+    });
   };
 
   const onModerate = async (actionType, itemType = '', itemId = null) => {

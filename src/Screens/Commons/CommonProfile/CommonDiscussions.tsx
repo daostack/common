@@ -1,10 +1,10 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {BottomRightButton} from '~/Components';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
+import {/*ACTIONS,*/ TITLES} from '~/Components/Moderation/constants';
 import {reporterName, timeReported} from '~/Components/Moderation/helper';
 import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
@@ -25,16 +25,10 @@ export const CommonDiscussions = observer(() => {
   const proposalStore = useStore('proposalStore');
   const uiStore = useStore('uiStore');
   const commonStore = useStore('commonStore');
+  const userStore = useStore('userStore');
 
   const commonId = route?.params?.commonId;
   const currCommon = commonStore.getCommonById(commonId)!;
-
-  const [action, setAction] = useState(ACTIONS.report);
-  const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
-  const [moderationType, setModerationType] = useState(TITLES.discussion);
-  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
   const hasPermission = authStore.getPermission(
     currCommon?.id,
     authStore?.userInfo?.uid,
@@ -71,7 +65,7 @@ export const CommonDiscussions = observer(() => {
         item.id,
       );
     }
-    setModerationType(itemType);
+    //setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
@@ -109,22 +103,22 @@ export const CommonDiscussions = observer(() => {
   };
 
   const onModerate = async (actionType, itemType = '', itemId = null) => {
-    setAction(actionType);
+    //setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.onModerate(
+    /*const resp =*/ await ModerationService.onModerate(
       actionType,
       itemId,
       commonId,
       itemType.toLowerCase(),
     );
 
-    resp === ACTIONS.report
+    /*resp === ACTIONS.report
       ? setShowModerationModal(true)
-      : resp && setShowModerationSuccessModal(true);
+      : resp && setShowModerationSuccessModal(true);*/
   };
 
   const onEdit = (type) => {
-    setOptionsModalVisible(false);
+    //setOptionsModalVisible(false);
     navigateTo(type);
   };
 
