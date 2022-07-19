@@ -3,7 +3,7 @@ import NetInfo from '@react-native-community/netinfo';
 import crashlytics from '@react-native-firebase/crashlytics';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
-import {CommonActions, NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
@@ -18,31 +18,30 @@ import {
   UIManager,
   View,
 } from 'react-native';
-import DeepLinking from 'react-native-deep-linking';
+//import DeepLinking from 'react-native-deep-linking';
 import Intercom from 'react-native-intercom';
 import KeyboardManager from 'react-native-keyboard-manager';
-import validUrl from 'valid-url';
+//import validUrl from 'valid-url';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import Loader from '~/Components/Loader';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+//import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
 import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {AUTH_CODE} from '~/Util/constants/authCode';
-import {
+/*import {
   DYNAMIC_LINKS_SCREENS,
   DYNAMIC_LINKS_SCREEN_PARAMS,
   DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINK_URI_WITH_SLASH,
-} from '~/Util/constants/dynamicLinks';
+} from '~/Util/constants/dynamicLinks';*/
 import {useStore} from '~/Util/hooks/useStore';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import Icon from './src/Assets/iconfont/Icon';
 import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {
-  Browser,
   CommonWebview,
   CreateAccount,
   Onboarding,
