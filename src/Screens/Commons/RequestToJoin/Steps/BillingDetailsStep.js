@@ -24,6 +24,7 @@ import PaymentService from '~/Services/PaymentsService';
 import CardsService from '~/Services/CardsService';
 import Toast from '~/Util/Toast';
 import {formInitialState} from '~/Util/constants/form';
+import {PurpleBoxMessage} from '~/Components/PurpleBoxMessage';
 import {v4} from 'uuid';
 
 const AUTOFILL = {

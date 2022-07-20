@@ -1,4 +1,3 @@
-import {CommonActions} from '@react-navigation/native';
 import {inject} from 'mobx-react';
 import {observer} from 'mobx-react';
 import {bool, func, object, shape, string} from 'prop-types';

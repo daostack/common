@@ -157,8 +157,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.blueGray1,
   },
-  scrollView: {
-  },
+  scrollView: {},
   scrollContainer: {
     flexGrow: 1,
   },
