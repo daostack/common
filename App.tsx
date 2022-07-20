@@ -30,12 +30,12 @@ import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {AUTH_CODE} from '~/Util/constants/authCode';
-/*import {
-  DYNAMIC_LINKS_SCREENS,
-  DYNAMIC_LINKS_SCREEN_PARAMS,
-  DYNAMIC_LINKS_TYPES,
+import {
+  //DYNAMIC_LINKS_SCREENS,
+  //DYNAMIC_LINKS_SCREEN_PARAMS,
+  //DYNAMIC_LINKS_TYPES,
   DYNAMIC_LINK_URI_WITH_SLASH,
-} from '~/Util/constants/dynamicLinks';*/
+} from '~/Util/constants/dynamicLinks';
 import {useStore} from '~/Util/hooks/useStore';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import Icon from './src/Assets/iconfont/Icon';

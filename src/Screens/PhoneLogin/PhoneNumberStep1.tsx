@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {observer} from 'mobx-react';
 import {
   StyleSheet,
@@ -33,6 +33,10 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
+  useEffect(() => {
+    authStore.setIsLoading(false);
+  }, []);
+
   const _signIn = async () => {
     Keyboard.dismiss();
     const isValid = phoneInput.current?.isValidNumber(phoneNumber);
@@ -41,12 +45,12 @@ const PhoneNumberStep1: React.FC<InferProps<typeof props>> = () => {
     } else {
       try {
         authStore.setIsLoading(true);
-        const confirm = await AuthService.signInPhone(phoneNumber);
+        const confirm = await AuthService.sendSms(phoneNumber);
         authStore.setIsLoading(false);
         navigation.navigate('VerifyPhone', {
           phoneNumber,
           confirm,
-          onSignIn: route.params?.onSignIn,
+          onSignIn: route?.params?.onSignIn,
         });
       } catch (error) {
         authStore.setIsLoading(false);

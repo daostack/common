@@ -91,9 +91,20 @@ class AuthService {
     };
   };
 
+  sendSms = async (phoneNumber: string): Promise<any> => {
+    return await auth().signInWithPhoneNumber(phoneNumber);
+  };
   // phone number signIn
-  signInPhone = async (phoneNumber: string): Promise<any> =>
-    await auth().signInWithPhoneNumber(phoneNumber);
+  signInPhone = async (verificationId, verificationCode, userInfo): Promise<any> => {
+    const phoneCredential = auth.PhoneAuthProvider.credential(
+      verificationId,
+      verificationCode,
+    );
+    return {
+      userInfo,
+      credentials: phoneCredential,
+    };
+  };
 
   // Google Auth flow
   signIn = async (): Promise<{

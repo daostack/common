@@ -23,6 +23,7 @@ import AuthService from '~/Services/AuthService';
 import Loader from '~/Components/Loader';
 import Toast from '~/Util/Toast';
 import {CELL_COUNT} from './constants';
+import {useNavigation} from '@react-navigation/native';
 
 const props = {
   navigation: shape({
@@ -39,19 +40,21 @@ const props = {
 };
 
 const VerificationStep2: React.FC<InferProps<typeof props>> = ({
-  navigation,
   route: {
     params: {onSignIn, phoneNumber, confirm},
   },
 }) => {
+  const navigation = useNavigation();
   const authStore = useStore('authStore');
-  const [userInfo, setUserInfo] = useState(null);
+  // const [userInfo, setUserInfo] = useState(null);
+  const [authInfo, setAuthInfo] = useState(null);
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
   const [codeProps, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
+  const [confirmObj, setConfirmObj] = useState(confirm);
   const [buttonText, setButtonText] = useState('timer');
   const [buttonColor, setButtonColor] = useState(colors.mainBlue);
   const [textColor, setTextColor] = useState(colors.white);
@@ -63,14 +66,15 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   }, [value]);
 
   useEffect(() => {
-    if (userInfo) {
-      onSignIn(userInfo, false, true);
+    if (authInfo) {
+      navigation.navigate('UserProfile', {authInfo});
+      // onSignIn(authInfo, false, true);
     }
-  }, [userInfo]);
+  }, [authInfo]);
 
   const resendCode = async () => {
     setButtonText('timer');
-    confirm = await AuthService.signInPhone(phoneNumber);
+    setConfirmObj(await AuthService.sendSms(phoneNumber));
   };
 
   useEffect(() => {
@@ -110,9 +114,14 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   const verifyCode = async () => {
     authStore.setIsLoading(true);
     try {
-      const userInfoResp = await confirm.confirm(value);
-      // TODO: here I can get credentials
-      setUserInfo(userInfoResp);
+      const userInfoResp = await confirmObj.confirm(value);
+      const authInfoResp = await AuthService.signInPhone(
+        confirm.verificationId,
+        value,
+        userInfoResp,
+      );
+      authStore.setIsLoading(false);
+      setAuthInfo(authInfoResp);
     } catch (error) {
       authStore.setIsLoading(false);
       Toast.error('Invalid code');
