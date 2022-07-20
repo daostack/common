@@ -3,7 +3,6 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {styles} from './styles';
-import {AUTH_CODE} from '~/Util/constants/authCode';
 import {webviewURL} from '~/Config';
 
 export default function CommonWebview() {
@@ -22,9 +21,10 @@ export default function CommonWebview() {
   return (
     <SafeAreaView style={styles.container}>
       <WebView
-        source={{uri: `${webviewURL}/?authCode=${AUTH_CODE}`}}
+        source={{uri: webviewURL}}
         style={styles.webviewContainer}
         javaScriptEnabled
+        allowsInlineMediaPlayback={true}
         originWhitelist={['*']}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         allowsFullscreenVideo={false}

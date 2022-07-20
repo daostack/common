@@ -1,9 +1,5 @@
 import dynamicLinks from '@react-native-firebase/dynamic-links';
-import {
-  CommonActions,
-  StackActions,
-  useNavigation,
-} from '@react-navigation/native';
+import {StackActions, useNavigation} from '@react-navigation/native';
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
