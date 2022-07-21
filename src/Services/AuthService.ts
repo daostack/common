@@ -95,7 +95,11 @@ class AuthService {
     return await auth().signInWithPhoneNumber(phoneNumber);
   };
   // phone number signIn
-  signInPhone = async (verificationId, verificationCode, userInfo): Promise<any> => {
+  signInPhone = async (
+    verificationId,
+    verificationCode,
+    userInfo,
+  ): Promise<any> => {
     const phoneCredential = auth.PhoneAuthProvider.credential(
       verificationId,
       verificationCode,

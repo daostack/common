@@ -41,7 +41,7 @@ const props = {
 
 const VerificationStep2: React.FC<InferProps<typeof props>> = ({
   route: {
-    params: {onSignIn, phoneNumber, confirm},
+    params: {/*onSignIn, */ phoneNumber, confirm},
   },
 }) => {
   const navigation = useNavigation();
