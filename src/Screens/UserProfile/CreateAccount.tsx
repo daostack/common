@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import GSignInButton from '~/Components/Auth/GSignInButton';
 //import FacebookSignInButton from '~/Components/Auth/FacebookSignInButton';
-//import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
+// import PhoneSignInButton from '~/Components/Auth/PhoneSignInButton';
 import {layout, text, colors} from '~/Theme';
 import {observer} from 'mobx-react';
 import AppleSignInButton from '~/Components/Auth/AppleSignInButton';
@@ -20,6 +20,7 @@ import {func, bool} from 'prop-types';
 import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
 import {useStore} from '~/Util/hooks/useStore';
 import {LINKS} from '~/Util/constants/links';
+// import {useRoute} from '@react-navigation/native';
 
 interface CreateAccountProps {
   onSignedIn: (
@@ -35,6 +36,8 @@ interface CreateAccountProps {
 const CreateAccount = (props: CreateAccountProps) => {
   const {onSignedIn, hidePlaceholder, goToNextScreen, width} = props;
   const authStore = useStore('authStore');
+  // const route = useRoute();
+  // const phoneAuthInfo = route?.params?.authInfo;
   const onSignIn = async (
     authInfo: {userInfo: IUserEntity; credentials: any},
     isSignedWithApple = false,
@@ -47,6 +50,12 @@ const CreateAccount = (props: CreateAccountProps) => {
       setTimeout(goToNextScreen, 0);
     }
   };
+
+  // useEffect(() => {
+  //   if (phoneAuthInfo) {
+  //     onSignIn(phoneAuthInfo);
+  //   }
+  // }, [phoneAuthInfo]);
 
   const isIos = Platform.OS === 'ios';
   const isLoginWithAppleEnabled = isIos
@@ -91,9 +100,9 @@ const CreateAccount = (props: CreateAccountProps) => {
 
         <GSignInButton onSignIn={onSignIn} />
         {/*
-        <FacebookSignInButton onSignIn={onSignIn} />
+        <FacebookSignInButton onSignIn={onSignIn} />*/}
 
-        <PhoneSignInButton onSignIn={onSignIn} /> */}
+        {/* <PhoneSignInButton onSignIn={onSignIn} /> */}
       </View>
 
       {renderError()}
