@@ -1,12 +1,17 @@
-import {useRoute} from '@react-navigation/native';
-import React from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {styles} from './styles';
 import {webviewURL} from '~/Config';
+import {WebviewActions} from '~/Util/constants';
+import {WebviewLoader} from '~/Components/WebviewLoader';
+import Toast from '~/Util/Toast';
 
 export default function CommonWebview() {
   const route = useRoute();
+  const navigation = useNavigation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const {credentials} = route.params as any;
 
   const INJECTED_JAVASCRIPT = `(function() {
@@ -28,7 +33,19 @@ export default function CommonWebview() {
         originWhitelist={['*']}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         allowsFullscreenVideo={false}
+        onMessage={async (event) => {
+          const webviewMessage = event?.nativeEvent.data;
+          if (webviewMessage === WebviewActions.loginSuccess) {
+            setIsLoggedIn(true);
+          } else if (webviewMessage === WebviewActions.loginError) {
+            Toast.error('Something went wrong');
+            navigation.goBack();
+          } else if (webviewMessage === WebviewActions.logout) {
+            navigation.goBack();
+          }
+        }}
       />
+      <WebviewLoader isLoggedIn={isLoggedIn} />
     </SafeAreaView>
   );
 }
