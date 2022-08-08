@@ -37,8 +37,6 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
   notificationStore,
 }) => {
   const navigateToDetail = () => {
-    let navigate;
-
     notificationStore.setNotificationItemState(item.id, {
       opened: true,
     });
@@ -58,7 +56,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
       navigation.navigate('CommonProfile', {
         screen: 'CommonAgenda',
         params: {
-          currCommon: notificationData.common,
+          commonId: notificationData.common?.id,
           fromNotificationItem: true,
         },
       });
@@ -90,8 +88,7 @@ const NotificationItem: React.FC<InferProps<typeof props>> = ({
               : colors.paleNotificationblue,
           },
         ]}>
-        <View
-          style={{flexDirection: 'column', marginLeft: 20, marginRight: 15}}>
+        <View style={{flexDirection: 'column', marginRight: 16}}>
           <FastImage
             style={styles.userImage}
             source={{
@@ -184,7 +181,6 @@ const styles = StyleSheet.create({
     ...font.primary.regular,
     ...font.fontSize(0),
     color: colors.black,
-    marginLeft: 5,
   },
   whereStyle: {
     ...font.primary.bold,
@@ -193,16 +189,16 @@ const styles = StyleSheet.create({
   },
   dateStyle: {
     ...font.primary.regular,
-    ...font.fontSize(0),
+    fontSize: 14,
     marginTop: 5,
     color: colors.greySubtitle,
   },
   messageCardContainer: {
-    ...layout.content,
     ...layout.flexRow,
     ...layout.flexStart,
     borderBottomColor: colors.grey4,
     borderBottomWidth: 2,
+    padding: 16,
   },
   messageContainer: {
     marginTop: 5,

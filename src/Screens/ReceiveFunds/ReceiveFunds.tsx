@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
-import {AddBankAccountForm} from '~/Components/Forms/AddBankAccountForm';
+import {AddBankAccountForm} from '~/Components/Forms/AddBankAccountForm/AddBankAccountForm';
 import BankAccountService from '~/Services/BankAccountService';
 import {colors, font, layout, text} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
@@ -90,7 +90,7 @@ const ReceiveFunds = () => {
       )}
 
       <BottomSheetModal
-        style={{borderRadius: 30}}
+        style={{borderRadius: 30, paddingBottom: 0}}
         isVisible={isModalVisible}
         onClose={closeModal}>
         <AddBankAccountForm

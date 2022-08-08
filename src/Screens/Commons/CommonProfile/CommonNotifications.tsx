@@ -1,15 +1,165 @@
-import React from 'react';
-import NotificationList from '~/Screens/Notifications/NotificationList';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useCallback, useEffect} from 'react';
+import {
+  FlatList,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import PushNotification from 'react-native-push-notification';
+import Loader from '~/Components/Loader';
+import CommonMemberAdded from '~/Components/Notifications/CommonMemberAdded';
+import {CommonWhitelisted} from '~/Components/Notifications/CommonWhitelisted';
+import DiscussionCreated from '~/Components/Notifications/DiscussionCreated';
+import DiscussionMessageReported from '~/Components/Notifications/DiscussionMessageReported';
+import DiscussionReported from '~/Components/Notifications/DiscussionReported';
+import FundingRequest from '~/Components/Notifications/FundingRequest';
+import MessageCreated from '~/Components/Notifications/MessageCreated';
+import ProposalReported from '~/Components/Notifications/ProposalReported';
+import RequestToJoinCreated from '~/Components/Notifications/RequestToJoinCreated';
+import RequestToJoinRejected from '~/Components/Notifications/RequestToJoinRejected';
+import WelcomeNotification from '~/Components/Notifications/WelcomeNotification';
+import {EventTypeState} from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
+import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
+import Logger from '~/Services/Logger';
+import {Notification} from '~/Stores/Models/Notification';
+import {colors, font, layout, sizeS} from '~/Theme';
 import {useStore} from '~/Util/hooks/useStore';
-import {useRoute} from '@react-navigation/native';
 
 export const CommonNotifications = () => {
-  const rootStore = useStore('rootStore');
+  const navigation = useNavigation();
   const route = useRoute();
-  const {currCommon} = route.params;
-  const notificationsArray = rootStore.notificationStore.getCommonNotifications(
+
+  const notificationStore = useStore('notificationStore');
+  const commonStore = useStore('commonStore');
+
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
+
+  const notificationsArray = notificationStore.getCommonNotifications(
     currCommon.id,
   );
 
-  return <NotificationList notificationsArray={notificationsArray} />;
+  useEffect(() => {
+    if (!notificationStore.hasNewNotifications) {
+      Platform.OS === 'ios'
+        ? PushNotificationIOS.removeAllDeliveredNotifications()
+        : PushNotification.removeAllDeliveredNotifications();
+    }
+  }, [notificationStore.hasNewNotifications]);
+
+  let notificationList: Array<Notification> = notificationsArray
+    ? notificationsArray
+    : notificationStore.loggedUserNotifications;
+
+  const renderNotificationItem = ({item}: {item: Notification}) => {
+    switch (item.eventType) {
+      case EventTypeState.commonWhitelisted:
+      case EventTypeState.commonCreated:
+        return <CommonWhitelisted item={item} navigation={navigation} />;
+
+      case EventTypeState.fundingRequestCreated:
+      case EventTypeState.fundingRequestAccepted:
+      case EventTypeState.fundingRequestExecuted:
+      case EventTypeState.fundingRequestRejected:
+        return <FundingRequest item={item} navigation={navigation} />;
+
+      case EventTypeState.messageCreated:
+        return <MessageCreated item={item} navigation={navigation} />;
+
+      case EventTypeState.commonMemberAdded:
+        return <CommonMemberAdded item={item} navigation={navigation} />;
+
+      case EventTypeState.requestToJoinCreated:
+        return <RequestToJoinCreated item={item} navigation={navigation} />;
+
+      case EventTypeState.requestToJoinRejected:
+        return <RequestToJoinRejected item={item} navigation={navigation} />;
+
+      case EventTypeState.discussionCreated:
+        return <DiscussionCreated item={item} navigation={navigation} />;
+
+      case EventTypeState.proposalReported:
+        return <ProposalReported item={item} navigation={navigation} />;
+
+      case EventTypeState.discussionReported:
+        return <DiscussionReported item={item} navigation={navigation} />;
+
+      case EventTypeState.discussionMessageReported:
+        return (
+          <DiscussionMessageReported item={item} navigation={navigation} />
+        );
+      case EventTypeState.welcomeNotification:
+        return <WelcomeNotification item={item} navigation={navigation} />;
+
+      default:
+        Logger.warn(
+          `Not existing notification item event type ${item.eventType}`,
+        );
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTimeout(() => {
+        notificationStore.removeSeenStateForNewNotifications();
+      }, 5000);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const keyExtractor = useCallback((data) => data.id, []);
+
+  return (
+    <>
+      <StatusBar barStyle="dark-content" />
+      <View style={styles.safeArea}>
+        <CommonHeader common={currCommon} title="Notifications" />
+        {notificationList.length === 0 && (
+          <Text style={styles.noNotifText}>No notifications yet</Text>
+        )}
+        {notificationList ? (
+          <FlatList
+            keyExtractor={keyExtractor}
+            data={notificationList.slice()}
+            renderItem={renderNotificationItem}
+            initialNumToRender={8}
+            maxToRenderPerBatch={8}
+          />
+        ) : (
+          <Loader isBigger />
+        )}
+      </View>
+    </>
+  );
 };
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    backgroundColor: colors.white,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  title: {
+    ...font.heading.bold,
+    ...font.fontSize(5),
+  },
+  sectionContainer: {
+    ...layout.content,
+    marginVertical: sizeS,
+    alignItems: 'flex-start',
+  },
+  noNotifText: {
+    ...font.primary.regular,
+    textAlign: 'center',
+    marginTop: 24,
+  },
+});

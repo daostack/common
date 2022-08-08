@@ -47,9 +47,14 @@ export enum NAVIGATION_SCREENS {
 }
 
 export type NavigationRoutes = {
+  WebViewScreen: undefined;
   Onboarding: undefined;
   HomeTabNavigator: undefined;
-  CommonProfile: {screen: string; params: {currCommon: Common}};
+  CommonProfile: {
+    screen?: string;
+    params?: {commonId: string};
+    commonId?: string;
+  };
   CommonAgenda: undefined;
   Explore: undefined;
   Profile: {userId: string; userInfo: UserModel};

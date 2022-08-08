@@ -1,45 +1,40 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import React, {useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {BottomRightButton} from '~/Components';
-import {ACTIONS, TITLES} from '~/Components/Moderation/constants';
-import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import DiscussionList from '~/Screens/Discussions/DiscussionList';
-import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
-import {sizeL, text} from '~/Theme';
-import {useStore} from '~/Util/hooks/useStore';
 import * as ModerationForm from '~/Components/Forms/ModerationForm';
-import ModerationService from '~/Services/ModerationService';
-import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {/*ACTIONS,*/ TITLES} from '~/Components/Moderation/constants';
 import {reporterName, timeReported} from '~/Components/Moderation/helper';
+import {NAVIGATION_SCREENS} from '~/Navigation/routes.enum';
+import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
+import {CommonHeader} from '~/Screens/Commons/CommonProfile/components/CommonHeader';
+import {DiscussionList} from '~/Screens/Discussions/DiscussionList';
+import ModerationService from '~/Services/ModerationService';
+import ModerationFormStore from '~/Stores/FormStores/ModerationFormStore';
+import {colors, font} from '~/Theme';
+import {useStore} from '~/Util/hooks/useStore';
 
 const moderationFormStore = new ModerationFormStore();
 
 export const CommonDiscussions = observer(() => {
   const navigation = useNavigation();
   const route = useRoute();
-  const rootStore = useStore('rootStore');
   const authStore = useStore('authStore');
   const discussionStore = useStore('discussionStore');
   const proposalStore = useStore('proposalStore');
+  const uiStore = useStore('uiStore');
+  const commonStore = useStore('commonStore');
   const userStore = useStore('userStore');
-  const insets = useSafeAreaInsets();
-  const {currCommon} = route.params;
 
-  const [action, setAction] = useState(ACTIONS.report);
-  const [showModerationModal, setShowModerationModal] = useState(false);
-  const [showModerationSuccessModal, setShowModerationSuccessModal] =
-    useState(false);
-  const [moderationType, setModerationType] = useState(TITLES.discussion);
-  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const commonId = route?.params?.commonId;
+  const currCommon = commonStore.getCommonById(commonId)!;
   const hasPermission = authStore.getPermission(
     currCommon?.id,
     authStore?.userInfo?.uid,
   );
 
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  const bottomSheetStore = uiStore.bottomSheetStore;
 
   const isMember = authStore.isDaoMember(currCommon?.members);
   const membershipRequestType = (itemTitle) =>
@@ -70,7 +65,7 @@ export const CommonDiscussions = observer(() => {
         item.id,
       );
     }
-    setModerationType(itemType);
+    //setModerationType(itemType);
 
     bottomSheetStore.showBottomSheet(
       BOTTOM_SHEET_TEMPLATES.SCREEN_COMMON_PROFILE_OPTIONS(item, hasPermission),
@@ -108,22 +103,22 @@ export const CommonDiscussions = observer(() => {
   };
 
   const onModerate = async (actionType, itemType = '', itemId = null) => {
-    setAction(actionType);
+    //setAction(actionType);
     bottomSheetStore.hideBottomSheet();
-    const resp = await ModerationService.onModerate(
+    /*const resp =*/ await ModerationService.onModerate(
       actionType,
       itemId,
       commonId,
       itemType.toLowerCase(),
     );
 
-    resp === ACTIONS.report
+    /*resp === ACTIONS.report
       ? setShowModerationModal(true)
-      : resp && setShowModerationSuccessModal(true);
+      : resp && setShowModerationSuccessModal(true);*/
   };
 
   const onEdit = (type) => {
-    setOptionsModalVisible(false);
+    //setOptionsModalVisible(false);
     navigateTo(type);
   };
 
@@ -135,8 +130,8 @@ export const CommonDiscussions = observer(() => {
   };
 
   return (
-    <View style={[{...styles.paleBackground}, {paddingTop: insets.top}]}>
-      <Text style={text.h1BlackTitle}>Discussions</Text>
+    <View style={[{...styles.container}]}>
+      <CommonHeader common={currCommon} title="Discussions" />
       <DiscussionList
         commonId={currCommon.id}
         openCommonOptions={(discussion) =>
@@ -163,9 +158,21 @@ export const CommonDiscussions = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  paleBackground: {
+  container: {
     flex: 1,
     backgroundColor: '#fcfcfc',
-    paddingHorizontal: sizeL,
+  },
+  header: {
+    backgroundColor: colors.iceBlue,
+  },
+  screenTitle: {
+    marginBottom: 8,
+  },
+  subtitle: {
+    textAlign: 'center',
+    ...font.primary.regular,
+    fontSize: 16,
+    color: colors.mainBlue,
+    fontWeight: 'bold',
   },
 });

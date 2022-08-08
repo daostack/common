@@ -42,7 +42,10 @@ class AuthService {
   }
 
   // Apple Auth flow
-  signInApple = async (): Promise<IUserEntity> => {
+  signInApple = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     const appleAuthRequestResponse = await this._applePerformRequest();
 
     // Ensure Apple returned a user identityToken
@@ -51,18 +54,23 @@ class AuthService {
     }
 
     // Create a Firebase credential from the response
-    const {identityToken, nonce} = appleAuthRequestResponse;
+    const {identityToken, nonce, authorizationCode, email} =
+      appleAuthRequestResponse;
     const appleCredential = auth.AppleAuthProvider.credential(
       identityToken,
       nonce,
     );
-
-    // Sign the user in with the credential
-    return auth().signInWithCredential(appleCredential);
+    return {
+      userInfo: {email} as IUserEntity,
+      credentials: {...appleCredential, secret: authorizationCode, nonce},
+    };
   };
 
   // Facebook signIn
-  signInFacebook = async (): Promise<IUserEntity | null> => {
+  signInFacebook = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     const result = await LoginManager.logInWithPermissions(['public_profile']);
     if (result.isCancelled) {
       throw result;
@@ -77,15 +85,36 @@ class AuthService {
     const facebookCredential = auth.FacebookAuthProvider.credential(
       data.accessToken,
     );
-    return auth().signInWithCredential(facebookCredential);
+    return {
+      userInfo: await auth().signInWithCredential(facebookCredential),
+      credentials: facebookCredential,
+    };
   };
 
+  sendSms = async (phoneNumber: string): Promise<any> => {
+    return await auth().signInWithPhoneNumber(phoneNumber);
+  };
   // phone number signIn
-  signInPhone = async (phoneNumber: string): Promise<any> =>
-    await auth().signInWithPhoneNumber(phoneNumber);
+  signInPhone = async (
+    verificationId,
+    verificationCode,
+    userInfo,
+  ): Promise<any> => {
+    const phoneCredential = auth.PhoneAuthProvider.credential(
+      verificationId,
+      verificationCode,
+    );
+    return {
+      userInfo,
+      credentials: phoneCredential,
+    };
+  };
 
   // Google Auth flow
-  signIn = async (): Promise<IUserEntity> => {
+  signIn = async (): Promise<{
+    userInfo: IUserEntity;
+    credentials: any;
+  }> => {
     await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
@@ -94,15 +123,15 @@ class AuthService {
       idToken,
       accessToken,
     );
-    let signedInUser = null;
+    let userInfo = null;
     try {
-      signedInUser = await auth().signInWithCredential(googleCredential);
+      userInfo = await auth().signInWithCredential(googleCredential);
     } catch (error) {
       await this.clearGoogleSignInCache();
       await this.googleSignOut();
       throw error;
     }
-    return signedInUser;
+    return {userInfo, credentials: googleCredential};
   };
 
   clearGoogleSignInCache = async (): Promise<void> => {

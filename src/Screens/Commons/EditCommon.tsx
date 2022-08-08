@@ -13,7 +13,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from '~/Assets/iconfont/Icon';
 import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
 import Toast from '~/Util/Toast';
-import {object, shape, InferProps, string, func} from 'prop-types';
+import {object, shape, InferProps, string} from 'prop-types';
 import EditInfo from '~/Components/EditCommon/EditInfo';
 import EditRules from '~/Components/EditCommon/EditRules';
 import {rootStorePropTypes} from '~/Types/propTypes';
@@ -33,6 +33,7 @@ import {
 } from '~/Components/EditCommon/EditRules';
 import {editType} from './CommonProfile/CommonOldAgenda';
 import Loader from '~/Components/Loader';
+import {useNavigation} from '@react-navigation/native';
 
 type EditFormValues = EditInfoValues | EditRulesValues;
 
@@ -44,20 +45,10 @@ const props = {
       type: string.isRequired,
     }).isRequired,
   }).isRequired,
-  navigation: shape({
-    setOptions: func.isRequired,
-    title: func.isRequired,
-    headerRight: func.isRequired,
-    goBack: func.isRequired,
-    pop: func.isRequired,
-  }).isRequired,
 };
 
-const EditCommon: React.FC<InferProps<typeof props>> = ({
-  rootStore,
-  route,
-  navigation,
-}) => {
+const EditCommon: React.FC<InferProps<typeof props>> = ({rootStore, route}) => {
+  const navigation = useNavigation();
   const authStore = rootStore.authStore;
   const commonStore = rootStore.commonStore;
   const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
@@ -122,7 +113,11 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({
     } catch (err) {
       Toast.error('Could not update your Common');
     }
-    navigation.goBack();
+    navigation.navigate({
+      name: 'CommonAgenda',
+      params: {},
+      merge: true,
+    });
   };
 
   const onFormClose = () => {

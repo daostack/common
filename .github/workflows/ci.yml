@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - dev
+      - staging
   pull_request:
     branches:
       - dev
+      - staging
 jobs:
   # install-and-test:
   #   runs-on: ubuntu-latest

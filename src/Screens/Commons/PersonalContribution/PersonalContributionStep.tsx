@@ -17,7 +17,7 @@ import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 import {useStore} from '~/Util/hooks/useStore';
 import {CurrencySymbols} from '~/Util/locale';
 import Toast from '~/Util/Toast';
-import {PersonalContributionsRouteProps} from '../CommonProfile/CommonMembers/types';
+import {PersonalContributionsRouteProps} from '../CommonProfile/CommonAgenda/CommonMembers/types';
 import {CommonCreatedModal} from './CommonCreatedModal';
 
 const PersonalContributionStep = () => {

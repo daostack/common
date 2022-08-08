@@ -35,7 +35,7 @@ import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
 import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
-import ProposalCardHeader from '~/Components/Proposals/ProposalCardHeader';
+import {ProposalCardHeader} from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape, func} from 'prop-types';
 import logger from '~/Services/Logger';
