@@ -5,10 +5,6 @@ import {
   ImageBackground,
   ActivityIndicator,
 } from 'react-native';
-// import {ActivityIndicator} from 'react-native-paper';
-
-// import logo from 'Assets/logo.png';
-// import background from 'Assets/background-1082.png';
 
 interface Props {
   isLoggedIn: boolean;
