@@ -23,7 +23,7 @@ $RNFirebaseAsStaticFramework = true
 def reactnative
   pod 'Permission-PhotoLibrary', :path => '../node_modules/react-native-permissions/ios/PhotoLibrary/Permission-PhotoLibrary.podspec'
   pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera/Permission-Camera.podspec'
-  pod 'react-native-blur', path: '../node_modules/@react-native-community/blur'
+  # pod 'react-native-blur', path: '../node_modules/@react-native-community/blur'
 end
 
 # -------------------------------------------------- #

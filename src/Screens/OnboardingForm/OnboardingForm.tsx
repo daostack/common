@@ -1,4 +1,4 @@
-import React, {ReactElement, useState} from 'react';
+import React, {ReactElement, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -16,22 +16,39 @@ import Toast from '~/Util/Toast';
 import {validationSchema} from './validationSchema';
 import TextInputField from '~/Components/FormikForm/TextInputField';
 import OnBoardingService from '~/Services/OnBoardingService';
+import {useRoute} from '@react-navigation/native';
+import {IUserEntity} from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {RouteProps} from '~/Types/navigation';
 
-const INITIAL_VALUES = {
-  name: '',
-  commonTitle: '',
-  description: '',
-  residence: '',
-  phoneNumber: '',
-  email: '',
-};
+interface InitialValuesProps {
+  name: string;
+  commonTitle: string;
+  description: string;
+  residence: string;
+  phoneNumber: string;
+  email: string;
+}
 
 export const OnboardingForm = () => {
   const insets = useSafeAreaInsets();
+  const route = useRoute<RouteProps<{user: IUserEntity}>>();
+  const {user} = route.params;
+
+  const initialValues = useMemo(
+    () => ({
+      name: `${user.firstName} ${user.lastName}`,
+      commonTitle: '',
+      description: '',
+      residence: '',
+      phoneNumber: '',
+      email: user.email,
+    }),
+    [user],
+  );
 
   const [isLoading, setLoading] = useState(false);
 
-  async function formSave(values: typeof INITIAL_VALUES): Promise<void> {
+  async function formSave(values: InitialValuesProps): Promise<void> {
     try {
       setLoading(true);
       await OnBoardingService.sendEmail({
@@ -62,7 +79,7 @@ export const OnboardingForm = () => {
           />
         </View>
         <Formik
-          initialValues={INITIAL_VALUES}
+          initialValues={initialValues}
           enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={formSave}>

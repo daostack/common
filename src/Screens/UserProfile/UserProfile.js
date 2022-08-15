@@ -89,7 +89,8 @@ const UserProfile = ({authStore}) => {
   const onUserSignedIn = async (authInfo, isSignedWithApple) => {
     const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
     const user = await getUserData(
-      isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.user.uid,
+      isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.uid,
+      isSignedWithApple,
     );
     if (user || authCode) {
       AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode);
@@ -100,7 +101,9 @@ const UserProfile = ({authStore}) => {
         },
       });
     } else {
-      navigation.navigate('OnboardingForm');
+      navigation.navigate('OnboardingForm', {
+        user: authInfo.userInfo,
+      });
     }
   };
 
