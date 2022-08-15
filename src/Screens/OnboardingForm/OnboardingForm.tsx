@@ -34,7 +34,7 @@ export const OnboardingForm = () => {
   const route = useRoute<RouteProps<{user: IUserEntity}>>();
   const {user} = route.params;
 
-  const initialValue = useMemo(
+  const initialValues = useMemo(
     () => ({
       name: `${user.firstName} ${user.lastName}`,
       commonTitle: '',
@@ -79,7 +79,7 @@ export const OnboardingForm = () => {
           />
         </View>
         <Formik
-          initialValues={initialValue}
+          initialValues={initialValues}
           enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={formSave}>
