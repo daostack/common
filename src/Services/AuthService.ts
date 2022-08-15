@@ -54,14 +54,18 @@ class AuthService {
     }
 
     // Create a Firebase credential from the response
-    const {identityToken, nonce, authorizationCode, email} =
+    const {identityToken, nonce, authorizationCode, email, fullName} =
       appleAuthRequestResponse;
     const appleCredential = auth.AppleAuthProvider.credential(
       identityToken,
       nonce,
     );
     return {
-      userInfo: {email} as IUserEntity,
+      userInfo: {
+        email,
+        firstName: fullName?.givenName,
+        lastName: fullName?.familyName,
+      } as IUserEntity,
       credentials: {...appleCredential, secret: authorizationCode, nonce},
     };
   };
@@ -131,7 +135,15 @@ class AuthService {
       await this.googleSignOut();
       throw error;
     }
-    return {userInfo, credentials: googleCredential};
+    return {
+      userInfo: {
+        uid: userInfo.user.uid,
+        email: userInfo.additionalUserInfo?.profile.email,
+        firstName: userInfo.additionalUserInfo?.profile.given_name,
+        lastName: userInfo.additionalUserInfo?.profile.family_name,
+      } as IUserEntity,
+      credentials: googleCredential,
+    };
   };
 
   clearGoogleSignInCache = async (): Promise<void> => {
