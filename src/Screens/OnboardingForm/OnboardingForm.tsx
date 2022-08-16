@@ -36,7 +36,7 @@ export const OnboardingForm = () => {
 
   const initialValues = useMemo(
     () => ({
-      name: `${user.firstName} ${user.lastName}`,
+      name: `${user.firstName || ''} ${user.lastName || ''}`,
       commonTitle: '',
       description: '',
       residence: '',
