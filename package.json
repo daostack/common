@@ -112,7 +112,7 @@
     "react-native-swiper-flatlist": "^2.0.4",
     "react-native-tab-view": "^2.13.0",
     "react-native-text-input-mask": "^3.1.4",
-    "react-native-webview": "11.0.0",
+    "react-native-webview": "^11.23.1",
     "reactotron-react-native": "^5.0.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "rn-fetch-blob": "^0.12.0",

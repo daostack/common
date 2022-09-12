@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // test-utils.jsx
 import React from 'react';
 import '@testing-library/jest-native/extend-expect';
