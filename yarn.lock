@@ -7484,10 +7484,10 @@ react-native-text-input-mask@^3.1.4:
   resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-3.1.4.tgz#9b09d97a910ce8c24024d6187256b07c73e173ac"
   integrity sha512-XhTPL1/Pv0kyuH8TMJGaxfnq5su9e+4G2PLngiismZ4xbP8+W/1ZEH4KQJQV+QkE2I5Oi+lPJXB2E47s60/OBA==
 
-react-native-webview@11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.0.0.tgz#d667cbcc772e963fe88a4156290d25fe47ed43b0"
-  integrity sha512-gzID5ebCFVNkxreuabClymo6QkJbXCLEtiIUY9QAhxY58HsDUp8x0YzDVEROYyEJ4ghL71koAOeQRDNAgNnh1w==
+react-native-webview@^11.23.1:
+  version "11.23.1"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.23.1.tgz#6a4bf2620e491dd4fecf4e6dc079005117fae12c"
+  integrity sha512-bmqsdg4RYOUYD37R9XTrQALm7eD62KbLNPRfgvpLGd1SjaurvAjjsLrLN4mt6yOtKOMKeZvlcAl3x6De6cCQsA==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
