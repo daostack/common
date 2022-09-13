@@ -1,74 +1,74 @@
 {
   "project_info": {
-    "project_number": "78965953367",
-    "firebase_url": "https://common-staging-50741.firebaseio.com",
-    "project_id": "common-staging-50741",
-    "storage_bucket": "common-staging-50741.appspot.com"
+    "project_number": "854172758045",
+    "firebase_url": "https://common-daostack.firebaseio.com",
+    "project_id": "common-daostack",
+    "storage_bucket": "common-daostack.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:78965953367:android:257ae3c68f0101542f6412",
+        "mobilesdk_app_id": "1:854172758045:android:e4b053ade246c6fb1e96f4",
         "android_client_info": {
-          "package_name": "com.daostack.common.staging"
+          "package_name": "com.daostack.common"
         }
       },
       "oauth_client": [
         {
-          "client_id": "78965953367-iu5u4vuth9c97ip3schbha20vte3t7vc.apps.googleusercontent.com",
+          "client_id": "854172758045-6hj1jmvvt12hd4bpemsfs69kjmosi0dc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.daostack.common.staging",
-            "certificate_hash": "6645b5da168054bd3deaf2a0b6ae4e9105ed9b99"
-          }
-        },
-        {
-          "client_id": "78965953367-lhmvumq84h9biv1bvofis86eg6f5u9tq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.daostack.common.staging",
-            "certificate_hash": "f92c49610b86f6c1c66ddbb32cea344bab865733"
-          }
-        },
-        {
-          "client_id": "78965953367-soonft4ue6k33dmo1st8gae1pvmnksd9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.daostack.common.staging",
-            "certificate_hash": "2a6007f64137a5f3aec1c1ac3d4a014a27896c7d"
-          }
-        },
-        {
-          "client_id": "78965953367-ugb65rkge9e8cluob24596r6dai0j0fe.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.daostack.common.staging",
+            "package_name": "com.daostack.common",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com",
+          "client_id": "854172758045-erdso9ktj5a66c53jte25te2b99i6lri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daostack.common",
+            "certificate_hash": "2a6007f64137a5f3aec1c1ac3d4a014a27896c7d"
+          }
+        },
+        {
+          "client_id": "854172758045-hjtd5qs1tvb6mqfbc3s6v9828ojkujgs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daostack.common",
+            "certificate_hash": "f92c49610b86f6c1c66ddbb32cea344bab865733"
+          }
+        },
+        {
+          "client_id": "854172758045-sgfgp98dh9utnp8pqcfuhnu4um4fippp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daostack.common",
+            "certificate_hash": "6645b5da168054bd3deaf2a0b6ae4e9105ed9b99"
+          }
+        },
+        {
+          "client_id": "854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDMvMN_3SKkhNtHWQIeHrVToXERg2OUQPE"
+          "current_key": "AIzaSyCNUtZtO8S4u1jr2qnnXRSenH5loOz3myo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com",
+              "client_id": "854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "78965953367-7a3nt6m8cbml8pn54rlhujq1gccm3hr9.apps.googleusercontent.com",
+              "client_id": "854172758045-cgj72k292a2gm2iovv166j13l8el67ni.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.daostack.common.staging",
-                "app_store_id": "1527060751"
+                "bundle_id": "com.daostack.common",
+                "app_store_id": "1512785740"
               }
             }
           ]
