@@ -3,10 +3,10 @@ apply plugin: 'io.fabric'
 import com.android.build.OutputFile
 
 project.ext.envConfigFiles = [
-        stagingdebug: "../../env/env.stg",
-        stagingrelease: "../../env/env.stg",
-        productiondebug: "../../env/env.prod",
-        productionrelease: "../../env/env.prod",
+        stagingdebug: "./env/.env.stg",
+        stagingrelease: "./env/.env.stg",
+        productiondebug: "./env/.env.prod",
+        productionrelease: "./env/.env.prod",
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
