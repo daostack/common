@@ -19,9 +19,9 @@ const FacebookSignInButton: React.FC<InferProps<typeof props>> = ({
   const _signIn = async () => {
     try {
       authStore.setIsLoading(true);
-      const authInfo = await AuthService.signInFacebook();
+      const userInfo = await AuthService.signInFacebook();
       if (onSignIn) {
-        onSignIn(authInfo);
+        onSignIn(userInfo);
       }
       authStore.setSignInError(null);
     } catch (error: any) {

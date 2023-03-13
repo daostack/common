@@ -30,8 +30,7 @@ export const CommonFundsBox = observer(({common}: Props): ReactElement => {
         <CommonNumberBox
           numberComponent={
             <Text style={styles.headerTitle}>
-              {CurrencySymbols.SHEKEL}
-              {formatMoney(raised / 100)}
+              {CurrencySymbols.SHEKEL + formatMoney(raised / 100)}
             </Text>
           }
           title={'Total raised'}

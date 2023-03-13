@@ -1,5 +1,13 @@
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+<<<<<<< HEAD
 import {StackActions, useNavigation} from '@react-navigation/native';
+=======
+import {
+  CommonActions,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
+>>>>>>> 337c861... test
 import React, {ReactElement} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Modal from 'react-native-modal';
@@ -28,11 +36,24 @@ export function CommonCreatedModal({
   commonInfo,
 }: Props): ReactElement {
   const navigation = useNavigation();
+<<<<<<< HEAD
   const goToCommon = (): void => {
     navigation?.popToTop();
     navigation.navigate('CommonProfile', {
       commonId: commonId.toLowerCase(),
     });
+=======
+
+  const goToCommon = (): void => {
+    const navigate = CommonActions.navigate({
+      name: 'CommonProfile',
+      params: {
+        commonId: commonId.toLowerCase(),
+      },
+    });
+    navigation?.popToTop();
+    navigation.dispatch(navigate);
+>>>>>>> 337c861... test
   };
 
   const shareCommon = async (): Promise<void> => {

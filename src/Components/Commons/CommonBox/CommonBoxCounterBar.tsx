@@ -2,19 +2,14 @@ import {observer} from 'mobx-react';
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {Common} from '~/Stores/Models/Common';
 import {colors, font} from '~/Theme';
 
-interface CounterBarProps {
-  common: Common;
-}
-
-export const CommonBoxCounterBar = observer((props: CounterBarProps) => {
+export const CommonBoxCounterBar = observer((props) => {
   const {common} = props;
 
-  const proposalsCount = common?.proposalCount;
-  const discussionsCount = common?.discussionCount;
-  const messageCount = common?.messageCount;
+  const proposalsCount = common.proposalCount;
+  const discussionsCount = common.discussionCount;
+  const messageCount = common.messageCount;
 
   return (
     <View style={styles.bottomBar}>

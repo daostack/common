@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Pressable, Text, View} from 'react-native';
 import BottomSheetModal from '~/Components/BottomSheetModal';
 import {colors} from '~/Theme';
-import {AddBankAccountForm} from '../Forms/AddBankAccountForm/AddBankAccountForm';
+import {AddBankAccountForm} from '../Forms/AddBankAccountForm';
 import {
   AddBankAccountTitle,
   AddBankAccountTitleError,

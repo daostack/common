@@ -60,14 +60,15 @@ const DiscussionCardHeader: React.FC<InferProps<typeof props>> = ({
 DiscussionCardHeader.propTypes = props;
 
 const styles = StyleSheet.create({
+  // Proposal Card Header style
   discussionCardHeader: {
     ...layout.content,
     ...layout.flexRow,
     alignSelf: 'stretch',
     backgroundColor: colors.paleblue,
     padding: sizeXS,
-    borderTopLeftRadius: 14,
-    borderTopRightRadius: 14,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   hiddenCardHeader: {
     ...layout.flexRow,
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     backgroundColor: colors.blueGray,
+    //padding: sizeXS,
     paddingHorizontal: sizeM,
     borderRadius: 5,
     minHeight: 35,

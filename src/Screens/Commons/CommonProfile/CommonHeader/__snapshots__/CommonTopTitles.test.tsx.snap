@@ -1,0 +1,213 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CommonTopTitles CommonTopTitles should render correctly 1`] = `
+<View
+  style={
+    Object {
+      "alignContent": "center",
+      "alignItems": "center",
+      "alignSelf": "stretch",
+      "flexDirection": "column",
+      "flexGrow": 1,
+      "height": 250,
+      "justifyContent": "center",
+      "marginTop": 10,
+      "padding": 0,
+    }
+  }
+>
+  <Text
+    style={
+      Object {
+        "alignSelf": "center",
+        "bottom": 8,
+        "color": "#eeeeee",
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 14,
+        "fontWeight": "600",
+        "lineHeight": 19,
+      }
+    }
+  >
+    Active 
+    2mo
+     ago
+  </Text>
+  <Text
+    numberOfLines={5}
+    style={
+      Object {
+        "color": "#ffffff",
+        "fontFamily": "NotoSerif-SemiBold",
+        "fontSize": 24,
+        "letterSpacing": 0.4,
+        "textAlign": "center",
+        "textShadowColor": "rgba(0, 0, 0, 0.55)",
+        "textShadowOffset": Object {
+          "height": 0,
+          "width": 0,
+        },
+        "textShadowRadius": 4,
+      }
+    }
+  >
+    Emcff
+  </Text>
+  <Text
+    numberOfLines={5}
+    style={
+      Object {
+        "color": "#ffffff",
+        "fontFamily": "NunitoSans-Regular",
+        "fontSize": 16,
+        "fontWeight": "normal",
+        "marginTop": 3,
+        "textAlign": "center",
+        "width": 412.50000000000006,
+        "zIndex": 99,
+      }
+    }
+  >
+    
+  </Text>
+  <RNGestureHandlerButton
+    collapsable={false}
+    exclusive={true}
+    handlerTag={1}
+    handlerType="NativeViewGestureHandler"
+    onGestureEvent={[Function]}
+    onGestureHandlerEvent={[Function]}
+    onGestureHandlerStateChange={[Function]}
+    onHandlerStateChange={[Function]}
+    rippleColor={0}
+    style={
+      Object {
+        "bottom": 15,
+        "flex": 1,
+        "flexDirection": "row",
+        "position": "absolute",
+        "zIndex": 99,
+      }
+    }
+  >
+    <View
+      accessible={true}
+      collapsable={false}
+      nativeID="animatedComponent"
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "white",
+            "fontFamily": "NunitoSans-Regular",
+            "fontSize": 14,
+            "fontWeight": "700",
+            "lineHeight": 20,
+          }
+        }
+      >
+         Members
+          
+        <Text
+          style={
+            Object {
+              "fontWeight": "400",
+            }
+          }
+        >
+          0
+           Pending 
+        </Text>
+        <RNSVGSvgView
+          align="xMidYMid"
+          bbHeight={16}
+          bbWidth={16}
+          focusable={false}
+          height={16}
+          meetOrSlice={0}
+          minX={0}
+          minY={0}
+          style={
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+                "borderWidth": 0,
+              },
+              Object {
+                "flex": 0,
+                "height": 16,
+                "width": 16,
+              },
+            ]
+          }
+          vbHeight={1024}
+          vbWidth={1024}
+          width={16}
+        >
+          <RNSVGGroup>
+            <RNSVGPath
+              d="M566.144 512l-165.248 160.384a55.168 55.168 0 0 0 0 79.488 57.664 57.664 0 0 0 80 0l206.208-200.128a55.232 55.232 0 0 0 0-79.488L480.896 272.128a57.664 57.664 0 0 0-80 0 55.168 55.168 0 0 0 0 79.488L566.144 512z"
+              fill={4294967295}
+              propList={
+                Array [
+                  "fill",
+                ]
+              }
+            />
+          </RNSVGGroup>
+        </RNSVGSvgView>
+      </Text>
+    </View>
+  </RNGestureHandlerButton>
+  <BVLinearGradient
+    colors={
+      Array [
+        0,
+        855638016,
+        1342177280,
+        2483027968,
+        4278190080,
+      ]
+    }
+    endPoint={
+      Object {
+        "x": 0.5,
+        "y": 1,
+      }
+    }
+    locations={
+      Array [
+        0.5,
+        0.6,
+        0.65,
+        0.75,
+        1,
+      ]
+    }
+    pointerEvents="none"
+    startPoint={
+      Object {
+        "x": 0.5,
+        "y": 0,
+      }
+    }
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "height": "100%",
+          "position": "absolute",
+          "width": "100%",
+          "zIndex": 1,
+        },
+        undefined,
+      ]
+    }
+  />
+</View>
+`;

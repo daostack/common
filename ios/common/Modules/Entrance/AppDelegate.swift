@@ -19,11 +19,7 @@ import FBSDKCoreKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
      func sourceURL(for bridge: RCTBridge!) -> URL! {
-         #if DEBUG
-             return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
-         #else
-             return CodePush.bundleURL()
-         #endif
+         return CodePush.bundleURL()
      }
 
     var window: UIWindow?

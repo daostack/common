@@ -25,9 +25,7 @@ const CommonBox = ({
   const onBoxPress = () => {
     navigation.navigate('CommonProfile', {
       screen: 'CommonAgenda',
-      params: {
-        commonId: common.id,
-      },
+      params: {currCommon: common},
     });
   };
 

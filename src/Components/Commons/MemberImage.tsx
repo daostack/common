@@ -16,7 +16,7 @@ const MemberImage: React.FC<InferProps<typeof props>> = ({
   style,
   imgStyle,
   id,
-  size = 40,
+  size = 50,
 }) => {
   const memberImageStyle = useMemo(() => {
     return {width: size, height: size, borderRadius: size / 2};

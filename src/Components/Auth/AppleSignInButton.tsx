@@ -20,9 +20,9 @@ const AppleSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
     try {
       // That loading status will be changed to false in the onAuthStateChanged method in App.js
       authStore.setIsLoading(true);
-      const authInfo = await AuthService.signInApple();
+      const userInfo = await AuthService.signInApple();
       if (onSignIn) {
-        onSignIn(authInfo, true);
+        onSignIn(userInfo, true);
       }
       authStore.setSignInError(null);
     } catch (error: any) {
