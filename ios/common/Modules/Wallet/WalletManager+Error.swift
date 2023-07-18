@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import web3swift
+//import web3swift
 
 extension WalletManager {
     public enum WalletError: Error {

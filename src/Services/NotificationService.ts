@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
+import axios, {AxiosInstance} from 'axios';
 import {db} from '~/Firebase';
 import {NotificationsCollection} from '~/Firebase/Databasee/Collections/NotificationsCollection';
 import {
@@ -10,6 +11,7 @@ import {
   INotificationEntity,
 } from '~/Firebase/Databasee/EntityTypes/INotificationEntity';
 import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
+import {usersUrl} from '~/Config';
 import Toast from '~/Util/Toast';
 import UserService from './UserService';
 import logger from './Logger';
@@ -19,6 +21,22 @@ export type commonNotificationListLoadCallbackFn = (
 ) => void;
 
 class NotificationService {
+  private axiosClient: AxiosInstance;
+  private endpoints: {
+    token: string;
+  };
+
+  constructor() {
+    this.axiosClient = axios.create({
+      baseURL: usersUrl(),
+      timeout: 1000000,
+    });
+
+    this.endpoints = {
+      token: '/token',
+    };
+  }
+
   subscribeToUserNotifications = (
     userId: string,
     listChangeCallback: commonNotificationListLoadCallbackFn,
@@ -54,18 +72,22 @@ class NotificationService {
     if (auth().currentUser === null) {
       return;
     }
-    const userId = auth().currentUser?.uid;
-    const token = await messaging().getToken();
-    await db
-      .collection('users')
-      .doc(userId)
-      .update({
-        tokens: firestore.FieldValue.arrayUnion(token),
-      })
-      // .then(() => {
-      //   logger.log('FCM token updated');
-      // })
-      .catch((err: unknown) => logger.log(err));
+    try {
+      const token = await messaging().getToken();
+      return await this.axiosClient.post(
+        this.endpoints.token,
+        {
+          mobile: token,
+        },
+        {
+          headers: {
+            Authorization: await auth().currentUser?.getIdToken(true),
+          },
+        },
+      );
+    } catch (error) {
+      logger.log(err);
+    }
   };
 
   getToken = (): Promise<string> => messaging().getToken();

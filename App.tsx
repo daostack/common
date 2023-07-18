@@ -3,7 +3,7 @@ import NetInfo from '@react-native-community/netinfo';
 import crashlytics from '@react-native-firebase/crashlytics';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {inject, observer} from 'mobx-react';
 import {object} from 'prop-types';
@@ -39,7 +39,7 @@ import {
 import {useStore} from '~/Util/hooks/useStore';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import Icon from './src/Assets/iconfont/Icon';
-import BottomSheetContainer from './src/Components/BottomSheetContainer';
+// import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {
   CommonWebview,
@@ -91,136 +91,172 @@ const App = () => {
     Text.defaultProps.maxFontSizeMultiplier = 1.1;
   }, []);
 
-  useEffect(
-    () =>
-      messaging().onTokenRefresh(() => {
-        NotificationService.saveTokenToDatabase();
-      }),
-    [],
-  );
+  const routing = (screenName: string, params) => {
+    const actions = CommonActions.navigate({
+      name: screenName,
+      params: params,
+    });
+    setNotificationRouting(actions);
+  };
+
+  const goToWebview = async () => {
+    try {
+      const credentials = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.credentials,
+      );
+
+      if (credentials) {
+        const parsedCredentials = JSON.parse(credentials);
+        if (new Date(parsedCredentials.expirationDate) > new Date()) {
+          routing('CommonWebview', {
+            credentials: parsedCredentials,
+          });
+        } else {
+          Toast.error(
+            'Your session has expired. Please log in again to use the app.',
+          );
+        }
+      }
+    } catch (err) {
+      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+    }
+  };
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      logger.log(`Foreground Message Arrived ${JSON.stringify(remoteMessage)}`);
+    (async () => {
+      await NotificationService.requestUserPermission();
+      await NotificationService.registerAppWithFCM();
+
+      const token = await messaging().getToken();
+      // console.log('---token', token);
+    })();
+    messaging().onTokenRefresh(() => {
+      NotificationService.saveTokenToDatabase();
+    });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(() => {
+      goToWebview();
     });
     return unsubscribe;
   }, []);
 
   // Initialize Mobx Stores
-  useEffect(() => {
-    const unsubscribeUsers = userStore.subscribeToAllUsers();
-    const unsubscribeCommons = commonStore.subscribeToAllCommons();
-    let unsubscribeLoggedUserNotifications = null;
-    let unsubscribeProposals = null;
-    if (authStore.userInfo?.uid) {
-      unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-        authStore.userInfo?.uid,
-      );
-      unsubscribeLoggedUserNotifications =
-        notificationStore.subscribeToLoggedUserNotifications();
-    }
-    return () => {
-      unsubscribeUsers && unsubscribeUsers();
-      unsubscribeCommons && unsubscribeCommons();
-      unsubscribeProposals && unsubscribeProposals();
-      unsubscribeLoggedUserNotifications?.forEach(
-        (unsubscribeLoggedUserNotificationsBatch) =>
-          unsubscribeLoggedUserNotificationsBatch &&
-          unsubscribeLoggedUserNotificationsBatch(),
-      );
-    };
-  }, [authStore.userInfo?.uid]);
+  // useEffect(() => {
+  // //   const unsubscribeUsers = userStore.subscribeToAllUsers();
+  // //   const unsubscribeCommons = commonStore.subscribeToAllCommons();
+  // //   let unsubscribeLoggedUserNotifications = null;
+  // //   let unsubscribeProposals = null;
+  // //   if (authStore.userInfo?.uid) {
+  // //     unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
+  // //       authStore.userInfo?.uid,
+  // //     );
+  // //     unsubscribeLoggedUserNotifications =
+  // //       notificationStore.subscribeToLoggedUserNotifications();
+  // //   }
+  // //   return () => {
+  // //     unsubscribeUsers && unsubscribeUsers();
+  // //     unsubscribeCommons && unsubscribeCommons();
+  // //     unsubscribeProposals && unsubscribeProposals();
+  // //     unsubscribeLoggedUserNotifications?.forEach(
+  // //       (unsubscribeLoggedUserNotificationsBatch) =>
+  // //         unsubscribeLoggedUserNotificationsBatch &&
+  // //         unsubscribeLoggedUserNotificationsBatch(),
+  // //     );
+  // //   };
+  // // }, [authStore.userInfo?.uid]);
 
   // Initialize To User Payments and Subscriptions
-  useEffect(() => {
-    let unsubscribeToUserPayments = null;
-    let unsubscribeToUserSubscriptions = null;
-    if (authStore.userInfo?.uid) {
-      unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
-        authStore.userInfo?.uid,
-      );
-      unsubscribeToUserSubscriptions =
-        paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
-    }
+  // useEffect(() => {
+  //   let unsubscribeToUserPayments = null;
+  //   let unsubscribeToUserSubscriptions = null;
+  //   if (authStore.userInfo?.uid) {
+  //     unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
+  //       authStore.userInfo?.uid,
+  //     );
+  //     unsubscribeToUserSubscriptions =
+  //       paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
+  //   }
 
-    return () => {
-      unsubscribeToUserPayments && unsubscribeToUserPayments();
-      unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
-    };
-  }, [authStore.userInfo?.uid]);
+  //   return () => {
+  //     unsubscribeToUserPayments && unsubscribeToUserPayments();
+  //     unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
+  //   };
+  // }, [authStore.userInfo?.uid]);
 
   // Initialize Intercom chat
-  useEffect(() => {
-    if (authStore.userInfo?.uid) {
-      Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
-    } else {
-      Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
-    }
-  }, [authStore.userInfo?.uid]);
+  // useEffect(() => {
+  //   if (authStore.userInfo?.uid) {
+  //     Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
+  //   } else {
+  //     Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
+  //   }
+  // }, [authStore.userInfo?.uid]);
 
   // Fetch Bank Account Details
-  useEffect(() => {
-    let unsubscribeToBankAccount = null;
-    if (authStore.userInfo?.uid) {
-      bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
-    }
-    return () => {
-      unsubscribeToBankAccount && unsubscribeToBankAccount();
-    };
-  }, [authStore.userInfo?.uid]);
-
-  // const notificationNavigation = async (remoteMessage) => {
-  //   appLoaderStore.showLoader();
-  //   logger.log('remoteMessage -> ', remoteMessage);
-  //   if (remoteMessage) {
-  //     const [screenName, commonId, objectId, tabIndex = 0] =
-  //       remoteMessage.data.path?.split('/');
-  //     // whitelist;approve/reject requestToJoin
-  //     if (screenName === 'CommonProfile') {
-  //       routing(screenName, {commonId});
-  //     }
-  //     // new discussionMessage
-  //     else if (screenName === 'Discussions') {
-  //       routing(screenName, {
-  //         discussionId: objectId,
-  //         commonId,
-  //         fromNotificationItem: true,
-  //       });
-  //     }
-  //     // create/approve proposal
-  //     else {
-  //       routing(screenName, {
-  //         proposalId: objectId,
-  //         tabIndex: +tabIndex,
-  //         fromNotificationItem: true,
-  //         eventType: remoteMessage.data.type,
-  //         commonId,
-  //       });
-  //     }
+  // useEffect(() => {
+  //   let unsubscribeToBankAccount = null;
+  //   if (authStore.userInfo?.uid) {
+  //     bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
   //   }
-  //   appLoaderStore.hideLoader();
-  // };
+  //   return () => {
+  //     unsubscribeToBankAccount && unsubscribeToBankAccount();
+  //   };
+  // }, [authStore.userInfo?.uid]);
+
+  const notificationNavigation = async (remoteMessage) => {
+    appLoaderStore.showLoader();
+    logger.log('remoteMessage -> ', remoteMessage);
+    if (remoteMessage) {
+      const [screenName, commonId, objectId, tabIndex = 0] =
+        remoteMessage.data.path?.split('/');
+      // whitelist;approve/reject requestToJoin
+      if (screenName === 'CommonProfile') {
+        routing(screenName, {commonId});
+      }
+      // new discussionMessage
+      else if (screenName === 'Discussions') {
+        routing(screenName, {
+          discussionId: objectId,
+          commonId,
+          fromNotificationItem: true,
+        });
+      }
+      // create/approve proposal
+      else {
+        routing(screenName, {
+          proposalId: objectId,
+          tabIndex: +tabIndex,
+          fromNotificationItem: true,
+          eventType: remoteMessage.data.type,
+          commonId,
+        });
+      }
+    }
+    appLoaderStore.hideLoader();
+  };
 
   // notification navigation
-  // useEffect(() => {
-  //   // Assume a message-notification contains a "type" property in the data payload of the screen to open
-  //   messaging().onNotificationOpenedApp((remoteMessage) => {
-  //     logger.log(
-  //       'Notification caused app to open from background state:',
-  //       remoteMessage,
-  //     );
-  //     logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
-  //     notificationNavigation(remoteMessage);
-  //   });
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      logger.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+      logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
+      goToWebview();
+    });
 
-  //   // Check whether an initial notification is available
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then((remoteMessage) => {
-  //       logger.log('getInitialNotification remoteMessage', remoteMessage);
-  //       notificationNavigation(remoteMessage);
-  //     });
-  // }, []);
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        logger.log('getInitialNotification remoteMessage', remoteMessage);
+        goToWebview();
+      });
+  }, []);
 
   // HUD
   useEffect(() => {
@@ -295,14 +331,6 @@ const App = () => {
     }*/
   }, []);
 
-  // const routing = (screenName: string, params) => {
-  //   const actions = CommonActions.navigate({
-  //     name: screenName,
-  //     params: params,
-  //   });
-  //   setNotificationRouting(actions);
-  // };
-
   useEffect(() => {
     const foregroundLink = dynamicLinks().onLink(handleOpenURL);
     dynamicLinks()
@@ -357,30 +385,30 @@ const App = () => {
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Onboarding"
             component={Onboarding}
             options={{headerShown: false}}
-          />
+          /> */}
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
             options={{headerShown: false}}
           />
 
-          <Stack.Screen
+          {/* <Stack.Screen
             name="OnboardingForm"
             component={OnboardingForm}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} />
+          <Stack.Screen name="CreateAccount" component={CreateAccount} /> */}
 
           <Stack.Screen
             name="CommonWebview"
             component={CommonWebview}
             options={{headerShown: false}}
           />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Profile"
             component={UserProfile}
             options={() => ({
@@ -403,21 +431,22 @@ const App = () => {
               headerLeft: () => null,
               title: '',
             }}
-          />
+          /> */}
         </Stack.Navigator>
-        {notificationRouting && (
-          <NotificationContainer
-            notificationRouting={notificationRouting}
-            setNotificationRouting={setNotificationRouting}
-            navigation={navigationRef}
-          />
-        )}
+        {/*
         <UserInfoChecker navigation={navigationRef} />
         {appLoaderStore.isLoading && (
           <Loader isBigger isFullScreen navigation={navigationRef} />
         )}
         {bottomSheetStore.isVisible && (
           <BottomSheetContainer navigation={navigationRef} />
+        )} */}
+        {notificationRouting && (
+          <NotificationContainer
+            notificationRouting={notificationRouting}
+            setNotificationRouting={setNotificationRouting}
+            navigation={navigationRef}
+          />
         )}
         <ToastView
           ref={hudRef}

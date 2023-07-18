@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import {layout, colors, text, font, sizeS} from '~/Theme';
-import {TabView} from 'react-native-tab-view';
 import ProposalsList from '~/Screens/Proposals/ProposalsList';
 import {inject, observer} from 'mobx-react';
 import CommonTabBar from '../CommonTabBar';
@@ -113,13 +112,13 @@ const MyProposals = ({
               : 'proposals'}
           </Text>
         </View>
-        <TabView
+        {/* <TabView
           navigationState={{index, routes}}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
           renderTabBar={CommonTabBar}
-        />
+        /> */}
       </SafeAreaView>
     </>
   );

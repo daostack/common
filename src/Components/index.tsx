@@ -1,6 +1,6 @@
 export {default as AccordionBtn} from './AccordionBtn';
 export {default as BottomRightButton} from './BottomRightButton';
-export {default as BottomSheetContainer} from './BottomSheetContainer.js';
+// export {default as BottomSheetContainer} from './BottomSheetContainer.js';
 export {default as CommonBox} from './Commons/CommonBox/CommonBox';
 export {default as GSignInButton} from './Auth/GSignInButton';
 export {default as UserAvatar} from './UserAvatar.js';

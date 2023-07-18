@@ -2,7 +2,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {observer} from 'mobx-react';
 import React, {useEffect, useCallback, useMemo, ReactElement} from 'react';
 import {Dimensions, SafeAreaView, StatusBar, Text, View} from 'react-native';
-import {TabView, Route} from 'react-native-tab-view';
+// import {TabView, Route} from 'react-native-tab-view';
 import {VotesScreenRouteProps} from '~/Types/navigation';
 import {VOTE_STATUSES, VOTE_TABS} from '~/Util/constants/votes';
 import {useStore} from '~/Util/hooks/useStore';
@@ -57,7 +57,7 @@ const VotesScreen = (): ReactElement => {
     [allVoteCount, approvedCount, abstainedCount, rejectedCount],
   );
 
-  const renderScene = useCallback(({route}: {route: Route}) => {
+  const renderScene = useCallback(({route}: {route: any}) => {
     switch (route.key) {
       case 'all':
         return <VotesList proposalId={proposalId} voteType="all" />;
@@ -97,14 +97,14 @@ const VotesScreen = (): ReactElement => {
         </View>
 
         <View style={styles.sectionTabView}>
-          <TabView
+          {/* <TabView
             lazy
             navigationState={{index, routes}}
             renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={initialLayout}
             renderTabBar={VoteTabBar}
-          />
+          /> */}
         </View>
       </SafeAreaView>
     </>

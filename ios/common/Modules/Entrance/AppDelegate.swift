@@ -18,8 +18,12 @@ import FBSDKCoreKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
-     func sourceURL(for bridge: RCTBridge!) -> URL! {
-         return CodePush.bundleURL()
+     func sourceURL(for bridge: RCTBridge!) -> URL? {
+        #if DEBUG
+         return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+        #else
+         return Bundle.main.url(forResource: "main", withExtension: "jsbundle")
+        #endif
      }
 
     var window: UIWindow?
@@ -52,6 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
+        
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
         bridge = RCTBridge(delegate: self, launchOptions: launchOptions)

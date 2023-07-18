@@ -34,6 +34,7 @@ class AuthService {
   constructor() {
     GoogleSignin.configure({
       webClientId: firebaseWebClientId,
+      offlineAccess: true,
     });
   }
 
@@ -127,6 +128,7 @@ class AuthService {
       idToken,
       accessToken,
     );
+
     let userInfo = null;
     try {
       userInfo = await auth().signInWithCredential(googleCredential);

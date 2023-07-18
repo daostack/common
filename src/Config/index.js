@@ -17,61 +17,75 @@ let commonTokenAddress;
 let androidAppId;
 let iosAppId;
 
+let webviewEnvBaseUrl;
 let webviewEnvURL;
 
-switch (Config.ENV) {
-  case 'production': {
-    localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
-    cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
-    networkId = 100;
-    web3Provider = 'https://dai.poa.network';
-    commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
-    clientId =
-      '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
+// localFunctionURL = 'http://localhost:5003/common-dev-dea4e/us-central1';
+// cloudFunctionURL = 'https://us-central1-common-dev-dea4e.cloudfunctions.net';
+// networkId = 42;
+// web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+// commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+// clientId =
+//   '1027354410661-c5kcu3ie4gge7p6vimko5qjgie5poaai.apps.googleusercontent.com';
 
-    androidAppId = 'com.daostack.common';
-    iosAppId = 'id1512785740';
-    webviewEnvURL = 'https://common.io';
-    break;
-  }
-  case 'staging': {
-    localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
-    cloudFunctionURL =
-      'https://us-central1-common-staging-50741.cloudfunctions.net';
-    networkId = 42;
-    web3Provider =
-      'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
-    commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
-    clientId =
-      '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
+// androidAppId = 'com.daostack.common.staging';
+// iosAppId = '1527060751';
+// webviewEnvURL = 'https://web-dev.common.io';
 
-    androidAppId = 'com.daostack.common.staging';
-    iosAppId = '1527060751';
-    webviewEnvURL = 'https://web-staging.common.io';
-    break;
-  }
-  case 'dev': {
-    localFunctionURL = 'http://localhost:5003/common-dev-dea4e/us-central1';
-    cloudFunctionURL =
-      'https://us-central1-common-dev-dea4e.cloudfunctions.net';
-    networkId = 42;
-    web3Provider =
-      'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
-    commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
-    clientId =
-      '1027354410661-c5kcu3ie4gge7p6vimko5qjgie5poaai.apps.googleusercontent.com';
+// switch (Config.ENV) {
+//   case 'production': {
+localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
+cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
+networkId = 100;
+web3Provider = 'https://dai.poa.network';
+commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
+clientId =
+  '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
 
-    androidAppId = 'com.daostack.common.staging';
-    iosAppId = '1527060751';
-    webviewEnvURL = 'https://web-dev.common.io';
-    break;
-  }
-  default: {
-    throw Error(
-      `Unknown Config.ENV: must be one of "staging", "production" or "dev", but is ${Config.ENV}`,
-    );
-  }
-}
+androidAppId = 'com.daostack.common';
+iosAppId = 'id1512785740';
+webviewEnvBaseUrl = 'https://common.io';
+webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
+//     break;
+//   }
+//   case 'staging': {
+// localFunctionURL = 'http://localhost:5003/common-staging-50741/us-central1';
+// cloudFunctionURL =
+//   'https://us-central1-common-staging-50741.cloudfunctions.net';
+// networkId = 42;
+// web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+// commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+// clientId =
+//   '78965953367-gp6r7vuvceqj4k8gngrqkng98thgqmo8.apps.googleusercontent.com';
+
+// androidAppId = 'com.daostack.common.staging';
+// iosAppId = '1527060751';
+// webviewEnvBaseUrl = 'https://web-staging.common.io';
+// webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
+//     break;
+//   }
+//   case 'dev': {
+//     localFunctionURL = 'http://localhost:5003/common-dev-dea4e/us-central1';
+//     cloudFunctionURL =
+//       'https://us-central1-common-dev-dea4e.cloudfunctions.net';
+//     networkId = 42;
+//     web3Provider =
+//       'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+//     commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+//     clientId =
+//       '1027354410661-c5kcu3ie4gge7p6vimko5qjgie5poaai.apps.googleusercontent.com';
+
+//     androidAppId = 'com.daostack.common.staging';
+//     iosAppId = '1527060751';
+//     webviewEnvURL = 'https://web-dev.common.io';
+//     break;
+//   }
+//   default: {
+//     throw Error(
+//       `Unknown Config.ENV: must be one of "staging", "production" or "dev", but is ${Config.ENV}`,
+//     );
+//   }
+// }
 
 if (Config.local === 'true' && __DEV__) {
   logger.warn('Using local firebase');
@@ -142,3 +156,4 @@ export const PROPOSAL_STAGE = {
 };
 
 export const webviewURL = webviewEnvURL;
+export const webviewBaseUrl = webviewEnvBaseUrl;

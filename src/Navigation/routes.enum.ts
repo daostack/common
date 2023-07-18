@@ -4,7 +4,7 @@ import {UserModel} from '~/Stores/Models/UserModel';
 
 export enum NAVIGATION_SCREENS {
   ONBOARDING = 'Onboarding',
-  COMMON_PROFILE = 'CommonProfile',
+  // COMMON_PROFILE = 'CommonProfile',
   COMMON_AGENDA = 'CommonAgenda',
   EXPLORE = 'Explore',
   PROFILE = 'Profile',
@@ -50,11 +50,11 @@ export type NavigationRoutes = {
   WebViewScreen: undefined;
   Onboarding: undefined;
   HomeTabNavigator: undefined;
-  CommonProfile: {
-    screen?: string;
-    params?: {commonId: string};
-    commonId?: string;
-  };
+  // CommonProfile: {
+  //   screen?: string;
+  //   params?: {commonId: string};
+  //   commonId?: string;
+  // };
   CommonAgenda: undefined;
   Explore: undefined;
   Profile: {userId: string; userInfo: UserModel};

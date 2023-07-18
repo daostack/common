@@ -31,7 +31,7 @@ import {
   Values as EditRulesValues,
   validationSchema as editRulesValidation,
 } from '~/Components/EditCommon/EditRules';
-import {editType} from './CommonProfile/CommonOldAgenda';
+// import {editType} from './CommonProfile/CommonOldAgenda';
 import Loader from '~/Components/Loader';
 import {useNavigation} from '@react-navigation/native';
 
@@ -67,7 +67,8 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({rootStore, route}) => {
         <Icon name="left-arrow" size={32} />
       </TouchableOpacity>
     ),
-    title: type === editType.info ? 'Edit info and cover photo' : 'Edit Rules',
+    // title: type === editType.info ? 'Edit info and cover photo' : 'Edit Rules',
+    title: 'Edit info and cover photo',
     headerRight: () => (
       <TouchableOpacity
         onPress={async () => {
@@ -81,27 +82,19 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({rootStore, route}) => {
   const formSave = async (formValues: EditFormValues) => {
     let commonUpdate = {};
 
-    if (type === editType.info) {
-      const infoValues = formValues as EditInfoValues;
-      const updatedMetadata = {
-        ...currCommon.metadata,
-        byline: infoValues.tagLine,
-        description: infoValues.about,
-      } as ICommonMetadata;
+    const infoValues = formValues as EditInfoValues;
+    const updatedMetadata = {
+      ...currCommon.metadata,
+      byline: infoValues.tagLine,
+      description: infoValues.about,
+    } as ICommonMetadata;
 
-      commonUpdate = {
-        ...currCommon,
-        name: infoValues.name,
-        image: infoValues.image,
-        metadata: updatedMetadata,
-      } as Partial<ICommonEntity>;
-    } else {
-      const rulesValues = formValues as EditInfoValues;
-      commonUpdate = {
-        ...currCommon,
-        ...rulesValues,
-      } as Partial<ICommonEntity>;
-    }
+    commonUpdate = {
+      ...currCommon,
+      name: infoValues.name,
+      image: infoValues.image,
+      metadata: updatedMetadata,
+    } as Partial<ICommonEntity>;
 
     onFormSubmitEnd(commonUpdate);
   };
@@ -141,26 +134,19 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({rootStore, route}) => {
     bottomSheetStore.hideBottomSheet();
   };
 
-  const initialValues: EditInfoValues | EditRulesValues =
-    type === editType.info
-      ? ({
-          image: currCommon?.image,
-          name: currCommon?.name,
-          tagLine: currCommon?.metadata?.byline,
-          about: currCommon?.metadata?.description,
-        } as EditInfoValues)
-      : ({
-          rules: currCommon.rules,
-        } as EditRulesValues);
+  const initialValues: EditInfoValues | EditRulesValues =({
+    image: currCommon?.image,
+    name: currCommon?.name,
+    tagLine: currCommon?.metadata?.byline,
+    about: currCommon?.metadata?.description,
+  } as EditInfoValues);
 
   return (
     <Formik
       innerRef={formikRef}
       enableReinitialize={true}
       initialValues={initialValues}
-      validationSchema={
-        type === editType.info ? editInfoValidation : editRulesValidation
-      }
+      validationSchema={editInfoValidation}
       onSubmit={formSave}>
       {(
         formikProps: FormikProps<EditInfoValues | EditRulesValues>,
@@ -176,11 +162,7 @@ const EditCommon: React.FC<InferProps<typeof props>> = ({rootStore, route}) => {
                 contentInsetAdjustmentBehavior="automatic"
                 style={styles.scrollView}>
                 {authStore.userInfo ? (
-                  type === editType.info ? (
-                    <EditInfo formikProps={formikProps} />
-                  ) : (
-                    <EditRules formikProps={formikProps} />
-                  )
+                  <EditInfo formikProps={formikProps} />
                 ) : (
                   <Loader />
                 )}

@@ -9,6 +9,6 @@ module.exports = {
       },
     ],
     ['@babel/plugin-proposal-decorators', {legacy: true}],
-    'react-native-reanimated/plugin', // must be last
+    // ['react-native-reanimated/plugin'], // must be last
   ],
 };

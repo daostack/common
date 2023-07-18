@@ -2,40 +2,9 @@ import React, {ReactElement} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {layout, colors, font} from '~/Theme';
 import Icon, {IconNames} from '~/Assets/iconfont/Icon';
-import {TabBar} from 'react-native-tab-view';
 import {object} from 'prop-types';
-import {TabBarProps} from 'react-native-tab-view';
 
-const CommonTabBar = (props: TabBarProps<any>): ReactElement => (
-  <TabBar
-    {...props}
-    indicatorStyle={{
-      backgroundColor: colors.mainBlue,
-    }}
-    renderLabel={({route, focused}) => (
-      <View
-        style={{
-          ...layout.content,
-          ...layout.flexRow,
-          padding: 0,
-          width: '100%',
-        }}>
-        {route.icon ? (
-          <Icon
-            name={route.icon as IconNames}
-            size={30}
-            color={focused ? colors.mainBlue : colors.grey3}
-          />
-        ) : null}
-        <Text style={focused ? styles.textStyleActive : styles.textStyle}>
-          {route.title}
-        </Text>
-      </View>
-    )}
-    style={styles.commonStyles}
-    tabStyle={styles.tabStyle}
-  />
-);
+const CommonTabBar = (props: TabBarProps<any>): ReactElement => <View />;
 
 CommonTabBar.propTypes = {
   props: object,

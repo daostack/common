@@ -11,14 +11,14 @@ import {STEP_HEADER_BAR_HEIGHT} from '~/Util/constants/header';
 import {PAYMENT_STATUSES} from '~/Util/constants/paymentConstants';
 import {DOT_INFO_PERSONAL_CONTRIBUTION} from '~/Util/constants/stepperNavigation';
 import Toast from '~/Util/Toast';
-import {PersonalPaymentDetailsRouteProps} from '../CommonProfile/CommonAgenda/CommonMembers/types';
+// import {PersonalPaymentDetailsRouteProps} from '../CommonProfile/CommonAgenda/CommonMembers/types';
 import {CommonCreatedModal} from './CommonCreatedModal';
 
 const {height} = Dimensions.get('window');
 
 const PersonalPaymentDetailsStep = () => {
   const navigation = useNavigation();
-  const router = useRoute<PersonalPaymentDetailsRouteProps>();
+  const router = useRoute<any>();
 
   const {common, iFrameLink, paymentId} = router.params;
 

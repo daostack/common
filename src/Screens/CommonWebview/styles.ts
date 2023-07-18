@@ -8,6 +8,6 @@ export const styles = StyleSheet.create({
   webviewContainer: {
     flex: 1,
     height: '100%',
-    opacity: 0.99,
+    // opacity: 0.99,
   },
 });

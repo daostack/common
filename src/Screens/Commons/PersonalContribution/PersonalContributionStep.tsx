@@ -17,12 +17,12 @@ import {formatMinFeeToJoin} from '~/Util/FormatUtil';
 import {useStore} from '~/Util/hooks/useStore';
 import {CurrencySymbols} from '~/Util/locale';
 import Toast from '~/Util/Toast';
-import {PersonalContributionsRouteProps} from '../CommonProfile/CommonAgenda/CommonMembers/types';
+// import {PersonalContributionsRouteProps} from '../CommonProfile/CommonAgenda/CommonMembers/types';
 import {CommonCreatedModal} from './CommonCreatedModal';
 
 const PersonalContributionStep = () => {
   const navigation = useNavigation();
-  const router = useRoute<PersonalContributionsRouteProps>();
+  const router = useRoute<any>();
   const {
     uiStore: {bottomSheetStore},
   } = useStore('rootStore');

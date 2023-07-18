@@ -1,5 +1,7 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
+import {auth} from '~/Firebase';
+import moment from 'moment';
 import {object, shape, string} from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {
@@ -13,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import CodePush from 'react-native-code-push';
-import Config from 'react-native-config';
+// import Config from 'react-native-config';
 import {getBuildNumber, getVersion} from 'react-native-device-info';
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import AccordionBtn from '~/Components/AccordionBtn';
@@ -29,6 +31,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
+import {firebase} from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-community/google-signin';
+import Toast from '~/Util/Toast';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -78,6 +83,8 @@ const UserProfile = ({authStore}) => {
       .where(isSignedWithApple ? 'email' : 'uid', '==', value)
       .get();
 
+    const users = await db.collection(DB_COLLECTIONS.daos).get();
+
     if (userSnapshot.docs.length) {
       const user = userSnapshot.docs[0].data();
       return user;
@@ -86,6 +93,34 @@ const UserProfile = ({authStore}) => {
     return null;
   }
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const credentials = await AsyncStorage.getItem(
+          ASYNC_STORAGE_KEYS.credentials,
+        );
+
+        if (credentials) {
+          const parsedCredentials = JSON.parse(credentials);
+          if (new Date(parsedCredentials.expirationDate) > new Date()) {
+            navigation.navigate({
+              name: 'CommonWebview',
+              params: {
+                credentials: parsedCredentials,
+              },
+            });
+          } else {
+            Toast.error(
+              'Your session has expired. Please log in again to use the app.',
+            );
+          }
+        }
+      } catch (err) {
+        AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+      }
+    })();
+  }, []);
+
   const onUserSignedIn = async (authInfo, isSignedWithApple) => {
     const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
     const user = await getUserData(
@@ -93,22 +128,20 @@ const UserProfile = ({authStore}) => {
       isSignedWithApple,
     );
     if (user || authCode) {
-      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode);
+      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, '');
+      const expirationDate = new Date();
+      expirationDate.setHours(expirationDate.getHours() + 1);
+      AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.credentials,
+        JSON.stringify({...authInfo.credentials, expirationDate}),
+      );
       navigation.navigate({
         name: 'CommonWebview',
         params: {
           credentials: authInfo.credentials,
         },
       });
-    } else {
-      navigation.navigate('OnboardingForm', {
-        user: authInfo.userInfo,
-      });
     }
-  };
-
-  const onHUDTestPress = (event) => {
-    navigation.navigate('HUDTest');
   };
 
   return (
@@ -149,17 +182,6 @@ const UserProfile = ({authStore}) => {
                   title="Terms of use"
                 />
               </View>
-              {Config.ENV !== 'production' && (
-                <View
-                  style={{
-                    ...layout.content,
-                    paddingHorizontal: 0,
-                    backgroundColor: colors.grey4,
-                  }}>
-                  <Text style={text.h4Black}>Temporary menu</Text>
-                  <AccordionBtn title="HUD test" onPress={onHUDTestPress} />
-                </View>
-              )}
               <Text style={styles.version}>
                 Common{isProduction ? '' : '-stg'} v{getVersion()} (
                 {getBuildNumber()}

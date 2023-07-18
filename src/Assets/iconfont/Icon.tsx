@@ -119,7 +119,6 @@ import IconNoImage from './IconNoImage';
 import IconCalendar from './IconCalendar';
 import IconAbstained from './IconAbstained';
 import IconNewCard from './IconNewCard';
-import {AnimateProps} from 'react-native-reanimated';
 import IconCopy from './IconCopy';
 import IconmenuHorizontalAnim from '~/Assets/iconfont/IconmenuHorizontalAnim';
 import { Iconlock } from './Iconlock';
@@ -248,7 +247,7 @@ interface Props extends GProps, ViewProps {
   name: IconNames;
   size?: number;
   color?: string | string[];
-  animatedIconStyle?: Partial<AnimateProps<PathProps>>;
+  animatedIconStyle?: any;
 }
 
 export const Icon: FunctionComponent<Props> = ({name, ...rest}) => {

@@ -22,7 +22,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import {text, layout, colors, sizeM, sizeS, sizeXS, font} from '~/Theme';
 import Icon from '~/Assets/iconfont/Icon';
-import {TabView} from 'react-native-tab-view';
 import ProposalData from './ProposalData';
 import DiscussionMessagesList from '~/Screens/DisscussionMessages/DiscussionMessagesList';
 import Toast from '~/Util/Toast';
@@ -34,7 +33,7 @@ import ProposalService, {
 import {UserAvatar} from '~/Components';
 import {PROPOSAL_TYPE} from '~/Config';
 import {inject, observer} from 'mobx-react';
-import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
+// import TabBarRenderer from '~/Components/TabView/TabBarRenderer';
 import {ProposalCardHeader} from '~/Components/Proposals/ProposalCardHeader';
 import {db} from '~/Firebase';
 import {string, object, shape, func} from 'prop-types';
@@ -287,12 +286,12 @@ const ProposalScreen = ({
   const renderTabBar = (currProps) =>
     proposalInfo && (
       <View style={{paddingBottom: 5}}>
-        <TabBarRenderer
+        {/* <TabBarRenderer
           originRef={originTabBarRef}
           jumpTo={originTabBarRef.current?.props?.jumpTo}
           indexChange={setIndex}
           {...currProps}
-        />
+        /> */}
       </View>
     );
 
@@ -826,11 +825,11 @@ const ProposalScreen = ({
         }}>
         {showStickyTabBar && (
           <Animated.View style={[stickyTabBarStyle, slideUp]}>
-            <TabBarRenderer
+            {/* <TabBarRenderer
               navigationState={{index, routes}}
               jumpTo={originTabBarRef.current?.props?.jumpTo}
               parentRef={originTabBarRef}
-            />
+            /> */}
           </Animated.View>
         )}
 
@@ -1031,7 +1030,7 @@ const ProposalScreen = ({
               minHeight: screenHeight,
               backgroundColor: colors.paleGrey,
             }}>
-            <TabView
+            {/* <TabView
               navigationState={{index, routes}}
               renderScene={() => null}
               onIndexChange={onSetIndex}
@@ -1039,7 +1038,7 @@ const ProposalScreen = ({
               renderTabBar={renderTabBar}
               style={{backgroundColor: colors.paleGrey, flex: 0}}
               sceneContainerStyle={{height: 0}}
-            />
+            /> */}
 
             <View style={{paddingTop: showStickyTabBar ? 100 : 0, flex: 1}}>
               {index === 0 && (
