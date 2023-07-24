@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import auth from '@react-native-firebase/auth';
 import crashlytics from '@react-native-firebase/crashlytics';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
@@ -106,6 +107,7 @@ const App = () => {
       );
 
       if (credentials) {
+        NotificationService.saveTokenToDatabase();
         const parsedCredentials = JSON.parse(credentials);
         if (new Date(parsedCredentials.expirationDate) > new Date()) {
           routing('CommonWebview', {

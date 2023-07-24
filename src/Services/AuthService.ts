@@ -3,6 +3,7 @@ import {firebaseWebClientId} from '~/Config';
 // Firebase imports
 import {auth, firebase} from '~/Firebase';
 import UserService from '~/Services/UserService';
+import NotificationService from '~/Services/NotificationService';
 
 // Google imports
 import {GoogleSignin, User} from '@react-native-community/google-signin';
@@ -61,6 +62,8 @@ class AuthService {
       identityToken,
       nonce,
     );
+
+    NotificationService.saveTokenToDatabase();
     return {
       userInfo: {
         email,
@@ -90,6 +93,7 @@ class AuthService {
     const facebookCredential = auth.FacebookAuthProvider.credential(
       data.accessToken,
     );
+    NotificationService.saveTokenToDatabase();
     return {
       userInfo: await auth().signInWithCredential(facebookCredential),
       credentials: facebookCredential,
@@ -109,6 +113,7 @@ class AuthService {
       verificationId,
       verificationCode,
     );
+    NotificationService.saveTokenToDatabase();
     return {
       userInfo,
       credentials: phoneCredential,
@@ -137,6 +142,8 @@ class AuthService {
       await this.googleSignOut();
       throw error;
     }
+
+    NotificationService.saveTokenToDatabase();
     return {
       userInfo: {
         uid: userInfo.user.uid,

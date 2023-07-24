@@ -74,7 +74,8 @@ class NotificationService {
     }
     try {
       const token = await messaging().getToken();
-      return await this.axiosClient.post(
+
+      return await this.axiosClient.put(
         this.endpoints.token,
         {
           mobile: token,

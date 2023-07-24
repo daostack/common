@@ -1,7 +1,15 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useRef, useState} from 'react';
-import {SafeAreaView, BackHandler, Linking} from 'react-native';
+import {
+  SafeAreaView,
+  BackHandler,
+  Linking,
+  TouchableHighlight,
+  Button,
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
 import {WebView} from 'react-native-webview';
+import NotificationService from '~/Services/NotificationService';
 import {styles} from './styles';
 import {webviewURL, webviewBaseUrl} from '~/Config';
 import {WebviewActions} from '~/Util/constants';
@@ -32,6 +40,10 @@ export default function CommonWebview() {
     webviewRef.current?.goBack();
     return true;
   }
+
+  React.useEffect(() => {
+    NotificationService.saveTokenToDatabase();
+  }, []);
 
   React.useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
