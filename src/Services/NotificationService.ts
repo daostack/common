@@ -23,7 +23,7 @@ export type commonNotificationListLoadCallbackFn = (
 class NotificationService {
   private axiosClient: AxiosInstance;
   private endpoints: {
-    token: string;
+    setFCMToken: string;
   };
 
   constructor() {
@@ -33,7 +33,7 @@ class NotificationService {
     });
 
     this.endpoints = {
-      token: '/token',
+      setFCMToken: '/auth/google/set-fcm-token',
     };
   }
 
@@ -75,10 +75,10 @@ class NotificationService {
     try {
       const token = await messaging().getToken();
 
-      return await this.axiosClient.put(
-        this.endpoints.token,
+      return await this.axiosClient.post(
+        this.endpoints.setFCMToken,
         {
-          mobile: token,
+          token,
         },
         {
           headers: {
@@ -87,7 +87,7 @@ class NotificationService {
         },
       );
     } catch (error) {
-      logger.log(err);
+      logger.log(error);
     }
   };
 

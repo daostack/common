@@ -1,13 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useRef, useState} from 'react';
-import {
-  SafeAreaView,
-  BackHandler,
-  Linking,
-  TouchableHighlight,
-  Button,
-} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import {SafeAreaView, BackHandler, Linking} from 'react-native';
 import {WebView} from 'react-native-webview';
 import NotificationService from '~/Services/NotificationService';
 import {styles} from './styles';
@@ -23,8 +16,8 @@ export default function CommonWebview() {
   const webviewRef = useRef<WebView>(null);
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [url, setUrl] = useState(webviewBaseUrl);
-  const [previousUrl, setPreviousUrl] = useState(webviewBaseUrl);
+  const [url, setUrl] = useState(webviewURL);
+  const [previousUrl, setPreviousUrl] = useState(webviewURL);
   const {credentials} = route.params as any;
 
   const INJECTED_JAVASCRIPT = `(function() {
@@ -57,6 +50,8 @@ export default function CommonWebview() {
 
   function onShouldStartLoadWithRequest(request) {
     // short circuit these
+
+    // TODO: ADD include check
     if (
       !request.url ||
       request.url.startsWith('http') ||
@@ -99,25 +94,27 @@ export default function CommonWebview() {
   return (
     <SafeAreaView removeClippedSubviews={true} style={styles.container}>
       <WebView
-        androidLayerType="software"
         ref={webviewRef}
         source={{uri: url}}
         style={styles.webviewContainer}
         javaScriptEnabled
         overScrollMode="never"
-        allowsInlineMediaPlayback={true}
+        allowsInlineMediaPlayback={false}
         originWhitelist={['*']}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         injectedJavaScriptForMainFrameOnly
+        incognito={true}
+        cacheEnabled={false}
+        cacheMode={'LOAD_NO_CACHE'}
         allowsFullscreenVideo={false}
-        renderToHardwareTextureAndroid
         setSupportMultipleWindows={false}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onNavigationStateChange={(event) => {
-          if (event.url === webviewBaseUrl) {
-            setUrl(webviewURL);
-            setPreviousUrl(webviewURL);
-          } else if (event.url !== previousUrl) {
+          if (isLoggedIn && event.url === webviewBaseUrl) {
+            webviewRef.current?.goBack();
+          }
+
+          if (event.url !== previousUrl) {
             if (event.url.includes(webviewBaseUrl)) {
               setPreviousUrl(event.url);
             } else {
