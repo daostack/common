@@ -1,12 +1,6 @@
-import {NativeModules, FlatList} from 'react-native';
+import {NativeModules} from 'react-native';
 import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
-// import Animated from 'react-native-reanimated';
 
-// require('react-native-reanimated/lib/reanimated2/jestUtils').setUpTests();
-// global.ReanimatedDataMock = {
-//   now: () => 0,
-// };
-// jest.spyOn(Animated, 'FlatList').mockImplementation(() => FlatList);
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 jest.mock('react-native-intercom', () => jest.fn());
@@ -19,17 +13,6 @@ jest.mock('react-native-share', () => ({
   default: jest.fn(),
 }));
 
-// jest.mock('rn-fetch-blob', () => ({
-//   fs: {
-//     dirs: {
-//       CacheDir: './',
-//     },
-//     unlink: jest.fn(),
-//   },
-//   config: () => ({
-//     fetch: jest.fn(),
-//   }),
-// }));
 jest.mock('react-native-blob-util', () => ({
   fs: {
     dirs: {
