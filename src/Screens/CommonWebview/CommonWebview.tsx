@@ -16,8 +16,10 @@ export default function CommonWebview() {
   const webviewRef = useRef<WebView>(null);
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [url, setUrl] = useState(webviewURL);
-  const [previousUrl, setPreviousUrl] = useState(webviewURL);
+  const [url, setUrl] = useState(`${webviewBaseUrl}/mobile-loader`);
+  const [previousUrl, setPreviousUrl] = useState(
+    `${webviewBaseUrl}/mobile-loader`,
+  );
   const {credentials} = route.params as any;
 
   const INJECTED_JAVASCRIPT = `(function() {
@@ -54,7 +56,7 @@ export default function CommonWebview() {
     // TODO: ADD include check
     if (
       !request.url ||
-      request.url.startsWith('http') ||
+      request.url.startsWith(webviewBaseUrl) ||
       request.url.startsWith('/') ||
       request.url.startsWith('#') ||
       request.url.startsWith('javascript') ||
@@ -87,7 +89,15 @@ export default function CommonWebview() {
       return false;
     }
 
-    // let everything else to the webview
+    if (!request.url.startsWith(webviewBaseUrl)) {
+      Linking.canOpenURL(request.url).then(async (supported) => {
+        if (supported) {
+          return Linking.openURL(request.url);
+        }
+      });
+      return false;
+    }
+
     return true;
   }
 
@@ -120,11 +130,11 @@ export default function CommonWebview() {
             } else {
               Linking.canOpenURL(event.url)
                 .then(async (supported) => {
-                  if (!supported) {
-                    setUrl(previousUrl);
-                  } else {
-                    return Linking.openURL(event.url);
+                  if (supported) {
+                    Linking.openURL(event.url);
                   }
+                  setUrl(previousUrl);
+                  return;
                 })
                 .catch(() => {
                   setUrl(previousUrl);

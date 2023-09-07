@@ -19,7 +19,6 @@
 		151C203F2499E3F4006170CC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E907342417D1BB008A5750 /* LaunchScreen.storyboard */; };
 		151C20402499E3F4006170CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 15E907322417D1BB008A5750 /* Assets.xcassets */; };
 		151C20412499E3F4006170CC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E9072F2417D1B9008A5750 /* Main.storyboard */; };
-		151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 151C20612499E99B006170CC /* GoogleService-Info.plist */; };
 		153D23F924B5BE9A007E8F37 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
 		153D23FA24B5BE9A007E8F37 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F2C9B59F8FFB49DFA4FF15CA /* NunitoSans-Italic.ttf */; };
 		153D23FB24B5BE9A007E8F37 /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */; };
@@ -63,6 +62,7 @@
 		633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 267EC9C3E82F4ED9B159DC28 /* NotoSerif-SemiBold.ttf */; };
 		84096E192A4CCC2E00CA2FFE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84096E172A4CCC2500CA2FFE /* GoogleService-Info.plist */; };
 		840F88F127FEDB510011ECD6 /* common-dev-notification-service-ext.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 151C20202499CEA3006170CC /* common-dev-notification-service-ext.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		84106FF62AA1E7AC00E7BA07 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84106FF52AA1E7AC00E7BA07 /* GoogleService-Info.plist */; };
 		845015EB2A4D50BC0081D208 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84096E172A4CCC2500CA2FFE /* GoogleService-Info.plist */; };
 		88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */; };
 		9932C9CC0B2948FE94025468 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42C6A385306D40069FD183D7 /* NunitoSans-Bold.ttf */; };
@@ -125,7 +125,6 @@
 		151C20212499CEA3006170CC /* common-notification-service-ext copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "common-notification-service-ext copy-Info.plist"; sourceTree = SOURCE_ROOT; };
 		151C20522499E3F4006170CC /* common-stg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "common-stg.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		151C205C2499E503006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		151C20612499E99B006170CC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		15AD00A124AB2E0F004FDADE /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		15CD0307246E873C00EDADE2 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		15CD0309246E873C00EDADE2 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -156,6 +155,7 @@
 		7518FC7755D4F917296C37EA /* Pods_common_dev.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common_dev.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7963CF94C9EE55F6D82B8A1D /* Pods_common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84096E172A4CCC2500CA2FFE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		84106FF52AA1E7AC00E7BA07 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8D6FB52253054110853F2376 /* NunitoSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Light.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Light.ttf"; sourceTree = "<group>"; };
 		9B6A7FB45B15676235BF5F49 /* Pods-common-stg.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-common-stg.release.xcconfig"; path = "Target Support Files/Pods-common-stg/Pods-common-stg.release.xcconfig"; sourceTree = "<group>"; };
 		A40576CB8A1C45D8A51C0FD5 /* NunitoSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NunitoSans-Regular.ttf"; path = "../src/Assets/fonts/NunitoSans/NunitoSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -220,7 +220,7 @@
 		151C20592499E503006170CC /* production */ = {
 			isa = PBXGroup;
 			children = (
-				151C20612499E99B006170CC /* GoogleService-Info.plist */,
+				84106FF52AA1E7AC00E7BA07 /* GoogleService-Info.plist */,
 			);
 			path = production;
 			sourceTree = "<group>";
@@ -590,12 +590,12 @@
 				15E907362417D1BB008A5750 /* LaunchScreen.storyboard in Resources */,
 				15E907332417D1BB008A5750 /* Assets.xcassets in Resources */,
 				15E907312417D1B9008A5750 /* Main.storyboard in Resources */,
-				151C20622499E99B006170CC /* GoogleService-Info.plist in Resources */,
 				9932C9CC0B2948FE94025468 /* NunitoSans-Bold.ttf in Resources */,
 				FCD9335756174A92AE4AC3F6 /* NunitoSans-Italic.ttf in Resources */,
 				CDD5E5B60C08404981150417 /* NunitoSans-Light.ttf in Resources */,
 				88F102D71F0644038ECC212B /* NunitoSans-Regular.ttf in Resources */,
 				CF0B3799DD99422BA7B8AE3C /* NunitoSans-SemiBold.ttf in Resources */,
+				84106FF62AA1E7AC00E7BA07 /* GoogleService-Info.plist in Resources */,
 				1F88078D5AE44AD180187B06 /* Nunito-Regular.ttf in Resources */,
 				633AADEFA12A4EEF840ED24D /* NotoSerif-SemiBold.ttf in Resources */,
 			);
@@ -1386,14 +1386,14 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "armv7 arm64";
 				INFOPLIST_FILE = common/Support/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "";
 				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1402,7 +1402,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.10.8;
+				MARKETING_VERSION = 1.10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1423,14 +1423,14 @@
 				CODE_SIGN_ENTITLEMENTS = common/common.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_TEAM = 66CXPKJ7ZA;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "armv7 arm64";
 				INFOPLIST_FILE = common/Support/Info.plist;
 				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-traditional";
 				INFOPLIST_PREFIX_HEADER = "";
 				INFOPLIST_PREPROCESS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1439,7 +1439,7 @@
 					"$(SDKROOT)/usr/lib/swift",
 					"$(inherited)",
 				);
-				MARKETING_VERSION = 1.10.8;
+				MARKETING_VERSION = 1.10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daostack.common;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

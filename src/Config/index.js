@@ -21,27 +21,29 @@ let webviewEnvBaseUrl;
 let webviewEnvURL;
 
 localFunctionURL = 'http://localhost:5003/common-dev-34b09/us-central1';
-cloudFunctionURL = 'https://us-central1-common-dev-34b09.cloudfunctions.net';
+cloudFunctionURL = 'https://europe-west1-common-dev-34b09.cloudfunctions.net';
 networkId = 42;
 web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
 commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
 clientId =
-  '870639147922-td0q0obpr9jno0468pph7is9h8tb63bp.apps.googleusercontent.com';
+  '870639147922-te3p3fpk8vu0e6r2atbkkua0jt8ibi5a.apps.googleusercontent.com';
 
 androidAppId = 'com.daostack.a';
 iosAppId = '1527060751';
-webviewEnvBaseUrl = 'http://10.0.2.2:3000';
+// webviewEnvBaseUrl = 'http://10.0.2.2:3000';
+webviewEnvBaseUrl = 'https://web-dev.common.io';
 webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
 
 // switch (Config.ENV) {
 //   case 'production': {
 // localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
-// cloudFunctionURL = 'https://us-central1-common-daostack.cloudfunctions.net';
+// cloudFunctionURL =
+//   'https://europe-west1-common-production-67641.cloudfunctions.net';
 // networkId = 100;
 // web3Provider = 'https://dai.poa.network';
 // commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
 // clientId =
-//   '854172758045-l3summ7br1b9p1tv2tp6gha0j8kki3cq.apps.googleusercontent.com';
+//   '461029494046-brimd89g39r6nnkhkqahoabuhp5i9hkr.apps.googleusercontent.com';
 
 // androidAppId = 'com.daostack.common';
 // iosAppId = 'id1512785740';
