@@ -14,13 +14,14 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 
 import {
   IUserEntity,
   UserPublicData,
 } from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
@@ -63,6 +64,8 @@ class AuthService {
       nonce,
     );
 
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
       userInfo: {
@@ -143,6 +146,16 @@ class AuthService {
       throw error;
     }
 
+    const response = await GoogleSignin.getCurrentUser();
+
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    if (response?.serverAuthCode) {
+      AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.serverAuthCode,
+        response.serverAuthCode,
+      );
+    }
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
       userInfo: {

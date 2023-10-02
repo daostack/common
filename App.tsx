@@ -55,6 +55,8 @@ import NotificationService from './src/Services/NotificationService';
 import {colors} from './src/Theme';
 import Toast from './src/Util/Toast';
 import ToastView, {DURATION} from './src/Util/ToastView';
+import UserService from '~/Services/UserService';
+import {AUTH_PROVIDER} from '~/Util/constants/provider';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -105,22 +107,27 @@ const App = () => {
       const credentials = await AsyncStorage.getItem(
         ASYNC_STORAGE_KEYS.credentials,
       );
+      const parsedCredentials = credentials && JSON.parse(credentials);
 
-      if (credentials) {
+      if (
+        credentials &&
+        parsedCredentials?.providerId !== AUTH_PROVIDER.apple
+      ) {
+        const accessToken = await UserService.getAccessToken();
         NotificationService.saveTokenToDatabase();
-        const parsedCredentials = JSON.parse(credentials);
-        if (new Date(parsedCredentials.expirationDate) > new Date()) {
-          routing('CommonWebview', {
-            credentials: parsedCredentials,
-          });
-        } else {
-          Toast.error(
-            'Your session has expired. Please log in again to use the app.',
-          );
-        }
+
+        routing('CommonWebview', {
+          credentials: {
+            ...parsedCredentials,
+            secret: accessToken || parsedCredentials.secret,
+          },
+        });
       }
     } catch (err) {
       AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+      Toast.error(
+        'Your session has expired. Please log in again to use the app.',
+      );
     }
   };
 
@@ -128,13 +135,7 @@ const App = () => {
     (async () => {
       await NotificationService.requestUserPermission();
       await NotificationService.registerAppWithFCM();
-
-      const token = await messaging().getToken();
-      // console.log('---token', token);
     })();
-    messaging().onTokenRefresh(() => {
-      NotificationService.saveTokenToDatabase();
-    });
   }, []);
 
   useEffect(() => {
@@ -308,7 +309,7 @@ const App = () => {
     });
 
     if (screenName === ASYNC_STORAGE_KEYS.authCode && entityId === AUTH_CODE) {
-      AsyncStorage.setItem('authCode', entityId);
+      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, entityId);
       Toast.success('Your email is confirmed. You can login now.');
     }
     /* else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
@@ -386,7 +387,8 @@ const App = () => {
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
-          }}>
+          }}
+          options={{headerShown: false, gestureEnabled: false}}>
           {/* <Stack.Screen
             name="Onboarding"
             component={Onboarding}
@@ -395,7 +397,7 @@ const App = () => {
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
-            options={{headerShown: false}}
+            options={{headerShown: false, gestureEnabled: false}}
           />
 
           {/* <Stack.Screen
@@ -408,7 +410,7 @@ const App = () => {
           <Stack.Screen
             name="CommonWebview"
             component={CommonWebview}
-            options={{headerShown: false}}
+            options={{headerShown: false, gestureEnabled: false}}
           />
           {/* <Stack.Screen
             name="Profile"

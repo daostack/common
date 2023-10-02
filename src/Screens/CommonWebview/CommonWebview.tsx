@@ -3,8 +3,9 @@ import React, {useRef, useState} from 'react';
 import {SafeAreaView, BackHandler, Linking} from 'react-native';
 import {WebView} from 'react-native-webview';
 import NotificationService from '~/Services/NotificationService';
+import UserService from '~/Services/UserService';
 import {styles} from './styles';
-import {webviewURL, webviewBaseUrl} from '~/Config';
+import {authIFrameURL, webviewBaseUrl} from '~/Config';
 import {WebviewActions} from '~/Util/constants';
 import {WebviewLoader} from '~/Components/WebviewLoader';
 import Toast from '~/Util/Toast';
@@ -24,9 +25,12 @@ export default function CommonWebview() {
 
   const INJECTED_JAVASCRIPT = `(function() {
     // FOR DISABLING ZOOM
-    const meta = document.createElement('meta'); meta.setAttribute('name', 'viewport');
-    meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0');
-    document.getElementsByTagName('head')[0].appendChild(meta);
+    document.addEventListener('DOMContentLoaded', function() {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    });
     window.postMessage(JSON.stringify({signInMethod: "${credentials?.providerId}", providerId: "${credentials?.providerId}", idToken: "${credentials?.token}", accessToken: "${credentials?.secret}", secret: "${credentials?.secret}", rawNonce: "${credentials?.nonce}"}), "*");
     true;
   })();`;
@@ -38,6 +42,7 @@ export default function CommonWebview() {
 
   React.useEffect(() => {
     NotificationService.saveTokenToDatabase();
+    UserService.createRefreshToken();
   }, []);
 
   React.useEffect(() => {
@@ -57,6 +62,7 @@ export default function CommonWebview() {
     if (
       !request.url ||
       request.url.startsWith(webviewBaseUrl) ||
+      request.url.startsWith(authIFrameURL) ||
       request.url.startsWith('/') ||
       request.url.startsWith('#') ||
       request.url.startsWith('javascript') ||

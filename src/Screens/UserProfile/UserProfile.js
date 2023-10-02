@@ -34,6 +34,8 @@ import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {firebase} from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import Toast from '~/Util/Toast';
+import UserService from '~/Services/UserService';
+import {AUTH_PROVIDER} from '~/Util/constants/provider';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -99,24 +101,25 @@ const UserProfile = ({authStore}) => {
         const credentials = await AsyncStorage.getItem(
           ASYNC_STORAGE_KEYS.credentials,
         );
+        const parsedCredentials = JSON.parse(credentials);
 
-        if (credentials) {
-          const parsedCredentials = JSON.parse(credentials);
-          if (new Date(parsedCredentials.expirationDate) > new Date()) {
-            navigation.navigate({
-              name: 'CommonWebview',
-              params: {
-                credentials: parsedCredentials,
-              },
-            });
-          } else {
-            Toast.error(
-              'Your session has expired. Please log in again to use the app.',
-            );
-          }
+        if (
+          credentials &&
+          parsedCredentials?.providerId !== AUTH_PROVIDER.apple
+        ) {
+          const accessToken = await UserService.getAccessToken();
+          navigation.navigate({
+            name: 'CommonWebview',
+            params: {
+              credentials: {...parsedCredentials, secret: accessToken},
+            },
+          });
         }
       } catch (err) {
         AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+        Toast.error(
+          'Your session has expired. Please log in again to use the app.',
+        );
       }
     })();
   }, []);
@@ -127,13 +130,12 @@ const UserProfile = ({authStore}) => {
       isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.uid,
       isSignedWithApple,
     );
-    if (user || authCode) {
+
+    if (user || authCode || authInfo.credentials) {
       AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, '');
-      const expirationDate = new Date();
-      expirationDate.setHours(expirationDate.getHours() + 1);
       AsyncStorage.setItem(
         ASYNC_STORAGE_KEYS.credentials,
-        JSON.stringify({...authInfo.credentials, expirationDate}),
+        JSON.stringify(authInfo.credentials),
       );
       navigation.navigate({
         name: 'CommonWebview',

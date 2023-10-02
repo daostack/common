@@ -13,6 +13,7 @@ import {
 import {FirestoreUnsubscribeFn, IFirebaseSnapshot} from '~/Firebase/types';
 import {usersUrl} from '~/Config';
 import Toast from '~/Util/Toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserService from './UserService';
 import logger from './Logger';
 
@@ -73,6 +74,7 @@ class NotificationService {
       return;
     }
     try {
+      const idToken = await AsyncStorage.getItem('idToken');
       const token = await messaging().getToken();
 
       return await this.axiosClient.post(
@@ -82,7 +84,7 @@ class NotificationService {
         },
         {
           headers: {
-            Authorization: await auth().currentUser?.getIdToken(true),
+            Authorization: idToken,
           },
         },
       );
