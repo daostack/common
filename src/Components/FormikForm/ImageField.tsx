@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+// import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
@@ -64,69 +64,69 @@ function ImageField({
   }
 
   function pickImage(): void {
-    const options = {
-      title: title,
-      quality: quality || 0.7,
-      allowsEditing: allowsEditing || false,
-    };
-    launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.errorMessage) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.errorMessage);
-        logger.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        // const source = { uri: response.uri };
-        Toast.loading('Uploading...');
-        StorageService.uploadImage(response?.assets[0]?.uri)
-          .then((url: string): void => {
-            Toast.hide();
-            Toast.success('Done');
-            onChangeValue(url);
-          })
-          .catch((error: any) => {
-            Toast.error(error.toString());
-          });
-      }
-      closeSheet();
-    });
+    // const options = {
+    //   title: title,
+    //   quality: quality || 0.7,
+    //   allowsEditing: allowsEditing || false,
+    // };
+    // launchImageLibrary(options, async (response) => {
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //   } else if (response.errorMessage) {
+    //     // only for ios because android handles this
+    //     Platform.OS === 'ios' && (await handlePermission());
+    //     Toast.error(response.errorMessage);
+    //     logger.log('ImagePicker Error: ', response.errorMessage);
+    //   } else {
+    //     // const source = { uri: response.uri };
+    //     Toast.loading('Uploading...');
+    //     StorageService.uploadImage(response?.assets[0]?.uri)
+    //       .then((url: string): void => {
+    //         Toast.hide();
+    //         Toast.success('Done');
+    //         onChangeValue(url);
+    //       })
+    //       .catch((error: any) => {
+    //         Toast.error(error.toString());
+    //       });
+    //   }
+    //   closeSheet();
+    // });
   }
 
   const takePhoto = () => {
-    setIsLoading(true);
-    const options = {
-      cameraType: 'front',
-      mediaType: 'photo',
-    };
-    launchCamera(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        Toast.error(response.errorCode);
-        logger.log('ImagePicker Error: ', response.errorCode);
-      } else if (response.errorMessage) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.errorMessage);
-        logger.log('ImagePicker Error Message: ', response.errorMessage);
-      } else {
-        // const source = { uri: response.uri };
-        Toast.loading('Uploading...');
-        StorageService.uploadImage(response?.assets[0]?.uri)
-          .then((url: string): void => {
-            Toast.hide();
-            Toast.success('Done');
-            onChangeValue(url);
-          })
-          .catch((error: any) => {
-            Toast.error(error.toString());
-          });
-      }
-      setIsLoading(false);
-      closeSheet();
-    });
+    // setIsLoading(true);
+    // const options = {
+    //   cameraType: 'front',
+    //   mediaType: 'photo',
+    // };
+    // launchCamera(options, async (response) => {
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //   } else if (response.errorCode) {
+    //     Toast.error(response.errorCode);
+    //     logger.log('ImagePicker Error: ', response.errorCode);
+    //   } else if (response.errorMessage) {
+    //     // only for ios because android handles this
+    //     Platform.OS === 'ios' && (await handlePermission());
+    //     Toast.error(response.errorMessage);
+    //     logger.log('ImagePicker Error Message: ', response.errorMessage);
+    //   } else {
+    //     // const source = { uri: response.uri };
+    //     Toast.loading('Uploading...');
+    //     StorageService.uploadImage(response?.assets[0]?.uri)
+    //       .then((url: string): void => {
+    //         Toast.hide();
+    //         Toast.success('Done');
+    //         onChangeValue(url);
+    //       })
+    //       .catch((error: any) => {
+    //         Toast.error(error.toString());
+    //       });
+    //   }
+    //   setIsLoading(false);
+    //   closeSheet();
+    // });
   };
 
   const onTakePhotoPress = async () => {

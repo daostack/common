@@ -7,6 +7,7 @@ import UserService from '~/Services/UserService';
 import {styles} from './styles';
 import {authIFrameURL, webviewBaseUrl} from '~/Config';
 import {WebviewActions} from '~/Util/constants';
+// import notifee, {EventType} from '@notifee/react-native';
 import {WebviewLoader} from '~/Components/WebviewLoader';
 import Toast from '~/Util/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -54,6 +55,18 @@ export default function CommonWebview() {
       );
     };
   }, [handleBackButtonClick]);
+
+  // React.useEffect(() => {
+  // TODO: Add handling open notifications
+  // return notifee.onForegroundEvent(({type, detail}) => {
+  //   console.log('--', type, detail);
+  //   switch (type) {
+  //     case EventType.PRESS:
+  //       console.log('User pressed notification', detail.notification);
+  //       break;
+  //   }
+  // });
+  // }, []);
 
   function onShouldStartLoadWithRequest(request) {
     // short circuit these

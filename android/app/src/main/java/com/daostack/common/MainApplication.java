@@ -20,7 +20,6 @@ import com.microsoft.codepush.react.CodePush;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
 import io.intercom.android.sdk.Intercom;
 
 public class MainApplication extends Application implements ReactApplication {

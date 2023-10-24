@@ -2,6 +2,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
 import {auth} from '~/Firebase';
 import moment from 'moment';
+import notifee from '@notifee/react-native';
 import {object, shape, string} from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {
@@ -36,6 +37,7 @@ import {GoogleSignin} from '@react-native-community/google-signin';
 import Toast from '~/Util/Toast';
 import UserService from '~/Services/UserService';
 import {AUTH_PROVIDER} from '~/Util/constants/provider';
+import Logger from '~/Services/Logger';
 
 const UserProfile = ({authStore}) => {
   const navigation = useNavigation();
@@ -85,8 +87,6 @@ const UserProfile = ({authStore}) => {
       .where(isSignedWithApple ? 'email' : 'uid', '==', value)
       .get();
 
-    const users = await db.collection(DB_COLLECTIONS.daos).get();
-
     if (userSnapshot.docs.length) {
       const user = userSnapshot.docs[0].data();
       return user;
@@ -124,25 +124,35 @@ const UserProfile = ({authStore}) => {
     })();
   }, []);
 
-  const onUserSignedIn = async (authInfo, isSignedWithApple) => {
-    const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
-    const user = await getUserData(
-      isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.uid,
-      isSignedWithApple,
-    );
+  // useEffect(() => {
+  //   if (route.params?.authInfo) {
+  //     onUserSignedIn(route.params?.authInfo, false);
+  //   }
+  // }, [route.params]);
 
-    if (user || authCode || authInfo.credentials) {
-      AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, '');
-      AsyncStorage.setItem(
-        ASYNC_STORAGE_KEYS.credentials,
-        JSON.stringify(authInfo.credentials),
+  const onUserSignedIn = async (authInfo, isSignedWithApple) => {
+    try {
+      const authCode = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.authCode);
+      const user = await getUserData(
+        isSignedWithApple ? authInfo.userInfo.email : authInfo.userInfo.uid,
+        isSignedWithApple,
       );
-      navigation.navigate({
-        name: 'CommonWebview',
-        params: {
-          credentials: authInfo.credentials,
-        },
-      });
+
+      if (user || authCode || authInfo.credentials) {
+        AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, '');
+        AsyncStorage.setItem(
+          ASYNC_STORAGE_KEYS.credentials,
+          JSON.stringify(authInfo.credentials),
+        );
+        navigation.navigate({
+          name: 'CommonWebview',
+          params: {
+            credentials: authInfo.credentials,
+          },
+        });
+      }
+    } catch (err) {
+      Logger.log(err);
     }
   };
 

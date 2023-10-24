@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
+import notifee from '@notifee/react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import messaging from '@react-native-firebase/messaging';
@@ -20,14 +21,14 @@ import {
   View,
 } from 'react-native';
 //import DeepLinking from 'react-native-deep-linking';
-import Intercom from 'react-native-intercom';
+// import Intercom from 'react-native-intercom';
 import KeyboardManager from 'react-native-keyboard-manager';
 //import validUrl from 'valid-url';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
-import Loader from '~/Components/Loader';
+// import Loader from '~/Components/Loader';
 //import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
-import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
+// import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
+// import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {AUTH_CODE} from '~/Util/constants/authCode';
@@ -44,8 +45,8 @@ import Icon from './src/Assets/iconfont/Icon';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {
   CommonWebview,
-  CreateAccount,
-  Onboarding,
+  // CreateAccount,
+  // Onboarding,
   PhoneNumberStep1,
   UserProfile,
   VerificationStep2,
@@ -57,6 +58,10 @@ import Toast from './src/Util/Toast';
 import ToastView, {DURATION} from './src/Util/ToastView';
 import UserService from '~/Services/UserService';
 import {AUTH_PROVIDER} from '~/Util/constants/provider';
+import {
+  NOTIFICATIONS_CHANNEL_ID,
+  NOTIFICATIONS_CHANNEL_NAME,
+} from '~/Shared/notifications';
 
 const Stack = createStackNavigator();
 I18nManager.allowRTL(false);
@@ -73,15 +78,15 @@ if (Platform.OS === 'android') {
 
 const App = () => {
   const rootStore = useStore('rootStore');
-  const authStore = rootStore.authStore;
-  const userStore = rootStore.userStore;
-  const commonStore = rootStore.commonStore;
-  const proposalStore = rootStore.proposalStore;
-  const notificationStore = rootStore.notificationStore;
-  const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
+  // const authStore = rootStore.authStore;
+  // const userStore = rootStore.userStore;
+  // const commonStore = rootStore.commonStore;
+  // const proposalStore = rootStore.proposalStore;
+  // const notificationStore = rootStore.notificationStore;
+  // const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
-  const bankAccountStore = rootStore.bankAccountStore;
-  const paymentStore = rootStore.paymentStore;
+  // const bankAccountStore = rootStore.bankAccountStore;
+  // const paymentStore = rootStore.paymentStore;
 
   const [loading, setLoading] = useState(true);
   const [notificationRouting, setNotificationRouting] = useState(null);
@@ -135,12 +140,24 @@ const App = () => {
     (async () => {
       await NotificationService.requestUserPermission();
       await NotificationService.registerAppWithFCM();
+      await notifee.requestPermission();
     })();
   }, []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(() => {
-      goToWebview();
+    const unsubscribe = messaging().onMessage(async (message) => {
+      console.log('---message', message);
+      const channelId = await notifee.createChannel({
+        id: NOTIFICATIONS_CHANNEL_ID,
+        name: NOTIFICATIONS_CHANNEL_NAME,
+      });
+      await notifee.displayNotification({
+        title: message.notification?.title,
+        body: message.notification?.body,
+        android: {
+          channelId,
+        },
+      });
     });
     return unsubscribe;
   }, []);
@@ -412,13 +429,6 @@ const App = () => {
             component={CommonWebview}
             options={{headerShown: false, gestureEnabled: false}}
           />
-          {/* <Stack.Screen
-            name="Profile"
-            component={UserProfile}
-            options={() => ({
-              headerBackTitleVisible: false,
-            })}
-          />
           <Stack.Screen
             name="PhoneNumber"
             component={PhoneNumberStep1}
@@ -435,7 +445,15 @@ const App = () => {
               headerLeft: () => null,
               title: '',
             }}
-          /> */}
+          />
+          {/* <Stack.Screen
+            name="Profile"
+            component={UserProfile}
+            options={() => ({
+              headerBackTitleVisible: false,
+            })}
+          />
+        */}
         </Stack.Navigator>
         {/*
         <UserInfoChecker navigation={navigationRef} />

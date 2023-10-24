@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import {launchImageLibrary} from 'react-native-image-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from '~/Assets/iconfont/Icon';
 import ProposalInfo from '~/Components/Proposals/ProposalInfo';
 import {InvoiceImage} from '~/Firebase/Databasee/EntityTypes/IProposalEntity';
@@ -192,63 +192,62 @@ const AddInvoicesScreen = (): ReactElement => {
   const launchCamera = ({
     isRetake = false,
   }: Partial<GestureResponderEvent & {isRetake: boolean}>) => {
-    setIsLoading(true);
-    launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-        setIsLoading(false);
-      } else if (response.errorMessage) {
-        Platform.OS === 'ios' && (await handlePermission());
-        logger.log('ImagePicker Error: ', response.errorMessage);
-        setIsLoading(false);
-      } else {
-        if (isRetake) {
-          const updatedInvoiceImages = [...invoiceImages];
-          updatedInvoiceImages[invoiceSelected] = {
-            url: response.assets[0]?.uri,
-            mimeType: response?.assets[0].type as string,
-            amount: 0,
-          };
-          setInvoiceImages(updatedInvoiceImages);
-          setIsPreviewModalVisible(false);
-        } else {
-          setInvoiceImages([
-            ...invoiceImages,
-            {
-              url: response?.assets[0]?.uri as string,
-              mimeType: response?.assets[0].type as string,
-              amount: 0,
-            },
-          ]);
-        }
-      }
-      setIsLoading(false);
-      closeSheet();
-    });
+    // setIsLoading(true);
+    // launchImageLibrary(options, async (response) => {
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //     setIsLoading(false);
+    //   } else if (response.errorMessage) {
+    //     Platform.OS === 'ios' && (await handlePermission());
+    //     logger.log('ImagePicker Error: ', response.errorMessage);
+    //     setIsLoading(false);
+    //   } else {
+    //     if (isRetake) {
+    //       const updatedInvoiceImages = [...invoiceImages];
+    //       updatedInvoiceImages[invoiceSelected] = {
+    //         url: response.assets[0]?.uri,
+    //         mimeType: response?.assets[0].type as string,
+    //         amount: 0,
+    //       };
+    //       setInvoiceImages(updatedInvoiceImages);
+    //       setIsPreviewModalVisible(false);
+    //     } else {
+    //       setInvoiceImages([
+    //         ...invoiceImages,
+    //         {
+    //           url: response?.assets[0]?.uri as string,
+    //           mimeType: response?.assets[0].type as string,
+    //           amount: 0,
+    //         },
+    //       ]);
+    //     }
+    //   }
+    //   setIsLoading(false);
+    //   closeSheet();
+    // });
   };
 
   const pickImage = () => {
-    setIsLoading(true);
-    launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.errorMessage) {
-        logger.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        logger.log('Uploading image');
-
-        setInvoiceImages([
-          ...invoiceImages,
-          {
-            url: response?.assets[0]?.uri as string,
-            mimeType: response?.assets[0].type as string,
-            amount: 0,
-          },
-        ]);
-      }
-      setIsLoading(false);
-      closeSheet();
-    });
+    // setIsLoading(true);
+    // launchImageLibrary(options, async (response) => {
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //   } else if (response.errorMessage) {
+    //     logger.log('ImagePicker Error: ', response.errorMessage);
+    //   } else {
+    //     logger.log('Uploading image');
+    //     setInvoiceImages([
+    //       ...invoiceImages,
+    //       {
+    //         url: response?.assets[0]?.uri as string,
+    //         mimeType: response?.assets[0].type as string,
+    //         amount: 0,
+    //       },
+    //     ]);
+    //   }
+    //   setIsLoading(false);
+    //   closeSheet();
+    // });
   };
 
   function ModalInvoiceOptions({

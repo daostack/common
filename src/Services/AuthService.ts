@@ -26,6 +26,7 @@ import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
+  PHONE: 'phone',
 };
 
 interface UserInfo {
@@ -116,9 +117,11 @@ class AuthService {
       verificationId,
       verificationCode,
     );
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
-      userInfo,
+      userInfo: userInfo.user,
       credentials: phoneCredential,
     };
   };

@@ -57,10 +57,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>phone</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>app-1-854172758045-ios-12e29501991280e11e96f4</string>
+				<string>app-1-461029494046-ios-687856e074361578b48d0f</string>
 			</array>
 		</dict>
 		<dict>

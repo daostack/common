@@ -74,7 +74,7 @@ class NotificationService {
       return;
     }
     try {
-      const idToken = await AsyncStorage.getItem('idToken');
+      const idToken = await auth().currentUser?.getIdToken(true);
       const token = await messaging().getToken();
 
       return await this.axiosClient.post(
