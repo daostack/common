@@ -146,7 +146,6 @@ const App = () => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (message) => {
-      console.log('---message', message);
       const channelId = await notifee.createChannel({
         id: NOTIFICATIONS_CHANNEL_ID,
         name: NOTIFICATIONS_CHANNEL_NAME,
@@ -268,14 +267,6 @@ const App = () => {
       logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
       goToWebview();
     });
-
-    // Check whether an initial notification is available
-    messaging()
-      .getInitialNotification()
-      .then((remoteMessage) => {
-        logger.log('getInitialNotification remoteMessage', remoteMessage);
-        goToWebview();
-      });
   }, []);
 
   // HUD
