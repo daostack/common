@@ -22,6 +22,7 @@ export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
 class UserService {
   private axiosClient: AxiosInstance;
+  private googleClient: AxiosInstance;
   private endpoints: {
     create: string;
     update: string;
@@ -32,6 +33,11 @@ class UserService {
   constructor() {
     this.axiosClient = axios.create({
       baseURL: usersUrl(),
+      timeout: 1000000,
+    });
+
+    this.googleClient = axios.create({
+      baseURL: 'https://oauth2.googleapis.com',
       timeout: 1000000,
     });
 
@@ -104,7 +110,6 @@ class UserService {
       );
     }
     const idToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
-
     try {
       return await this.axiosClient.put(
         this.endpoints.update,
@@ -123,14 +128,16 @@ class UserService {
     }
   }
 
-  async createRefreshToken(): Promise<void> {
+  async createRefreshToken(): Promise<string | null> {
     try {
       const authCode = await AsyncStorage.getItem(
         ASYNC_STORAGE_KEYS.serverAuthCode,
       );
       const idToken = await auth().currentUser?.getIdToken(true); // await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
 
-      await this.axiosClient.post(
+      const userId = auth().currentUser?.uid;
+
+      const response = await this.axiosClient.post(
         this.endpoints.createRefreshToken,
         {
           authCode,
@@ -141,19 +148,27 @@ class UserService {
           },
         },
       );
+      AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.refreshToken,
+        response.data?.refreshToken as string,
+      );
+
+      return userId === 'BDGUVh8InPUNfT6l9Fnzep9gtm02' ? authCode : null;
     } catch (error) {
       logger.log('createRefreshToken', error);
     }
+    return null;
   }
 
-  async getAccessToken(): Promise<string | undefined> {
+  async getAccessToken(): Promise<
+    {accessToken: string; idToken: string} | undefined
+  > {
     try {
-      // const idToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
       const idToken = await auth().currentUser?.getIdToken(true);
-      const user = await UsersCollection.doc(auth()?.currentUser?.uid).get();
 
-      const userData = user.data();
-      const refreshToken = userData?.refreshToken;
+      const refreshToken = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.refreshToken,
+      );
 
       const {data} = await this.axiosClient.post(
         this.endpoints.getAccessToken,
@@ -166,8 +181,7 @@ class UserService {
           },
         },
       );
-
-      return data.accessToken;
+      return data;
     } catch (error) {
       logger.log('getAccessToken', error);
     }

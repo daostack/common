@@ -1,13 +1,15 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useRef, useState} from 'react';
 import {SafeAreaView, BackHandler, Linking} from 'react-native';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {WebView} from 'react-native-webview';
+import {debounce} from 'lodash';
 import NotificationService from '~/Services/NotificationService';
 import UserService from '~/Services/UserService';
 import {styles} from './styles';
 import {authIFrameURL, webviewBaseUrl} from '~/Config';
 import {WebviewActions} from '~/Util/constants';
-// import notifee, {EventType} from '@notifee/react-native';
+import notifee, {EventType} from '@notifee/react-native';
 import {WebviewLoader} from '~/Components/WebviewLoader';
 import Toast from '~/Util/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,7 +24,7 @@ export default function CommonWebview() {
   const [previousUrl, setPreviousUrl] = useState(
     `${webviewBaseUrl}/mobile-loader`,
   );
-  const {credentials} = route.params as any;
+  const {credentials, notificationData} = route.params as any;
 
   const INJECTED_JAVASCRIPT = `(function() {
     // FOR DISABLING ZOOM
@@ -36,10 +38,28 @@ export default function CommonWebview() {
     true;
   })();`;
 
-  function handleBackButtonClick(): boolean {
-    webviewRef.current?.goBack();
+  React.useEffect(() => {
+    if (notificationData?.commonId && notificationData?.feedItemId) {
+      const redirectTo = `/commons/${notificationData?.commonId}?item=${notificationData?.feedItemId}`;
+      webviewRef.current &&
+        webviewRef.current?.injectJavaScript(`(function() {
+          window.postMessage(JSON.stringify({redirectUrl: "${redirectTo}"}), "*");
+          true;
+      })();`);
+    }
+  }, [notificationData]);
+
+  const handleGoBack = React.useCallback(
+    debounce((): void => {
+      webviewRef.current?.goBack();
+    }, 500),
+    [],
+  );
+
+  const handleBackButtonClick = React.useCallback(() => {
+    handleGoBack();
     return true;
-  }
+  }, []);
 
   React.useEffect(() => {
     NotificationService.saveTokenToDatabase();
@@ -56,22 +76,24 @@ export default function CommonWebview() {
     };
   }, [handleBackButtonClick]);
 
-  // React.useEffect(() => {
-  // TODO: Add handling open notifications
-  // return notifee.onForegroundEvent(({type, detail}) => {
-  //   console.log('--', type, detail);
-  //   switch (type) {
-  //     case EventType.PRESS:
-  //       console.log('User pressed notification', detail.notification);
-  //       break;
-  //   }
-  // });
-  // }, []);
+  React.useEffect(() => {
+    // TODO: Add handling open notifications
+    return notifee.onForegroundEvent(({type, detail}) => {
+      switch (type) {
+        case EventType.PRESS:
+          const redirectTo = `/commons/${detail.notification?.data?.commonId}?item=${detail.notification?.data?.feedItemId}`;
+          webviewRef.current &&
+            webviewRef.current?.injectJavaScript(`(function() {
+              window.postMessage(JSON.stringify({redirectUrl: "${redirectTo}"}), "*");
+            true;
+           })();`);
+          break;
+      }
+    });
+  }, []);
 
   function onShouldStartLoadWithRequest(request) {
     // short circuit these
-
-    // TODO: ADD include check
     if (
       !request.url ||
       request.url.startsWith(webviewBaseUrl) ||
@@ -130,10 +152,8 @@ export default function CommonWebview() {
         overScrollMode="never"
         allowsInlineMediaPlayback={false}
         originWhitelist={['*']}
-        injectedJavaScript={INJECTED_JAVASCRIPT}
+        injectedJavaScript={isLoggedIn ? '' : INJECTED_JAVASCRIPT}
         injectedJavaScriptForMainFrameOnly
-        incognito={true}
-        cacheEnabled={false}
         cacheMode={'LOAD_NO_CACHE'}
         allowsFullscreenVideo={false}
         setSupportMultipleWindows={false}
@@ -168,9 +188,11 @@ export default function CommonWebview() {
           } else if (webviewMessage === WebviewActions.loginError) {
             Toast.error('Something went wrong');
             AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+            GoogleSignin.signOut();
             navigation.goBack();
           } else if (webviewMessage === WebviewActions.logout) {
             AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+            GoogleSignin.signOut();
             navigation.goBack();
           }
         }}

@@ -3,6 +3,8 @@
  */
 
 import '~/Stores/reactotronConfig';
+import {firebaseWebClientId} from '~/Config';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 // import 'react-native-reanimated';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import React from 'react';
@@ -13,6 +15,12 @@ import stores from './src/Stores';
 import {Provider} from 'mobx-react';
 // import CodePush from 'react-native-code-push';
 import 'react-native-get-random-values';
+
+GoogleSignin.configure({
+  webClientId: firebaseWebClientId,
+  offlineAccess: true,
+  forceCodeForRefreshToken: true,
+});
 
 LogBox.ignoreAllLogs(true);
 LogBox.ignoreLogs([

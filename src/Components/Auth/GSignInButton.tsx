@@ -2,7 +2,7 @@ import {TouchableOpacity} from 'react-native';
 import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
-import {statusCodes} from '@react-native-community/google-signin';
+import {statusCodes} from '@react-native-google-signin/google-signin';
 import {observer} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
 import logger from '~/Services/Logger';

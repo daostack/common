@@ -89,7 +89,7 @@ class NotificationService {
         },
       );
     } catch (error) {
-      logger.log(error);
+      logger.log('---error', error);
     }
   };
 

@@ -9,6 +9,7 @@ buildscript {
         targetSdkVersion = 33
         ndkVersion = "21.4.7075529"
         kotlinVersion = "1.6.0"
+        googlePlayServicesAuthVersion = "19.2.0" // <--- use this version or newer
     }
     repositories {
         google()
@@ -16,9 +17,10 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath('com.android.tools.build:gradle:7.2.0')
+        classpath('com.android.tools.build:gradle:7.2.2')
+        classpath 'com.google.gms:google-services:4.3.10' // <--- use this version or newer
 
-        classpath 'com.google.gms:google-services:4.3.10'
+
         classpath 'io.fabric.tools:gradle:1.28.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -54,3 +56,4 @@ allprojects {
 
     }
 }
+

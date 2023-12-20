@@ -78,3 +78,4 @@ tmp.xcconfig
 android/app/google-services-prod.json
 
 android/app/google-services2.json
+android/daostack_key.jks

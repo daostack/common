@@ -36,7 +36,7 @@ iosAppId = '1527060751';
 // webviewEnvBaseUrl = 'http://localhost:3000';
 // webviewEnvBaseUrl = 'http://10.0.2.2:3000';
 webviewEnvBaseUrl = 'https://web-dev.common.io';
-// webviewEnvBaseUrl = 'https://7b79-5-144-117-96.ngrok-free.app';
+// webviewEnvBaseUrl = 'https://a561-46-53-246-48.ngrok-free.app';
 webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
 iframeUrl = 'https://common-dev-34b09';
 
@@ -141,7 +141,7 @@ export const web3ProviderUrl = web3Provider;
 export const web3NetworkId = networkId;
 export const COMMONTOKENADDRESS = commonTokenAddress;
 export const firebaseWebClientId = clientId;
-export const isProduction = Config.ENV === 'production';
+export const isProduction = true; // Config.ENV === 'production';
 
 // for making facebook login on staging
 export const facebookAppId = '2309513929190090';

@@ -1,12 +1,10 @@
-import {firebaseWebClientId} from '~/Config';
-
 // Firebase imports
 import {auth, firebase} from '~/Firebase';
 import UserService from '~/Services/UserService';
 import NotificationService from '~/Services/NotificationService';
 
 // Google imports
-import {GoogleSignin, User} from '@react-native-community/google-signin';
+import {GoogleSignin, User} from '@react-native-google-signin/google-signin';
 
 // Apple imports
 import appleAuth, {
@@ -34,13 +32,6 @@ interface UserInfo {
 }
 
 class AuthService {
-  constructor() {
-    GoogleSignin.configure({
-      webClientId: firebaseWebClientId,
-      offlineAccess: true,
-    });
-  }
-
   isAppleLoginSupported() {
     return appleAuth.isSupported;
   }
@@ -131,7 +122,6 @@ class AuthService {
     userInfo: IUserEntity;
     credentials: any;
   }> => {
-    await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
     const {idToken, accessToken} = await GoogleSignin.getTokens();

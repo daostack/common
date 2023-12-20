@@ -3,4 +3,5 @@ export enum ASYNC_STORAGE_KEYS {
   credentials = 'credentials',
   idToken = 'idToken',
   serverAuthCode = 'serverAuthCode',
+  refreshToken = 'refreshToken',
 }

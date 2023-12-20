@@ -107,7 +107,9 @@ const App = () => {
     setNotificationRouting(actions);
   };
 
-  const goToWebview = async () => {
+  const goToWebview = async (
+    notificationData: Record<string, string> | undefined,
+  ) => {
     try {
       const credentials = await AsyncStorage.getItem(
         ASYNC_STORAGE_KEYS.credentials,
@@ -118,14 +120,15 @@ const App = () => {
         credentials &&
         parsedCredentials?.providerId !== AUTH_PROVIDER.apple
       ) {
-        const accessToken = await UserService.getAccessToken();
+        const {accessToken, idToken} = await UserService.getAccessToken();
         NotificationService.saveTokenToDatabase();
-
         routing('CommonWebview', {
           credentials: {
             ...parsedCredentials,
             secret: accessToken || parsedCredentials.secret,
+            token: idToken || parsedCredentials.idToken,
           },
+          notificationData,
         });
       }
     } catch (err) {
@@ -150,12 +153,14 @@ const App = () => {
         id: NOTIFICATIONS_CHANNEL_ID,
         name: NOTIFICATIONS_CHANNEL_NAME,
       });
+      // https://common.io/commons/156dd2b5-080d-4340-8694-910f53224280?item=c9a36f15-e83d-4a24-9cbe-910cd9e5cac8&message=fc8179ec-b016-4ab0-b740-f68cddd75b93
       await notifee.displayNotification({
         title: message.notification?.title,
         body: message.notification?.body,
         android: {
           channelId,
         },
+        data: message.data,
       });
     });
     return unsubscribe;
@@ -259,13 +264,27 @@ const App = () => {
   // notification navigation
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
-    messaging().onNotificationOpenedApp((remoteMessage) => {
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
       logger.log(
         'Notification caused app to open from background state:',
         remoteMessage,
       );
       logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
-      goToWebview();
+      // TODO: handle additional params
+      // const channelId = await notifee.createChannel({
+      //   id: NOTIFICATIONS_CHANNEL_ID,
+      //   name: NOTIFICATIONS_CHANNEL_NAME,
+      // });
+      // // https://common.io/commons/156dd2b5-080d-4340-8694-910f53224280?item=c9a36f15-e83d-4a24-9cbe-910cd9e5cac8&message=fc8179ec-b016-4ab0-b740-f68cddd75b93
+      // await notifee.displayNotification({
+      //   title: remoteMessage.notification?.title,
+      //   body: remoteMessage.notification?.body,
+      //   android: {
+      //     channelId,
+      //   },
+      //   data: remoteMessage.data,
+      // });
+      goToWebview(remoteMessage.data);
     });
   }, []);
 

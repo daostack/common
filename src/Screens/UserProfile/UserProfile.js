@@ -33,7 +33,7 @@ import {db} from '~/Firebase';
 import {DB_COLLECTIONS} from '~/Firebase/Databasee';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {firebase} from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-community/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Toast from '~/Util/Toast';
 import UserService from '~/Services/UserService';
 import {AUTH_PROVIDER} from '~/Util/constants/provider';
@@ -107,11 +107,15 @@ const UserProfile = ({authStore}) => {
           credentials &&
           parsedCredentials?.providerId !== AUTH_PROVIDER.apple
         ) {
-          const accessToken = await UserService.getAccessToken();
+          const {accessToken, idToken} = await UserService.getAccessToken();
           navigation.navigate({
             name: 'CommonWebview',
             params: {
-              credentials: {...parsedCredentials, secret: accessToken},
+              credentials: {
+                ...parsedCredentials,
+                secret: accessToken,
+                token: idToken,
+              },
             },
           });
         }
