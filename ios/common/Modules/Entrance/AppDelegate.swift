@@ -57,8 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
-        GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
-        
         bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
         
         let rootView = RCTRootView(bridge: bridge!, moduleName: "common", initialProperties: launchOptions)

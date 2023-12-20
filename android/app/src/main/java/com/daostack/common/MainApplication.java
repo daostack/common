@@ -8,6 +8,7 @@ import com.facebook.react.bridge.JSIModulePackage;
 import com.daostack.common.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.orhanobut.hawk.Hawk;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -19,7 +20,6 @@ import com.microsoft.codepush.react.CodePush;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
 import io.intercom.android.sdk.Intercom;
 
 public class MainApplication extends Application implements ReactApplication {

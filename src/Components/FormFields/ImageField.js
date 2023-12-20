@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import ValidationMessage from './ValidationMessage';
-import {launchImageLibrary} from 'react-native-image-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from '~/Util/Toast';
 import StorageService from '~/Services/StorageService';
 import Icon from '~/Assets/iconfont/Icon';
@@ -74,33 +74,33 @@ class ImageField extends React.Component {
   };
 
   pickImage = () => {
-    const {title, quality, allowsEditing} = this.props;
-    const options = {
-      title: title,
-      quality: quality || 0.7,
-      allowsEditing: allowsEditing || false,
-    };
-    launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.errorMessage) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.errorMessage);
-        logger.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        Toast.loading('Uploading...');
-        StorageService.uploadImage(response?.assets[0]?.uri)
-          .then((url) => {
-            Toast.hide();
-            Toast.success('Done');
-            this.onChangeValue(url);
-          })
-          .catch((error) => {
-            Toast.error(error.toString());
-          });
-      }
-    });
+    // const {title, quality, allowsEditing} = this.props;
+    // const options = {
+    //   title: title,
+    //   quality: quality || 0.7,
+    //   allowsEditing: allowsEditing || false,
+    // };
+    // launchImageLibrary(options, async (response) => {
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //   } else if (response.errorMessage) {
+    //     // only for ios because android handles this
+    //     Platform.OS === 'ios' && (await handlePermission());
+    //     Toast.error(response.errorMessage);
+    //     logger.log('ImagePicker Error: ', response.errorMessage);
+    //   } else {
+    //     Toast.loading('Uploading...');
+    //     StorageService.uploadImage(response?.assets[0]?.uri)
+    //       .then((url) => {
+    //         Toast.hide();
+    //         Toast.success('Done');
+    //         this.onChangeValue(url);
+    //       })
+    //       .catch((error) => {
+    //         Toast.error(error.toString());
+    //       });
+    //   }
+    // });
   };
 
   renderImage = (isAvatar, validation, value) => {

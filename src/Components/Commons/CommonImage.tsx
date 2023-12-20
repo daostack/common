@@ -12,7 +12,7 @@ import Icon from '~/Assets/iconfont/Icon';
 import {BlurView} from '~/Components';
 import CreateCommonForm from '~/Components/Forms/CreateCommonForm';
 import {colors, font} from '~/Theme';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+// import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import Toast from '~/Util/Toast';
 import {
@@ -73,65 +73,65 @@ const CommonImage: React.FC<InferProps<typeof props>> = observer(
       `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
 
     const pickImage = async () => {
-      const options = {
-        mediaType: 'photo',
-        quality: 0.7,
-        allowsEditing: false,
-      };
-      launchImageLibrary(options, async (response) => {
-        if (response.didCancel) {
-          logger.log('User cancelled image picker');
-        } else if (response.errorMessage) {
-          // only for ios because android handles this
-          Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.errorMessage);
-          logger.log('ImagePicker Error: ', response.errorMessage);
-        } else {
-          Toast.loading('Uploading...');
-          StorageService.uploadImage(response?.assets[0]?.uri)
-            .then((url: string) => {
-              Toast.hide();
-              Toast.success('Done');
-              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-              onImageChanged && onImageChanged();
-            })
-            .catch((error: Error) => Toast.error(error));
-        }
-        closeSheet();
-      });
+      // const options = {
+      //   mediaType: 'photo',
+      //   quality: 0.7,
+      //   allowsEditing: false,
+      // };
+      // launchImageLibrary(options, async (response) => {
+      //   if (response.didCancel) {
+      //     logger.log('User cancelled image picker');
+      //   } else if (response.errorMessage) {
+      //     // only for ios because android handles this
+      //     Platform.OS === 'ios' && (await handlePermission());
+      //     Toast.error(response.errorMessage);
+      //     logger.log('ImagePicker Error: ', response.errorMessage);
+      //   } else {
+      //     Toast.loading('Uploading...');
+      //     StorageService.uploadImage(response?.assets[0]?.uri)
+      //       .then((url: string) => {
+      //         Toast.hide();
+      //         Toast.success('Done');
+      //         reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+      //         onImageChanged && onImageChanged();
+      //       })
+      //       .catch((error: Error) => Toast.error(error));
+      //   }
+      //   closeSheet();
+      // });
     };
 
     const takePhoto = () => {
-      setIsLoading(true);
-      const options = {
-        cameraType: 'front',
-        mediaType: 'photo',
-      };
-      launchCamera(options, async (response) => {
-        if (response.didCancel) {
-          logger.log('User cancelled image picker');
-        } else if (response.errorCode) {
-          Toast.error(response.errorCode);
-          logger.log('ImagePicker Error: ', response.errorCode);
-        } else if (response.errorMessage) {
-          // only for ios because android handles this
-          Platform.OS === 'ios' && (await handlePermission());
-          Toast.error(response.errorMessage);
-          logger.log('ImagePicker Error Message: ', response.errorMessage);
-        } else {
-          Toast.loading('Uploading...');
-          StorageService.uploadImage(response?.assets[0]?.uri)
-            .then((url: string) => {
-              Toast.hide();
-              Toast.success('Done');
-              reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-              onImageChanged && onImageChanged();
-            })
-            .catch((error: Error) => Toast.error(error));
-        }
-        setIsLoading(false);
-        closeSheet();
-      });
+      // setIsLoading(true);
+      // const options = {
+      //   cameraType: 'front',
+      //   mediaType: 'photo',
+      // };
+      // launchCamera(options, async (response) => {
+      //   if (response.didCancel) {
+      //     logger.log('User cancelled image picker');
+      //   } else if (response.errorCode) {
+      //     Toast.error(response.errorCode);
+      //     logger.log('ImagePicker Error: ', response.errorCode);
+      //   } else if (response.errorMessage) {
+      //     // only for ios because android handles this
+      //     Platform.OS === 'ios' && (await handlePermission());
+      //     Toast.error(response.errorMessage);
+      //     logger.log('ImagePicker Error Message: ', response.errorMessage);
+      //   } else {
+      //     Toast.loading('Uploading...');
+      //     StorageService.uploadImage(response?.assets[0]?.uri)
+      //       .then((url: string) => {
+      //         Toast.hide();
+      //         Toast.success('Done');
+      //         reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
+      //         onImageChanged && onImageChanged();
+      //       })
+      //       .catch((error: Error) => Toast.error(error));
+      //   }
+      //   setIsLoading(false);
+      //   closeSheet();
+      // });
     };
 
     const onTakePhotoPress = async () => {

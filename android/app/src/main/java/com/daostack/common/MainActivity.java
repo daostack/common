@@ -7,6 +7,7 @@ import com.facebook.react.ReactActivity;
 
 import androidx.annotation.Nullable;
 import android.content.Intent;
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -21,7 +22,11 @@ public class MainActivity extends ReactActivity {
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-    super.onCreate(savedInstanceState, persistentState);
+      // Use SplashTheme in AndroidManifest.xml for MainActivity, themes loads before layouts inflate
+      setTheme(R.style.AppTheme); // Now set the theme from Splash to App before setContentView
+      setContentView(R.drawable.background_splash); // Then inflate the new view
+      SplashScreen.show(this); // Now show the splash screen. Hide it later in JS
+      super.onCreate(savedInstanceState);
 
   }
 

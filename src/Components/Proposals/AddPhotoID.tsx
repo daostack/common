@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from '~/Assets/iconfont/Icon';
-import {launchImageLibrary} from 'react-native-image-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
 import StorageService from '~/Services/StorageService';
 import logger from '~/Services/Logger';
 import {handlePermission} from '~/Util/Permissions';
@@ -58,34 +58,32 @@ export function AddPhotoID({onSelect, error = false}: Props): ReactElement {
   }
 
   function pickImage(): void {
-    const options = {
-      mediaType: 'photo',
-      quality: 0.7,
-      allowsEditing: false,
-    };
-    launchImageLibrary(options, async (response) => {
-      if (imageUrl) {
-        await deleteImage(imageUrl);
-      }
-
-      if (response.didCancel) {
-        logger.log('User cancelled image picker');
-      } else if (response.errorMessage) {
-        // only for ios because android handles this
-        Platform.OS === 'ios' && (await handlePermission());
-        Toast.error(response.errorMessage);
-        logger.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        const image = response?.assets[0];
-
-        setLocalImage({
-          legalType: PAYME_TYPE_CODES['Social Id'],
-          uri: image?.uri,
-          mimeType: getPhotoTypeFormat(image?.type),
-        });
-        setModalVisible(true);
-      }
-    });
+    // const options = {
+    //   mediaType: 'photo',
+    //   quality: 0.7,
+    //   allowsEditing: false,
+    // };
+    // launchImageLibrary(options, async (response) => {
+    //   if (imageUrl) {
+    //     await deleteImage(imageUrl);
+    //   }
+    //   if (response.didCancel) {
+    //     logger.log('User cancelled image picker');
+    //   } else if (response.errorMessage) {
+    //     // only for ios because android handles this
+    //     Platform.OS === 'ios' && (await handlePermission());
+    //     Toast.error(response.errorMessage);
+    //     logger.log('ImagePicker Error: ', response.errorMessage);
+    //   } else {
+    //     const image = response?.assets[0];
+    //     setLocalImage({
+    //       legalType: PAYME_TYPE_CODES['Social Id'],
+    //       uri: image?.uri,
+    //       mimeType: getPhotoTypeFormat(image?.type),
+    //     });
+    //     setModalVisible(true);
+    //   }
+    // });
   }
 
   function approveImage(): void {

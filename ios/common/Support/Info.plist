@@ -57,10 +57,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>phone</string>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>app-1-854172758045-ios-12e29501991280e11e96f4</string>
+				<string>app-1-461029494046-ios-687856e074361578b48d0f</string>
 			</array>
 		</dict>
 		<dict>
@@ -71,6 +71,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.daostack.common</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>google-prod</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.461029494046-7du92fjvsej3d9lo60hqqo0lju877ian</string>
 			</array>
 		</dict>
 	</array>
@@ -120,6 +130,7 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

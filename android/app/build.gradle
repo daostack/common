@@ -87,6 +87,7 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 project.ext.react = [
     entryFile: "index.js",
     enableHermes: false,  // clean and rebuild if changing
+    nodeExecutableAndArgs : ["/usr/local/bin/node"]
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -136,11 +137,11 @@ android {
     ndkVersion rootProject.ext.ndkVersion
 
     defaultConfig {
-        applicationId "com.daostack.common"
+        applicationId "com.daostack.commondev"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 6715
+        versionName "1.12.0"
         multiDexEnabled true
 
         // react-native-config
@@ -148,15 +149,6 @@ android {
     }
 
     flavorDimensions "version"
-    productFlavors {
-        staging {
-            applicationIdSuffix ".staging"
-            dimension "version"
-        }
-        production {
-            dimension "version"
-        }
-    }
     splits {
         abi {
             reset()
@@ -242,6 +234,7 @@ dependencies {
     implementation "io.intercom.android:intercom-sdk-base:5.+"
     implementation "com.facebook.soloader:soloader:0.10.1"
 
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

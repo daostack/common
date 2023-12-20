@@ -75,26 +75,6 @@ jest.mock('react-native-config', () => ({
   ENV: 'staging',
 }));
 
-jest.mock('@react-native-community/google-signin', () => {
-  const mockGoogleSignin = jest.requireActual(
-    '@react-native-community/google-signin',
-  );
-
-  mockGoogleSignin.GoogleSignin.hasPlayServices = () => Promise.resolve(true);
-  mockGoogleSignin.GoogleSignin.configure = () => Promise.resolve();
-  mockGoogleSignin.GoogleSignin.currentUserAsync = () => {
-    return Promise.resolve({
-      name: 'name',
-      email: 'test@example.com',
-      // .... other user data
-    });
-  };
-
-  // ... and other functions you want to mock
-
-  return mockGoogleSignin;
-});
-
 NativeModules.RNDocumentPicker = {
   pick: jest.fn(),
   types: {

@@ -1,12 +1,10 @@
-import {firebaseWebClientId} from '~/Config';
-
 // Firebase imports
 import {auth, firebase} from '~/Firebase';
 import UserService from '~/Services/UserService';
 import NotificationService from '~/Services/NotificationService';
 
 // Google imports
-import {GoogleSignin, User} from '@react-native-community/google-signin';
+import {GoogleSignin, User} from '@react-native-google-signin/google-signin';
 
 // Apple imports
 import appleAuth, {
@@ -14,17 +12,19 @@ import appleAuth, {
   AppleAuthRequestOperation,
   AppleAuthRequestResponse,
 } from '@invertase/react-native-apple-authentication';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AccessToken, LoginManager} from 'react-native-fbsdk-next';
 
 import {
   IUserEntity,
   UserPublicData,
 } from '~/Firebase/Databasee/EntityTypes/IUserEntity';
+import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 
 export const AUTH_PROVIDER_ID = {
   APPLE: 'apple.com',
   GOOGLE: 'google.com',
+  PHONE: 'phone',
 };
 
 interface UserInfo {
@@ -32,13 +32,6 @@ interface UserInfo {
 }
 
 class AuthService {
-  constructor() {
-    GoogleSignin.configure({
-      webClientId: firebaseWebClientId,
-      offlineAccess: true,
-    });
-  }
-
   isAppleLoginSupported() {
     return appleAuth.isSupported;
   }
@@ -63,6 +56,8 @@ class AuthService {
       nonce,
     );
 
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
       userInfo: {
@@ -113,9 +108,11 @@ class AuthService {
       verificationId,
       verificationCode,
     );
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
-      userInfo,
+      userInfo: userInfo.user,
       credentials: phoneCredential,
     };
   };
@@ -125,7 +122,6 @@ class AuthService {
     userInfo: IUserEntity;
     credentials: any;
   }> => {
-    await GoogleSignin.hasPlayServices();
     await GoogleSignin.signIn();
 
     const {idToken, accessToken} = await GoogleSignin.getTokens();
@@ -143,6 +139,16 @@ class AuthService {
       throw error;
     }
 
+    const response = await GoogleSignin.getCurrentUser();
+
+    const firebaseIdToken = await auth().currentUser.getIdToken(true);
+    if (response?.serverAuthCode) {
+      AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.serverAuthCode,
+        response.serverAuthCode,
+      );
+    }
+    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
     NotificationService.saveTokenToDatabase();
     return {
       userInfo: {

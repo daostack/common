@@ -10,7 +10,10 @@ import {
 } from '~/Firebase/types';
 import axios, {AxiosInstance} from 'axios';
 import {usersUrl} from '~/Config';
-import {auth} from '~/Firebase';
+import logger from '~/Services/Logger';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 
 export type userListLoadCallbackFn = (
   updatedUserList: IFirebaseSnapshot<IUserEntity>,
@@ -19,7 +22,13 @@ export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 
 class UserService {
   private axiosClient: AxiosInstance;
-  private endpoints: {create: string; update: string};
+  private googleClient: AxiosInstance;
+  private endpoints: {
+    create: string;
+    update: string;
+    createRefreshToken: string;
+    getAccessToken: string;
+  };
 
   constructor() {
     this.axiosClient = axios.create({
@@ -27,9 +36,16 @@ class UserService {
       timeout: 1000000,
     });
 
+    this.googleClient = axios.create({
+      baseURL: 'https://oauth2.googleapis.com',
+      timeout: 1000000,
+    });
+
     this.endpoints = {
       create: '/create',
       update: '/update',
+      createRefreshToken: '/auth/google/get-refresh-token',
+      getAccessToken: '/auth/google/refresh',
     };
   }
 
@@ -73,11 +89,12 @@ class UserService {
         'User Id (userId) is required parameter, but was not provided.',
       );
     }
+    const idToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
 
     try {
       return await this.axiosClient.post(this.endpoints.create, newUser, {
         headers: {
-          Authorization: await auth().currentUser.getIdToken(true),
+          Authorization: idToken,
           email,
         },
       });
@@ -92,7 +109,7 @@ class UserService {
         'User Id (userId) is required parameter, but was not provided.',
       );
     }
-
+    const idToken = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
     try {
       return await this.axiosClient.put(
         this.endpoints.update,
@@ -102,12 +119,71 @@ class UserService {
         },
         {
           headers: {
-            Authorization: await auth().currentUser.getIdToken(true),
+            Authorization: idToken,
           },
         },
       );
     } catch (error) {
       throw error;
+    }
+  }
+
+  async createRefreshToken(): Promise<string | null> {
+    try {
+      const authCode = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.serverAuthCode,
+      );
+      const idToken = await auth().currentUser?.getIdToken(true); // await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.idToken);
+
+      const userId = auth().currentUser?.uid;
+
+      const response = await this.axiosClient.post(
+        this.endpoints.createRefreshToken,
+        {
+          authCode,
+        },
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        },
+      );
+      AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.refreshToken,
+        response.data?.refreshToken as string,
+      );
+
+      return userId === 'BDGUVh8InPUNfT6l9Fnzep9gtm02' ? authCode : null;
+    } catch (error) {
+      logger.log('createRefreshToken', error);
+    }
+    return null;
+  }
+
+  async getAccessToken(): Promise<
+    {accessToken: string; idToken: string} | undefined
+  > {
+    try {
+      const idToken = await auth().currentUser?.getIdToken(true);
+
+      const refreshToken = await AsyncStorage.getItem(
+        ASYNC_STORAGE_KEYS.refreshToken,
+      );
+
+      const {data} = await this.axiosClient.post(
+        this.endpoints.getAccessToken,
+        {
+          refreshToken,
+        },
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        },
+      );
+      return data;
+    } catch (error) {
+      logger.log('getAccessToken', error);
     }
   }
 }

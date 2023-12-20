@@ -149,7 +149,6 @@ class AuthStore {
         const isNewUser = !updatedUser;
         if (!isNewUser) {
           updatedUser && this.setSignedInUser(new UserModel(updatedUser));
-          NotificationService.saveTokenToDatabase();
           this.removeLoginInProgress(updatedUser?.uid);
           this.setIsLoading(false);
         }
