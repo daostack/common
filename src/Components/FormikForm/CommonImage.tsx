@@ -36,33 +36,7 @@ const CommonImage = ({
   const getImageUrl = (index: number) =>
     `https://firebasestorage.googleapis.com/v0/b/common-daostack.appspot.com/o/public_img%2Fcover_template_0${index}.png?alt=media`;
 
-  const pickImage = async () => {
-    // const options = {
-    //   title: 'Select profile image',
-    //   quality: 0.7,
-    //   allowsEditing: false,
-    // };
-    // launchImageLibrary(options, async (response) => {
-    //   if (response.didCancel) {
-    //     logger.log('User cancelled image picker');
-    //   } else if (response.errorMessage) {
-    //     // only for ios because android handles this
-    //     Platform.OS === 'ios' && (await handlePermission());
-    //     Toast.error(response.errorMessage);
-    //     logger.log('ImagePicker Error: ', response.errorMessage);
-    //   } else {
-    //     Toast.loading('Uploading...');
-    //     StorageService.uploadImage(response?.assets[0]?.uri)
-    //       .then((url: string) => {
-    //         Toast.hide();
-    //         Toast.success('Done');
-    //         //reviewFormStore.fieldChanged(CreateCommonForm.IMAGE, url);
-    //         onImageChanged && onImageChanged(url);
-    //       })
-    //       .catch((error: Error) => Toast.error(error));
-    //   }
-    // });
-  };
+  const pickImage = async () => {};
 
   const changeIndex = (currrNumber: number) => {
     let index = templateIndex + currrNumber;

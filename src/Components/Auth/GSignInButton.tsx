@@ -2,6 +2,7 @@ import {TouchableOpacity} from 'react-native';
 import {layout} from '~/Theme';
 import React from 'react';
 import Icon from '~/Assets/iconfont/Icon';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {statusCodes} from '@react-native-google-signin/google-signin';
 import {observer} from 'mobx-react';
 import AuthService from '~/Services/AuthService';
@@ -36,7 +37,8 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
           authStore.setSignInError('play services not available or outdated');
           break;
         default:
-          authStore.setSignInError(error);
+          authStore.setSignInError('Please, try again');
+          GoogleSignin.signOut();
       }
     }
   };
