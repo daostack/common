@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-// import auth from '@react-native-firebase/auth';
 import notifee from '@notifee/react-native';
 import crashlytics from '@react-native-firebase/crashlytics';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
@@ -20,33 +19,18 @@ import {
   UIManager,
   View,
 } from 'react-native';
-//import DeepLinking from 'react-native-deep-linking';
-// import Intercom from 'react-native-intercom';
 import KeyboardManager from 'react-native-keyboard-manager';
-//import validUrl from 'valid-url';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
-// import Loader from '~/Components/Loader';
-//import {BOTTOM_SHEET_TEMPLATES} from '~/Screens/BottomSheetScreens';
-// import {OnboardingForm} from '~/Screens/OnboardingForm/OnboardingForm';
-// import UserInfoChecker from '~/Screens/UserProfile/UserInfoChecker';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
 import {AUTH_CODE} from '~/Util/constants/authCode';
-import {
-  //DYNAMIC_LINKS_SCREENS,
-  //DYNAMIC_LINKS_SCREEN_PARAMS,
-  //DYNAMIC_LINKS_TYPES,
-  DYNAMIC_LINK_URI_WITH_SLASH,
-} from '~/Util/constants/dynamicLinks';
+import {DYNAMIC_LINK_URI_WITH_SLASH} from '~/Util/constants/dynamicLinks';
 import {useStore} from '~/Util/hooks/useStore';
 import {getUrlPathWithEntityId} from '~/Util/stringUtil';
 import Icon from './src/Assets/iconfont/Icon';
-// import BottomSheetContainer from './src/Components/BottomSheetContainer';
 import NotificationContainer from './src/Components/Notifications/NotificationContainer';
 import {
   CommonWebview,
-  // CreateAccount,
-  // Onboarding,
   PhoneNumberStep1,
   UserProfile,
   VerificationStep2,
@@ -78,19 +62,10 @@ if (Platform.OS === 'android') {
 
 const App = () => {
   const rootStore = useStore('rootStore');
-  // const authStore = rootStore.authStore;
-  // const userStore = rootStore.userStore;
-  // const commonStore = rootStore.commonStore;
-  // const proposalStore = rootStore.proposalStore;
-  // const notificationStore = rootStore.notificationStore;
-  // const bottomSheetStore = rootStore.uiStore.bottomSheetStore;
   const appLoaderStore = rootStore.uiStore.appLoaderStore;
-  // const bankAccountStore = rootStore.bankAccountStore;
-  // const paymentStore = rootStore.paymentStore;
 
   const [loading, setLoading] = useState(true);
   const [notificationRouting, setNotificationRouting] = useState(null);
-  //const [initialRouteName, setInitialRouteName] = useState('Onboarding');
   const hudRef = useRef<ToastView>(null);
   const navigationRef = useRef(null);
 
@@ -153,7 +128,6 @@ const App = () => {
         id: NOTIFICATIONS_CHANNEL_ID,
         name: NOTIFICATIONS_CHANNEL_NAME,
       });
-      // https://common.io/commons/156dd2b5-080d-4340-8694-910f53224280?item=c9a36f15-e83d-4a24-9cbe-910cd9e5cac8&message=fc8179ec-b016-4ab0-b740-f68cddd75b93
       await notifee.displayNotification({
         title: message.notification?.title,
         body: message.notification?.body,
@@ -166,101 +140,6 @@ const App = () => {
     return unsubscribe;
   }, []);
 
-  // Initialize Mobx Stores
-  // useEffect(() => {
-  // //   const unsubscribeUsers = userStore.subscribeToAllUsers();
-  // //   const unsubscribeCommons = commonStore.subscribeToAllCommons();
-  // //   let unsubscribeLoggedUserNotifications = null;
-  // //   let unsubscribeProposals = null;
-  // //   if (authStore.userInfo?.uid) {
-  // //     unsubscribeProposals = proposalStore.subscribeToUserAllProposals(
-  // //       authStore.userInfo?.uid,
-  // //     );
-  // //     unsubscribeLoggedUserNotifications =
-  // //       notificationStore.subscribeToLoggedUserNotifications();
-  // //   }
-  // //   return () => {
-  // //     unsubscribeUsers && unsubscribeUsers();
-  // //     unsubscribeCommons && unsubscribeCommons();
-  // //     unsubscribeProposals && unsubscribeProposals();
-  // //     unsubscribeLoggedUserNotifications?.forEach(
-  // //       (unsubscribeLoggedUserNotificationsBatch) =>
-  // //         unsubscribeLoggedUserNotificationsBatch &&
-  // //         unsubscribeLoggedUserNotificationsBatch(),
-  // //     );
-  // //   };
-  // // }, [authStore.userInfo?.uid]);
-
-  // Initialize To User Payments and Subscriptions
-  // useEffect(() => {
-  //   let unsubscribeToUserPayments = null;
-  //   let unsubscribeToUserSubscriptions = null;
-  //   if (authStore.userInfo?.uid) {
-  //     unsubscribeToUserPayments = paymentStore.subscribeToUserPayments(
-  //       authStore.userInfo?.uid,
-  //     );
-  //     unsubscribeToUserSubscriptions =
-  //       paymentStore.subscribeToUserSubscriptions(authStore.userInfo?.uid);
-  //   }
-
-  //   return () => {
-  //     unsubscribeToUserPayments && unsubscribeToUserPayments();
-  //     unsubscribeToUserSubscriptions && unsubscribeToUserSubscriptions();
-  //   };
-  // }, [authStore.userInfo?.uid]);
-
-  // Initialize Intercom chat
-  // useEffect(() => {
-  //   if (authStore.userInfo?.uid) {
-  //     Intercom.registerIdentifiedUser({userId: authStore.userInfo?.uid});
-  //   } else {
-  //     Intercom.registerIdentifiedUser({userId: 'guest-' + Date.now()});
-  //   }
-  // }, [authStore.userInfo?.uid]);
-
-  // Fetch Bank Account Details
-  // useEffect(() => {
-  //   let unsubscribeToBankAccount = null;
-  //   if (authStore.userInfo?.uid) {
-  //     bankAccountStore.subscribeToBankAccount(authStore.userInfo?.uid);
-  //   }
-  //   return () => {
-  //     unsubscribeToBankAccount && unsubscribeToBankAccount();
-  //   };
-  // }, [authStore.userInfo?.uid]);
-
-  const notificationNavigation = async (remoteMessage) => {
-    appLoaderStore.showLoader();
-    logger.log('remoteMessage -> ', remoteMessage);
-    if (remoteMessage) {
-      const [screenName, commonId, objectId, tabIndex = 0] =
-        remoteMessage.data.path?.split('/');
-      // whitelist;approve/reject requestToJoin
-      if (screenName === 'CommonProfile') {
-        routing(screenName, {commonId});
-      }
-      // new discussionMessage
-      else if (screenName === 'Discussions') {
-        routing(screenName, {
-          discussionId: objectId,
-          commonId,
-          fromNotificationItem: true,
-        });
-      }
-      // create/approve proposal
-      else {
-        routing(screenName, {
-          proposalId: objectId,
-          tabIndex: +tabIndex,
-          fromNotificationItem: true,
-          eventType: remoteMessage.data.type,
-          commonId,
-        });
-      }
-    }
-    appLoaderStore.hideLoader();
-  };
-
   // notification navigation
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
@@ -270,20 +149,6 @@ const App = () => {
         remoteMessage,
       );
       logger.log('onNotificationOpenedApp remoteMessage', remoteMessage);
-      // TODO: handle additional params
-      // const channelId = await notifee.createChannel({
-      //   id: NOTIFICATIONS_CHANNEL_ID,
-      //   name: NOTIFICATIONS_CHANNEL_NAME,
-      // });
-      // // https://common.io/commons/156dd2b5-080d-4340-8694-910f53224280?item=c9a36f15-e83d-4a24-9cbe-910cd9e5cac8&message=fc8179ec-b016-4ab0-b740-f68cddd75b93
-      // await notifee.displayNotification({
-      //   title: remoteMessage.notification?.title,
-      //   body: remoteMessage.notification?.body,
-      //   android: {
-      //     channelId,
-      //   },
-      //   data: remoteMessage.data,
-      // });
       goToWebview(remoteMessage.data);
     });
   }, []);
@@ -339,26 +204,6 @@ const App = () => {
       AsyncStorage.setItem(ASYNC_STORAGE_KEYS.authCode, entityId);
       Toast.success('Your email is confirmed. You can login now.');
     }
-    /* else if (screenName === DYNAMIC_LINKS_TYPES.USER) {
-      bottomSheetStore.showBottomSheet(
-        BOTTOM_SHEET_TEMPLATES.USER_PROFILE_SHEET_SCREEN,
-        {userId: entityId},
-      );
-    } else if (screenName && entityId) {
-      routing(DYNAMIC_LINKS_SCREENS[screenName], {
-        [DYNAMIC_LINKS_SCREEN_PARAMS[screenName]]: entityId,
-      });
-    } else if (url) {
-      Linking.canOpenURL(url).then((supported) => {
-        if (!supported) {
-          return;
-        }
-        if (!DeepLinking.evaluateUrl(url) && validUrl.isWebUri(url)) {
-          logger.log(`Routing CommonWebview -> ${url}`);
-          routing('Browser', {url: url});
-        }
-      });
-    }*/
   }, []);
 
   useEffect(() => {
@@ -416,24 +261,11 @@ const App = () => {
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
           }}
           options={{headerShown: false, gestureEnabled: false}}>
-          {/* <Stack.Screen
-            name="Onboarding"
-            component={Onboarding}
-            options={{headerShown: false}}
-          /> */}
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
             options={{headerShown: false, gestureEnabled: false}}
           />
-
-          {/* <Stack.Screen
-            name="OnboardingForm"
-            component={OnboardingForm}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen name="CreateAccount" component={CreateAccount} /> */}
-
           <Stack.Screen
             name="CommonWebview"
             component={CommonWebview}
@@ -456,23 +288,7 @@ const App = () => {
               title: '',
             }}
           />
-          {/* <Stack.Screen
-            name="Profile"
-            component={UserProfile}
-            options={() => ({
-              headerBackTitleVisible: false,
-            })}
-          />
-        */}
         </Stack.Navigator>
-        {/*
-        <UserInfoChecker navigation={navigationRef} />
-        {appLoaderStore.isLoading && (
-          <Loader isBigger isFullScreen navigation={navigationRef} />
-        )}
-        {bottomSheetStore.isVisible && (
-          <BottomSheetContainer navigation={navigationRef} />
-        )} */}
         {notificationRouting && (
           <NotificationContainer
             notificationRouting={notificationRouting}
