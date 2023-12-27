@@ -140,10 +140,9 @@ android {
         applicationId "com.daostack.commondev"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6715
+        versionCode 6716
         versionName "1.12.0"
         multiDexEnabled true
-
         // react-native-config
         resValue "string", "build_config_package", "com.daostack.common"
     }

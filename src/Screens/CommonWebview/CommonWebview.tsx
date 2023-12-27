@@ -40,7 +40,7 @@ export default function CommonWebview() {
 
   React.useEffect(() => {
     if (notificationData?.commonId && notificationData?.feedItemId) {
-      const redirectTo = `/commons/${notificationData?.commonId}?item=${notificationData?.feedItemId}`;
+      const redirectTo = `/inbox?item=${notificationData?.feedItemId}`;
       webviewRef.current &&
         webviewRef.current?.injectJavaScript(`(function() {
           window.postMessage(JSON.stringify({redirectUrl: "${redirectTo}"}), "*");
@@ -81,7 +81,7 @@ export default function CommonWebview() {
     return notifee.onForegroundEvent(({type, detail}) => {
       switch (type) {
         case EventType.PRESS:
-          const redirectTo = `/commons/${detail.notification?.data?.commonId}?item=${detail.notification?.data?.feedItemId}`;
+          const redirectTo = `/inbox?item=${detail.notification?.data?.feedItemId}`;
           webviewRef.current &&
             webviewRef.current?.injectJavaScript(`(function() {
               window.postMessage(JSON.stringify({redirectUrl: "${redirectTo}"}), "*");
