@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {auth, firebase} from '~/Firebase';
 import {observer} from 'mobx-react';
 import {shape, InferProps, string, func} from 'prop-types';
 import {
@@ -8,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import {useStore} from '~/Util/hooks/useStore';
 import Icon from '~/Assets/iconfont/Icon';
@@ -24,6 +26,7 @@ import Loader from '~/Components/Loader';
 import Toast from '~/Util/Toast';
 import {CELL_COUNT} from './constants';
 import {useNavigation} from '@react-navigation/native';
+import UserService from '~/Services/UserService';
 
 const props = {
   navigation: shape({
@@ -118,8 +121,9 @@ const VerificationStep2: React.FC<InferProps<typeof props>> = ({
       const authInfoResp = await AuthService.signInPhone(
         confirm.verificationId,
         value,
-        userInfoResp,
+        userInfoResp.user,
       );
+
       authStore.setIsLoading(false);
       setAuthInfo(authInfoResp);
     } catch (error) {
@@ -215,6 +219,18 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     flex: 1,
+  },
+  wrapper: {
+    justifyContent: 'space-around',
+    marginTop: 50,
+    ...Platform.select({
+      ios: {
+        flex: 0.5,
+      },
+      android: {
+        height: 200,
+      },
+    }),
   },
   titleStyle: {
     alignSelf: 'center',

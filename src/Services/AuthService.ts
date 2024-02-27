@@ -108,11 +108,9 @@ class AuthService {
       verificationId,
       verificationCode,
     );
-    const firebaseIdToken = await auth().currentUser.getIdToken(true);
-    AsyncStorage.setItem(ASYNC_STORAGE_KEYS.idToken, firebaseIdToken);
-    NotificationService.saveTokenToDatabase();
+
     return {
-      userInfo: userInfo.user,
+      userInfo,
       credentials: phoneCredential,
     };
   };

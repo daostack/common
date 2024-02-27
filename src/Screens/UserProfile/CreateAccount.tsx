@@ -102,7 +102,7 @@ const CreateAccount = (props: CreateAccountProps) => {
         {/*
         <FacebookSignInButton onSignIn={onSignIn} />*/}
 
-        {/* <PhoneSignInButton onSignIn={onSignIn} /> */}
+        <PhoneSignInButton onSignIn={onSignIn} />
       </View>
 
       {renderError()}

@@ -20,6 +20,7 @@ import {
   View,
 } from 'react-native';
 import KeyboardManager from 'react-native-keyboard-manager';
+import {WebviewLoader} from '~/Components/WebviewLoader';
 import {ErrorBoundary} from '~/Components/ErrorBoundary';
 import {rootStorePropTypes} from '~/Types/propTypes';
 import {ASYNC_STORAGE_KEYS} from '~/Util/constants/asyncStorage';
@@ -105,9 +106,11 @@ const App = () => {
           },
           notificationData,
         });
+        setLoading(false);
       }
     } catch (err) {
       AsyncStorage.setItem(ASYNC_STORAGE_KEYS.credentials, '');
+      setLoading(false);
       Toast.error(
         'Your session has expired. Please log in again to use the app.',
       );
@@ -229,47 +232,44 @@ const App = () => {
     };
   }, []);
 
-  // Login
-  useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      try {
-        setLoading(false);
-      } catch (e) {
-        logger.log(e);
-      }
-    };
-
-    checkOnboardingStatus();
-  }, []);
-
   useEffect(() => {
     crashlytics().log('App mounted.');
   }, []);
-
-  if (loading) {
-    return <View style={{flex: 1}} />;
-  }
 
   return (
     <ErrorBoundary>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName="UserProfile"
+          initialRouteName="CommonWebview"
           screenOptions={{
             headerStyle: styles.headerStyle,
             headerTintColor: colors.black,
             headerBackImage: () => <Icon name="left-arrow" size={32} />,
+            animationEnabled: false,
           }}
-          options={{headerShown: false, gestureEnabled: false}}>
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}>
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
-            options={{headerShown: false, gestureEnabled: false}}
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+            initialParams={{
+              isLoading: loading,
+            }}
           />
           <Stack.Screen
             name="CommonWebview"
             component={CommonWebview}
-            options={{headerShown: false, gestureEnabled: false}}
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+              animationEnabled: false,
+            }}
           />
           <Stack.Screen
             name="PhoneNumber"

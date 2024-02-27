@@ -1,8 +1,6 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {inject, observer} from 'mobx-react';
-import {auth} from '~/Firebase';
-import moment from 'moment';
-import notifee from '@notifee/react-native';
+import {WebviewLoader} from '~/Components/WebviewLoader';
 import {object, shape, string} from 'prop-types';
 import React, {useEffect, useState} from 'react';
 import {
@@ -128,11 +126,11 @@ const UserProfile = ({authStore}) => {
     })();
   }, []);
 
-  // useEffect(() => {
-  //   if (route.params?.authInfo) {
-  //     onUserSignedIn(route.params?.authInfo, false);
-  //   }
-  // }, [route.params]);
+  useEffect(() => {
+    if (route.params?.authInfo) {
+      onUserSignedIn(route.params?.authInfo, false);
+    }
+  }, [route.params]);
 
   const onUserSignedIn = async (authInfo, isSignedWithApple) => {
     try {

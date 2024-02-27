@@ -36,6 +36,7 @@ const GSignInButton: React.FC<InferProps<typeof props>> = ({onSignIn}) => {
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
           authStore.setSignInError('play services not available or outdated');
           break;
+        default: {
           authStore.setSignInError('Please, try again');
           GoogleSignin.signOut();
         }

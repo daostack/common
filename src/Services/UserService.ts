@@ -9,7 +9,7 @@ import {
   IFirebaseSnapshot,
 } from '~/Firebase/types';
 import axios, {AxiosInstance} from 'axios';
-import {usersUrl} from '~/Config';
+import {usersUrl, authUrl} from '~/Config';
 import logger from '~/Services/Logger';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -23,6 +23,7 @@ export type userLoadCallbackFn = (updatedUserList: IUserEntity | null) => void;
 class UserService {
   private axiosClient: AxiosInstance;
   private googleClient: AxiosInstance;
+  private authClient: AxiosInstance;
   private endpoints: {
     create: string;
     update: string;
@@ -33,6 +34,10 @@ class UserService {
   constructor() {
     this.axiosClient = axios.create({
       baseURL: usersUrl(),
+      timeout: 1000000,
+    });
+    this.authClient = axios.create({
+      baseURL: authUrl(),
       timeout: 1000000,
     });
 
@@ -184,6 +189,27 @@ class UserService {
       return data;
     } catch (error) {
       logger.log('getAccessToken', error);
+    }
+  }
+
+  async getCustomToken(): Promise<string | undefined> {
+    try {
+      const idToken = await auth().currentUser?.getIdToken(true);
+
+      const {data} = await this.axiosClient.post(
+        '/auth/custom-token',
+        {},
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        },
+      );
+
+      return data.token;
+    } catch (error) {
+      logger.log('getCustomToken', JSON.stringify(error));
+      throw error;
     }
   }
 }

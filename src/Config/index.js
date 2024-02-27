@@ -21,44 +21,47 @@ let webviewEnvBaseUrl;
 let webviewEnvURL;
 let iframeUrl;
 
-localFunctionURL = 'http://localhost:5003/common-dev-34b09/us-central1';
-cloudFunctionURL =
-  'https://europe-west1-common-dev-34b09.cloudfunctions.net/api';
-networkId = 42;
-web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
-commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
-clientId =
-  // '870639147922-k51ofl1nn1nvkurot5scpv8qb9eaplg4.apps.googleusercontent.com';
-  '870639147922-te3p3fpk8vu0e6r2atbkkua0jt8ibi5a.apps.googleusercontent.com';
+// localFunctionURL = 'http://localhost:5003/common-dev-34b09/us-central1';
+// cloudFunctionURL =
+//   'https://europe-west1-common-dev-34b09.cloudfunctions.net/api';
+// networkId = 42;
+// web3Provider = 'https://kovan.infura.io/v3/3c08878d00734c0c98a3e4741d0b4cfc';
+// commonTokenAddress = '0xdff3e43710d39d2ba5dda7a8d959ed22cc905b01';
+// clientId =
+//   // '870639147922-k51ofl1nn1nvkurot5scpv8qb9eaplg4.apps.googleusercontent.com';
+//   '870639147922-te3p3fpk8vu0e6r2atbkkua0jt8ibi5a.apps.googleusercontent.com';
 
-androidAppId = 'com.daostack.a';
-iosAppId = '1527060751';
-// webviewEnvBaseUrl = 'http://localhost:3000';
-// webviewEnvBaseUrl = 'http://10.0.2.2:3000';
-webviewEnvBaseUrl = 'https://web-dev.common.io';
-// webviewEnvBaseUrl = 'https://a561-46-53-246-48.ngrok-free.app';
-webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
-iframeUrl = 'https://common-dev-34b09';
+// androidAppId = 'com.daostack.a';
+// iosAppId = '1527060751';
+// // webviewEnvBaseUrl = 'http://localhost:3000';
+// // webviewEnvBaseUrl = 'http://10.0.2.2:3000';
+// webviewEnvBaseUrl = 'https://web-dev.common.io';
+// // webviewEnvBaseUrl = 'https://605b-5-144-120-184.ngrok-free.app';
+// webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
+// iframeUrl = 'https://common-dev-34b09';
 
 // switch (Config.ENV) {
 //   case 'production': {
-// localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
-// cloudFunctionURL =
-//   'https://europe-west1-common-production-67641.cloudfunctions.net/api';
-// networkId = 100;
-// web3Provider = 'https://dai.poa.network';
-// commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
-// clientId =
-//   '461029494046-brimd89g39r6nnkhkqahoabuhp5i9hkr.apps.googleusercontent.com';
+localFunctionURL = 'http://localhost:5003/common-daostack/us-central1';
+cloudFunctionURL =
+  'https://europe-west1-common-production-67641.cloudfunctions.net/api';
+networkId = 100;
+web3Provider = 'https://dai.poa.network';
+commonTokenAddress = '0x2ea0be07dfc0357f40884365f2c9cfd2a36d4a6e';
+clientId =
+  '461029494046-brimd89g39r6nnkhkqahoabuhp5i9hkr.apps.googleusercontent.com';
 
-// androidAppId = 'com.daostack.common';
-// iosAppId = 'id1512785740';
-// webviewEnvBaseUrl = 'https://common.io';
-// // webviewEnvBaseUrl = 'http://localhost:3000';
-// // webviewEnvBaseUrl = 'http://10.0.2.2:3000';
-// // webviewEnvBaseUrl = 'https://7b79-5-144-117-96.ngrok-free.app';
-// webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
-// iframeUrl = 'https://common-production-67641';
+androidAppId = 'com.daostack.common';
+iosAppId = 'id1512785740';
+webviewEnvBaseUrl = 'https://common.io';
+
+// webviewEnvBaseUrl = 'http://localhost:3000';
+// webviewEnvBaseUrl = 'http://10.0.2.2:3000';
+// webviewEnvBaseUrl = 'https://ba12-5-144-121-214.ngrok-free.app';
+// webviewEnvBaseUrl =
+//   'https://f5c1-2001-ac8-29-6b-920b-5faa-7185-25.ngrok-free.app';
+webviewEnvURL = `${webviewEnvBaseUrl}/inbox`;
+iframeUrl = 'https://common-production-67641';
 //     break;
 //   }
 //   case 'staging': {
@@ -134,6 +137,7 @@ export const permissionsUrl = () => functionEndpoint('permissions');
 export const moderationUrl = () => functionEndpoint('moderation');
 export const payMeUrl = () => functionEndpoint('payments');
 export const usersUrl = () => functionEndpoint('users');
+export const authUrl = () => functionEndpoint('auth');
 export const notificationsUrl = () => functionEndpoint('notifications');
 
 export const circlePayUrl = () => functionEndpoint('circlepay');

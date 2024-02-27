@@ -5,6 +5,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flex: 1,
   },
+  containerDark: {
+    backgroundColor: '#1f2535',
+    flex: 1,
+  },
   webviewContainer: {
     flex: 1,
     height: '100%',
