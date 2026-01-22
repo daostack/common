@@ -60,7 +60,7 @@
     "formik": "^2.2.6",
     "graphql-tag": "^2.11.0",
     "hermes-engine": "0.7.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.23",
     "mobx": "^6.3.10",
     "mobx-persist": "^0.4.1",
     "mobx-react": "^7.3.0",
